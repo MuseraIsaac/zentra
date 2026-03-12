@@ -5953,7 +5953,7 @@ JS);
      */
    public static function getCopyrightMessage($withVersion = true)
     {
-    // $message = "<a href=\"https://zentra-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+    // //$message = "<a href=\"https://zentra-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
     $message = "ZENTRA ";
 
     // if required, add ZENTRA version (eg not for login page)
