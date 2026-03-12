@@ -86,7 +86,7 @@ function header_html(string $etape): void
     echo "<div id='principal'>";
     echo "<div id='bloc'>";
     echo "<div id='logo_bloc'></div>";
-    echo "<h2>" . __s('GLPI setup') . "</h2>";
+    echo "<h2>" . __s('Zentra setup') . "</h2>";
     echo "<br><h3>" . htmlescape($etape) . "</h3>";
 }
 
@@ -447,7 +447,7 @@ function update1(string $dbname): void
         $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
         $update = new Update($DB);
         if ($update->getCurrents()['version'] === null) {
-            $error = sprintf(__('Current GLPI version not found for database named "%s". Update cannot be done.'), $dbname);
+            $error = sprintf(__('Current Zentra version not found for database named "%s". Update cannot be done.'), $dbname);
         } elseif (
             !DBConnection::createMainConfig($host, $user, $password, $dbname)
             || !DBConnection::updateConfigProperties($DB->getComputedConfigBooleanFlags())
