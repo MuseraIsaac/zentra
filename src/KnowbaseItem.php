@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\TreeBrowseInterface;
-use Glpi\Form\ServiceCatalog\ServiceCatalog;
-use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
-use Glpi\RichText\RichText;
-use Glpi\Search\Output\HTMLSearchOutput;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Features\TreeBrowse;
+use Zentra\Features\TreeBrowseInterface;
+use Zentra\Form\ServiceCatalog\ServiceCatalog;
+use Zentra\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Zentra\RichText\RichText;
+use Zentra\Search\Output\HTMLSearchOutput;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -123,10 +123,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function canView(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         return (Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
-              || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
+              || ((Session::getLoginUserID() === false) && $CFG_ZENTRA["use_public_faq"]));
     }
 
     public function canViewItem(): bool
@@ -170,9 +170,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
 
         if (Session::getCurrentInterface() === "central") {
             return "$dir/front/knowbaseitem.php";
@@ -182,9 +182,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getFormURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
 
         if (Session::getCurrentInterface() === "central") {
             return "$dir/front/knowbaseitem.form.php";
@@ -230,7 +230,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -238,7 +238,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 case self::class:
                     $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
                         $ong[2] = self::createTabEntry(
@@ -254,7 +254,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;
@@ -344,7 +344,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     4,
                     "tools",
                     //TRANS: %s is the user login
-                    sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+                    sprintf(__('%s adds a target'), $_SESSION["zentraname"])
                 );
             }
         }
@@ -423,9 +423,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function isPubliclyVisible()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!$CFG_GLPI['use_public_faq']) {
+        if (!$CFG_ZENTRA['use_public_faq']) {
             return false;
         }
 
@@ -469,7 +469,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Build common JOIN clause
         $criteria = [
@@ -479,7 +479,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Handle anonymous users
         if (!Session::getLoginUserID()) {
             // Public FAQ is enabled; show FAQ, otherwise show nothing
-            $criteria['WHERE'] = $CFG_GLPI["use_public_faq"] ? self::getVisibilityCriteriaFAQ() : [new QueryExpression('false')];
+            $criteria['WHERE'] = $CFG_ZENTRA["use_public_faq"] ? self::getVisibilityCriteriaFAQ() : [new QueryExpression('false')];
             return $criteria;
         }
 
@@ -500,52 +500,52 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     private static function getVisibilityCriteriaCommonJoin(bool $forceall = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $join = [];
 
         // Context checks - avoid doing unnecessary join if possible
-        $is_public_faq_context = !Session::getLoginUserID() && $CFG_GLPI["use_public_faq"];
-        $has_session_groups = count(($_SESSION["glpigroups"] ?? []));
-        $has_active_profile = isset($_SESSION["glpiactiveprofile"]['id']);
-        $has_active_entity = count(($_SESSION["glpiactiveentities"] ?? []));
+        $is_public_faq_context = !Session::getLoginUserID() && $CFG_ZENTRA["use_public_faq"];
+        $has_session_groups = count(($_SESSION["zentragroups"] ?? []));
+        $has_active_profile = isset($_SESSION["zentraactiveprofile"]['id']);
+        $has_active_entity = count(($_SESSION["zentraactiveentities"] ?? []));
 
         // Add user restriction data
         if ($forceall || Session::getLoginUserID()) {
-            $join['glpi_knowbaseitems_users'] = [
+            $join['zentra_knowbaseitems_users'] = [
                 'ON' => [
-                    'glpi_knowbaseitems_users' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id',
+                    'zentra_knowbaseitems_users' => 'knowbaseitems_id',
+                    'zentra_knowbaseitems'       => 'id',
                 ],
             ];
         }
 
         // Add group restriction data
         if ($forceall || $has_session_groups) {
-            $join['glpi_groups_knowbaseitems'] = [
+            $join['zentra_groups_knowbaseitems'] = [
                 'ON' => [
-                    'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id',
+                    'zentra_groups_knowbaseitems' => 'knowbaseitems_id',
+                    'zentra_knowbaseitems'       => 'id',
                 ],
             ];
         }
 
         // Add profile restriction data
         if ($forceall || $has_active_profile) {
-            $join['glpi_knowbaseitems_profiles'] = [
+            $join['zentra_knowbaseitems_profiles'] = [
                 'ON' => [
-                    'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id',
+                    'zentra_knowbaseitems_profiles' => 'knowbaseitems_id',
+                    'zentra_knowbaseitems'       => 'id',
                 ],
             ];
         }
 
         // Add entity restriction data
         if ($forceall || $has_active_entity || $is_public_faq_context) {
-            $join['glpi_entities_knowbaseitems'] = [
+            $join['zentra_entities_knowbaseitems'] = [
                 'ON' => [
-                    'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id',
+                    'zentra_entities_knowbaseitems' => 'knowbaseitems_id',
+                    'zentra_knowbaseitems'       => 'id',
                 ],
             ];
         }
@@ -607,7 +607,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $where['OR'][] = self::getVisibilityCriteriaKB_User();
 
         // Filter on groups (if the current user have any)
-        $groups = $_SESSION["glpigroups"] ?? [];
+        $groups = $_SESSION["zentragroups"] ?? [];
         if (count($groups)) {
             $where['OR'][] = self::getVisibilityCriteriaKB_Group();
         }
@@ -641,7 +641,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     private static function getVisibilityCriteriaKB_Group(): array
     {
-        $groups = $_SESSION["glpigroups"] ?? [-1];
+        $groups = $_SESSION["zentragroups"] ?? [-1];
         $entity_restriction = getEntitiesRestrictCriteria(
             Group_KnowbaseItem::getTable(),
             '',
@@ -665,7 +665,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     private static function getVisibilityCriteriaKB_Profile(): array
     {
-        $profile = $_SESSION["glpiactiveprofile"]['id'] ?? -1;
+        $profile = $_SESSION["zentraactiveprofile"]['id'] ?? -1;
         $entity_restriction = getEntitiesRestrictCriteria(
             KnowbaseItem_Profile::getTable(),
             '',
@@ -851,7 +851,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // update counter view
         $DB->update(
-            'glpi_knowbaseitems',
+            'zentra_knowbaseitems',
             [
                 'view'   => new QueryExpression($DB::quoteName('view') . ' + 1'),
             ],
@@ -870,7 +870,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function showFull($options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!$this->can($this->fields['id'], READ)) {
             return false;
@@ -883,7 +883,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $linkusers_id = true;
         if (
-            ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
+            ((Session::getLoginUserID() === false) && $CFG_ZENTRA["use_public_faq"])
             || (Session::getCurrentInterface() === "helpdesk")
             || !User::canView()
         ) {
@@ -896,7 +896,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $article_categories = [];
         foreach ($categories as $category) {
             $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
-            $fullcategoryname = getTreeValueCompleteName('glpi_knowbaseitemcategories', $knowbaseitemcategories_id);
+            $fullcategoryname = getTreeValueCompleteName('zentra_knowbaseitemcategories', $knowbaseitemcategories_id);
             $article_categories[$knowbaseitemcategories_id] = $fullcategoryname;
         }
 
@@ -921,7 +921,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
                 if (!isset($heading_names[$data["documentcategories_id"]])) {
                     $heading_names[$data["documentcategories_id"]] = Dropdown::getDropdownName(
-                        "glpi_documentcategories",
+                        "zentra_documentcategories",
                         $data["documentcategories_id"]
                     );
                 }
@@ -966,10 +966,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public function searchForm($options)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
-            !$CFG_GLPI["use_public_faq"]
+            !$CFG_ZENTRA["use_public_faq"]
             && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
         ) {
             return;
@@ -1005,7 +1005,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     {{ inputs.hidden('item_itemtype', options.item_itemtype) }}
                     {{ inputs.hidden('item_items_id', options.item_items_id) }}
                 {% endif %}
-                {{ inputs.hidden('glpi_csrf_token', csrf_token()) }}
+                {{ inputs.hidden('zentra_csrf_token', csrf_token()) }}
             </form>
 TWIG, $twig_params);
     }
@@ -1037,19 +1037,19 @@ TWIG, $twig_params);
 
         $criteria = [
             'SELECT' => [
-                'glpi_knowbaseitems.*',
+                'zentra_knowbaseitems.*',
                 new QueryExpression(
-                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + '
-                    . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
-                    . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
-                    . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
+                    QueryFunction::count('zentra_knowbaseitems_users.id') . ' + '
+                    . QueryFunction::count('zentra_groups_knowbaseitems.id') . ' + '
+                    . QueryFunction::count('zentra_knowbaseitems_profiles.id') . ' + '
+                    . QueryFunction::count('zentra_entities_knowbaseitems.id') . ' AS '
                     . $DB::quoteName('visibility_count')
                 ),
             ],
-            'FROM'   => 'glpi_knowbaseitems',
+            'FROM'   => 'zentra_knowbaseitems',
             'WHERE'     => [], //to be filled
             'LEFT JOIN' => [], //to be filled
-            'GROUPBY'   => ['glpi_knowbaseitems.id'],
+            'GROUPBY'   => ['zentra_knowbaseitems.id'],
         ];
 
         // Lists kb Items
@@ -1074,8 +1074,8 @@ TWIG, $twig_params);
                 } else {
                     // Anonymous access
                     if (Session::isMultiEntitiesMode()) {
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
+                        $criteria['WHERE']['zentra_entities_knowbaseitems.entities_id'] = 0;
+                        $criteria['WHERE']['zentra_entities_knowbaseitems.is_recursive'] = 1;
                     }
                 }
                 break;
@@ -1084,8 +1084,8 @@ TWIG, $twig_params);
         if ($params['faq']) { // helpdesk
             $criteria['WHERE'][] = [
                 'OR' => [
-                    'glpi_knowbaseitems.is_faq' => 1,
-                    'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
+                    'zentra_knowbaseitems.is_faq' => 1,
+                    'zentra_knowbaseitems_users.users_id' => Session::getLoginUserID(),
                 ],
             ];
         }
@@ -1104,41 +1104,41 @@ TWIG, $twig_params);
             }
         }
 
-        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
-            $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
+        if (countElementsInTable('zentra_knowbaseitemtranslations') > 0) {
+            $criteria['LEFT JOIN']['zentra_knowbaseitemtranslations'] = [
                 'ON'  => [
-                    'glpi_knowbaseitems'             => 'id',
-                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                    'zentra_knowbaseitems'             => 'id',
+                    'zentra_knowbaseitemtranslations'  => 'knowbaseitems_id', [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                            'zentra_knowbaseitemtranslations.language' => $_SESSION['zentralanguage'],
                         ],
                     ],
                 ],
             ];
-            $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.name AS transname';
-            $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.answer AS transanswer';
+            $criteria['SELECT'][] = 'zentra_knowbaseitemtranslations.name AS transname';
+            $criteria['SELECT'][] = 'zentra_knowbaseitemtranslations.answer AS transanswer';
         }
 
         // a search with $contains
         switch ($type) {
             case 'allmy':
-                $criteria['WHERE']['glpi_knowbaseitems.users_id'] = Session::getLoginUserID();
+                $criteria['WHERE']['zentra_knowbaseitems.users_id'] = Session::getLoginUserID();
                 break;
 
             case 'myunpublished':
-                $criteria['WHERE']['glpi_knowbaseitems.users_id'] = Session::getLoginUserID();
-                $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = null;
-                $criteria['WHERE']['glpi_knowbaseitems_profiles.profiles_id'] = null;
-                $criteria['WHERE']['glpi_groups_knowbaseitems.groups_id'] = null;
-                $criteria['WHERE']['glpi_knowbaseitems_users.users_id'] = null;
+                $criteria['WHERE']['zentra_knowbaseitems.users_id'] = Session::getLoginUserID();
+                $criteria['WHERE']['zentra_entities_knowbaseitems.entities_id'] = null;
+                $criteria['WHERE']['zentra_knowbaseitems_profiles.profiles_id'] = null;
+                $criteria['WHERE']['zentra_groups_knowbaseitems.groups_id'] = null;
+                $criteria['WHERE']['zentra_knowbaseitems_users.users_id'] = null;
                 break;
 
             case 'allunpublished':
                 // Only published
-                $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = null;
-                $criteria['WHERE']['glpi_knowbaseitems_profiles.profiles_id'] = null;
-                $criteria['WHERE']['glpi_groups_knowbaseitems.groups_id'] = null;
-                $criteria['WHERE']['glpi_knowbaseitems_users.users_id'] = null;
+                $criteria['WHERE']['zentra_entities_knowbaseitems.entities_id'] = null;
+                $criteria['WHERE']['zentra_knowbaseitems_profiles.profiles_id'] = null;
+                $criteria['WHERE']['zentra_groups_knowbaseitems.groups_id'] = null;
+                $criteria['WHERE']['zentra_knowbaseitems_users.users_id'] = null;
                 break;
 
             case 'allpublished':
@@ -1155,14 +1155,14 @@ TWIG, $twig_params);
                     }
 
                     $addscore = [];
-                    if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
+                    if (countElementsInTable('zentra_knowbaseitemtranslations') > 0) {
                         $addscore = [
-                            'glpi_knowbaseitemtranslations.name',
-                            'glpi_knowbaseitemtranslations.answer',
+                            'zentra_knowbaseitemtranslations.name',
+                            'zentra_knowbaseitemtranslations.answer',
                         ];
                     }
 
-                    $expr = "(MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ", " . $DB->quoteName('glpi_knowbaseitems.answer') . ")
+                    $expr = "(MATCH(" . $DB->quoteName('zentra_knowbaseitems.name') . ", " . $DB->quoteName('zentra_knowbaseitems.answer') . ")
                            AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
 
                     if ($addscore !== []) {
@@ -1176,8 +1176,8 @@ TWIG, $twig_params);
 
                     $ors = [
                         new QueryExpression(
-                            "MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ",
-                        " . $DB->quoteName('glpi_knowbaseitems.answer') . ")
+                            "MATCH(" . $DB->quoteName('zentra_knowbaseitems.name') . ",
+                        " . $DB->quoteName('zentra_knowbaseitems.answer') . ")
                         AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)"
                         ),
                     ];
@@ -1202,13 +1202,13 @@ TWIG, $twig_params);
                     $visibility_crit = [
                         [
                             'OR'  => [
-                                ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
+                                ['zentra_knowbaseitems.begin_date'  => null],
+                                ['zentra_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
                             ],
                         ], [
                             'OR'  => [
-                                ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
+                                ['zentra_knowbaseitems.end_date'    => null],
+                                ['zentra_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
                             ],
                         ],
                     ];
@@ -1220,7 +1220,7 @@ TWIG, $twig_params);
                     $search_criteria = [
                         'COUNT'     => 'cpt',
                         'LEFT JOIN' => $criteria['LEFT JOIN'],
-                        'FROM'      => 'glpi_knowbaseitems',
+                        'FROM'      => 'zentra_knowbaseitems',
                         'WHERE'     => $search_where,
                     ];
                     $search_iterator = $DB->request($search_criteria);
@@ -1239,12 +1239,12 @@ TWIG, $twig_params);
                         ];
                         $contains = preg_replace($search1, "", $params["contains"]);
                         $ors = [
-                            ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
-                            ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]],
+                            ["zentra_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
+                            ["zentra_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]],
                         ];
-                        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
-                            $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
-                            $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
+                        if (countElementsInTable('zentra_knowbaseitemtranslations') > 0) {
+                            $ors[] = ["zentra_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
+                            $ors[] = ["zentra_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
                         }
                         $criteria['WHERE'][] = ['OR' => $ors];
                         // Add visibility date
@@ -1260,19 +1260,19 @@ TWIG, $twig_params);
                     // Add visibility date
                     $criteria['WHERE'][] = [
                         'OR'  => [
-                            ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                            ['zentra_knowbaseitems.begin_date' => null],
+                            ['zentra_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
                         ],
                     ];
                     $criteria['WHERE'][] = [
                         'OR'  => [
-                            ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
+                            ['zentra_knowbaseitems.end_date' => null],
+                            ['zentra_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
                         ],
                     ];
                 }
 
-                $criteria['ORDERBY'] = ['glpi_knowbaseitems.name ASC'];
+                $criteria['ORDERBY'] = ['zentra_knowbaseitems.name ASC'];
                 break;
         }
 
@@ -1360,7 +1360,7 @@ TWIG, $twig_params);
      */
     public static function showList($options, $type = 'search')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $DBread = DBConnection::getReadConnection();
 
@@ -1415,10 +1415,10 @@ TWIG, $twig_params);
 
             Session::initNavigateListItems('KnowbaseItem', $title);
             // force using getSearchUrl on list icon (when viewing a single article)
-            $_SESSION['glpilisturl']['KnowbaseItem'] = '';
+            $_SESSION['zentralisturl']['KnowbaseItem'] = '';
         }
 
-        $list_limit = $_SESSION['glpilist_limit'];
+        $list_limit = $_SESSION['zentralist_limit'];
 
         $showwriter = in_array($type, ['myunpublished', 'allunpublished', 'allmy']);
 
@@ -1454,7 +1454,7 @@ TWIG, $twig_params);
 
             $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
             if (!Session::getLoginUserID()) {
-                $pager_url = $CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php";
+                $pager_url = $CFG_ZENTRA['root_doc'] . "/front/helpdesk.faq.php";
             }
             Html::printPager(
                 $params['start'],
@@ -1555,7 +1555,7 @@ TWIG, $twig_params);
                 foreach ($categories as $category) {
                     $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
                     $fullcategoryname          = getTreeValueCompleteName(
-                        "glpi_knowbaseitemcategories",
+                        "zentra_knowbaseitemcategories",
                         $knowbaseitemcategories_id
                     );
                     $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
@@ -1571,7 +1571,7 @@ TWIG, $twig_params);
                 $j = 0;
                 $iterator = $DBread->request([
                     'FIELDS' => 'documents_id',
-                    'FROM'   => 'glpi_documents_items',
+                    'FROM'   => 'zentra_documents_items',
                     'WHERE'  => [
                         'items_id'  => $data["id"],
                         'itemtype'  => KnowbaseItem::class,
@@ -1628,7 +1628,7 @@ TWIG, $twig_params);
         $faq = !Session::haveRight(self::$rightname, READ);
 
         $criteria = [
-            'SELECT'    => ['glpi_knowbaseitems' => ['id', 'name', 'is_faq']],
+            'SELECT'    => ['zentra_knowbaseitems' => ['id', 'name', 'is_faq']],
             'DISTINCT'  => true,
             'FROM'      => self::getTable(),
             'WHERE'     => [],
@@ -1657,52 +1657,52 @@ TWIG, $twig_params);
         } else {
             // Anonymous access
             if (Session::isMultiEntitiesMode()) {
-                $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
-                $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
+                $criteria['WHERE']['zentra_entities_knowbaseitems.entities_id'] = 0;
+                $criteria['WHERE']['zentra_entities_knowbaseitems.is_recursive'] = 1;
             }
         }
 
         // Only published
         $criteria['WHERE'][] = [
             'NOT'  => [
-                'glpi_entities_knowbaseitems.entities_id' => null,
-                'glpi_knowbaseitems_profiles.profiles_id' => null,
-                'glpi_groups_knowbaseitems.groups_id'     => null,
-                'glpi_knowbaseitems_users.users_id'       => null,
+                'zentra_entities_knowbaseitems.entities_id' => null,
+                'zentra_knowbaseitems_profiles.profiles_id' => null,
+                'zentra_groups_knowbaseitems.groups_id'     => null,
+                'zentra_knowbaseitems_users.users_id'       => null,
             ],
         ];
 
         // Add visibility date
         $criteria['WHERE'][] = [
             'OR'  => [
-                ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                ['zentra_knowbaseitems.begin_date' => null],
+                ['zentra_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
             ],
         ];
         $criteria['WHERE'][] = [
             'OR'  => [
-                ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
+                ['zentra_knowbaseitems.end_date'   => null],
+                ['zentra_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
             ],
         ];
 
         if ($faq) { // FAQ
-            $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
+            $criteria['WHERE']['zentra_knowbaseitems.is_faq'] = 1;
         }
 
-        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
-            $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
+        if (countElementsInTable('zentra_knowbaseitemtranslations') > 0) {
+            $criteria['LEFT JOIN']['zentra_knowbaseitemtranslations'] = [
                 'ON'  => [
-                    'glpi_knowbaseitems'             => 'id',
-                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                    'zentra_knowbaseitems'             => 'id',
+                    'zentra_knowbaseitemtranslations'  => 'knowbaseitems_id', [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                            'zentra_knowbaseitemtranslations.language' => $_SESSION['zentralanguage'],
                         ],
                     ],
                 ],
             ];
-            $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.name AS transname';
-            $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.answer AS transanswer';
+            $criteria['SELECT'][] = 'zentra_knowbaseitemtranslations.name AS transname';
+            $criteria['SELECT'][] = 'zentra_knowbaseitemtranslations.answer AS transanswer';
         }
 
         $iterator = $DB->request($criteria);
@@ -1834,7 +1834,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'massiveaction'      => false,
@@ -1844,7 +1844,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_knowbaseitemcategories',
+            'table'              => 'zentra_knowbaseitemcategories',
             'field'              => 'completename',
             'name'               => _n('Category', 'Categories', 1),
             'datatype'           => 'dropdown',
@@ -1860,7 +1860,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_knowbaseitems_items',
+            'table'              => 'zentra_knowbaseitems_items',
             'field'              => 'items_id',
             'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
             'datatype'           => 'specific',
@@ -1877,7 +1877,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => 'glpi_knowbaseitems_items',
+            'table'              => 'zentra_knowbaseitems_items',
             'field'              => 'itemtype',
             'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
             'datatype'           => 'itemtypename',
@@ -2063,7 +2063,7 @@ TWIG, $twig_params);
                 5,
                 "tools",
                 //TRANS: %1$s is the user login, %2$s the revision number
-                sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["glpiname"], $revid)
+                sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["zentraname"], $revid)
             );
             return true;
         }
@@ -2092,14 +2092,14 @@ TWIG, $twig_params);
 
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_knowbaseitems_knowbaseitemcategories' => [
+                'zentra_knowbaseitems_knowbaseitemcategories' => [
                     'ON'  => [
-                        'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'             => 'id',
+                        'zentra_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
+                        'zentra_knowbaseitems'             => 'id',
                     ],
                 ],
             ],
-            'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
+            'WHERE'  => ['zentra_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
         ]);
 
         // Get array of ids

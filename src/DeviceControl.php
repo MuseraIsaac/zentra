@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ class DeviceControl extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_interfacetypes',
+            'table'              => 'zentra_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
             'datatype'           => 'dropdown',
@@ -96,7 +96,7 @@ class DeviceControl extends CommonDevice
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => 'glpi_devicecontrolmodels',
+            'table'              => 'zentra_devicecontrolmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',

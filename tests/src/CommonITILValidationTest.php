@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use Change;
 use CommonITILObject;
 use CommonITILValidation;
 use Document_Item;
-use Glpi\Tests\Glpi\ValidationStepTrait;
+use Zentra\Tests\Zentra\ValidationStepTrait;
 use NotificationEventMailing;
 use NotificationTargetCommonITILObject;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -149,7 +149,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation_1 = $this->createItem($validation_class, [
             $itil_class::getForeignKeyField()   => $itil_1_id,
             'itemtype_target'                   => 'User',
-            'items_id_target'                   => $_SESSION['glpiID'],
+            'items_id_target'                   => $_SESSION['zentraID'],
             'comment_submission'                => __FUNCTION__,
             'itils_validationsteps_id'          => $itils_validationsteps->getID(),
         ]);
@@ -188,7 +188,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validator_substitute = new ValidatorSubstitute();
         $validator_substitute->add([
             'users_id' => User::getIdByName('normal'),
-            'users_id_substitute' => $_SESSION['glpiID'],
+            'users_id_substitute' => $_SESSION['zentraID'],
         ]);
         $this->assertFalse($validator_substitute->isNewItem());
         $other_user = new User();
@@ -299,7 +299,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             0,
             $group_user->add([
                 'groups_id' => $groups_id,
-                'users_id'  => $_SESSION['glpiID'],
+                'users_id'  => $_SESSION['zentraID'],
             ])
         );
 
@@ -358,7 +358,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validator_substitute = new ValidatorSubstitute();
         $validator_substitute->add([
             'users_id' => User::getIdByName('normal'),
-            'users_id_substitute' => $_SESSION['glpiID'],
+            'users_id_substitute' => $_SESSION['zentraID'],
         ]);
         $this->assertFalse($validator_substitute->isNewItem());
         $other_user = new User();
@@ -558,7 +558,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             [
                 'input' => [
                     'status' => CommonITILValidation::ACCEPTED,
-                    'validation_date' => $_SESSION["glpi_currenttime"],
+                    'validation_date' => $_SESSION["zentra_currenttime"],
                     'itemtype_target' => 'User',
                     'items_id_target' => '_CURRENT_USER_',
                     'validationsteps_id' => $validationsteps_id,
@@ -589,7 +589,7 @@ abstract class CommonITILValidationTest extends DbTestCase
                 if ($v === '_CURRENT_USER_') {
                     $array[$k] = \Session::getLoginUserID();
                 } elseif ($v === '_CURRENT_TIME_') {
-                    $array[$k] = $_SESSION["glpi_currenttime"];
+                    $array[$k] = $_SESSION["zentra_currenttime"];
                 }
             }
         }
@@ -873,10 +873,10 @@ abstract class CommonITILValidationTest extends DbTestCase
         ]);
 
         // set existing user in group 1
-        $user_glpi = getItemByTypeName('User', 'glpi');
+        $user_zentra = getItemByTypeName('User', 'zentra');
         $this->createItem('Group_User', [
             'groups_id' => $group_1->getID(),
-            'users_id'  => $user_glpi->getID(),
+            'users_id'  => $user_zentra->getID(),
         ]);
 
         /** Create a rule on itil
@@ -942,7 +942,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             '_groups_id_assign' => $group_1->getID(),
         ]);
 
-        // one validation for each user in group 1 (user_glpi and user_approval)
+        // one validation for each user in group 1 (user_zentra and user_approval)
         $this->assertEquals(
             2,
             countElementsInTable(
@@ -970,7 +970,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil_1->fields['global_validation']);
 
         // accept first validation - implies that validation required is at 0%
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $validation_step = new ($this->getITILValidationStepClassname())();
         $this->assertTrue(
@@ -980,12 +980,12 @@ abstract class CommonITILValidationTest extends DbTestCase
             ])
         );
 
-        $validation_glpi = new ($this->getValidationClassname())();
+        $validation_zentra = new ($this->getValidationClassname())();
         $this->assertTrue(
-            $validation_glpi->getFromDBByCrit([
+            $validation_zentra->getFromDBByCrit([
                 'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
-                'items_id_target' => $user_glpi->getID(),
+                'items_id_target' => $user_zentra->getID(),
             ])
         );
 
@@ -993,14 +993,14 @@ abstract class CommonITILValidationTest extends DbTestCase
         // update validation step of itil 1 validation to require 0% for the first validation
         $this->updateItem(
             $this->getITILValidationStepClassname(),
-            $validation_glpi->fields['itils_validationsteps_id'],
+            $validation_zentra->fields['itils_validationsteps_id'],
             ['minimal_required_validation_percent' => 0]
         );
 
         // update created validation status to ACCEPTED
         $this->assertTrue(
-            $validation_glpi->update([
-                'id' => $validation_glpi->fields['id'],
+            $validation_zentra->update([
+                'id' => $validation_zentra->fields['id'],
                 'status' => CommonITILValidation::ACCEPTED,
             ])
         );
@@ -1034,8 +1034,8 @@ abstract class CommonITILValidationTest extends DbTestCase
         $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/foo.png'));
         $filename_img = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $filename_txt = '5e5e92ffd9bd91.11111111' . 'foo.txt';
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename_img);
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename_txt);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename_img);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename_txt);
         $this->updateItem(
             $this->getValidationClassname(),
             $validation_approval->getID(),
@@ -1097,7 +1097,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         // accept first validation, second one is still WAITING - test on $itil_id_2
         // one validation is accepted, the other is waiting -> global_validation status should be WAITING
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $validation_step = new ($this->getITILValidationStepClassname())();
         $this->assertTrue(
@@ -1119,7 +1119,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             $validation->getFromDBByCrit([
                 'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
-                'items_id_target' => $user_glpi->getID(),
+                'items_id_target' => $user_zentra->getID(),
             ])
         );
 
@@ -1171,7 +1171,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation = $this->createItem($validation_classname, [
             $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
-            'items_id_target' => $_SESSION['glpiID'],
+            'items_id_target' => $_SESSION['zentraID'],
         ]);
 
         // assert
@@ -1190,7 +1190,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             $validation->getFromDBByCrit([
                 'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
-                'items_id_target' => $_SESSION['glpiID'],
+                'items_id_target' => $_SESSION['zentraID'],
             ])
         );
     }
@@ -1216,7 +1216,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation = $this->createItem($validation_classname, [
             $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
-            'items_id_target' => $_SESSION['glpiID'],
+            'items_id_target' => $_SESSION['zentraID'],
             '_validationsteps_id' => $validation_step_template->getID(),
         ]);
 
@@ -1236,15 +1236,15 @@ abstract class CommonITILValidationTest extends DbTestCase
             $validation->getFromDBByCrit([
                 'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
-                'items_id_target' => $_SESSION['glpiID'],
+                'items_id_target' => $_SESSION['zentraID'],
             ])
         );
     }
 
     public function testGlobalValidationUpdate(): void
     {
-        $this->login('glpi', 'glpi');
-        $uid1 = getItemByTypeName('User', 'glpi', true);
+        $this->login('zentra', 'zentra');
+        $uid1 = getItemByTypeName('User', 'zentra', true);
 
         // --- single ACCEPTED validation & 100% required -> \ChangeValidation|TicketValidation::computeValidationStatus($itil) returns ACCEPTED
         $itil = $this->createItem($this->getITILClassname(), [
@@ -1392,7 +1392,7 @@ abstract class CommonITILValidationTest extends DbTestCase
                     'content'   => 'Closed_With_Validation_Request',
                 ],
                 'expected'  => true,
-                'user_id'   => getItemByTypeName('User', 'glpi', true),
+                'user_id'   => getItemByTypeName('User', 'zentra', true),
             ],
             [
                 'input'     => [
@@ -1401,7 +1401,7 @@ abstract class CommonITILValidationTest extends DbTestCase
                     'status' =>  CommonITILObject::SOLVED,
                 ],
                 'expected'  => false,
-                'user_id'   => getItemByTypeName('User', 'glpi', true),
+                'user_id'   => getItemByTypeName('User', 'zentra', true),
             ],
             [
                 'input'     => [
@@ -1410,7 +1410,7 @@ abstract class CommonITILValidationTest extends DbTestCase
                     'status' =>  CommonITILObject::CLOSED,
                 ],
                 'expected'  => false,
-                'user_id'   => getItemByTypeName('User', 'glpi', true),
+                'user_id'   => getItemByTypeName('User', 'zentra', true),
             ],
         ];
     }
@@ -1569,10 +1569,10 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation = $this->createItem($this->getValidationClassname(), [
             $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
-            'items_id_target' => $_SESSION['glpiID'],
+            'items_id_target' => $_SESSION['zentraID'],
         ]);
         $this->createItem(ValidatorSubstitute::class, [
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => $_SESSION['zentraID'],
             'users_id_substitute' => getItemByTypeName('User', 'tech', true),
         ]);
         $this->createItem(UserEmail::class, [
@@ -1596,7 +1596,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         $user = new User();
         $this->assertTrue($user->update([
-            'id' => $_SESSION['glpiID'],
+            'id' => $_SESSION['zentraID'],
             'substitution_start_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
             'substitution_end_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
         ]));
@@ -1611,7 +1611,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $notification_target->target = [];
 
         $this->assertTrue($user->update([
-            'id' => $_SESSION['glpiID'],
+            'id' => $_SESSION['zentraID'],
             'substitution_start_date' => date('Y-m-d H:i:s', strtotime('-5 day')),
             'substitution_end_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
         ]));

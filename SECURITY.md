@@ -6,9 +6,9 @@ Critical and high advisories are published one month after the release. All othe
 
 ## Reporting a Vulnerability
 
-If you found a security issue, please open an advisory on [github](https://github.com/glpi-project/glpi/security/advisories/new).
+If you found a security issue, please open an advisory on [github](https://github.com/zentra-project/zentra/security/advisories/new).
 
-If you do not have a github account, or if you want to contact us regarding a security issue, you can drop a mail to \[glpi-security AT ow2.org\].
+If you do not have a github account, or if you want to contact us regarding a security issue, you can drop a mail to \[zentra-security AT ow2.org\].
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
@@ -17,7 +17,7 @@ Once the report will be handled, and if the issue is not yet fixed (or in progre
 we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
 you will reserve a CVE for the issue.
 
-Thank you for improving the security of glpi.
+Thank you for improving the security of zentra.
 
 ## Supported Versions
 

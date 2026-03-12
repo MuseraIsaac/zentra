@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\RichText\RichText;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\RichText\RichText;
 
 use function Safe\json_encode;
 
@@ -80,14 +80,14 @@ if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, Comm
         $template->getID(),
         $template->getType(),
         'content',
-        $_SESSION['glpilanguage'],
+        $_SESSION['zentralanguage'],
         $template->fields['content']
     );
     $template->fields['content'] = RichText::getSafeHtml($content);
 }
 
 //load solutiontype name (use to create OPTION dom)
-//need when template is used and when GLPI preselcted type if defined
+//need when template is used and when ZENTRA preselcted type if defined
 
 $template->fields['solutiontypes_name'] = "";
 if ($template->fields['solutiontypes_id']) {
@@ -110,7 +110,7 @@ if ($template->fields['solutiontypes_id']) {
             false,
             true,
             false,
-            //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
+            //default value like "(id)" is the default behavior of ZENTRA when field 'name' is empty
             "(" . $template->fields['solutiontypes_id'] . ")"
         );
     }

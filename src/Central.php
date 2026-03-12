@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,22 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Dashboard\Dashboard;
-use Glpi\Dashboard\Grid;
-use Glpi\Event;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Migration\FormMigration;
-use Glpi\Marketplace\Controller;
-use Glpi\Migration\GenericobjectPluginMigration;
-use Glpi\Plugin\Hooks;
-use Glpi\System\Requirement\PhpSupportedVersion;
-use Glpi\System\Requirement\SessionsSecurityConfiguration;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Dashboard\Dashboard;
+use Zentra\Dashboard\Grid;
+use Zentra\Event;
+use Zentra\Form\AccessControl\FormAccessControlManager;
+use Zentra\Form\Migration\FormMigration;
+use Zentra\Marketplace\Controller;
+use Zentra\Migration\GenericobjectPluginMigration;
+use Zentra\Plugin\Hooks;
+use Zentra\System\Requirement\PhpSupportedVersion;
+use Zentra\System\Requirement\SessionsSecurityConfiguration;
 
 /**
  * Central class
  **/
-class Central extends CommonGLPI
+class Central extends CommonZENTRA
 {
     public static function getTypeName($nb = 0)
     {
@@ -68,7 +68,7 @@ class Central extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if ($item->getType() == self::class) {
@@ -90,7 +90,7 @@ class Central extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof self) {
@@ -128,7 +128,7 @@ class Central extends CommonGLPI
         Plugin::doHook(Hooks::DISPLAY_CENTRAL);
         echo "</table>";
 
-        if (GLPI_CENTRAL_WARNINGS) {
+        if (ZENTRA_CENTRAL_WARNINGS) {
             self::showMessages();
         }
 
@@ -164,10 +164,10 @@ class Central extends CommonGLPI
         }
         if (Session::haveRight(Log::$rightname, READ)) {
             //Show last add events
-            $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
+            $grid_items[] = Event::showForUser($_SESSION["zentraname"], false);
         }
 
-        if ($_SESSION["glpishow_jobs_at_login"] && $showticket) {
+        if ($_SESSION["zentrashow_jobs_at_login"] && $showticket) {
             Ticket::showCentralNewList();
         }
 
@@ -525,7 +525,7 @@ class Central extends CommonGLPI
 
     private static function getMessages(): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $messages = [];
 
@@ -535,7 +535,7 @@ class Central extends CommonGLPI
         if ($expiration_msg !== null) {
             $messages['warnings'][] = htmlescape($expiration_msg)
              . ' '
-             . '<a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/updatepassword.php">'
+             . '<a href="' . htmlescape($CFG_ZENTRA['root_doc']) . '/front/updatepassword.php">'
              . __s('Update my password')
              . '</a>';
         }
@@ -546,7 +546,7 @@ class Central extends CommonGLPI
             if (!empty($logins)) {
                 $accounts = [];
                 foreach ($logins as $login) {
-                    $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
+                    $user->getFromDBbyNameAndAuth($login, Auth::DB_ZENTRA, 0);
                     $accounts[] = $user->getLink();
                 }
                 $messages['warnings'][] = sprintf(
@@ -606,7 +606,7 @@ class Central extends CommonGLPI
             $notification = new Notification();
             if (
                 Config::getConfigurationValue('core', 'use_notifications')
-                && countElementsInTable('glpi_pendingreasons_items', ['pendingreasons_id' => ['>', 0]]) > 0
+                && countElementsInTable('zentra_pendingreasons_items', ['pendingreasons_id' => ['>', 0]]) > 0
                 && !count($notification->find([
                     'itemtype' => Ticket::class,
                     'event'     => 'auto_reminder',
@@ -632,7 +632,7 @@ class Central extends CommonGLPI
             }
 
             // encrypt/decrypt key problems
-            $messages['errors'] = (new GLPIKey())->getKeyFileReadErrors();
+            $messages['errors'] = (new ZENTRAKey())->getKeyFileReadErrors();
 
             $security_requirements = [
                 new PhpSupportedVersion(),
@@ -653,7 +653,7 @@ class Central extends CommonGLPI
                 $messages['warnings'][] = sprintf(
                     _n('You have %d plugin to update', 'You have %d plugins to update', $count),
                     $count
-                ) . ' <a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/marketplace.php">' . __s('View plugins') . '</a>';
+                ) . ' <a href="' . htmlescape($CFG_ZENTRA['root_doc']) . '/front/marketplace.php">' . __s('View plugins') . '</a>';
             }
         }
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@
 // If enabled, members of a given group will become implicits members of its
 // children groups
 // Disabled by default
-if (!$DB->fieldExists('glpi_groups', 'recursive_membership')) {
-    $migration->addField('glpi_groups', 'recursive_membership', 'bool', [
+if (!$DB->fieldExists('zentra_groups', 'recursive_membership')) {
+    $migration->addField('zentra_groups', 'recursive_membership', 'bool', [
         'value' => 0,
     ]);
 }

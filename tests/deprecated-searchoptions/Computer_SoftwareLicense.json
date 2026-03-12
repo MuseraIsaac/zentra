@@ -4,7 +4,7 @@
     },
     "2": {
         "name": "ID",
-        "table": "glpi_computers_softwarelicenses",
+        "table": "zentra_computers_softwarelicenses",
         "field": "id",
         "datatype": "number",
         "nosearch": false,
@@ -18,7 +18,7 @@
     },
     "4": {
         "name": "License",
-        "table": "glpi_softwarelicenses",
+        "table": "zentra_softwarelicenses",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,
@@ -36,7 +36,7 @@
     },
     "5": {
         "name": "Computer",
-        "table": "glpi_computers",
+        "table": "zentra_computers",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,

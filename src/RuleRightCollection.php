@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,22 +70,22 @@ class RuleRightCollection extends RuleCollection
         $iterator = $DB->request([
             'SELECT'          => 'value',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_rulerightparameters',
+            'FROM'            => 'zentra_rulerightparameters',
             'LEFT JOIN'       => [
-                'glpi_rulecriterias' => [
+                'zentra_rulecriterias' => [
                     'ON' => [
-                        'glpi_rulerightparameters' => 'value',
-                        'glpi_rulecriterias'       => 'criteria',
+                        'zentra_rulerightparameters' => 'value',
+                        'zentra_rulecriterias'       => 'criteria',
                     ],
                 ],
-                'glpi_rules'         => [
+                'zentra_rules'         => [
                     'ON' => [
-                        'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id',
+                        'zentra_rulecriterias' => 'rules_id',
+                        'zentra_rules'         => 'id',
                     ],
                 ],
             ],
-            'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight'],
+            'WHERE'           => ['zentra_rules.sub_type' => 'RuleRight'],
         ]);
 
         foreach ($iterator as $param) {

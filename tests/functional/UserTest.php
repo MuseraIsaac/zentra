@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@ namespace tests\units;
 
 use DateInterval;
 use DateTime;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Exception\ForgetPasswordException;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Psr\Log\LogLevel;
@@ -59,8 +59,8 @@ class UserTest extends DbTestCase
         $this->assertNotEmpty($token);
 
         $user->getFromDB($user->getID());
-        $this->assertSame($token, (new \GLPIKey())->decrypt($user->fields['personal_token']));
-        $this->assertSame($_SESSION['glpi_currenttime'], $user->fields['personal_token_date']);
+        $this->assertSame($token, (new \ZENTRAKey())->decrypt($user->fields['personal_token']));
+        $this->assertSame($_SESSION['zentra_currenttime'], $user->fields['personal_token_date']);
     }
 
     public function testLostPasswordInvalidMail()
@@ -88,7 +88,7 @@ class UserTest extends DbTestCase
         $encrypted_token = $user->fields['password_forget_token'];
         $this->assertNotEmpty($encrypted_token);
 
-        $token = (new \GLPIKey())->decrypt($encrypted_token);
+        $token = (new \ZENTRAKey())->decrypt($encrypted_token);
         $this->assertNotEmpty($token);
 
         $input = [
@@ -115,7 +115,7 @@ class UserTest extends DbTestCase
         $encrypted_token = $user->fields['password_forget_token'];
         $this->assertNotEmpty($encrypted_token);
 
-        $token = (new \GLPIKey())->decrypt($encrypted_token);
+        $token = (new \ZENTRAKey())->decrypt($encrypted_token);
         $this->assertNotEmpty($token);
 
         // 2 - Set a new password
@@ -422,7 +422,7 @@ class UserTest extends DbTestCase
             '_extauth'             => 1,
             'authtype'             => 1,
             'auths_id'             => 0,
-            'password_last_update' => $_SESSION['glpi_currenttime'],
+            'password_last_update' => $_SESSION['zentra_currenttime'],
             'is_active'            => 1,
             'is_deleted'           => 0,
             'entities_id'          => 0,
@@ -440,7 +440,7 @@ class UserTest extends DbTestCase
 
     public function testPrepareInputForAddPdfFont(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -483,11 +483,11 @@ class UserTest extends DbTestCase
 
     public function testPrepareInputForUpdatePdfFont(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
-        $user = \getItemByTypeName(User::class, 'glpi');
+        $user = \getItemByTypeName(User::class, 'zentra');
 
         // Valid PDF font
         $input = [
@@ -640,8 +640,8 @@ class UserTest extends DbTestCase
 
             $expected = ['id' => $user_id] + $expected;
             if (array_key_exists('password_last_update', $expected) && true === $expected['password_last_update']) {
-                // $_SESSION['glpi_currenttime'] was reset on login, value cannot be provided by test provider
-                $expected['password_last_update'] = $_SESSION['glpi_currenttime'];
+                // $_SESSION['zentra_currenttime'] was reset on login, value cannot be provided by test provider
+                $expected['password_last_update'] = $_SESSION['zentra_currenttime'];
             }
 
             $this->assertSame($expected, $result);
@@ -652,7 +652,7 @@ class UserTest extends DbTestCase
     {
         $users_passwords = [
             TU_USER     => TU_PASS,
-            'glpi'      => 'glpi',
+            'zentra'      => 'zentra',
             'tech'      => 'tech',
             'normal'    => 'normal',
             'post-only' => 'postonly',
@@ -661,35 +661,35 @@ class UserTest extends DbTestCase
         $users_matrix = [
             TU_USER => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
-            'glpi' => [
+            'zentra' => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
             'tech' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => true,
                 'normal'    => false, // has some more rights somewhere
                 'post-only' => true,
             ],
             'normal' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => true,
                 'post-only' => true,
             ],
             'post-only' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,
@@ -734,7 +734,7 @@ class UserTest extends DbTestCase
 
         // Filtering of sensitive fields is not done if no session is active (cron case)
         $this->logout();
-        foreach ([TU_USER, 'glpi', 'tech', 'normal', 'post-only'] as $target_user_name) {
+        foreach ([TU_USER, 'zentra', 'tech', 'normal', 'post-only'] as $target_user_name) {
             $target_user = \getItemByTypeName(User::class, $target_user_name);
 
             foreach ($inputs as $key => $value) {
@@ -847,7 +847,7 @@ class UserTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Add authorizations
         $puser = new Profile_User();
@@ -918,7 +918,7 @@ class UserTest extends DbTestCase
     {
         $user = new User();
         ;
-        $dn = 'user=user_with_dn,dc=test,dc=glpi-project,dc=org';
+        $dn = 'user=user_with_dn,dc=test,dc=zentra-project,dc=org';
 
         $uid = $user->add([
             'name'      => 'user_with_dn',
@@ -973,13 +973,13 @@ class UserTest extends DbTestCase
 
         $uid = $user->add([
             'name'      => $name,
-            'authtype'  => \Auth::DB_GLPI,
+            'authtype'  => \Auth::DB_ZENTRA,
             'auths_id'  => 12,
         ]);
 
         $this->assertGreaterThan(0, $uid);
 
-        $this->assertTrue($user->getFromDBbyNameAndAuth($name, \Auth::DB_GLPI, 12));
+        $this->assertTrue($user->getFromDBbyNameAndAuth($name, \Auth::DB_ZENTRA, 12));
         $this->assertSame($uid, $user->fields['id']);
         $this->assertSame($name, $user->fields['name']);
     }
@@ -1141,7 +1141,7 @@ class UserTest extends DbTestCase
 
         return [
             [
-                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'creation_date'                   => $_SESSION['zentra_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 years', $time)),
                 'expiration_delay'                => -1,
                 'expiration_notice'               => -1,
@@ -1150,7 +1150,7 @@ class UserTest extends DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
-                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'creation_date'                   => $_SESSION['zentra_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
@@ -1159,7 +1159,7 @@ class UserTest extends DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
-                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'creation_date'                   => $_SESSION['zentra_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => 10,
@@ -1168,7 +1168,7 @@ class UserTest extends DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
-                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'creation_date'                   => $_SESSION['zentra_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-20 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
@@ -1177,11 +1177,11 @@ class UserTest extends DbTestCase
                 'expected_has_password_expire'    => true,
             ],
             [
-                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'creation_date'                   => $_SESSION['zentra_currenttime'],
                 'last_update'                     => null,
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
-                'expected_expiration_time'        => strtotime('+15 days', strtotime($_SESSION['glpi_currenttime'])),
+                'expected_expiration_time'        => strtotime('+15 days', strtotime($_SESSION['zentra_currenttime'])),
                 'expected_should_change_password' => false,
                 'expected_has_password_expire'    => false,
             ],
@@ -1199,7 +1199,7 @@ class UserTest extends DbTestCase
 
     public function testPasswordExpirationMethods()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $data = $this->passwordExpirationMethodsProvider();
         foreach ($data as $row) {
@@ -1225,15 +1225,15 @@ class UserTest extends DbTestCase
             $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
             $this->assertTrue($user->getFromDB($user->fields['id']));
 
-            $cfg_backup = $CFG_GLPI;
-            $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
-            $CFG_GLPI['password_expiration_notice'] = $expiration_notice;
+            $cfg_backup = $CFG_ZENTRA;
+            $CFG_ZENTRA['password_expiration_delay'] = $expiration_delay;
+            $CFG_ZENTRA['password_expiration_notice'] = $expiration_notice;
 
             $expiration_time = $user->getPasswordExpirationTime();
             $should_change_password = $user->shouldChangePassword();
             $has_password_expire = $user->hasPasswordExpired();
 
-            $CFG_GLPI = $cfg_backup;
+            $CFG_ZENTRA = $cfg_backup;
 
             $this->assertEquals($expected_expiration_time, $expiration_time);
             $this->assertEquals($expected_should_change_password, $should_change_password);
@@ -1328,7 +1328,7 @@ class UserTest extends DbTestCase
         int $expected_notifications_count,
         int $expected_lock_count
     ) {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $this->login();
 
@@ -1342,7 +1342,7 @@ class UserTest extends DbTestCase
             $user_id = $user->add(
                 [
                     'name'     => 'cron_user_' . mt_rand(),
-                    'authtype' => \Auth::DB_GLPI,
+                    'authtype' => \Auth::DB_ZENTRA,
                 ]
             );
             $this->assertGreaterThan(0, $user_id);
@@ -1361,14 +1361,14 @@ class UserTest extends DbTestCase
         $this->assertTrue($crontask->getFromDBbyName(User::getType(), 'passwordexpiration'));
         $crontask->fields['param'] = $cron_limit;
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
-        $CFG_GLPI['password_expiration_notice'] = $notice_delay;
-        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
-        $CFG_GLPI['use_notifications']  = true;
-        $CFG_GLPI['notifications_ajax'] = 1;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['password_expiration_delay'] = $expiration_delay;
+        $CFG_ZENTRA['password_expiration_notice'] = $notice_delay;
+        $CFG_ZENTRA['password_expiration_lock_delay'] = $lock_delay;
+        $CFG_ZENTRA['use_notifications']  = true;
+        $CFG_ZENTRA['notifications_ajax'] = 1;
         $result = User::cronPasswordExpiration($crontask);
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->assertEquals($expected_result, $result);
         $this->assertEquals(
@@ -1378,7 +1378,7 @@ class UserTest extends DbTestCase
         $DB->delete(\Alert::getTable(), ['itemtype' => User::getType()]); // reset alerts
 
         $user_crit = [
-            'authtype'  => \Auth::DB_GLPI,
+            'authtype'  => \Auth::DB_ZENTRA,
             'is_active' => 0,
         ];
         $this->assertEquals($expected_lock_count, countElementsInTable(User::getTable(), $user_crit));
@@ -1401,20 +1401,20 @@ class UserTest extends DbTestCase
         $this->login('normal', 'normal');
         $validator_substitute->updateSubstitutes([
             'users_id' => $testedClass::getIdByName('normal'),
-            'substitutes' => [$testedClass::getIdByName('glpi')],
+            'substitutes' => [$testedClass::getIdByName('zentra')],
         ]);
         yield [
             'input' => $testedClass::getIdByName('normal'),
-            'expected' => [$testedClass::getIdByName('glpi')],
+            'expected' => [$testedClass::getIdByName('zentra')],
         ];
 
         $validator_substitute->updateSubstitutes([
             'users_id' => $testedClass::getIdByName('normal'),
-            'substitutes' => [$testedClass::getIdByName('glpi'), 3],
+            'substitutes' => [$testedClass::getIdByName('zentra'), 3],
         ]);
         yield [
             'input' => $testedClass::getIdByName('normal'),
-            'expected' => [$testedClass::getIdByName('glpi'), 3],
+            'expected' => [$testedClass::getIdByName('zentra'), 3],
         ];
     }
 
@@ -1446,14 +1446,14 @@ class UserTest extends DbTestCase
             'expected' => [],
         ];
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $validator_substitute->updateSubstitutes([
-            'users_id' => $testedClass::getIdByName('glpi'),
+            'users_id' => $testedClass::getIdByName('zentra'),
             'substitutes' => [$testedClass::getIdByName('normal')],
         ]);
         yield [
             'input' => $testedClass::getIdByName('normal'),
-            'expected' => [$testedClass::getIdByName('glpi')],
+            'expected' => [$testedClass::getIdByName('zentra')],
         ];
 
         $this->login('post-only', 'postonly');
@@ -1463,7 +1463,7 @@ class UserTest extends DbTestCase
         ]);
         yield [
             'input' => $testedClass::getIdByName('normal'),
-            'expected' => [$testedClass::getIdByName('glpi'), $testedClass::getIdByName('post-only')],
+            'expected' => [$testedClass::getIdByName('zentra'), $testedClass::getIdByName('post-only')],
         ];
     }
 
@@ -1489,7 +1489,7 @@ class UserTest extends DbTestCase
             'users_id' => $testedClass::getIdByName('normal'),
         ]);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => false,
             'expected'           => false,
@@ -1497,10 +1497,10 @@ class UserTest extends DbTestCase
 
         $validator_substitute->add([
             'users_id' => $testedClass::getIdByName('normal'),
-            'users_id_substitute' => $testedClass::getIdByName('glpi'),
+            'users_id_substitute' => $testedClass::getIdByName('zentra'),
         ]);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => false,
             'expected'           => true,
@@ -1513,7 +1513,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => false,
@@ -1526,7 +1526,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => false,
@@ -1539,7 +1539,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => false,
@@ -1552,7 +1552,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => false,
@@ -1565,7 +1565,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => true,
@@ -1577,7 +1577,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => true,
@@ -1589,7 +1589,7 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue($success);
         yield [
-            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id'           => $testedClass::getIdByName('zentra'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
             'use_date_range'     => true,
             'expected'           => true,
@@ -1614,15 +1614,15 @@ class UserTest extends DbTestCase
 
     public function testGetUserByForgottenPasswordToken()
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
         $token = bin2hex(random_bytes(16));
         $this->assertTrue(
             $DB->update(
-                'glpi_users',
+                'zentra_users',
                 [
-                    'password_forget_token' => (new \GLPIKey())->encrypt($token),
+                    'password_forget_token' => (new \ZENTRAKey())->encrypt($token),
                     'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('-5 days')),
                 ],
                 [
@@ -1632,12 +1632,12 @@ class UserTest extends DbTestCase
         );
 
         // Set password_init_token_delay config option to 1 day
-        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
+        $CFG_ZENTRA['password_init_token_delay'] = DAY_TIMESTAMP;
 
         $this->assertNull(User::getUserByForgottenPasswordToken($token));
 
         // Set password_init_token_delay config option to 10 days
-        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
+        $CFG_ZENTRA['password_init_token_delay'] = DAY_TIMESTAMP * 10;
 
         $this->assertNotNull(User::getUserByForgottenPasswordToken($token));
     }
@@ -1649,22 +1649,22 @@ class UserTest extends DbTestCase
      */
     protected function testValidatePasswordProvider(): iterable
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Load test subject
         $user = getItemByTypeName('User', TU_USER);
 
         // Password security must be disabled by default
-        $this->assertFalse((bool) $CFG_GLPI['use_password_security']);
+        $this->assertFalse((bool) $CFG_ZENTRA['use_password_security']);
         yield [$user, 'mypass'];
 
         // Enable security
-        $CFG_GLPI['use_password_security'] = 1;
-        $this->assertEquals(8, (int) $CFG_GLPI['password_min_length']);
-        $this->assertEquals(1, (int) $CFG_GLPI['password_need_number']);
-        $this->assertEquals(1, (int) $CFG_GLPI['password_need_letter']);
-        $this->assertEquals(1, (int) $CFG_GLPI['password_need_caps']);
-        $this->assertEquals(1, (int) $CFG_GLPI['password_need_symbol']);
+        $CFG_ZENTRA['use_password_security'] = 1;
+        $this->assertEquals(8, (int) $CFG_ZENTRA['password_min_length']);
+        $this->assertEquals(1, (int) $CFG_ZENTRA['password_need_number']);
+        $this->assertEquals(1, (int) $CFG_ZENTRA['password_need_letter']);
+        $this->assertEquals(1, (int) $CFG_ZENTRA['password_need_caps']);
+        $this->assertEquals(1, (int) $CFG_ZENTRA['password_need_symbol']);
         $errors = [
             'Password too short!',
             'Password must include at least a digit!',
@@ -1683,14 +1683,14 @@ class UserTest extends DbTestCase
         yield [$user, 'mypassword', $errors];
 
         // Reduce minimum length
-        $CFG_GLPI['password_min_length'] = strlen('mypass');
+        $CFG_ZENTRA['password_min_length'] = strlen('mypass');
         $errors = [
             'Password must include at least a digit!',
             'Password must include at least a uppercase letter!',
             'Password must include at least a symbol!',
         ];
         yield [$user, 'mypass', $errors];
-        $CFG_GLPI['password_min_length'] = 8; //reset
+        $CFG_ZENTRA['password_min_length'] = 8; //reset
 
         // Add digit to password
         $errors = [
@@ -1700,34 +1700,34 @@ class UserTest extends DbTestCase
         yield [$user, 'my1password', $errors];
 
         // Disable digit validation
-        $CFG_GLPI['password_need_number'] = 0;
+        $CFG_ZENTRA['password_need_number'] = 0;
         $errors = [
             'Password must include at least a uppercase letter!',
             'Password must include at least a symbol!',
         ];
         yield [$user, 'mypassword', $errors];
-        $CFG_GLPI['password_need_number'] = 1; //reset
+        $CFG_ZENTRA['password_need_number'] = 1; //reset
 
         // Add uppercase letter to password
         yield [$user, 'my1paSsword', ['Password must include at least a symbol!']];
 
         // Disable uppercase validation
-        $CFG_GLPI['password_need_caps'] = 0;
+        $CFG_ZENTRA['password_need_caps'] = 0;
         yield [$user, 'my1password', ['Password must include at least a symbol!']];
-        $CFG_GLPI['password_need_caps'] = 1; //reset
+        $CFG_ZENTRA['password_need_caps'] = 1; //reset
 
         // Add symbol to password
         yield [$user, 'my1paSsw@rd'];
 
         // Disable password validation
-        $CFG_GLPI['password_need_symbol'] = 0;
+        $CFG_ZENTRA['password_need_symbol'] = 0;
         yield [$user, 'my1paSsword'];
-        $CFG_GLPI['password_need_symbol'] = 1; //reset
+        $CFG_ZENTRA['password_need_symbol'] = 1; //reset
 
         // Test password history setting
         $this->login();
-        $CFG_GLPI['use_password_security'] = 0; // Disable others checks
-        $CFG_GLPI['non_reusable_passwords_count'] = 3; // Check last 3 password (current + previous 2)
+        $CFG_ZENTRA['use_password_security'] = 0; // Disable others checks
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3; // Check last 3 password (current + previous 2)
         $password1 = TU_PASS; // Current password
         $password2 = "P@ssword2"; // First password change
         $password3 = "P@ssword3"; // Second password change
@@ -1792,17 +1792,17 @@ class UserTest extends DbTestCase
         ]);
         $this->assertCount(4, $users);
         $this->assertEquals(
-            ['glpi', "e2e_tests", TU_USER, "jsmith123"],
+            ['zentra', "e2e_tests", TU_USER, "jsmith123"],
             array_column($users, 'name')
         );
 
-        $glpi = getItemByTypeName('User', 'glpi');
+        $zentra = getItemByTypeName('User', 'zentra');
         $tu_user = getItemByTypeName('User', TU_USER);
         $jsmith123 = getItemByTypeName('User', 'jsmith123');
         $e2e_tests = getItemByTypeName('User', 'e2e_tests');
 
         // Delete other users
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $this->assertTrue($tu_user->canDeleteItem());
         $this->assertTrue($tu_user->delete(['id' => $tu_user->getID()]));
         $this->assertTrue($jsmith123->canDeleteItem());
@@ -1811,19 +1811,19 @@ class UserTest extends DbTestCase
         $this->assertTrue($e2e_tests->delete(['id' => $e2e_tests->getID()]));
 
         // Last user, can't be deleted or disabled
-        $this->assertTrue($glpi->update([
-            'id'        => $glpi->getID(),
+        $this->assertTrue($zentra->update([
+            'id'        => $zentra->getID(),
             'is_active' => false,
         ]));
         $this->hasSessionMessages(ERROR, [
             "Can&#039;t set user as inactive as it is the only remaining super administrator.",
         ]);
-        $glpi->getFromDB($glpi->getId());
-        $this->assertEquals(true, (bool) $glpi->fields['is_active']);
-        $this->assertFalse($glpi->canDeleteItem());
+        $zentra->getFromDB($zentra->getId());
+        $this->assertEquals(true, (bool) $zentra->fields['is_active']);
+        $this->assertFalse($zentra->canDeleteItem());
 
         // Can still be deleted by calling delete directly, maybe it should not be possible ?
-        $this->assertTrue($glpi->delete(['id' => $glpi->getID()]));
+        $this->assertTrue($zentra->delete(['id' => $zentra->getID()]));
     }
 
     public function testUserPreferences()
@@ -1848,7 +1848,7 @@ class UserTest extends DbTestCase
         $this->login('for preferences', 'for preferences');
         $this->assertTrue($user->getFromDB($users_id));
         $this->assertNull($user->fields['show_count_on_tabs']);
-        $this->assertEquals(1, $_SESSION['glpishow_count_on_tabs']);
+        $this->assertEquals(1, $_SESSION['zentrashow_count_on_tabs']);
 
         $itil_layout_1 = '{"collapsed":"true","expanded":"false","items":{"item-main":"false","actors":"false","items":"false","service-levels":"false","linked_tickets":"false"}}';
         $this->assertTrue(
@@ -1860,14 +1860,14 @@ class UserTest extends DbTestCase
         );
 
         // pref should be updated even without logout/login
-        $this->assertEquals(0, $_SESSION['glpishow_count_on_tabs']);
-        $this->assertEquals($itil_layout_1, $_SESSION['glpiitil_layout']);
+        $this->assertEquals(0, $_SESSION['zentrashow_count_on_tabs']);
+        $this->assertEquals($itil_layout_1, $_SESSION['zentraitil_layout']);
 
         // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
-        $this->assertEquals(0, $_SESSION['glpishow_count_on_tabs']);
-        $this->assertEquals($itil_layout_1, $_SESSION['glpiitil_layout']);
+        $this->assertEquals(0, $_SESSION['zentrashow_count_on_tabs']);
+        $this->assertEquals($itil_layout_1, $_SESSION['zentraitil_layout']);
 
 
         $this->assertTrue($user->getFromDB($users_id));
@@ -1884,14 +1884,14 @@ class UserTest extends DbTestCase
         );
 
         // pref should be updated even without logout/login
-        $this->assertEquals(1, $_SESSION['glpishow_count_on_tabs']);
-        $this->assertEquals($itil_layout_2, $_SESSION['glpiitil_layout']);
+        $this->assertEquals(1, $_SESSION['zentrashow_count_on_tabs']);
+        $this->assertEquals($itil_layout_2, $_SESSION['zentraitil_layout']);
 
         // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
-        $this->assertEquals(1, $_SESSION['glpishow_count_on_tabs']);
-        $this->assertEquals($itil_layout_2, $_SESSION['glpiitil_layout']);
+        $this->assertEquals(1, $_SESSION['zentrashow_count_on_tabs']);
+        $this->assertEquals($itil_layout_2, $_SESSION['zentraitil_layout']);
 
         $this->assertTrue($user->getFromDB($users_id));
         $this->assertNull($user->fields['show_count_on_tabs']);
@@ -1913,7 +1913,7 @@ class UserTest extends DbTestCase
         $this->assertNull($user->fields['user_dn_hash']);
 
         // Create user with dn and check that user_dn_hash is set
-        $dn = 'user=' . __FUNCTION__ . '_created,dc=R&D,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . '_created,dc=R&D,dc=zentra-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__ . '_created',
             'user_dn'   => $dn,
@@ -1921,7 +1921,7 @@ class UserTest extends DbTestCase
         $this->assertEquals(md5($dn), $user->fields['user_dn_hash']);
 
         // Update user dn and check that user_dn_hash is updated
-        $dn = 'user=' . __FUNCTION__ . '_updated,dc=R&D,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . '_updated,dc=R&D,dc=zentra-project,dc=org';
         $this->updateItem('User', $user->getID(), [
             'user_dn'   => $dn,
         ]);
@@ -1959,7 +1959,7 @@ class UserTest extends DbTestCase
         $this->assertTrue($retrievedUser->isNewItem());
 
         // Create a user with a dn
-        $dn = 'user=' . __FUNCTION__ . ',dc=R&D,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . ',dc=R&D,dc=zentra-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__,
             'user_dn'   => $dn,
@@ -2013,9 +2013,9 @@ class UserTest extends DbTestCase
         // namespaced itemtype
         yield [
             'initial_db_value' => '{"Computer":1,"Monitor":0}',
-            'itemtype'         => 'Glpi\\Socket',
+            'itemtype'         => 'Zentra\\Socket',
             'success'          => true,
-            'result_db_value'  => '{"Computer":1,"Monitor":0,"Glpi\\\\Socket":1}',
+            'result_db_value'  => '{"Computer":1,"Monitor":0,"Zentra\\\\Socket":1}',
         ];
 
         // invalid itemtype
@@ -2053,7 +2053,7 @@ class UserTest extends DbTestCase
     {
         $users_passwords = [
             TU_USER     => TU_PASS,
-            'glpi'      => 'glpi',
+            'zentra'      => 'zentra',
             'tech'      => 'tech',
             'normal'    => 'normal',
             'post-only' => 'postonly',
@@ -2062,35 +2062,35 @@ class UserTest extends DbTestCase
         $users_matrix = [
             TU_USER => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
-            'glpi' => [
+            'zentra' => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
             'tech' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => true,
                 'normal'    => false, // has some more rights somewhere
                 'post-only' => true,
             ],
             'normal' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => true,
                 'post-only' => false, // no update right
             ],
             'post-only' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,
@@ -2147,7 +2147,7 @@ class UserTest extends DbTestCase
         $entities_id = $this->getTestRootEntity(true);
 
         $user = new User();
-        $user->getFromDB($_SESSION['glpiID']);
+        $user->getFromDB($_SESSION['zentraID']);
 
         // Create a group that will be used to add a profile
         $group = new \Group();
@@ -2312,7 +2312,7 @@ class UserTest extends DbTestCase
             'password' => 'testChangeAuthMethod123',
             'password2' => 'testChangeAuthMethod123',
         ], ['password', 'password2']);
-        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::DB_GLPI));
+        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::DB_ZENTRA));
         // Password should not be empty since the auth method isn't different
         $it = $DB->request([
             'SELECT' => ['password', 'authtype', 'auths_id'],
@@ -2320,7 +2320,7 @@ class UserTest extends DbTestCase
             'WHERE'  => ['id' => $user->getID()],
         ])->current();
         $this->assertNotEmpty($it['password']);
-        $this->assertEquals(\Auth::DB_GLPI, $it['authtype']);
+        $this->assertEquals(\Auth::DB_ZENTRA, $it['authtype']);
         $this->assertEquals(0, $it['auths_id']);
 
         $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::LDAP, 1));
@@ -2350,7 +2350,7 @@ class UserTest extends DbTestCase
         $this->assertEquals(\Auth::LDAP, $it['authtype']);
         $this->assertEquals(2, $it['auths_id']);
 
-        // Check with same LDAP server again to ensure password preservation isn't just for DB_GLPI, even though the other core auth types don't store passwords in the DB
+        // Check with same LDAP server again to ensure password preservation isn't just for DB_ZENTRA, even though the other core auth types don't store passwords in the DB
         $this->assertTrue($DB->update(
             User::getTable(),
             ['password' => 'testChangeAuthMethod123'],
@@ -2370,7 +2370,7 @@ class UserTest extends DbTestCase
     public static function onlyAdministatorsCanEnableDebugModeInPreferencesProvider(): iterable
     {
         yield [
-            'user' => 'glpi',
+            'user' => 'zentra',
             'can_toggle_debug_mode' => true,
         ];
         yield [
@@ -2402,15 +2402,15 @@ class UserTest extends DbTestCase
         // Assert: check if debug mode was enabled
         $this->assertEquals(
             $can_toggle_debug_mode,
-            $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE
+            $_SESSION['zentra_use_mode'] === \Session::DEBUG_MODE
         );
     }
 
     // Test rule rights apply when user logs in from SSO
     public function testGetFromSSOAndRightRules()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var array $CFG_ZENTRA */
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -2425,8 +2425,8 @@ class UserTest extends DbTestCase
         ];
 
         foreach ($sso_fields as $config_key => $server_key) {
-            $original_config[$config_key] = $CFG_GLPI[$config_key] ?? '';
-            $CFG_GLPI[$config_key] = $server_key;
+            $original_config[$config_key] = $CFG_ZENTRA[$config_key] ?? '';
+            $CFG_ZENTRA[$config_key] = $server_key;
         }
 
         // Create a test group for the rule

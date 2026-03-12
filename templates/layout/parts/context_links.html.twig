@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -98,9 +98,9 @@
       </li>
    {% elseif type == 'view_form_categories' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()) }}">
+         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Zentra\\Form\\Category'|itemtype_name(get_plural_number()) }}">
             <i class="ti ti-folder"></i>
-            <span class="d-none d-xxl-block">{{ 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()) }}</span>
+            <span class="d-none d-xxl-block">{{ 'Zentra\\Form\\Category'|itemtype_name(get_plural_number()) }}</span>
          </a>
       </li>
    {% elseif type == 'import_forms' %}
@@ -110,11 +110,11 @@
             <span class="d-none d-xxl-block">{{ __('Import forms') }}</span>
          </a>
       </li>
-   {% elseif type == 'Glpi\\Dropdown\\DropdownDefinition' %}
+   {% elseif type == 'Zentra\\Dropdown\\DropdownDefinition' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_name }}">
-            <i class="{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_icon }}"></i>
-            <span class="d-none d-xxl-block">{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_name }}</span>
+         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Zentra\\Dropdown\\DropdownDefinition'|itemtype_name }}">
+            <i class="{{ 'Zentra\\Dropdown\\DropdownDefinition'|itemtype_icon }}"></i>
+            <span class="d-none d-xxl-block">{{ 'Zentra\\Dropdown\\DropdownDefinition'|itemtype_name }}</span>
          </a>
       </li>
    {% else %}

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Team\Team;
+use Zentra\Team\Team;
 
 //!  ProjectTaskTeam Class
 /**
@@ -88,14 +88,14 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate && static::canView()) {
             $nb = 0;
             switch (get_class($item)) {
                 case ProjectTask::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
                     return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
@@ -105,7 +105,7 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch (get_class($item)) {

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
- * ObjectLock is dedicated to manage real-time locking of items in GLPI.
+ * ObjectLock is dedicated to manage real-time locking of items in ZENTRA.
  *
  * Item locks are used to lock items like Ticket, Computer, Reminder, etc.
  *
  * @author Olivier Moron
  * @since 9.1
- * @see $CFG_GLPI['lock_lockable_objects']
+ * @see $CFG_ZENTRA['lock_lockable_objects']
  **/
 class ObjectLock extends CommonDBTM
 {
@@ -68,10 +68,10 @@ class ObjectLock extends CommonDBTM
      **/
     public static function getLockableObjects()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ret = [];
-        foreach ($CFG_GLPI['lock_lockable_objects'] as $lo) {
+        foreach ($CFG_ZENTRA['lock_lockable_objects'] as $lo) {
             $ret[$lo] = $lo::getTypeName(Session::getPluralNumber());
         }
         asort($ret, SORT_STRING);
@@ -88,11 +88,11 @@ class ObjectLock extends CommonDBTM
     {
         if (isset($_POST['lockwrite'])) {
             // Edit mode is requested
-            $_SESSION['glpilock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']] = 1;
+            $_SESSION['zentralock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']] = 1;
         }
 
-        $ret = isset($_SESSION['glpilock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']])
-             || (int) $_SESSION['glpilock_autolock_mode'] === 1;
+        $ret = isset($_SESSION['zentralock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']])
+             || (int) $_SESSION['zentralock_autolock_mode'] === 1;
         $locked = $this->getLockedObjectInfo($this->fields['itemtype'], $this->fields['items_id']);
         return !$ret && !$locked;
     }
@@ -105,7 +105,7 @@ class ObjectLock extends CommonDBTM
      **/
     private function lockObject()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ret = false;
         $new_lock = false;
@@ -132,7 +132,7 @@ class ObjectLock extends CommonDBTM
             $showAskUnlock = $useremail->getFromDBByCrit([
                 'users_id' => $this->fields['users_id'],
                 'is_default' => 1,
-            ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+            ]) && ($CFG_ZENTRA['notifications_mailing'] == 1);
         } else {
             // No locking user found, so the lock is invalid
             $autolock = false;
@@ -161,7 +161,7 @@ class ObjectLock extends CommonDBTM
                 // open the object as read-only as it is already locked by someone
                 self::setReadonlyProfile();
                 // and if autolock was set for this item then unset it
-                unset($_SESSION['glpilock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']]);
+                unset($_SESSION['zentralock_autolock_items'][$this->fields['itemtype']][$this->fields['items_id']]);
             }
         }
 
@@ -180,14 +180,14 @@ class ObjectLock extends CommonDBTM
      **/
     private function getLockedObjectInfo(string $itemtype, int $items_id)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ret = false;
         if (
-            $CFG_GLPI["lock_use_lock_item"]
-            && ($CFG_GLPI["lock_lockprofile_id"] > 0)
+            $CFG_ZENTRA["lock_use_lock_item"]
+            && ($CFG_ZENTRA["lock_lockprofile_id"] > 0)
             && Session::getCurrentInterface() === 'central'
-            && in_array($this->fields['itemtype'], $CFG_GLPI['lock_item_list'], true)
+            && in_array($this->fields['itemtype'], $CFG_ZENTRA['lock_item_list'], true)
             && $this->getFromDBByCrit([
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
@@ -219,31 +219,31 @@ class ObjectLock extends CommonDBTM
      */
     public static function setReadOnlyProfile()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // to prevent double set ReadOnlyProfile
-        if (!isset($_SESSION['glpilocksavedprofile']) && isset($CFG_GLPI['lock_lockprofile'])) {
+        if (!isset($_SESSION['zentralocksavedprofile']) && isset($CFG_ZENTRA['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
                 // this is a security in case of a fatal error that can prevent correct revert of profile
                 register_shutdown_function([self::class,  'revertProfile']);
                 self::$shutdownregistered = true;
             }
-            $_SESSION['glpilocksavedprofile'] = $_SESSION['glpiactiveprofile'];
-            $_SESSION['glpiactiveprofile']    = $CFG_GLPI['lock_lockprofile'];
+            $_SESSION['zentralocksavedprofile'] = $_SESSION['zentraactiveprofile'];
+            $_SESSION['zentraactiveprofile']    = $CFG_ZENTRA['lock_lockprofile'];
 
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
             $rights = ProfileRight::getAllPossibleRights();
             foreach ($rights as $key => $val) {
-                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
-                    $_SESSION['glpiactiveprofile'][$key]
-                    = (int) $_SESSION['glpilocksavedprofile'][$key]
-                    & (isset($CFG_GLPI['lock_lockprofile'][$key])
-                         ? (int) $CFG_GLPI['lock_lockprofile'][$key] : 0);
+                if (isset($_SESSION['zentralocksavedprofile'][$key])) {
+                    $_SESSION['zentraactiveprofile'][$key]
+                    = (int) $_SESSION['zentralocksavedprofile'][$key]
+                    & (isset($CFG_ZENTRA['lock_lockprofile'][$key])
+                         ? (int) $CFG_ZENTRA['lock_lockprofile'][$key] : 0);
                 }
             }
             // don't forget entities
-            $_SESSION['glpiactiveprofile']['entities'] = $_SESSION['glpilocksavedprofile']['entities'];
+            $_SESSION['zentraactiveprofile']['entities'] = $_SESSION['zentralocksavedprofile']['entities'];
         }
     }
 
@@ -254,9 +254,9 @@ class ObjectLock extends CommonDBTM
      **/
     public static function revertProfile()
     {
-        if (isset($_SESSION['glpilocksavedprofile'])) {
-            $_SESSION['glpiactiveprofile'] = $_SESSION['glpilocksavedprofile'];
-            unset($_SESSION['glpilocksavedprofile']);
+        if (isset($_SESSION['zentralocksavedprofile'])) {
+            $_SESSION['zentraactiveprofile'] = $_SESSION['zentralocksavedprofile'];
+            unset($_SESSION['zentralocksavedprofile']);
         }
     }
 
@@ -270,7 +270,7 @@ class ObjectLock extends CommonDBTM
      */
     public static function manageObjectLock($itemtype, &$options)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($options['id']) && ($options['id'] > 0)) {
             $ol       = new self();
@@ -279,9 +279,9 @@ class ObjectLock extends CommonDBTM
             $template = isset($options['withtemplate']) && ($options['withtemplate'] > 0);
             if (
                 (Session::getCurrentInterface() === "central")
-                && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
-                && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-                && in_array($itemtype, $CFG_GLPI['lock_item_list'], true)
+                && isset($CFG_ZENTRA["lock_use_lock_item"]) && $CFG_ZENTRA["lock_use_lock_item"]
+                && ($CFG_ZENTRA["lock_lockprofile_id"] > 0)
+                && in_array($itemtype, $CFG_ZENTRA['lock_item_list'], true)
                 && Session::haveRightsOr($itemtype::$rightname, [UPDATE, DELETE, PURGE, UPDATENOTE])
                 && !$template
             ) {
@@ -315,18 +315,18 @@ class ObjectLock extends CommonDBTM
      */
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $tab = [];
 
         if (
             (Session::getCurrentInterface() === "central")
-            && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
-            && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-            && in_array($itemtype, $CFG_GLPI['lock_item_list'], true)
+            && isset($CFG_ZENTRA["lock_use_lock_item"]) && $CFG_ZENTRA["lock_use_lock_item"]
+            && ($CFG_ZENTRA["lock_lockprofile_id"] > 0)
+            && in_array($itemtype, $CFG_ZENTRA['lock_item_list'], true)
         ) {
             $tab[] = [
                 'id'            => '207',
-                'table'         => 'glpi_users',
+                'table'         => 'zentra_users',
                 'field'         => 'name',
                 'datatype'      => 'dropdown',
                 'right'         => 'all',
@@ -410,14 +410,14 @@ TWIG;
      **/
     public static function getRightsToAdd($itemtype, $interface = 'central')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ret = [];
         if (
             ($interface === "central")
-            && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
-            && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-            && in_array($itemtype, $CFG_GLPI['lock_lockable_objects'], true)
+            && isset($CFG_ZENTRA["lock_use_lock_item"]) && $CFG_ZENTRA["lock_use_lock_item"]
+            && ($CFG_ZENTRA["lock_lockprofile_id"] > 0)
+            && in_array($itemtype, $CFG_ZENTRA['lock_lockable_objects'], true)
         ) {
             $ret = [UNLOCK  => __('Unlock')];
         }

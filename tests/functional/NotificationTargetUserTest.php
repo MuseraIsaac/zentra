@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/notificationtargetuser.class.php */
@@ -43,11 +43,11 @@ class NotificationTargetUserTest extends DbTestCase
 {
     public static function addDataForPasswordExpiresTemplateProvider()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $time_in_past   = strtotime('-10 days');
         $time_in_future = strtotime('+10 days');
-        $update_url     = $CFG_GLPI['url_base'] . '/front/updatepassword.php';
+        $update_url     = $CFG_ZENTRA['url_base'] . '/front/updatepassword.php';
 
         return [
             // case 1: password already expired but account will not be locked
@@ -100,22 +100,22 @@ class NotificationTargetUserTest extends DbTestCase
     #[DataProvider('addDataForPasswordExpiresTemplateProvider')]
     public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $user = $this->getMockBuilder(\User::class)
             ->onlyMethods(['getPasswordExpirationTime'])
             ->getMock();
         $user->method('getPasswordExpirationTime')->willReturn($expiration_time);
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['password_expiration_lock_delay'] = $lock_delay;
         $target = new \NotificationTargetUser(
             getItemByTypeName('Entity', '_test_root_entity', true),
             'passwordexpires',
             $user
         );
         $target->addDataForTemplate('passwordexpires');
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->checkTemplateData($target->data, $expected);
     }

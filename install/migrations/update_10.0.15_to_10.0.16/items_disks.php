@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,5 +37,5 @@
  */
 // same as update_10.0.14_to_10.0.15/items_disks.php
 // see #16992
-$migration->changeField('glpi_items_disks', 'totalsize', 'totalsize', 'bigint NOT NULL DEFAULT "0"');
-$migration->changeField('glpi_items_disks', 'freesize', 'freesize', 'bigint NOT NULL DEFAULT "0"');
+$migration->changeField('zentra_items_disks', 'totalsize', 'totalsize', 'bigint NOT NULL DEFAULT "0"');
+$migration->changeField('zentra_items_disks', 'freesize', 'freesize', 'bigint NOT NULL DEFAULT "0"');

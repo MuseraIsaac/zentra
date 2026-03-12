@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 /**
  * CommonITILCost Class
@@ -65,7 +65,7 @@ abstract class CommonITILCost extends CommonDBChild
         return str_replace('Cost', '', static::class);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         // can exists for template
         if (
@@ -74,7 +74,7 @@ abstract class CommonITILCost extends CommonDBChild
             && static::canView()
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     static::getTable(),
                     [$item::getForeignKeyField() => $item->getID()]
@@ -85,7 +85,7 @@ abstract class CommonITILCost extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonITILObject && !$item instanceof Project) {
             return false;

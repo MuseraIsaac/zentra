@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 describe('Form access policy', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test form for the access policy form suite',
             'is_active': true,
             '_init_access_policies': false,
@@ -42,7 +42,7 @@ describe('Form access policy', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\AccessControl\\FormAccessControl$1';
+            const tab = 'Zentra\\Form\\AccessControl\\FormAccessControl$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
     });
@@ -177,7 +177,7 @@ describe('Form access policy', () => {
 
         // Add a question
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Form$main';
+            const tab = 'Zentra\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
             // Add a question
@@ -239,7 +239,7 @@ describe('Form access policy', () => {
 
         // Add a simple question to the form
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Form$main';
+            const tab = 'Zentra\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
         cy.findByRole('button', { 'name': 'Add a question' }).click();

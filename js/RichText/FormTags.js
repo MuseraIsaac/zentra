@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
 
 /* global tinymce */
 
-window.GLPI = window.GLPI || {};
-window.GLPI.RichText = window.GLPI.RichText || {};
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.RichText = window.ZENTRA.RichText || {};
 
 /**
  * Form tags rich text autocompleter.
  *
  * @since 11.0.0
  */
-window.GLPI.RichText.FormTags = class
+window.ZENTRA.RichText.FormTags = class
 {
     /**
      * Target tinymce editor.
@@ -85,14 +85,14 @@ window.GLPI.RichText.FormTags = class
     }
 
     async #fetchItems(filter) {
-        const url = `${CFG_GLPI.root_doc}/Form/TagList`;
+        const url = `${CFG_ZENTRA.root_doc}/Form/TagList`;
         const data = await $.get(url, {
             form_id: this.#form_id,
             filter: filter
         });
 
         return data.map((tag) => ({
-            // The `tag` variable is a json encoded instance of Glpi\Form\Tag\Tag
+            // The `tag` variable is a json encoded instance of Zentra\Form\Tag\Tag
             type: 'autocompleteitem',
             value: tag.html,
             text: tag.label,

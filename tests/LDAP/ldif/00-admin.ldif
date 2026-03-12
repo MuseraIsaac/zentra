@@ -1,11 +1,11 @@
-dn: dc=glpi,dc=org
-dc: glpi
+dn: dc=zentra,dc=org
+dc: zentra
 description: Tree root
 objectClass: dcObject
 objectClass: organization
-o: glpi.org
+o: zentra.org
 
-dn: cn=admin,dc=glpi,dc=org
+dn: cn=admin,dc=zentra,dc=org
 userPassword:: e1NIQX01ZW42RzZNZXpScm9UM1hLcWtkUE9tWS9CZlE9
 description: LDAP administrator
 objectClass: simpleSecurityObject

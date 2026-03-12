@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,23 +49,23 @@ if ($_POST['softwares_id'] > 0) {
     if (isset($_POST['used'])) {
         $used = $_POST['used'];
         if (count($used)) {
-            $where = ['NOT' => ['glpi_softwareversions.id' => $used]];
+            $where = ['NOT' => ['zentra_softwareversions.id' => $used]];
         }
     }
     // Make a select box
     $iterator = $DB->request([
-        'SELECT'    => ['glpi_softwareversions.*', 'glpi_states.name AS sname'],
+        'SELECT'    => ['zentra_softwareversions.*', 'zentra_states.name AS sname'],
         'DISTINCT'  => true,
-        'FROM'      => 'glpi_softwareversions',
+        'FROM'      => 'zentra_softwareversions',
         'LEFT JOIN' => [
-            'glpi_states'  => [
+            'zentra_states'  => [
                 'ON'  => [
-                    'glpi_softwareversions' => 'states_id',
-                    'glpi_states'           => 'id',
+                    'zentra_softwareversions' => 'states_id',
+                    'zentra_states'           => 'id',
                 ],
             ],
         ],
-        'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where,
+        'WHERE'     => ['zentra_softwareversions.softwares_id' => $_POST['softwares_id']] + $where,
     ]);
     $number = count($iterator);
 
@@ -74,7 +74,7 @@ if ($_POST['softwares_id'] > 0) {
         $ID = $data['id'];
         $output = $data['name'];
 
-        if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+        if (empty($output) || $_SESSION['zentrais_ids_visible']) {
             $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
         }
         if (!empty($data['sname'])) {

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set container_id = "glpi-helpdesk-config-container-empty-entity" ~ random() %}
+{% set container_id = "zentra-helpdesk-config-container-empty-entity" ~ random() %}
 {% set form_id = "copy-entity-settings-form-" ~ random() %}
 
 <div id="{{ container_id }}">
     <div
-        data-glpi-helpdesk-config-tiles-empty-entity-original-content
+        data-zentra-helpdesk-config-tiles-empty-entity-original-content
         class="helpdesk-home-config-for-empty-entity-wrapper"
     >
         {{ include('pages/admin/helpdesk_home_config.html.twig', {
@@ -50,7 +50,7 @@
 
     <div
         class="container-xl ms-0 mt-2"
-        data-glpi-helpdesk-config-tiles-empty-entity-specific
+        data-zentra-helpdesk-config-tiles-empty-entity-specific
     >
         <div class="d-flex flex-column text-muted mb-2">
             <span>
@@ -73,7 +73,7 @@
             <button
                 form="{{ form_id }}"
                 class="btn ms-auto me-2 pointer-events-none"
-                data-glpi-helpdesk-config-tiles-empty-entity-copy-tiles
+                data-zentra-helpdesk-config-tiles-empty-entity-copy-tiles
                 aria-label="{{ __("Copy parent entity configuration into this entity") }}"
             >
                 <i class="ti ti-copy me-2"></i>
@@ -82,7 +82,7 @@
             <button
                 type="button"
                 class="btn btn-primary pointer-events-none"
-                data-glpi-helpdesk-config-tiles-empty-entity-define-tiles
+                data-zentra-helpdesk-config-tiles-empty-entity-define-tiles
                 aria-label="{{ __("Define tiles for this entity from scratch") }}"
             >
                 <i class="ti ti-settings me-2"></i>
@@ -98,7 +98,7 @@
     action="{{ path('/Config/Helpdesk/CopyParentEntity') }}"
 >
     <input type="hidden" name="entities_id" value="{{ items_id_item }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
 </form>
 
 {# Start js controller #}
@@ -107,7 +107,7 @@
         const module = await import(
             "/js/modules/Helpdesk/HelpdeskConfigForEmptyEntityController.js"
         );
-        new module.GlpiHelpdeskConfigForEmptyEntityController(
+        new module.ZentraHelpdeskConfigForEmptyEntityController(
             document.getElementById("{{ container_id }}"),
         );
     })();

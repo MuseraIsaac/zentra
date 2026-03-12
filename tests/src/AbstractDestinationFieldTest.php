@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\Form;
-use Glpi\Form\Migration\FormMigration;
-use Glpi\Migration\PluginMigrationResult;
+use Zentra\DBAL\JsonFieldInterface;
+use Zentra\Form\AccessControl\FormAccessControlManager;
+use Zentra\Form\Destination\FormDestinationTicket;
+use Zentra\Form\Form;
+use Zentra\Form\Migration\FormMigration;
+use Zentra\Migration\PluginMigrationResult;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractDestinationFieldTest extends DbTestCase
@@ -54,12 +54,12 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
 
         // Clean up data in case execution was stopped before tearDownAfterClass
         // could run.
-        $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        $tables = $DB->listTables('zentra\_plugin\_formcreator\_%');
         foreach ($tables as $table) {
             $DB->dropTable($table['TABLE_NAME']);
         }
 
-        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/glpi-formcreator-migration-data.sql', GLPI_ROOT));
+        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/zentra-formcreator-migration-data.sql', ZENTRA_ROOT));
         foreach ($queries as $query) {
             $DB->doQuery($query);
         }
@@ -69,7 +69,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
     {
         global $DB;
 
-        $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        $tables = $DB->listTables('zentra\_plugin\_formcreator\_%');
         foreach ($tables as $table) {
             $DB->dropTable($table['TABLE_NAME']);
         }
@@ -98,15 +98,15 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
 
             // Update target fields
             $this->assertNotFalse($DB->update(
-                'glpi_plugin_formcreator_targettickets',
+                'zentra_plugin_formcreator_targettickets',
                 $fields_to_set,
-                ['glpi_plugin_formcreator_forms.name' => 'Test form migration for targets'],
+                ['zentra_plugin_formcreator_forms.name' => 'Test form migration for targets'],
                 [
                     'JOIN' => [
-                        'glpi_plugin_formcreator_forms' => [
+                        'zentra_plugin_formcreator_forms' => [
                             'ON' => [
-                                'glpi_plugin_formcreator_targettickets' => 'plugin_formcreator_forms_id',
-                                'glpi_plugin_formcreator_forms'         => 'id',
+                                'zentra_plugin_formcreator_targettickets' => 'plugin_formcreator_forms_id',
+                                'zentra_plugin_formcreator_forms'         => 'id',
                             ],
                         ],
                     ],

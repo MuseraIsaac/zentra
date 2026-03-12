@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Config;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Group;
 use Notification;
 use NotificationTarget;
@@ -65,11 +65,11 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
         foreach ($knowbasenotifs as $kbnotif) {
             $this->assertTrue($notif->update(['id' => $kbnotif['id'], 'is_active' => 1]));
         }
-        //search glpi user
+        //search zentra user
         $this->createItem(
             \UserEmail::class,
             [
-                'users_id' => getItemByTypeName('User', 'glpi', true),
+                'users_id' => getItemByTypeName('User', 'zentra', true),
                 'email' => 'test@test.com',
                 'is_default' => 1,
             ]
@@ -89,7 +89,7 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
             \Group_User::class,
             [
                 'groups_id' => $group->fields['id'],
-                'users_id' => getItemByTypeName('User', 'glpi', true),
+                'users_id' => getItemByTypeName('User', 'zentra', true),
             ]
         );
 
@@ -124,7 +124,7 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
             [
                 'name' => 'testknowbaseitem',
                 'answer' => 'testknowbaseitem',
-                'users_id' => getItemByTypeName('User', 'glpi', true),
+                'users_id' => getItemByTypeName('User', 'zentra', true),
             ]
         );
         //test check if add notification is in notification queue
@@ -140,7 +140,7 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
             [
                 'name' => 'testknowbaseitemupdate',
                 'answer' => 'testknowbaseitemupdate',
-                'users_id' => getItemByTypeName('User', 'glpi', true),
+                'users_id' => getItemByTypeName('User', 'zentra', true),
             ]
         );
         //test check if update notification is in notification queue

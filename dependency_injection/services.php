@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Glpi\DependencyInjection\PublicService;
-use Glpi\Error\ErrorHandler;
+use Zentra\DependencyInjection\PublicService;
+use Zentra\Error\ErrorHandler;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -43,9 +43,9 @@ return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
     // Default secret, just in case
-    $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
-    $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
-    $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
+    $parameters->set('zentra.default_secret', bin2hex(random_bytes(32)));
+    $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/zentracrypt.key');
+    $parameters->set('kernel.secret', env('default:zentra.default_secret:file:APP_SECRET_FILE'));
 
     // Prevent low level errors (e.g. warning) to be converted to exception in dev environment
     $parameters->set('debug.error_handler.throw_at', ErrorHandler::FATAL_ERRORS);
@@ -57,22 +57,22 @@ return static function (ContainerConfigurator $container): void {
         ->instanceof(PublicService::class)->public()
     ;
 
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-    $services->load('Glpi\Kernel\\Listener\\', $projectDir . '/src/Glpi/Kernel/Listener');
-    $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
-    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress')
+    $services->load('Zentra\Controller\\', $projectDir . '/src/Zentra/Controller');
+    $services->load('Zentra\Http\\', $projectDir . '/src/Zentra/Http');
+    $services->load('Zentra\Kernel\\Listener\\', $projectDir . '/src/Zentra/Kernel/Listener');
+    $services->load('Zentra\DependencyInjection\\', $projectDir . '/src/Zentra/DependencyInjection');
+    $services->load('Zentra\Progress\\', $projectDir . '/src/Zentra/Progress')
         ->exclude([
-            $projectDir . '/src/Glpi/Progress/ConsoleProgressIndicator.php',
-            $projectDir . '/src/Glpi/Progress/StoredProgressIndicator.php',
+            $projectDir . '/src/Zentra/Progress/ConsoleProgressIndicator.php',
+            $projectDir . '/src/Zentra/Progress/StoredProgressIndicator.php',
         ]);
     $services->load(
-        'Glpi\Form\Condition\\',
-        $projectDir . '/src/Glpi/Form/Condition/*Manager.php'
+        'Zentra\Form\Condition\\',
+        $projectDir . '/src/Zentra/Form/Condition/*Manager.php'
     );
     $services->load(
-        'Glpi\UI\\',
-        $projectDir . '/src/Glpi/UI/*Manager.php'
+        'Zentra\UI\\',
+        $projectDir . '/src/Zentra/UI/*Manager.php'
     );
 
     // Prevent Symfony to register its own default logger.

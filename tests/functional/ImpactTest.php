@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
-use Glpi\Plugin\Hooks;
-use Glpi\Tests\DbTestCase;
+use Zentra\Plugin\Hooks;
+use Zentra\Tests\DbTestCase;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
@@ -139,21 +139,21 @@ class ImpactTest extends DbTestCase
 
     public function testGetTabNameForItem_tabCountDisabled()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
-        $_SESSION['glpishow_count_on_tabs'] = false;
+        $old_session = $_SESSION['zentrashow_count_on_tabs'];
+        $_SESSION['zentrashow_count_on_tabs'] = false;
 
         $impact = new \Impact();
         $computer = new Computer();
         $tab_name = $impact->getTabNameForItem($computer);
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
+        $_SESSION['zentrashow_count_on_tabs'] = $old_session;
 
         $this->assertEquals("Impact analysis", strip_tags($tab_name));
     }
 
     public function testGetTabNameForItem_enabledAsset()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
-        $_SESSION['glpishow_count_on_tabs'] = true;
+        $old_session = $_SESSION['zentrashow_count_on_tabs'];
+        $_SESSION['zentrashow_count_on_tabs'] = true;
 
         $impact = new \Impact();
 
@@ -173,13 +173,13 @@ class ImpactTest extends DbTestCase
         $this->assertEquals('', $impact->getTabNameForItem($computer2, '1'));
         $this->assertEquals('', $impact->getTabNameForItem($computer2, 2));
         $this->assertEquals('', $impact->getTabNameForItem($computer2, '2'));
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
+        $_SESSION['zentrashow_count_on_tabs'] = $old_session;
     }
 
     public function testGetTabNameForItem_ITILObject()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
-        $_SESSION['glpishow_count_on_tabs'] = true;
+        $old_session = $_SESSION['zentrashow_count_on_tabs'];
+        $_SESSION['zentrashow_count_on_tabs'] = true;
 
         $impact = new \Impact();
         $ticket_em = new Ticket();
@@ -211,7 +211,7 @@ class ImpactTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket_id));
 
         $tab_name = $impact->getTabNameForItem($ticket);
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
+        $_SESSION['zentrashow_count_on_tabs'] = $old_session;
 
         $this->assertEquals("Impact analysis", strip_tags($tab_name));
     }
@@ -541,12 +541,12 @@ class ImpactTest extends DbTestCase
 
     public function testGetImpactIconFromConfig(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        foreach (['', '/glpi'] as $root_doc) {
-            $CFG_GLPI['root_doc'] = $root_doc;
+        foreach (['', '/zentra'] as $root_doc) {
+            $CFG_ZENTRA['root_doc'] = $root_doc;
 
-            foreach ($CFG_GLPI['impact_asset_types'] as $itemtype => $expected_icon) {
+            foreach ($CFG_ZENTRA['impact_asset_types'] as $itemtype => $expected_icon) {
                 $this->assertSame($root_doc . $expected_icon, \Impact::getImpactIcon($itemtype));
                 // By default, targetting a particular ID does not change the result.
                 $this->assertSame($root_doc . $expected_icon, \Impact::getImpactIcon($itemtype, 1));
@@ -560,7 +560,7 @@ class ImpactTest extends DbTestCase
 
     public function testGetImpactIconFromPluginHook(): void
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::SET_ITEM_IMPACT_ICON]['tester'] = function (array $params) {
             if ($params['itemtype'] === 'PluginTesterMyAsset') {
@@ -571,8 +571,8 @@ class ImpactTest extends DbTestCase
             return null;
         };
 
-        foreach (['', '/glpi'] as $root_doc) {
-            $CFG_GLPI['root_doc'] = $root_doc;
+        foreach (['', '/zentra'] as $root_doc) {
+            $CFG_ZENTRA['root_doc'] = $root_doc;
 
             $this->assertSame($root_doc . '/plugins/tester/pics/myasset.png', \Impact::getImpactIcon('PluginTesterMyAsset'));
             $this->assertSame($root_doc . '/plugins/tester/MyAsset/Picture/7', \Impact::getImpactIcon('PluginTesterMyAsset', 7));

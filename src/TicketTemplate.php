@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 /**
  * Ticket Template class
@@ -89,63 +89,63 @@ class TicketTemplate extends ITILTemplate
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'name',
-                'glpi_requesttypes'
+                'zentra_requesttypes'
             )
                                                        => 'requesttypes_id',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'slas_id_tto',
-                'glpi_slas'
+                'zentra_slas'
             )      => 'slas_id_tto',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'slas_id_ttr',
-                'glpi_slas'
+                'zentra_slas'
             )      => 'slas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'olas_id_tto',
-                'glpi_olas'
+                'zentra_olas'
             )      => 'olas_id_tto',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'olas_id_ttr',
-                'glpi_olas'
+                'zentra_olas'
             )      => 'olas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'time_to_own',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'time_to_own',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'internal_time_to_resolve',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'internal_time_to_resolve',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'internal_time_to_own',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'internal_time_to_own',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'global_validation',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'global_validation',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'name',
-                'glpi_contracts'
+                'zentra_contracts'
             )   => '_contracts_id',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'type',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'type',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'externalid',
-                'glpi_tickets'
+                'zentra_tickets'
             )   => 'externalid',
         ];
 

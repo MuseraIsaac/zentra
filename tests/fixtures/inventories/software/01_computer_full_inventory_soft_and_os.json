@@ -54,7 +54,7 @@
                 "version": "2.20.4853.2486"
             }
         ],
-        "versionclient": "GLPI-Agent_v1.9"
+        "versionclient": "ZENTRA-Agent_v1.9"
     },
     "deviceid": "ARN2032",
     "itemtype": "Computer",

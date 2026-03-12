@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\RichText\RichText;
-use Glpi\RichText\UserMention;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\RichText\RichText;
+use Zentra\RichText\UserMention;
 
 use function Safe\json_encode;
 
@@ -278,7 +278,7 @@ abstract class CommonITILValidation extends CommonDBChild
         return count($iterator) > 0;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         $hidetab = false;
@@ -297,7 +297,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         if (!$hidetab) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $restrict = [static::$items_id => $item->getID()];
                 // No rights for create only count asign ones
                 if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
@@ -311,7 +311,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonITILObject) {
             return false;
@@ -350,7 +350,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $input["users_id"] = Session::getLoginUserID();
         }
 
-        $input["submission_date"] = $_SESSION["glpi_currenttime"];
+        $input["submission_date"] = $_SESSION["zentra_currenttime"];
         $input["status"]          = self::WAITING;
 
         if (
@@ -379,7 +379,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $itilobject = $this->getItem();
         $this->checkIsAnItilObject($itilobject);
@@ -421,7 +421,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         // -- send email notification
         $mailsend = false;
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             $options = ['validation_id' => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
@@ -499,7 +499,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 // $input["comment_validation"] = '';
                 $input["validation_date"] = 'NULL';
             } else {
-                $input["validation_date"] = $_SESSION["glpi_currenttime"];
+                $input["validation_date"] = $_SESSION["zentra_currenttime"];
             }
         }
 
@@ -516,11 +516,11 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->recomputeItilStatus();
 
-        $donotif = $CFG_GLPI["use_notifications"];
+        $donotif = $CFG_ZENTRA["use_notifications"];
         if (isset($this->input['_disablenotif'])) {
             $donotif = false;
         }
@@ -905,7 +905,7 @@ abstract class CommonITILValidation extends CommonDBChild
     public static function showFormMassiveAction()
     {
 
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $types = [
             'User'       => User::getTypeName(1),
@@ -922,14 +922,14 @@ abstract class CommonITILValidation extends CommonDBChild
         $paramsmassaction = [
             'validation_class' => static::class,
             'validatortype'    => '__VALUE__',
-            'entity'           => $_SESSION['glpiactive_entity'],
+            'entity'           => $_SESSION['zentraactive_entity'],
             'right'            => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         Ajax::updateItemOnSelectEvent(
             "dropdown_validatortype$rand",
             "show_massiveaction_field",
-            $CFG_GLPI["root_doc"]
+            $CFG_ZENTRA["root_doc"]
                                        . "/ajax/dropdownMassiveActionAddValidator.php",
             $paramsmassaction
         );
@@ -1024,7 +1024,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     private function showSummary(CommonITILObject $itil): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (
             !Session::haveRightsOr(
@@ -1064,7 +1064,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $step_achievements  = $validation_step->getAchievements();
             $step_threshold     = $validation_step->fields['minimal_required_validation_percent'];
             $edit_dialog_params = [
-                "url"    => $CFG_GLPI['root_doc'] . '/ajax/viewsubitem.php',
+                "url"    => $CFG_ZENTRA['root_doc'] . '/ajax/viewsubitem.php',
                 "params" => [
                     'type'                      => $validation_steps_classname,
                     'parenttype'                => $itil::class,
@@ -1127,7 +1127,7 @@ abstract class CommonITILValidation extends CommonDBChild
                             <span class="ti ti-edit"
                                role="button"
                                title="{{ edit_button_label }}"
-                               onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
+                               onclick="zentra_ajax_dialog({{ edit_dialog_params|json_encode }});"
                             >
                                 <span class="sr-only">{{ edit_button_label }}</span>
                             </span>
@@ -1228,8 +1228,8 @@ abstract class CommonITILValidation extends CommonDBChild
                         </span>
                         <script>
                             function viewEditValidation{$rand_id}() {
-                                glpi_ajax_dialog({
-                                    url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
+                                zentra_ajax_dialog({
+                                    url: CFG_ZENTRA.root_doc + "/ajax/viewsubitem.php",
                                     modalclass: 'modal-xl',
                                     params: $params_json,
                                 });
@@ -1400,7 +1400,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Approval requester'),
             'datatype'           => 'itemlink',
@@ -1409,7 +1409,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_validate',
             'name'               => __('Approver'),
@@ -1520,7 +1520,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '58',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => _n('Requester', 'Requesters', 1),
             'datatype'           => 'itemlink',
@@ -1539,7 +1539,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '59',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'items_id_target',
             'name'               => __('Approver'),
@@ -1622,7 +1622,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '196',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'items_id_target',
             'name'               => __('Approver group'),
@@ -1823,13 +1823,13 @@ HTML;
      **/
     public static function dropdownValidator(array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params = [
             'prefix'             => null,
             'id'                 => 0,
             'parents_id'         => null,
-            'entity'             => $_SESSION['glpiactive_entity'],
+            'entity'             => $_SESSION['zentraactive_entity'],
             'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
             'groups_id'          => 0,
             'itemtype_target'    => '',
@@ -1881,7 +1881,7 @@ HTML;
         if ($validatortype) {
             $out .= Ajax::updateItem(
                 $params['applyto'],
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownValidator.php",
                 array_merge($params, ['validatortype' => $validatortype]),
                 "",
                 false
@@ -1890,7 +1890,7 @@ HTML;
         $out .= Ajax::updateItemOnSelectEvent(
             "dropdown_{$validatortype_name}{$params['rand']}",
             $params['applyto'],
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownValidator.php",
             array_merge($params, ['validatortype' => '__VALUE__']),
             false
         );
@@ -1921,7 +1921,7 @@ HTML;
     public static function getGroupUserHaveRights(array $options = [])
     {
         $params = [
-            'entity' => $_SESSION['glpiactive_entity'],
+            'entity' => $_SESSION['zentraactive_entity'],
         ];
         if (static::$itemtype == Ticket::class) {
             $params['right']  = ['validate_request', 'validate_incident'];
@@ -1942,7 +1942,7 @@ HTML;
             $list[] = $data['id'];
         }
         if (count($list) > 0) {
-            $restrict = ['glpi_users.id' => $list];
+            $restrict = ['zentra_users.id' => $list];
         }
         $users = Group_User::getGroupUsers($params['groups_id'], $restrict);
 

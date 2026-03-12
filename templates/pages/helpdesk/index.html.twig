@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@
 
                 {# TODO: deprecate this hook and make a new one that doesn't expect a table as a container #}
                 <table class="central">
-                    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
+                    {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
                 </table>
 
                 <div class="row">
@@ -146,7 +146,7 @@
             const module = await import(
                 "/js/modules/Helpdesk/IndexController.js"
             );
-            new module.GlpiHelpdeskIndexController();
+            new module.ZentraHelpdeskIndexController();
         })();
     </script>
 {% endblock content %}

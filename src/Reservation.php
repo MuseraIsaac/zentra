@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Event;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Event;
+use Zentra\RichText\RichText;
 
 use function Safe\strtotime;
 
@@ -56,7 +56,7 @@ class Reservation extends CommonDBChild
         return _n('Reservation', 'Reservations', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             !$withtemplate
@@ -67,7 +67,7 @@ class Reservation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === User::class) {
             self::showForUser($_GET["id"]);
@@ -81,7 +81,7 @@ class Reservation extends CommonDBChild
 
     public function pre_deleteItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
             isset($this->fields["users_id"])
@@ -89,7 +89,7 @@ class Reservation extends CommonDBChild
               || Session::haveRight("reservation", PURGE))
         ) {
             // Processing Email
-            if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+            if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
                 // Only notify for non-completed reservations
                 if (strtotime($this->fields['end']) > time()) {
                     NotificationEvent::raiseEvent("delete", $this);
@@ -123,11 +123,11 @@ class Reservation extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
             count($this->updates)
-            && $CFG_GLPI["use_notifications"]
+            && $CFG_ZENTRA["use_notifications"]
             && !isset($this->input['_disablenotif'])
         ) {
             NotificationEvent::raiseEvent("update", $this);
@@ -229,7 +229,7 @@ class Reservation extends CommonDBChild
                         "inventory",
                         sprintf(
                             __s('%1$s adds the reservation %2$s for item %3$s'),
-                            $_SESSION["glpiname"],
+                            $_SESSION["zentraname"],
                             $newID,
                             $reservationitems_id
                         )
@@ -282,9 +282,9 @@ class Reservation extends CommonDBChild
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             NotificationEvent::raiseEvent("new", $this);
         }
 
@@ -309,7 +309,7 @@ class Reservation extends CommonDBChild
 
             $result = $DB->request([
                 'COUNT'  => 'cpt',
-                'FROM'   => 'glpi_reservations',
+                'FROM'   => 'zentra_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $reservationitems_id,
                     'group'                 => $rand,
@@ -417,7 +417,7 @@ class Reservation extends CommonDBChild
 
         // If user only has RESERVEANITEM right (no other reservation rights),
         // they can only manage their own reservations (already handled above)
-        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        $reservation_rights = $_SESSION['zentraactiveprofile'][self::$rightname] ?? 0;
         if ($reservation_rights == ReservationItem::RESERVEANITEM) {
             return false; // Only own reservations allowed with RESERVEANITEM only
         }
@@ -459,7 +459,7 @@ class Reservation extends CommonDBChild
         }
 
         // If user only has RESERVEANITEM right, they can only see their own reservations
-        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        $reservation_rights = $_SESSION['zentraactiveprofile'][self::$rightname] ?? 0;
         if ($reservation_rights == ReservationItem::RESERVEANITEM) {
             return false; // Only own reservations allowed with RESERVEANITEM only
         }
@@ -496,7 +496,7 @@ class Reservation extends CommonDBChild
 
         if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
             $iterator = $DB->request([
-                'FROM'   => 'glpi_reservations',
+                'FROM'   => 'zentra_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $this->fields['reservationitems_id'],
                     'group'                 => $this->fields['group'],
@@ -518,7 +518,7 @@ class Reservation extends CommonDBChild
      */
     public static function showCalendar(int $ID = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
             return;
@@ -559,7 +559,7 @@ class Reservation extends CommonDBChild
         }
         echo "<div class='card'>";
         echo "<div class='text-center card-header'>";
-        echo "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/reservation.png' alt='' class='reservation-icon'>";
+        echo "<img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/reservation.png' alt='' class='reservation-icon'>";
         echo "<h2 class='item-name'>" . htmlescape($name) . "</h2>";
         echo $all;
         echo "</div>"; // .center
@@ -588,7 +588,7 @@ class Reservation extends CommonDBChild
                     is_all: " . ($ID === 0 ? "true" : "false") . ",
                     rand: $rand,
                     can_reserve: " . ($can_reserve ? "true" : "false") . ",
-                    now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
+                    now: '" . jsescape($_SESSION["zentra_currenttime"]) . "',
                     defaultDate: '" . jsescape($default_date) . "',
                 });
                 reservation.displayPlanning();
@@ -599,7 +599,7 @@ class Reservation extends CommonDBChild
 
     public static function getEvents(array $params): array
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $defaults = [
             'start'               => '',
@@ -691,7 +691,7 @@ class Reservation extends CommonDBChild
                 'itemtype'    => $data['itemtype'],
                 'items_id'    => $data['items_id'],
                 'color'       => Toolbox::getColorForString($name),
-                'ajaxurl'     => $CFG_GLPI['root_doc'] . '/ajax/reservations.php?action=add_edit_reservation_fromselect&id=' . $data['id'],
+                'ajaxurl'     => $CFG_ZENTRA['root_doc'] . '/ajax/reservations.php?action=add_edit_reservation_fromselect&id=' . $data['id'],
                 'editable'    => $editable, // "editable" is used by fullcalendar, but is not accessible
                 '_editable'   => $editable, // "_editable" will be used by custom event handlers
             ];
@@ -780,7 +780,7 @@ class Reservation extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $resa = new self();
 
@@ -848,8 +848,8 @@ class Reservation extends CommonDBChild
         $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
-                             / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
-                       * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
+                             / $CFG_ZENTRA['time_step'] / MINUTE_TIMESTAMP)
+                       * $CFG_ZENTRA['time_step'] * MINUTE_TIMESTAMP;
 
         if ((int) $default_delay === 0) {
             $options['duration'] = 0;
@@ -1061,31 +1061,31 @@ JAVASCRIPT;
     {
         global $DB;
 
-        $now = $_SESSION["glpi_currenttime"];
+        $now = $_SESSION["zentra_currenttime"];
 
         $common_criteria = [
             'SELECT'    => [
                 'begin',
                 'end',
                 'items_id',
-                'glpi_reservationitems.entities_id',
+                'zentra_reservationitems.entities_id',
                 'users_id',
-                'glpi_reservations.comment',
+                'zentra_reservations.comment',
                 'reservationitems_id',
                 'completename',
             ],
-            'FROM'      => 'glpi_reservations',
+            'FROM'      => 'zentra_reservations',
             'LEFT JOIN' => [
-                'glpi_reservationitems' => [
+                'zentra_reservationitems' => [
                     'ON' => [
-                        'glpi_reservationitems' => 'id',
-                        'glpi_reservations'     => 'reservationitems_id',
+                        'zentra_reservationitems' => 'id',
+                        'zentra_reservations'     => 'reservationitems_id',
                     ],
                 ],
-                'glpi_entities' => [
+                'zentra_entities' => [
                     'ON' => [
-                        'glpi_reservationitems' => 'entities_id',
-                        'glpi_entities'         => 'id',
+                        'zentra_reservationitems' => 'entities_id',
+                        'zentra_entities'         => 'id',
                     ],
                 ],
             ],
@@ -1147,7 +1147,7 @@ JAVASCRIPT;
     {
         $entity_cache = [];
         $fn_format_entry = static function (array $data, bool $is_old) use (&$entity_cache) {
-            global $CFG_GLPI;
+            global $CFG_ZENTRA;
             $entry = [
                 'itemtype' => ReservationItem::class,
                 'id' => $data['id'],
@@ -1167,14 +1167,14 @@ JAVASCRIPT;
             }
             if ($data['entity'] !== null) {
                 if (!isset($entity_cache[$data['entity']])) {
-                    $entity_cache[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
+                    $entity_cache[$data['entity']] = Dropdown::getDropdownName('zentra_entities', $data['entity']);
                 }
                 $entry['entity'] = $entity_cache[$data['entity']];
             }
 
             if (!$is_old) {
                 [$annee, $mois] = explode("-", $data["start_date"]);
-                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
+                $href = htmlescape($CFG_ZENTRA["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
@@ -1242,17 +1242,17 @@ JAVASCRIPT;
     }
 
     /**
-     * Get reservable itemtypes from GLPI config, filtering out itemtype with no
+     * Get reservable itemtypes from ZENTRA config, filtering out itemtype with no
      * reservable items
      *
      * @return array
      */
     public static function getReservableItemtypes(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         return array_filter(
-            $CFG_GLPI['reservation_types'],
+            $CFG_ZENTRA['reservation_types'],
             static fn($type) => ReservationItem::countAvailableItems($type) > 0
         );
     }
@@ -1264,10 +1264,10 @@ JAVASCRIPT;
 
     public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
-        if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["reservation_types"], true)) {
             $show_all = $checkitem === null || $checkitem->isNewItem();
             $reservable = false;
             $available = false;

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Inventory\Inventory;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Inventory\Inventory;
 
 /**
  * SNMP credentials
@@ -69,7 +69,7 @@ class SNMPCredential extends CommonDBTM
 
         $tab[] = [
             'id'                => '108',
-            'table'             => 'glpi_snmpcredentials',
+            'table'             => 'zentra_snmpcredentials',
             'field'             => 'name',
             'name'              => __('Name'),
             'datatype'          => 'dropdown',
@@ -78,7 +78,7 @@ class SNMPCredential extends CommonDBTM
 
         $tab[] = [
             'id'                => '109',
-            'table'             => 'glpi_snmpcredentials',
+            'table'             => 'zentra_snmpcredentials',
             'field'             => 'community',
             'name'              => __('Community'),
             'datatype'          => 'string',
@@ -118,9 +118,9 @@ class SNMPCredential extends CommonDBTM
     {
         // warning and no form if can't read keyfile,
         // only version 3 is impacted but it's better to always show the warning & forbid form display
-        $glpi_encryption_key = new GLPIKey();
-        if ($glpi_encryption_key->hasReadErrors()) {
-            $glpi_encryption_key->showReadErrors();
+        $zentra_encryption_key = new ZENTRAKey();
+        if ($zentra_encryption_key->hasReadErrors()) {
+            $zentra_encryption_key->showReadErrors();
 
             return false;
         }
@@ -206,7 +206,7 @@ class SNMPCredential extends CommonDBTM
 
     protected function prepareInputs(array $input): array
     {
-        $key = new GLPIKey();
+        $key = new ZENTRAKey();
         // Handle setting passwords
         if (isset($input['auth_passphrase']) && !empty($input['auth_passphrase'])) {
             $input['auth_passphrase'] = $key->encrypt($input['auth_passphrase']);

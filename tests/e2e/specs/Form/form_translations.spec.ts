@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  */
 
 import { randomUUID } from "crypto";
-import { expect, test } from '../../fixtures/glpi_fixture';
+import { expect, test } from '../../fixtures/zentra_fixture';
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { FormTranslationPage } from "../../pages/FormTranslationPage";
@@ -43,7 +43,7 @@ test('Can copy default value to translation', async ({ page, profile, api }) => 
 
     // Create a form and go to its translation page
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         header: `Form description`,
         entities_id: getWorkerEntityId(),
@@ -104,7 +104,7 @@ for (const language of language_to_test) {
 
         // Create a form and go to its translation page
         const uuid = randomUUID();
-        const form_id = await api.createItem('Glpi\\Form\\Form', {
+        const form_id = await api.createItem('Zentra\\Form\\Form', {
             name: `Form - ${uuid}`,
             header: `Form description`,
             entities_id: getWorkerEntityId(),

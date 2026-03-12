@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Exception\Http\UnprocessableEntityHttpException;
-use Glpi\Search\FilterableInterface;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Exception\Http\UnprocessableEntityHttpException;
+use Zentra\Search\FilterableInterface;
 
 // Read endpoint
 $action = $_POST['action'] ?? false;

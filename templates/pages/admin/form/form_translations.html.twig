@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@
 
     <div class="card rounded">
         {% include "components/datatable.html.twig" with {
-            'datatable_id': 'glpi-form-translations-languages',
+            'datatable_id': 'zentra-form-translations-languages',
             'container_class': 'rounded',
             'columns': {
                 'language': __('Language'),
@@ -82,14 +82,14 @@
                 <form
                     action="{{ path('/Form/Translation/{form_id}/Add'|replace({'{form_id}': item.getId()})) }}"
                     method="POST"
-                    data-glpi-form-translations-add-language-container=""
+                    data-zentra-form-translations-add-language-container=""
                 >
                     <div class="modal-header">
                         <h5 class="modal-title" id="addLanguageModalLabel">{{ __('Add language') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
                         {{ fields.dropdownArrayField(
                             'language',
                             __('Select language to translate'),
@@ -109,7 +109,7 @@
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                             {{ __('Cancel') }}
                         </button>
-                        <button type="submit" class="btn btn-primary" data-glpi-form-translations-add-language-button="">
+                        <button type="submit" class="btn btn-primary" data-zentra-form-translations-add-language-button="">
                             {{ __('Add') }}
                         </button>
                     </div>

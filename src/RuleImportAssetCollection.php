@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Inventory\Request;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Inventory\Request;
 
 use function Safe\file_get_contents;
 
@@ -56,15 +56,15 @@ class RuleImportAssetCollection extends RuleCollection
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$withtemplate) {
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    $types = $CFG_GLPI['ruleimportasset_types'];
+                    $types = $CFG_ZENTRA['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
                             $ong[$type] = $type::getTypeName(Session::getPluralNumber());
@@ -91,7 +91,7 @@ class RuleImportAssetCollection extends RuleCollection
     public function collectionFilter($criteria, $options = [])
     {
         // current tab
-        $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
+        $active_tab = $options['_zentra_tab'] ?? Session::getActiveTab($this->getType());
         $current_tab = str_replace(self::class . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
 
@@ -99,13 +99,13 @@ class RuleImportAssetCollection extends RuleCollection
             return $criteria;
         }
 
-        $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
+        $criteria['LEFT JOIN']['zentra_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
-                'glpi_rules'   => 'id',
+                'zentra_rules'   => 'id',
             ],
         ];
-        $criteria['GROUPBY'] = ['glpi_rules.id'];
+        $criteria['GROUPBY'] = ['zentra_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [

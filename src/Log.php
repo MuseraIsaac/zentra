@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryParam;
-use Glpi\RichText\RichText;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryParam;
+use Zentra\RichText\RichText;
+use Zentra\Search\SearchOption;
 
 use function Safe\preg_match;
 
@@ -95,7 +95,7 @@ class Log extends CommonDBTM
         return 'ti ti-history';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!self::canView()) {
             return '';
@@ -103,11 +103,11 @@ class Log extends CommonDBTM
 
         $nb = 0;
         if (
-            $_SESSION['glpishow_count_on_tabs']
+            $_SESSION['zentrashow_count_on_tabs']
             && ($item instanceof CommonDBTM)
         ) {
             $nb = countElementsInTable(
-                'glpi_logs',
+                'zentra_logs',
                 ['itemtype' => $item->getType(),
                     'items_id' => $item->getID(),
                 ]
@@ -117,7 +117,7 @@ class Log extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -230,7 +230,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $date_mod = $_SESSION["glpi_currenttime"];
+        $date_mod = $_SESSION["zentra_currenttime"];
         if (empty($changes)) {
             return false;
         }
@@ -298,7 +298,7 @@ class Log extends CommonDBTM
         $result = $DB->insert(self::getTable(), $params);
 
         if ($result && $DB->affectedRows() > 0) {
-            return $_SESSION['glpi_maxhistory'] = $DB->insertId();
+            return $_SESSION['zentra_maxhistory'] = $DB->insertId();
         }
         return false;
     }
@@ -314,7 +314,7 @@ class Log extends CommonDBTM
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return;
@@ -329,14 +329,14 @@ class Log extends CommonDBTM
         $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
         // Total Number of events
-        $total_number    = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
-        $filtered_number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
+        $total_number    = countElementsInTable("zentra_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
+        $filtered_number = countElementsInTable("zentra_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
 
         TemplateRenderer::getInstance()->display('components/logs.html.twig', [
             'total_number'      => $total_number,
             'filtered_number'   => $filtered_number,
             'logs'              => $filtered_number > 0
-            ? self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters)
+            ? self::getHistoryData($item, $start, $_SESSION['zentralist_limit'], $sql_filters)
             : [],
             'start'             => $start,
             'href'              => $item::getFormURLWithID($items_id),
@@ -353,7 +353,7 @@ class Log extends CommonDBTM
             'linked_actions'    => $is_filtered
             ? Log::getDistinctLinkedActionValuesInItemLog($item)
             : [],
-            'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
+            'csv_url'           => $CFG_ZENTRA['root_doc'] . "/front/log/export.php?" . http_build_query([
                 'filter'   => $filters,
                 'itemtype' => $item::getType(),
                 'id'       => $item->getId(),
@@ -371,7 +371,7 @@ class Log extends CommonDBTM
      * @param array      $sqlfilters SQL filters applied to history (default [])
      *
      * @return array of log entries, each containing the following keys:
-     *      - int id: the           id of the entry in the `glpi_logs` table
+     *      - int id: the           id of the entry in the `zentra_logs` table
      *      - bool display_history: whether the data should be displayed in the history tab
      *      - string date_mod:      the entry date
      *      - string user_name:     the name of the user that made the change
@@ -655,7 +655,7 @@ class Log extends CommonDBTM
                     case self::HISTORY_UPDATE_RELATION:
                         $linktype_field = explode('#', $data["itemtype_link"]);
                         $linktype     = $linktype_field[0];
-                        $tmp['field'] = is_a($linktype, CommonGLPI::class, true) ? $linktype::getTypeName() : $linktype;
+                        $tmp['field'] = is_a($linktype, CommonZENTRA::class, true) ? $linktype::getTypeName() : $linktype;
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
                             htmlescape($action_label),
@@ -879,7 +879,7 @@ class Log extends CommonDBTM
                         if ($oldval_expl[0] == '&nbsp;') {
                             $oldval = $data["old_value"];
                         } else {
-                            $old_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $oldval_expl[0]]]);
+                            $old_iterator = $DBread->request(['FROM' => 'zentra_users', 'WHERE' => ['name' => $oldval_expl[0]]]);
                             foreach ($old_iterator as $val) {
                                 $oldval = sprintf(
                                     __('%1$s %2$s'),
@@ -897,7 +897,7 @@ class Log extends CommonDBTM
                         if ($newval_expl[0] == '&nbsp;') {
                             $newval = $data["new_value"];
                         } else {
-                            $new_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $newval_expl[0]]]);
+                            $new_iterator = $DBread->request(['FROM' => 'zentra_users', 'WHERE' => ['name' => $newval_expl[0]]]);
                             foreach ($new_iterator as $val) {
                                 $newval = sprintf(
                                     __('%1$s %2$s'),
@@ -1415,7 +1415,7 @@ class Log extends CommonDBTM
      **/
     public function post_addItem()
     {
-        $_SESSION['glpi_maxhistory'] = $this->fields['id'];
+        $_SESSION['zentra_maxhistory'] = $this->fields['id'];
     }
 
     public function getRights($interface = 'central')

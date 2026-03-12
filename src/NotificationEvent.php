@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class NotificationEvent extends CommonDBTM
 
 
     /**
-     * @param class-string<CommonGLPI> $itemtype Item type
+     * @param class-string<CommonZENTRA> $itemtype Item type
      * @param array                    $options  array to pass to showFromArray or $value
      *
      * @return string
@@ -81,7 +81,7 @@ class NotificationEvent extends CommonDBTM
      *
      * @since 0.83
      *
-     * @param class-string<CommonGLPI> $itemtype name of the type
+     * @param class-string<CommonZENTRA> $itemtype name of the type
      * @param string                   $event    name of the event
      *
      * @return string
@@ -105,7 +105,7 @@ class NotificationEvent extends CommonDBTM
      * Raise a notification event
      *
      * @param string          $event   the event raised for the itemtype
-     * @param CommonGLPI      $item    the object which raised the event
+     * @param CommonZENTRA      $item    the object which raised the event
      * @param array           $options array of options used
      * @param CommonDBTM|null $trigger item that raises the notification (in case notification was raised by a child item)
      * @param string          $label   used for debugEvent()
@@ -116,10 +116,10 @@ class NotificationEvent extends CommonDBTM
      **/
     public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        //If notifications are enabled in GLPI's configuration
-        if ($CFG_GLPI["use_notifications"] && Notification_NotificationTemplate::hasActiveMode()) {
+        //If notifications are enabled in ZENTRA's configuration
+        if ($CFG_ZENTRA["use_notifications"] && Notification_NotificationTemplate::hasActiveMode()) {
             $notificationtarget = NotificationTarget::getInstance($item, $event, $options);
             if (!$notificationtarget) {
                 return false;
@@ -184,13 +184,13 @@ class NotificationEvent extends CommonDBTM
                             // Special case for anonymous helpdesk, we have an email
                             // instead of an ID
                             // -> load the global conf and use the email as the emitter
-                            $notify_me = $CFG_GLPI['notification_to_myself'];
+                            $notify_me = $CFG_ZENTRA['notification_to_myself'];
                             $emitter = $mailcollector_user;
                         }
                     }
                 } else {
                     // Not cron see my pref
-                    $notify_me = $_SESSION['glpinotification_to_myself'];
+                    $notify_me = $_SESSION['zentranotification_to_myself'];
                 }
 
                 $options['mode'] = $data['mode'];

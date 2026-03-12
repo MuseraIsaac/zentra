@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -94,12 +94,12 @@
         // Send data to backend
         $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+            url: CFG_ZENTRA.root_doc + "/ajax/criteria_filter.php",
             data: form_data,
             processData: false, // Needed when using FormData object
             contentType: false, // Needed when using FormData object
         }).done(function() {
-            glpi_toast_info("{{ __("Filter saved") }}");
+            zentra_toast_info("{{ __("Filter saved") }}");
     {% if delete_action_id is defined %}
             // Show delete button if it wasn't already enabled
             $("#{{ delete_action_id }}").removeClass('d-none');
@@ -111,7 +111,7 @@
                 tab.append('<span class="badge">1</span>');
             }
         }).fail(function() {
-            glpi_toast_error("{{ __("Unable to save filter") }}");
+            zentra_toast_error("{{ __("Unable to save filter") }}");
         }).always(function() {
             hideLoading(btn);
         });
@@ -130,7 +130,7 @@
 
         $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+            url: CFG_ZENTRA.root_doc + "/ajax/criteria_filter.php",
             data: {
                 'action': 'delete_filter',
                 'itemtype': '{{ itemtype }}',
@@ -142,7 +142,7 @@
         }).fail(function() {
             hideLoading(btn);
 
-            glpi_toast_error("{{ __("Failed to delete filter") }}");
+            zentra_toast_error("{{ __("Failed to delete filter") }}");
         });
     });
 </script>

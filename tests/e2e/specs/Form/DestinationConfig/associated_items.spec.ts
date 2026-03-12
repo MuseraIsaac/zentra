@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  */
 
 import { randomUUID } from "crypto";
-import { test, expect } from '../../../fixtures/glpi_fixture';
+import { test, expect } from '../../../fixtures/zentra_fixture';
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId, getWorkerUserId } from '../../../utils/WorkerEntities';
 import { FormPage } from "../../../pages/FormPage";
@@ -182,7 +182,7 @@ test.describe('Associated items configuration', () => {
         await form_page.doSetDropdownValue(items_dropdown, 'Specific items');
 
         // eslint-disable-next-line playwright/no-raw-locators
-        const item_rows = config.locator('[data-glpi-associated-items-specific-values-extra-field-item]');
+        const item_rows = config.locator('[data-zentra-associated-items-specific-values-extra-field-item]');
 
         // First computer
         const first_itemtype = form_page.getDropdownByLabel('Select the itemtype of the item to associate...', item_rows.nth(0));
@@ -235,7 +235,7 @@ test.describe('Associated items configuration', () => {
         await form_page.doSetDropdownValue(items_dropdown, 'Specific items');
 
         // eslint-disable-next-line playwright/no-raw-locators
-        const item_rows = config.locator('[data-glpi-associated-items-specific-values-extra-field-item]');
+        const item_rows = config.locator('[data-zentra-associated-items-specific-values-extra-field-item]');
 
         // Associate first computer
         const first_itemtype = form_page.getDropdownByLabel('Select the itemtype of the item to associate...', item_rows.nth(0));
@@ -246,7 +246,7 @@ test.describe('Associated items configuration', () => {
         // Add another strategy
         await config.getByRole('button', { name: 'Combine with another option' }).click();
         // eslint-disable-next-line playwright/no-raw-locators
-        const strategy_configs = config.locator('[data-glpi-itildestination-field-config]');
+        const strategy_configs = config.locator('[data-zentra-itildestination-field-config]');
         const second_strategy_dropdown = form_page.getDropdownByLabel('Select strategy...', strategy_configs.nth(1));
         await form_page.doSetDropdownValue(second_strategy_dropdown, 'Answer from specific questions');
 

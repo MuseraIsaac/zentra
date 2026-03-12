@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * Class IPAddress_IPNetwork : Connection between IPAddress and IPNetwork
@@ -81,8 +81,8 @@ class IPAddress_IPNetwork extends CommonDBRelation
                 new QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
                 'id AS ipaddresses_id',
             ],
-            'FROM'   => 'glpi_ipaddresses',
-            'WHERE'  => $network->getCriteriaForMatchingElement('glpi_ipaddresses', 'binary', 'version'),
+            'FROM'   => 'zentra_ipaddresses',
+            'WHERE'  => $network->getCriteriaForMatchingElement('zentra_ipaddresses', 'binary', 'version'),
             'GROUP'  => 'id',
         ]);
         foreach ($iterator as $link) {

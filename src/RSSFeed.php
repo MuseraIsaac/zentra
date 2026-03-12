@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\Environment;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
-use Glpi\Toolbox\URL;
+use Zentra\Application\Environment;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\RichText\RichText;
+use Zentra\Toolbox\URL;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
 
@@ -176,17 +176,17 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         // JOINs
         // Users
-        $join['glpi_rssfeeds_users'] = [
+        $join['zentra_rssfeeds_users'] = [
             'ON' => [
-                'glpi_rssfeeds_users'   => 'rssfeeds_id',
-                'glpi_rssfeeds'         => 'id',
+                'zentra_rssfeeds_users'   => 'rssfeeds_id',
+                'zentra_rssfeeds'         => 'id',
             ],
         ];
 
         $where = [
             'OR' => [
                 self::getTable() . '.users_id'   => Session::getLoginUserID(),
-                'glpi_rssfeeds_users.users_id'   => Session::getLoginUserID(),
+                'zentra_rssfeeds_users.users_id'   => Session::getLoginUserID(),
             ],
         ];
         $orwhere = [];
@@ -194,50 +194,50 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         // Groups
         if (
             $forceall
-            || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))
+            || (isset($_SESSION["zentragroups"]) && count($_SESSION["zentragroups"]))
         ) {
-            $join['glpi_groups_rssfeeds'] = [
+            $join['zentra_groups_rssfeeds'] = [
                 'ON' => [
-                    'glpi_groups_rssfeeds'  => 'rssfeeds_id',
-                    'glpi_rssfeeds'         => 'id',
+                    'zentra_groups_rssfeeds'  => 'rssfeeds_id',
+                    'zentra_rssfeeds'         => 'id',
                 ],
             ];
         }
 
-        if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-            $restrict = getEntitiesRestrictCriteria('glpi_groups_rssfeeds', '', '', true);
+        if (isset($_SESSION["zentragroups"]) && count($_SESSION["zentragroups"])) {
+            $restrict = getEntitiesRestrictCriteria('zentra_groups_rssfeeds', '', '', true);
             $orwhere[] = [
-                'glpi_groups_rssfeeds.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
+                'zentra_groups_rssfeeds.groups_id' => count($_SESSION["zentragroups"])
+                                                      ? $_SESSION["zentragroups"]
                                                       : [-1],
                 'OR' => [
-                    'glpi_groups_rssfeeds.no_entity_restriction' => 1,
+                    'zentra_groups_rssfeeds.no_entity_restriction' => 1,
                 ] + $restrict,
             ];
         }
 
         // Profiles
-        if ($forceall || isset($_SESSION["glpiactiveprofile"]['id'])) {
-            $join['glpi_profiles_rssfeeds'] = [
+        if ($forceall || isset($_SESSION["zentraactiveprofile"]['id'])) {
+            $join['zentra_profiles_rssfeeds'] = [
                 'ON' => [
-                    'glpi_profiles_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id',
+                    'zentra_profiles_rssfeeds'   => 'rssfeeds_id',
+                    'zentra_rssfeeds'            => 'id',
                 ],
             ];
         }
 
-        if (isset($_SESSION["glpiactiveprofile"]['id'])) {
-            $restrict = getEntitiesRestrictCriteria('glpi_entities_rssfeeds', '', '', true);
+        if (isset($_SESSION["zentraactiveprofile"]['id'])) {
+            $restrict = getEntitiesRestrictCriteria('zentra_entities_rssfeeds', '', '', true);
             if (!count($restrict)) {
                 $restrict = [true];
             }
             $ors = [
-                'glpi_profiles_rssfeeds.no_entity_restriction' => 1,
+                'zentra_profiles_rssfeeds.no_entity_restriction' => 1,
                 $restrict,
             ];
 
             $orwhere[] = [
-                'glpi_profiles_rssfeeds.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
+                'zentra_profiles_rssfeeds.profiles_id' => $_SESSION["zentraactiveprofile"]['id'],
                 'OR' => $ors,
             ];
         }
@@ -245,19 +245,19 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         // Entities
         if (
             $forceall
-            || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))
+            || (isset($_SESSION["zentraactiveentities"]) && count($_SESSION["zentraactiveentities"]))
         ) {
-            $join['glpi_entities_rssfeeds'] = [
+            $join['zentra_entities_rssfeeds'] = [
                 'ON' => [
-                    'glpi_entities_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id',
+                    'zentra_entities_rssfeeds'   => 'rssfeeds_id',
+                    'zentra_rssfeeds'            => 'id',
                 ],
             ];
         }
 
-        if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+        if (isset($_SESSION["zentraactiveentities"]) && count($_SESSION["zentraactiveentities"])) {
             // Force complete SQL not summary when access to all entities
-            $restrict = getEntitiesRestrictCriteria('glpi_entities_rssfeeds', '', '', true, true);
+            $restrict = getEntitiesRestrictCriteria('zentra_entities_rssfeeds', '', '', true, true);
             if (count($restrict)) {
                 $orwhere[] = $restrict;
             }
@@ -319,7 +319,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Creator'),
             'datatype'           => 'dropdown',
@@ -419,7 +419,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
@@ -427,7 +427,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 case RSSFeed::class:
                     $showtab = [1 => self::createTabEntry(__('Content'))];
                     if (Session::haveRight('rssfeed_public', UPDATE)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
                         $showtab[2] = self::createTabEntry(_n(
@@ -452,7 +452,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $ong;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;
@@ -565,13 +565,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function showForm($ID, array $options = [])
     {
         // Test _rss cache directory. If permission trouble : unable to edit
-        if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
+        if (Toolbox::testWriteAccessToDirectory(ZENTRA_RSS_DIR) > 0) {
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="alert alert-danger">
                     <i class="alert-icon ti ti-alert-triangle"></i>
                     <div class="alert-title">{{ msg }}</div>
                 </div>
-TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
+TWIG, ['msg' => __('Check permissions to the directory: %s', ZENTRA_RSS_DIR)]);
             return false;
         }
 
@@ -664,12 +664,12 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        global $GLPI_CACHE, $CFG_GLPI;
+        global $ZENTRA_CACHE, $CFG_ZENTRA;
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);
         $update_cache = false;
-        if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
+        if (($raw_data = $ZENTRA_CACHE->get($cache_key)) === null) {
             if (!Toolbox::isUrlSafe($url)) {
                 return false;
             }
@@ -677,7 +677,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             $error_msg  = null;
             $curl_error = null;
             $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            if (in_array(self::class, $CFG_ZENTRA['proxy_exclusions'])) {
                 $eopts['proxy_excluded'] = true;
             }
             $raw_data = Toolbox::callCurl($url, $eopts, $error_msg, $curl_error, true);
@@ -702,7 +702,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         }
 
         if ($update_cache) {
-            $GLPI_CACHE->set($cache_key, $raw_data, $cache_duration);
+            $ZENTRA_CACHE->set($cache_key, $raw_data, $cache_duration);
         }
 
         return $feed;
@@ -757,7 +757,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if ($personal) {
             // Personal notes only for central view
@@ -811,7 +811,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         ) {
             $output .= "<span class='float-end'>";
             $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";
-            $output .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\""
+            $output .= "<img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\""
                 . __s('Add') . "\"></a></span>";
         }
 

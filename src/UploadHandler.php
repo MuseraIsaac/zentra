@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -17,7 +17,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
  */
 
 /**
- * @FIXME Merge this class with GLPIUploadHandler in GLPI 11.0.
- *        It has been added in GLPI 10.0.10 to ensure that removal of `blueimp/jquery-file-upload` library would not
+ * @FIXME Merge this class with ZENTRAUploadHandler in ZENTRA 11.0.
+ *        It has been added in ZENTRA 10.0.10 to ensure that removal of `blueimp/jquery-file-upload` library would not
  *        result in any BC-break for plugins.
  */
 
@@ -124,11 +124,11 @@ class UploadHandler
      */
     public function __construct($options = null, $initialize = false, $error_messages = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->options = [
             'script_url' => $this->get_full_url() . '/' . $this->basename($this->get_server_var('SCRIPT_NAME')),
-            'upload_dir' => GLPI_TMP_DIR . '/',
+            'upload_dir' => ZENTRA_TMP_DIR . '/',
             'upload_url' => $this->get_full_url() . '/files/',
             'input_stream' => 'php://input',
             'user_dirs' => false,
@@ -194,7 +194,7 @@ class UploadHandler
             'replace_dots_in_filenames' => false,
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
-            'max_file_size' => $CFG_GLPI['document_max_size'] * 1024 * 1024,
+            'max_file_size' => $CFG_ZENTRA['document_max_size'] * 1024 * 1024,
             'min_file_size' => 1,
             // The maximum number of files for the upload directory:
             'max_number_of_files' => null,

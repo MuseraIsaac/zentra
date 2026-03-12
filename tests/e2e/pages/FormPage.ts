@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@
  */
 
 import { expect, Locator, Page } from "@playwright/test";
-import { GlpiPage } from "./GlpiPage";
+import { ZentraPage } from "./ZentraPage";
 
-export class FormPage extends GlpiPage
+export class FormPage extends ZentraPage
 {
     public readonly editor_active_checkbox: Locator;
     public readonly editor_save_button: Locator;
@@ -53,7 +53,7 @@ export class FormPage extends GlpiPage
 
     public async goto(id: number): Promise<void>
     {
-        const tab = "Glpi\\Form\\Form$main";
+        const tab = "Zentra\\Form\\Form$main";
         await this.page.goto(`/front/form/form.form.php?id=${id}&forcetab=${tab}`);
     }
 
@@ -480,7 +480,7 @@ export class FormPage extends GlpiPage
 
     public async gotoDestinationTab(id: number): Promise<void>
     {
-        const tab = "Glpi\\Form\\Destination\\FormDestination$1";
+        const tab = "Zentra\\Form\\Destination\\FormDestination$1";
         await this.page.goto(
             `/front/form/form.form.php?id=${id}&forcetab=${tab}`
         );
@@ -534,7 +534,7 @@ export class FormPage extends GlpiPage
             false,
         );
         // eslint-disable-next-line playwright/no-raw-locators
-        await question.locator('[data-glpi-loading="true"]').waitFor({ state: 'detached' });
+        await question.locator('[data-zentra-loading="true"]').waitFor({ state: 'detached' });
     }
 
     public async doInitValidationConfiguration(
@@ -579,7 +579,7 @@ export class FormPage extends GlpiPage
         const radio = container.getByRole('radio', { name: strategy, exact: true });
 
         // Wait for the JS controller to be ready (removes pointer-events: none)
-        await expect(radio).not.toHaveAttribute('data-glpi-conditions-editor-disabled');
+        await expect(radio).not.toHaveAttribute('data-zentra-conditions-editor-disabled');
 
         const strategy_value = FormPage.VALIDATION_STRATEGY_MAP[strategy];
         await container.getByTestId(`strategy-label-${strategy_value}`).click();

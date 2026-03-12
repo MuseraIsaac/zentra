@@ -1,5 +1,5 @@
 <script setup>
-    /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
+    /* global zentra_toast_info, zentra_toast_warning, zentra_toast_error */
     /**
      * @typedef ColumnMetadata
      * @property {boolean} protected If the column is protected from being deleted or modified.
@@ -143,7 +143,7 @@
         });
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 inputs: values,
                 itemtype: opened_form_data.value.itemtype,

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@ describe('User Mentions', () => {
         $('body').html(`<textarea id="richtext"></textarea>`);
     });
     test('Global variable', () => {
-        expect(window.GLPI.RichText.UserMention).toBeDefined();
+        expect(window.ZENTRA.RichText.UserMention).toBeDefined();
     });
     test('fetchItems', async () => {
-        const mentions = new window.GLPI.RichText.UserMention(null, 5, 'test', {
+        const mentions = new window.ZENTRA.RichText.UserMention(null, 5, 'test', {
             full: true
         });
         window.AjaxMock.start();
@@ -71,7 +71,7 @@ describe('User Mentions', () => {
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
     });
     test('fetchItems Restricted', async () => {
-        const mentions = new window.GLPI.RichText.UserMention(null, 5, 'test', {
+        const mentions = new window.ZENTRA.RichText.UserMention(null, 5, 'test', {
             full: false,
             users: [2, 4]
         });

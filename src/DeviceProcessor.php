@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice
@@ -124,7 +124,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => 'glpi_deviceprocessormodels',
+            'table'              => 'zentra_deviceprocessormodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -224,7 +224,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_deviceprocessors',
+            'table'              => 'zentra_deviceprocessors',
             'field'              => 'designation',
             'name'               => self::getTypeName(1),
             'forcegroupby'       => true,
@@ -233,7 +233,7 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_deviceprocessors',
+                    'table'              => 'zentra_items_deviceprocessors',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -241,7 +241,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'nbcores',
             'name'               => __('processor: number of cores'),
             'forcegroupby'       => true,
@@ -258,7 +258,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '34',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'nbthreads',
             'name'               => __('processor: number of threads'),
             'forcegroupby'       => true,
@@ -275,7 +275,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '35',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'id',
             'name'               => _x('quantity', 'Processors number'),
             'forcegroupby'       => true,
@@ -292,7 +292,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '36',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'frequency',
             'name'               => sprintf(__('%1$s (%2$s)'), __('Processor frequency'), __('MHz')),
             'unit'               => 'MHz',
@@ -310,7 +310,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '1336',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -322,7 +322,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '1337',
-            'table'              => 'glpi_items_deviceprocessors',
+            'table'              => 'zentra_items_deviceprocessors',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

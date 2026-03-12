@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Exception\ItemLinkException;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Exception\ItemLinkException;
 
 use function Safe\preg_match;
 
@@ -597,13 +597,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 }
                 if (
                     ($item1->isRecursive())
-                    && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))
+                    && in_array($entity1, getAncestorsOf("zentra_entities", $entity2))
                 ) {
                     return true;
                 }
                 if (
                     ($item2->isRecursive())
-                    && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))
+                    && in_array($entity2, getAncestorsOf("zentra_entities", $entity1))
                 ) {
                     return true;
                 }
@@ -1860,15 +1860,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
-            $params['SELECT'][] = 'glpi_entities.id AS entity';
-            $params['INNER JOIN']['glpi_entities'] = [
+            $params['SELECT'][] = 'zentra_entities.id AS entity';
+            $params['INNER JOIN']['zentra_entities'] = [
                 'FKEY'   => [
                     $link_table       => 'entities_id',
-                    'glpi_entities'   => 'id',
+                    'zentra_entities'   => 'id',
                 ],
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', 'auto');
-            $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+            $params['ORDER'] = ['zentra_entities.completename', $params['ORDER']];
         }
 
         return $params;
@@ -2020,15 +2020,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
-            $params['SELECT'][] = 'glpi_entities.id AS entity';
-            $params['LEFT JOIN']['glpi_entities'] = [
+            $params['SELECT'][] = 'zentra_entities.id AS entity';
+            $params['LEFT JOIN']['zentra_entities'] = [
                 'FKEY'   => [
                     $item->getTable() => 'entities_id',
-                    'glpi_entities'   => 'id',
+                    'zentra_entities'   => 'id',
                 ],
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
-            $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+            $params['ORDER'] = ['zentra_entities.completename', $params['ORDER']];
         }
 
         return $params;

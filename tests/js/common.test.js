@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,10 +176,10 @@ describe('Common', () => {
     it('getExtIcon', () => {
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/png-dist.png', 'HEAD', {}, () => ''));
-        expect(common.getExtIcon('png')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/png-dist.png" title="png">`);
+        expect(common.getExtIcon('png')).toBe(`<img src="${window.CFG_ZENTRA.root_doc}/pics/icones/png-dist.png" title="png">`);
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
-        expect(common.getExtIcon('fake')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/defaut-dist.png" title="fake">`);
+        expect(common.getExtIcon('fake')).toBe(`<img src="${window.CFG_ZENTRA.root_doc}/pics/icones/defaut-dist.png" title="fake">`);
     });
 
     it('getSize (Memory size formatting)', () => {
@@ -236,7 +236,7 @@ describe('Common', () => {
 
     it('getAjaxCsrfToken', () => {
         const csrf_meta = document.createElement('meta');
-        csrf_meta.setAttribute('property', 'glpi:csrf_token');
+        csrf_meta.setAttribute('property', 'zentra:csrf_token');
         csrf_meta.setAttribute('content', 'dummy_csrf_token_value');
         document.head.append(csrf_meta);
         expect(common.getAjaxCsrfToken()).toBe('dummy_csrf_token_value');

@@ -1,4 +1,4 @@
-# GLPI changes
+# ZENTRA changes
 
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
@@ -213,13 +213,13 @@ The present file will list all changes made to the project; according to the
 - Log viewer for logs in `files/_log` directory.
 - Custom palette/theme support (uses `files/_themes` directory by default).
 - Two-Factor Authentication (2FA) support via Time-based One-time Password (TOTP).
-- `Deny login` authorization rule action to deny login for a user, but not prevent the import/existence of the user in GLPI.
+- `Deny login` authorization rule action to deny login for a user, but not prevent the import/existence of the user in ZENTRA.
 - Directly capture screenshots or screen recordings from the "Add a document" form in tickets.
 - With a clean install, dashboards now show fake/placeholder data by default with a message indicating you are viewing demonstration data and a button to disable it.
 - Assets that can be assigned to users/groups have new "View assigned" and "Update assigned" rights which give read/update access to users and groups assigned to the asset.
 - `ODS` and `XLS` export of search results.
 - Support for the well-known `change-password" URI which can be used by some password managers to automatically (or assist with) changing a user's password.
-- CLI commands for creating local GLPI users, enabling/disabling/deleting users, resetting local GLPI user passwords and granting profile assignments.
+- CLI commands for creating local ZENTRA users, enabling/disabling/deleting users, resetting local ZENTRA user passwords and granting profile assignments.
 - Cloning templates (such as computer templates)
 - Creating a template from an existing item (such as a computer). This action is only available from the Actions menu within the item form (bulk action not allowed).
 - Massive action for users to reapply authorization assignment rules.
@@ -254,7 +254,7 @@ The present file will list all changes made to the project; according to the
   Permission checks at the item-level have not been changed.
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
-- The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
+- The `Computer_Item` class has been replaced by the `\Zentra\Asset\Asset_PeripheralAsset` class.
 - List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 - Running `front/cron.php` or `bin/console` will attempt to check and block execution if running as root.
 - Testing LDAP replicates now shows results as toast notifications rather than inside the replicate tab after a page reload.
@@ -281,11 +281,11 @@ The present file will list all changes made to the project; according to the
 - `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
 - `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
 - Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab).
-- The database "master" property in the status checker (/status.php and glpi:system:status), replaced by "main".
-- The database "slaves" property in the status checker (/status.php and glpi:system:status), replaced by "replicas".
-- API URL is no longer customizable within GLPI. Use alias/rewrite rules in your web server configuration instead if needed.
+- The database "master" property in the status checker (/status.php and zentra:system:status), replaced by "main".
+- The database "slaves" property in the status checker (/status.php and zentra:system:status), replaced by "replicas".
+- API URL is no longer customizable within ZENTRA. Use alias/rewrite rules in your web server configuration instead if needed.
 - `status.php` and `bin/console system:status` no longer supports plain-text output.
-- `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
+- `Zentra\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
 - `Sylk` export of search results.
 - `full_width_adapt_column` option for fields macros has been removed.
 - `Picture` search option (ID 150) for Users.
@@ -293,10 +293,10 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
-- `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
-- `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
+- `phpCAS` library is now bundled in ZENTRA, to prevent version compatibility issues.
+- `Zentra\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 - `fetchSessionMessages()` global JS function to display new session messages as toast notifications without requiring a page reload.
-- `is_exclusion` column added to `glpi_notificationtargets` table.
+- `is_exclusion` column added to `zentra_notificationtargets` table.
 - `CommonDBTM::getForbiddenMultipleMassiveActions()` method to allow specifying which actions should only be shown from the item form.
 
 #### Changes
@@ -314,30 +314,30 @@ The present file will list all changes made to the project; according to the
 - Notifications are not deduplicated anymore.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
-- `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
+- `ZENTRAMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
   We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
-- `CommonGLPI::$othertabs` static property has been made private.
-- `CommonGLPI::createTabEntry()` signature changed.
+- `CommonZENTRA::$othertabs` static property has been made private.
+- `CommonZENTRA::createTabEntry()` signature changed.
 - `CommonITILValidation::showSummary()` method has been made private.
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
-- GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
+- ZENTRA web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
 - Usage of `DBmysql::query()` and `DBmysql::queryOrDie()` method are prohibited to ensure that legacy unsafe DB are no more executed.
   Building and executing raw queries using `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods is also prohibited.
-  To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  To execute DB queries, either `DBmysql::request()` can be used to craft query using the ZENTRA query builder,
   or `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 - The dynamic progress bar provided by the `Html` class no longer works. The `ProgressIndicator` JS module can be used as a replacement to display the progress of a process.
 - `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
 - `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
 - `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
 - `NotificationEventInterface::raise()` has a new `$trigger` parameter.
-- `QueryExpression` class moved to `Glpi\DBAL` namespace.
-- `QueryParam` class moved to `Glpi\DBAL` namespace.
-- `QuerySubQuery` class moved to `Glpi\DBAL` namespace.
-- `QueryUnion` class moved to `Glpi\DBAL` namespace.
+- `QueryExpression` class moved to `Zentra\DBAL` namespace.
+- `QueryParam` class moved to `Zentra\DBAL` namespace.
+- `QuerySubQuery` class moved to `Zentra\DBAL` namespace.
+- `QueryUnion` class moved to `Zentra\DBAL` namespace.
 - `PrinterLog::getMetrics()` method has been made final.
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
-- `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
+- `showSystemInformations` method for `$CFG_ZENTRA['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
 - `DisplayPreference` config form POST handling moved to `ajax/displaypreference.php` script. The front file is for displaying the tabs only.
 - `Document::send()` signature changed. The `$context` parameter has been removed.
 - `title` property of Kanban items must be text only. HTML no longer supported.
@@ -355,22 +355,22 @@ The present file will list all changes made to the project; according to the
 - `showInstantiationForm()` method for Network Port classes are now expected to output HTML for a flex form instead of a table.
 - `NetworkName::showFormForNetworkPort()` now outputs HTML for a flex form instead of a table.
 - `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
-- `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
+- `CommonZENTRA::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 - Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 - `templates/password_form.html.twig` should no longer be used directly. Use `templates/forgotpassword.html.twig`, `templates/updatepassword.html.twig` or a custom template.
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` now requires a `validation_class` parameter.
 - Usage of `ajax/dropdownValidator.php` with the `users_id_validate` parameter is no longer supported. Use `items_id_target` instead.
-- `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
+- `Zentra\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 - The `helper` property of form fields will not support anymore the presence of HTML code.
-- `GLPI::initErrorHandler()` does not return any value anymore.
+- `ZENTRA::initErrorHandler()` does not return any value anymore.
 - The `inc/autoload.function.php`, `inc/based_config.php`, `inc/config.php`, `inc/db.function.php` and `inc/define.php` files have been removed and the `inc/includes.php` file has been almost emptied.
-  The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding GLPI boostraping logic is now executed automatically.
+  The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding ZENTRA boostraping logic is now executed automatically.
 - `Plugin::init()` and `Plugin::checkStates()` methods signature changed. It is not anymore possible to exclude specific plugins.
 - In a HTTP request context `$_SERVER` variables, like `PATH_INFO`, `PHP_SELF`, `SCRIPT_FILENAME` and `SCRIPT_NAME`, will no longer refer to the requested script, but will refer to the `public/index.php` script.
-- Any class added to `$CFG_GLPI['directconnect_types']` must now use the `Glpi\Features\AssignableItem` trait as multi-group support is required.
+- Any class added to `$CFG_ZENTRA['directconnect_types']` must now use the `Zentra\Features\AssignableItem` trait as multi-group support is required.
 - For assets, `groups_id` and `groups_id_tech` fields were changed from integers to arrays and are loaded into the `fields` array after `getFromDB`/`getEmpty`.
-  If reading directly from the DB, you need to query the new linking table `glpi_groups_items`.
+  If reading directly from the DB, you need to query the new linking table `zentra_groups_items`.
 - `Group::getDataItems()` signature changed. The two first parameters `$types` and `$field` were replaced
   by a unique boolean `$tech` parameter that is used to compute the `$types` and `$field` values automatically.
 - `CartridgeItem::addCompatibleType()` method is now static.
@@ -425,11 +425,11 @@ The present file will list all changes made to the project; according to the
 - The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
 - `Hooks::SHOW_IN_TIMELINE`/`show_in_timeline` plugin hook has been renamed to `Hooks::TIMELINE_ITEMS`/`timeline_items`.
 - `Auth::getMethodName()` now only returns the name without a link. Use `Auth::getMethodLink()` to get a HTML-safe link.
-- `GLPI_STRICT_DEPRECATED` constant is now know as `GLPI_STRICT_ENV`
+- `ZENTRA_STRICT_DEPRECATED` constant is now know as `ZENTRA_STRICT_ENV`
 - `Software::merge()` method is now private.
-- The refusal of the collected emails corresponding to a GLPI notification will now be made based on a default rule.
+- The refusal of the collected emails corresponding to a ZENTRA notification will now be made based on a default rule.
 - The `$store_path` parameter has been removed from the `Dropdown::dropdownIcons()` method.
-- The `PLUGINS_DIRECTORIES` constant has been renamed to `GLPI_PLUGINS_DIRECTORIES`.
+- The `PLUGINS_DIRECTORIES` constant has been renamed to `ZENTRA_PLUGINS_DIRECTORIES`.
 - Most of the `Profile::show*()` methods have been made private.
 - `server` parameter of `User::changeAuthMethod()` now defaults to '0' instead of '-1' which was an invalid value when using unsigned integers.
 - `checkitem` parameter of `CommonDBTM::getMassiveActionsForItemtype()` is now the actual item being acted on when in single item mode.
@@ -438,8 +438,8 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
-- Usage of `GLPI_PLUGINS_PATH` javascript variable.
-- Usage of the `GLPI_FORCE_MAIL` constant.
+- Usage of `ZENTRA_PLUGINS_PATH` javascript variable.
+- Usage of the `ZENTRA_FORCE_MAIL` constant.
 - Usage of `MAIL_SMTPSSL` mode for SMTP configuration.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
@@ -449,7 +449,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - Usage of `get_plugin_web_dir` Twig function.
 - Usage of `verbatim_value` Twig filter.
-- `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
+- `js/Forms/FaIconSelector.js` and therefore `window.ZENTRA.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 - `linkuser_types`, `linkgroup_types`, `linkuser_tech_types`, `linkgroup_tech_types` configuration entries have been merged in a unique `assignable_types` configuration entry.
 - Usage of the `front/dropdown.common.php` and the `dropdown.common.form.php` files. There is now a generic controller that will serve the search and form pages of any `Dropdown` class.
 - Usage of the `$link` parameter in `formatUserName()` and `DbUtils::formatUserName()`. Use `formatUserLink()` or `DbUtils::formatUserLink()` instead.
@@ -465,40 +465,40 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncateOrDie()`
 - `DBmysql::updateOrDie()`. Use `DBmysql::update()` instead.
 - `Document::send()`
-- `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
-- `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
-- `Glpi\Dashboard\Filter::getAll()`
-- `Glpi\Http\Response::send()`
-- `Glpi\Http\Response::sendContent()`
-- `Glpi\Http\Response::sendError()`. Throw a `Glpi\Exception\Http\*HttpException` exception instead.
-- `Glpi\Http\Response::sendHeaders()`
-- `Glpi\Toolbox\Sanitizer::dbEscape()`
-- `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
-- `Glpi\Toolbox\Sanitizer::dbUnescape()`
-- `Glpi\Toolbox\Sanitizer::dbUnescapeRecursive()`
-- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialChars()`
-- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()`
-- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
-- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
-- `Glpi\Toolbox\Sanitizer::getVerbatimValue()`
-- `Glpi\Toolbox\Sanitizer::isDbEscaped()`
-- `Glpi\Toolbox\Sanitizer::isHtmlEncoded()`
-- `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
-- `Glpi\Toolbox\Sanitizer::sanitize()`
-- `Glpi\Toolbox\Sanitizer::unsanitize()`
+- `Zentra\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
+- `Zentra\Application\View\Extension\PluginExtension::getPluginWebDir()`
+- `Zentra\Dashboard\Filter::getAll()`
+- `Zentra\Http\Response::send()`
+- `Zentra\Http\Response::sendContent()`
+- `Zentra\Http\Response::sendError()`. Throw a `Zentra\Exception\Http\*HttpException` exception instead.
+- `Zentra\Http\Response::sendHeaders()`
+- `Zentra\Toolbox\Sanitizer::dbEscape()`
+- `Zentra\Toolbox\Sanitizer::dbEscapeRecursive()`
+- `Zentra\Toolbox\Sanitizer::dbUnescape()`
+- `Zentra\Toolbox\Sanitizer::dbUnescapeRecursive()`
+- `Zentra\Toolbox\Sanitizer::decodeHtmlSpecialChars()`
+- `Zentra\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()`
+- `Zentra\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
+- `Zentra\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
+- `Zentra\Toolbox\Sanitizer::getVerbatimValue()`
+- `Zentra\Toolbox\Sanitizer::isDbEscaped()`
+- `Zentra\Toolbox\Sanitizer::isHtmlEncoded()`
+- `Zentra\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
+- `Zentra\Toolbox\Sanitizer::sanitize()`
+- `Zentra\Toolbox\Sanitizer::unsanitize()`
 - `Html::ajaxFooter()`
 - `Html::changeProgressBarMessage()`
 - `Html::changeProgressBarPosition()`
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
-- `Html::displayErrorAndDie()`. Throw a `Glpi\Exception\Http\BadRequestHttpException` exception instead.
-- `Html::displayNotFoundError()`. Throw a `Glpi\Exception\Http\NotFoundHttpException` exception instead.
+- `Html::displayErrorAndDie()`. Throw a `Zentra\Exception\Http\BadRequestHttpException` exception instead.
+- `Html::displayNotFoundError()`. Throw a `Zentra\Exception\Http\NotFoundHttpException` exception instead.
 - `Html::displayProgressBar()`
-- `Html::displayRightError()`. Throw a `Glpi\Exception\Http\AccessDeniedHttpException` exception instead.
+- `Html::displayRightError()`. Throw a `Zentra\Exception\Http\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
-- `Html::glpi_flush()`
+- `Html::zentra_flush()`
 - `Html::jsGetElementbyID()`
 - `Html::jsGetDropdownValue()`
 - `Html::jsSetDropdownValue()`
@@ -525,25 +525,25 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 #### Removed
-- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_KEEP_CSRF_TOKEN`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
-- `GLPI_DEMO_MODE` constant.
-- `GLPI_DUMP_DIR` constant.
-- `GLPI_SQL_DEBUG` constant.
+- `ZENTRA_USE_CSRF_CHECK`, `ZENTRA_USE_IDOR_CHECK`, `ZENTRA_KEEP_CSRF_TOKEN`, `ZENTRA_CSRF_EXPIRES`, `ZENTRA_CSRF_MAX_TOKENS` and `ZENTRA_IDOR_EXPIRES` constants.
+- `ZENTRA_DEMO_MODE` constant.
+- `ZENTRA_DUMP_DIR` constant.
+- `ZENTRA_SQL_DEBUG` constant.
 - `$AJAX_INCLUDE` global variable.
-- `$CFG_GLPI_PLUGINS` global variable.
+- `$CFG_ZENTRA_PLUGINS` global variable.
 - `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
 - `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
-- `$GLPI` global variable.
+- `$ZENTRA` global variable.
 - `$LANG` global variable.
 - `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
 - `$SECURITY_STRATEGY` global variable.
 - `$SQLLOGGER` global variable
-- Usage of `$CFG_GLPI['itemdevices']` and `$CFG_GLPI['item_device_types']` configuration entries. Use `Item_Devices::getDeviceTypes()` to get the `Item_Devices` concrete class list.
+- Usage of `$CFG_ZENTRA['itemdevices']` and `$CFG_ZENTRA['item_device_types']` configuration entries. Use `Item_Devices::getDeviceTypes()` to get the `Item_Devices` concrete class list.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
 - Logging within the `mail-debug.log` log file.
-- `X-GLPI-Sanitized-Content` REST API header support.
+- `X-ZENTRA-Sanitized-Content` REST API header support.
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
@@ -571,12 +571,12 @@ The present file will list all changes made to the project; according to the
 - `CommonDevice::title()`
 - `CommonDropdown::$first_level_menu`, `CommonDropdown::$second_level_menu` and `CommonDropdown::$third_level_menu` properties.
 - `CommonDropdown::displayHeader()`
-- `CommonGLPI::$type` property.
-- `CommonGLPI::getAvailableDisplayOptions()`
-- `CommonGLPI::getDisplayOptions()`
-- `CommonGLPI::getDisplayOptionsLink()`
-- `CommonGLPI::updateDisplayOptions()`
-- `CommonGLPI::showDislayOptions()`
+- `CommonZENTRA::$type` property.
+- `CommonZENTRA::getAvailableDisplayOptions()`
+- `CommonZENTRA::getDisplayOptions()`
+- `CommonZENTRA::getDisplayOptionsLink()`
+- `CommonZENTRA::updateDisplayOptions()`
+- `CommonZENTRA::showDislayOptions()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
 - `CommonITILObject::$userentity_oncreate` property.
@@ -628,42 +628,42 @@ The present file will list all changes made to the project; according to the
 - `Entity::title()`
 - `FieldUnicity::checkBeforeInsert()`
 - `FieldUnicity::showDebug()`
-- `GLPI::getErrorHandler()`
-- `GLPI::getLogLevel()`
-- `GLPI::initErrorHandler()`
-- `GLPI::initLogger()`
-- `Glpi\Api\API::showDebug()`
-- `Glpi\Api\API::returnSanitizedContent()`
-- `Glpi\Application\ErrorHandler` class
-- `Glpi\Cache\CacheManager::getInstallerCacheInstance()`
-- `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
-- `Glpi\Dashboard\Filter::dates()`
-- `Glpi\Dashboard\Filter::dates_mod()`
-- `Glpi\Dashboard\Filter::itilcategory()`
-- `Glpi\Dashboard\Filter::requesttype()`
-- `Glpi\Dashboard\Filter::location()`
-- `Glpi\Dashboard\Filter::manufacturer()`
-- `Glpi\Dashboard\Filter::group_tech()`
-- `Glpi\Dashboard\Filter::user_tech()`
-- `Glpi\Dashboard\Filter::state()`
-- `Glpi\Dashboard\Filter::tickettype()`
-- `Glpi\Dashboard\Filter::displayList()`
-- `Glpi\Dashboard\Filter::field()`
-- `Glpi\Dashboard\Widget::getCssGradientPalette()`
-- `Glpi\Debug\Toolbar` class
-- `Glpi\Event::showList()`
-- `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
-- `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
-- `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
-- `Glpi\Features\DCBreadcrumb::isRackPart()`
-- `Glpi\Inventory\Conf::importFile()`
-- `Glpi\Socket::executeAddMulti()`
-- `Glpi\Socket::showNetworkPortForm()`
-- `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
-- `Glpi\System\Requirement\ProtectedWebAccess` class.
-- `Glpi\System\Requirement\MysqliMysqlnd` class.
-- `Glpi\System\Requirement\SafeDocumentRoot` class.
-- `Glpi\System\Status\StatusChecker::getFullStatus()`
+- `ZENTRA::getErrorHandler()`
+- `ZENTRA::getLogLevel()`
+- `ZENTRA::initErrorHandler()`
+- `ZENTRA::initLogger()`
+- `Zentra\Api\API::showDebug()`
+- `Zentra\Api\API::returnSanitizedContent()`
+- `Zentra\Application\ErrorHandler` class
+- `Zentra\Cache\CacheManager::getInstallerCacheInstance()`
+- `Zentra\Console\Command\ForceNoPluginsOptionCommandInterface` class
+- `Zentra\Dashboard\Filter::dates()`
+- `Zentra\Dashboard\Filter::dates_mod()`
+- `Zentra\Dashboard\Filter::itilcategory()`
+- `Zentra\Dashboard\Filter::requesttype()`
+- `Zentra\Dashboard\Filter::location()`
+- `Zentra\Dashboard\Filter::manufacturer()`
+- `Zentra\Dashboard\Filter::group_tech()`
+- `Zentra\Dashboard\Filter::user_tech()`
+- `Zentra\Dashboard\Filter::state()`
+- `Zentra\Dashboard\Filter::tickettype()`
+- `Zentra\Dashboard\Filter::displayList()`
+- `Zentra\Dashboard\Filter::field()`
+- `Zentra\Dashboard\Widget::getCssGradientPalette()`
+- `Zentra\Debug\Toolbar` class
+- `Zentra\Event::showList()`
+- `Zentra\Features\DCBreadcrumb::getDcBreadcrumb()`
+- `Zentra\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
+- `Zentra\Features\DCBreadcrumb::isEnclosurePart()`
+- `Zentra\Features\DCBreadcrumb::isRackPart()`
+- `Zentra\Inventory\Conf::importFile()`
+- `Zentra\Socket::executeAddMulti()`
+- `Zentra\Socket::showNetworkPortForm()`
+- `Zentra\System\Requirement\DataDirectoriesProtectedPath` class.
+- `Zentra\System\Requirement\ProtectedWebAccess` class.
+- `Zentra\System\Requirement\MysqliMysqlnd` class.
+- `Zentra\System\Requirement\SafeDocumentRoot` class.
+- `Zentra\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
 - `Group_User` `is_userdelegate` field.
 - `Html::autocompletionTextField()`
@@ -702,7 +702,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
 - `Link::showForItem()`
 - `Link_Itemtype::showForLink()`
-- `MailCollector::isMessageSentByGlpi()`
+- `MailCollector::isMessageSentByZentra()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
 - `MassiveAction::updateProgressBars()`
@@ -737,8 +737,8 @@ The present file will list all changes made to the project; according to the
 - `Project::showDebug()`
 - `Project::showShort()`
 - `ProjectTask::showDebug()`
-- `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
-- `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.
+- `QuerySubQuery` class. Replaced by `Zentra\DBAL\QuerySubQuery`.
+- `QueryUnion` class. Replaced by `Zentra\DBAL\QueryUnion`.
 - `QueuedNotification::forceSendFor()`
 - `Reminder::addVisibilityJoins()`
 - `ReminderTranslation::canBeTranslated()`. Translations are now always active.
@@ -820,9 +820,9 @@ The present file will list all changes made to the project; according to the
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
-- `$_SESSION['glpiroot']` session variable.
+- `$_SESSION['zentraroot']` session variable.
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
-- `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
+- `$CFG_ZENTRA['debug_sql']` and `$CFG_ZENTRA['debug_vars']` configuration options.
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 - `ajax/ldapdaterestriction.php` script.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
@@ -1137,9 +1137,9 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of the `DBmysql::query()` method is deprecated, for security reasons, as it is most of the time used in an insecure way.
-  To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  To execute DB queries, either `DBmysql::request()` can be used to craft query using the ZENTRA query builder,
   either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted SQL string.
-  This deprecation will not trigger any error, unless the `GLPI_STRICT_DEPRECATED` constant is set to `true`, to avoid
+  This deprecation will not trigger any error, unless the `ZENTRA_STRICT_DEPRECATED` constant is set to `true`, to avoid
   cluttering error logs.
 
 #### Removed
@@ -1213,8 +1213,8 @@ The present file will list all changes made to the project; according to the
 - `$TIMER_DEBUG` global variable.
 - `$DEBUG_SQL` global variable.
 - `$SQL_TOTAL_REQUEST` global variable.
-- `$CFG_GLPI['debug_sql']` configuration option.
-- `$CFG_GLPI['debug_vars']` configuration option.
+- `$CFG_ZENTRA['debug_sql']` configuration option.
+- `$CFG_ZENTRA['debug_vars']` configuration option.
 
 - Usage of parameter `$clean` in `AuthLDAP::getObjectByDn()` and `AuthLDAP::getUserByDn()`.
 
@@ -1236,10 +1236,10 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
-- Itemtype that can be linked to a disk are now declared in `$CFG_GLPI['disk_types']`.
+- Itemtype that can be linked to a disk are now declared in `$CFG_ZENTRA['disk_types']`.
 
 #### Deprecated
-- `Glpi\Inventory\Conf::importFile()`
+- `Zentra\Inventory\Conf::importFile()`
 - `RSSFeed::showDiscoveredFeeds()`
 - `Toolbox::checkValidReferer()`
 
@@ -1250,7 +1250,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
-- `glpi:` command prefix has been removed from console commands canonical name.
+- `zentra:` command prefix has been removed from console commands canonical name.
 
 ### Deprecated
 
@@ -1296,11 +1296,11 @@ The present file will list all changes made to the project; according to the
 - `plugin_xxx_activate()` and `plugin_xxx_deactivate` hooks support.
 
 #### Changes
-- `Glpi\Api\Api::initEndpoint()` visibility changed to `protected`.
+- `Zentra\Api\Api::initEndpoint()` visibility changed to `protected`.
 
 #### Removed
-- `GlpiGantt` javascript helper and `dhtmlx-gantt` library.
-- `Glpi\Gantt` namespace and all corresponding classes.
+- `ZentraGantt` javascript helper and `dhtmlx-gantt` library.
+- `Zentra\Gantt` namespace and all corresponding classes.
 - `Project::getDataToDisplayOnGantt()`
 - `Project::showGantt()`
 - `ProjectTask::getDataToDisplayOnGantt()`
@@ -1313,7 +1313,7 @@ The present file will list all changes made to the project; according to the
 - Added a button to the General > System configuration tab to copy the system information
 
 ### Changed
-- APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
+- APCu and WinCache are not anymore use by ZENTRA, use `php bin/console cache:configure` command to configure cache system.
 - PDF export library has been changed from `TCPDF` to `mPDF`.
 - The search engine and search results page now support sorting by multiple fields.
 - The search result lists now refresh/update without triggering a full page reload.
@@ -1321,15 +1321,15 @@ The present file will list all changes made to the project; according to the
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
-- The database "slaves" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "replicas" instead,
-- The database "master" property in the status checker (/status.php and glpi:system:status) is deprecated. Use "main" instead,
+- The database "slaves" property in the status checker (/status.php and zentra:system:status) is deprecated. Use "replicas" instead,
+- The database "master" property in the status checker (/status.php and zentra:system:status) is deprecated. Use "main" instead,
 
 ### Removed
 - Autocomplete feature on text fields.
 - Usage of alternative DB connection encoding (`DB::$dbenc` property).
-- Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `glpi:ldap:synchronize_users` command available using `bin/console`
-- Deprecated `scripts/compute_dictionary.php` has been removed in favor of `glpi:rules:replay_dictionnary_rules` command available using `bin/console`
-- Deprecated `scripts/softcat_mass_compute.php` has been removed in favor of `glpi:rules:process_software_category_rules` command available using `bin/console`
+- Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `zentra:ldap:synchronize_users` command available using `bin/console`
+- Deprecated `scripts/compute_dictionary.php` has been removed in favor of `zentra:rules:replay_dictionnary_rules` command available using `bin/console`
+- Deprecated `scripts/softcat_mass_compute.php` has been removed in favor of `zentra:rules:process_software_category_rules` command available using `bin/console`
 
 ### API changes
 
@@ -1341,7 +1341,7 @@ The present file will list all changes made to the project; according to the
 - MySQL warnings are now logged in SQL errors log.
 - `Guzzle` library has been upgraded to version 7.4.
 - `Symfony\Console` library has been upgraded to version 5.4.
-- `CommonGLPI` constructor signature has been declared in an interface (`CommonGLPIInterface`).
+- `CommonZENTRA` constructor signature has been declared in an interface (`CommonZENTRAInterface`).
 - `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
 - `Domain` class inheritance changed from `CommonDropdown` to `CommonDBTM`.
 - `showForm()` method of all classes inheriting `CommonDBTM` have been changed to match `CommonDBTM::showForm()` signature.
@@ -1354,9 +1354,9 @@ The present file will list all changes made to the project; according to the
 - Field `date` of Notepad has been renamed to `date_creation`.
 - Field `date_mod` of ObjectLock has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
-- Table `glpi_netpoints` has been renamed to `glpi_sockets`.
-- `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
-- `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Glpi\Features\Clonable` trait.
+- Table `zentra_netpoints` has been renamed to `zentra_sockets`.
+- `ZENTRA_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `ZENTRA_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
+- `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Zentra\Features\Clonable` trait.
 - `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
 - `CommonDropdown::displaySpecificTypeField()` has a new `$options` parameter.
 - `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
@@ -1367,7 +1367,7 @@ The present file will list all changes made to the project; according to the
 - `Search::addOrderBy()` signature changed.
 - `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
 - `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
-- `Dashboard` global javascript object has been moved to `GLPI.Dashboard`.
+- `Dashboard` global javascript object has been moved to `ZENTRA.Dashboard`.
 
 #### Deprecated
 - Usage of `MyISAM` engine in database, in favor of `InnoDB` engine.
@@ -1376,8 +1376,8 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
 - `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
-- `GLPI::getLogLevel()`
-- `Glpi\System\Status\StatusChecker::getFullStatus()`
+- `ZENTRA::getLogLevel()`
+- `Zentra\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class
@@ -1400,12 +1400,12 @@ The present file will list all changes made to the project; according to the
   `$.button`, `$.dialog`, `$.draggable`, `$.droppable`, `$.progressbar`, `$.resizable`, `$.selectable`, `$.sortable`, `$.tabs`, `$.tooltip`.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - Usage of `table` parameter in requests made to `ajax/comments.php`
-- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
-- Usage of `GLPI_PREVER` constant
+- Usage of `ZENTRA_FORCE_EMPTY_SQL_MODE` constant
+- Usage of `ZENTRA_PREVER` constant
 - Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
-- `$CFG_GLPI['layout_excluded_pages']` entry
-- `$CFG_GLPI['transfers_id_auto']` entry
-- `$CFG_GLPI['use_ajax_autocompletion']` entry
+- `$CFG_ZENTRA['layout_excluded_pages']` entry
+- `$CFG_ZENTRA['transfers_id_auto']` entry
+- `$CFG_ZENTRA['use_ajax_autocompletion']` entry
 - `$DEBUG_AUTOLOAD` global variable
 - `$LOADED_PLUGINS` global variable
 - `$PHP_LOG_HANDLER` global variable
@@ -1428,9 +1428,9 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
 - `CommonDBTM::showDates()`
-- `CommonGLPI::isLayoutExcludedPage()`
-- `CommonGLPI::isLayoutWithMain()`
-- `CommonGLPI::showPrimaryForm()`
+- `CommonZENTRA::isLayoutExcludedPage()`
+- `CommonZENTRA::isLayoutWithMain()`
+- `CommonZENTRA::showPrimaryForm()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
 - `CommonITILObject::getActorIcon()`
@@ -1476,11 +1476,11 @@ The present file will list all changes made to the project; according to the
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
 - `Entity::showSelector()`
-- `Glpi\Marketplace\Api\Plugins::getNewPlugins()`
-- `Glpi\Marketplace\Api\Plugins::getPopularPlugins()`
-- `Glpi\Marketplace\Api\Plugins::getTopPlugins()`
-- `Glpi\Marketplace\Api\Plugins::getTrendingPlugins()`
-- `Glpi\Marketplace\Api\Plugins::getUpdatedPlugins()`
+- `Zentra\Marketplace\Api\Plugins::getNewPlugins()`
+- `Zentra\Marketplace\Api\Plugins::getPopularPlugins()`
+- `Zentra\Marketplace\Api\Plugins::getTopPlugins()`
+- `Zentra\Marketplace\Api\Plugins::getTrendingPlugins()`
+- `Zentra\Marketplace\Api\Plugins::getUpdatedPlugins()`
 - `Html::autocompletionTextField()`
 - `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
@@ -1519,8 +1519,8 @@ The present file will list all changes made to the project; according to the
 - `NetworkPort::cloneItem()`
 - `Notepad::cloneItem()`
 - `NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()`
-- `Plugin::getGlpiPrever()`
-- `Plugin::isGlpiPrever()`
+- `Plugin::getZentraPrever()`
+- `Plugin::isZentraPrever()`
 - `Plugin::setLoaded()`
 - `Plugin::setUnloaded()`
 - `Plugin::setUnloadedByName()`
@@ -1541,12 +1541,12 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
-- `Toolbox::commonCheckForUseGLPI()`
+- `Toolbox::commonCheckForUseZENTRA()`
 - `Toolbox::convertImageToTag()`
 - `Toolbox::decrypt()`
 - `Toolbox::doubleEncodeEmails()`
 - `Toolbox::encrypt()`
-- `Toolbox::getGlpiSecKey()`
+- `Toolbox::getZentraSecKey()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
 - `Toolbox::throwError()`
@@ -1570,7 +1570,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changed
 
-- All POST request made to `/ajax/` scripts are now requiring a valid CSRF token in their `X-Glpi-Csrf-Token` header.
+- All POST request made to `/ajax/` scripts are now requiring a valid CSRF token in their `X-Zentra-Csrf-Token` header.
 Requests done using jQuery are automatically including this header, from the moment that the page header is built using
 `Html::includeHeader()` method and the `js/common.js` script is loaded.
 
@@ -1592,7 +1592,7 @@ Requests done using jQuery are automatically including this header, from the mom
 
 ### Changed
 
-- `iframe` elements are not anymore allowed in rich text unless `GLPI_ALLOW_IFRAME_IN_RICH_TEXT` constant is defined to `true`
+- `iframe` elements are not anymore allowed in rich text unless `ZENTRA_ALLOW_IFRAME_IN_RICH_TEXT` constant is defined to `true`
 
 ### API changes
 
@@ -1638,12 +1638,12 @@ Requests done using jQuery are automatically including this header, from the mom
 - Network ports on Monitors
 - Add warning when there are unsaved changes in forms
 - Add ability to get information from the status endpoint in JSON format using Accept header
-- Add `glpi:system:status` CLI command for getting the GLPI status
+- Add `zentra:system:status` CLI command for getting the ZENTRA status
 
 ### Changed
 
-- PHP error_reporting and display_errors configuration directives are no longer overrided by GLPI, unless in debug mode (which forces reporting and display of all errors).
-- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
+- PHP error_reporting and display_errors configuration directives are no longer overrided by ZENTRA, unless in debug mode (which forces reporting and display of all errors).
+- `scripts/migrations/racks_plugin.php` has been replaced by `zentra:migration:racks_plugin_to_core` command available using `bin/console`
 - Encryption alogithm improved using libsodium
 
 ### API changes
@@ -1652,7 +1652,7 @@ Requests done using jQuery are automatically including this header, from the mom
 
 - Add translation functions `__()`,  `_n()`,  `_x()` and  `_nx()` in javascript in browser context.
 - `Migration::renameItemtype()` method to update of database schema/values when an itemtype class is renamed
-- Menu returned by `CommonGLPI::getMenuContent()` method override may now define an icon for each menu entry.
+- Menu returned by `CommonZENTRA::getMenuContent()` method override may now define an icon for each menu entry.
 - `CommonDBConnexity::getItemsAssociatedTo()` method to get the items associated to the given one
 - `CommonDBConnexity::getItemsAssociationRequest()` method to get the DB request to use to get the items associated to the given one
 - `CommonDBTM::clone()` method to clone the current item
@@ -1666,9 +1666,9 @@ Requests done using jQuery are automatically including this header, from the mom
 - Use Laminas instead of deprecated ZendFramework
 - Database datetime fields have been replaced by timestamp fields to handle timezones support.
 - Database integer/float fields values are now returned as number instead of strings from DB read operations.
-- Field `domains_id` of Computer, NetworkEquipment and Printer has been dropped and data has been transfered into `glpi_domains_items` table.
+- Field `domains_id` of Computer, NetworkEquipment and Printer has been dropped and data has been transfered into `zentra_domains_items` table.
 - Plugin status hook can now be used to provide an array with more information about the plugin's status the status of any child services.
-    - Returned array should contain a 'status' value at least (See status values in Glpi\System\Status\StatusChecker)
+    - Returned array should contain a 'status' value at least (See status values in Zentra\System\Status\StatusChecker)
     - Old style returns are still supported
 
 #### Deprecated
@@ -1689,8 +1689,8 @@ Requests done using jQuery are automatically including this header, from the mom
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `Ticket::getTicketTemplateToUse()` renamed to `Ticket::getITILTemplateToUse()`
 - `TicketTemplate::getFromDBWithDatas()` renamed to `TicketTemplate::getFromDBWithData()` (inherited from `ITILTemplate`)
-- `Computer_SoftwareLicense` replaced by `Item_SoftwareLicense` and table `glpi_computers_softwarelicenses` renamed to `glpi_items_softwarelicenses`
-- `Computer_SoftwareVersion` replaced by `Item_SoftwareVersion` and table `glpi_computers_softwareversions` renamed to `glpi_items_softwareversions`
+- `Computer_SoftwareLicense` replaced by `Item_SoftwareLicense` and table `zentra_computers_softwarelicenses` renamed to `zentra_items_softwarelicenses`
+- `Computer_SoftwareVersion` replaced by `Item_SoftwareVersion` and table `zentra_computers_softwareversions` renamed to `zentra_items_softwareversions`
 - `Item_SoftwareVersion::updateDatasForComputer` renamed to `Item_SoftwareVersion::updateDatasForItem`
 - `Item_SoftwareVersion::showForComputer` renamed to `Item_SoftwareVersion::showForItem`
 - `Item_SoftwareVersion::softsByCategory` renamed to `Item_SoftwareVersion::softwareByCategory`
@@ -1735,7 +1735,7 @@ Requests done using jQuery are automatically including this header, from the mom
 - `ProjectCost::cloneProject()`
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
-- Usage of `GLPIKEY` constant
+- Usage of `ZENTRAKEY` constant
 - `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption algorithm
 
 #### Removed
@@ -1764,7 +1764,7 @@ Requests done using jQuery are automatically including this header, from the mom
 - `getDateRequest` and `DbUtils::getDateRequest()`
 - `Html::convertTagFromRichTextToImageTag()`
 - `Transfer::createSearchConditionUsingArray()`
-- Unused constants GLPI_FONT_FREESANS and GLPI_SCRIPT_DIR
+- Unused constants ZENTRA_FONT_FREESANS and ZENTRA_SCRIPT_DIR
 
 ## [9.4.6] 2020-05-05
 
@@ -1833,20 +1833,20 @@ The following methods have been deprecated:
 - Ability to specify creation and modification dates during CommonDBTM object add method.
 
 ### Changed
-- `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
-- `olas_tto_id` field in `glpi_tickets` table has been renamed to `olas_id_tto`
-- `olas_ttr_id` field in `glpi_tickets` table has been renamed to `olas_id_ttr`
-- `ttr_olalevels_id` field in `glpi_tickets` table has been renamed to `olalevels_id_ttr`
-- `slas_tto_id` field in `glpi_tickets` table has been renamed to `slas_id_tto`
-- `slas_ttr_id` field in `glpi_tickets` table has been renamed to `slas_id_ttr`
-- `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
-- `scripts/add_creation_date.php` has been replaced by `glpi:migration:build_missing_timestamps` command available using `bin/console`
-- `scripts/checkdb.php` has been replaced by `glpi:database:check` command available using `bin/console`
-- `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
-- `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
-- `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
-- `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
-- `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
+- `license_id` field in `zentra_items_operatingsystems` table has been renamed to `licenseid`
+- `olas_tto_id` field in `zentra_tickets` table has been renamed to `olas_id_tto`
+- `olas_ttr_id` field in `zentra_tickets` table has been renamed to `olas_id_ttr`
+- `ttr_olalevels_id` field in `zentra_tickets` table has been renamed to `olalevels_id_ttr`
+- `slas_tto_id` field in `zentra_tickets` table has been renamed to `slas_id_tto`
+- `slas_ttr_id` field in `zentra_tickets` table has been renamed to `slas_id_ttr`
+- `ttr_slalevels_id` field in `zentra_tickets` table has been renamed to `slalevels_id_ttr`
+- `scripts/add_creation_date.php` has been replaced by `zentra:migration:build_missing_timestamps` command available using `bin/console`
+- `scripts/checkdb.php` has been replaced by `zentra:database:check` command available using `bin/console`
+- `scripts/cliinstall.php` has been replaced by `zentra:database:install` command available using `bin/console`
+- `scripts/cliupdate.php` has been replaced by `zentra:database:update` command available using `bin/console`
+- `scripts/ldap_mass_sync.php` has been replaced by `zentra:ldap:synchronize_users` command available using `bin/console`
+- `scripts/innodb_migration.php` has been replaced by `zentra:migration:myisam_to_innodb` command available using `bin/console`
+- `scripts/unlock_tasks.php` has been replaced by `zentra:task:unlock` command available using `bin/console`
 
 ### API changes
 
@@ -1863,9 +1863,9 @@ The following methods have been deprecated:
 
 #### Deprecated
 
-- Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
-- Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
-- Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
+- Remove `$CFG_ZENTRA['use_rich_text']` parameter. Will now be `true` per default.
+- Remove `$CFG_ZENTRA['ticket_timeline']` parameter. Will now be `true` per default.
+- Remove `$CFG_ZENTRA['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
 - Usage of `TicketFollowup` class has been deprecated.
 - Usage of string `$condition` parameter in `CommonDBTM::find()` has been deprecated.
 - Usage of string `$condition` parameter in `Dropdown::addNewCondition()` has been deprecated.
@@ -1905,9 +1905,9 @@ The following methods have been deprecated:
 - Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
 - Drop ITIL Tasks, Followups and Solutions `showSummary()` and massive actions related methods that are replaced with timeline
 
-- Drop class alias `Event` for `Glpi\Event`
+- Drop class alias `Event` for `Zentra\Event`
 - Drop `Zend\Loader\SplAutoloader` interface
-- Drop all methods that have been deprecated in GLPI 9.2
+- Drop all methods that have been deprecated in ZENTRA 9.2
   - `_e()`
   - `_ex()`
   - `FieldExists()`
@@ -1954,7 +1954,7 @@ The following methods have been deprecated:
   - `Ticket::convertContentForNotification()`
   - `User::getPersonalToken()`
   - `User::getUniquePersonalToken()`
-- Drop all methods that have been deprecated in GLPI 9.3.0
+- Drop all methods that have been deprecated in ZENTRA 9.3.0
   - `CommonDBTM::getFromDBByQuery()`
   - `CommonDBTM::getSearchOptions()`
   - `CommonDBTM::getSearchOptionsNew()`
@@ -1969,7 +1969,7 @@ The following methods have been deprecated:
   - `Search::constructDatas()`
   - `Search::displayDatas()`
   - `Transfer::transferComputerDisks()`
-- Drop all methods that have been deprecated in GLPI 9.3.1
+- Drop all methods that have been deprecated in ZENTRA 9.3.1
   - `ComputerVirtualMachine::getUUIDRestrictRequest()`
   - `Config::getSQLMode()`
   - `DBMysql::checkForCrashedTables()`
@@ -1979,13 +1979,13 @@ The following methods have been deprecated:
   - `Plugin::isAllPluginsCSRFCompliant()`
   - `Profile::getUnderActiveProfileRestrictRequest()`
   - `Toolbox::is_a()`
-- Drop all constants that have been deprecated in GLPI 9.3.1
+- Drop all constants that have been deprecated in ZENTRA 9.3.1
   - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
   - `CommonDBTM::HAS_DUPLICATE`
   - `CommonDBTM::NOTHING_TO_DO`
   - `CommonDBTM::SUCCESS`
   - `CommonDBTM::TYPE_MISMATCH`
-- Drop all methods that have been deprecated in GLPI 9.3.2
+- Drop all methods that have been deprecated in ZENTRA 9.3.2
  - `ITILSolution::removeForItem()`
  - `Session::isViewAllEntities()`
 
@@ -2254,10 +2254,10 @@ The following methods have been dropped:
 - `Ajax::getSearchTextForDropdown()`
 - `Bookmark::changeBookmarkOrder()`
 - `Bookmark::moveBookmark()`
-- `CommonGLPI::addDivForTabs()`
-- `CommonGLPI::showTabs()`
-- `CommonGLPI::showNavigationHeaderOld()`
-- `CommonGLPI::show()`
+- `CommonZENTRA::addDivForTabs()`
+- `CommonZENTRA::showTabs()`
+- `CommonZENTRA::showNavigationHeaderOld()`
+- `CommonZENTRA::show()`
 - `Dropdown::showInteger()`
 - `DBMysql::field_flags()`
 - `Html::showDateFormItem()`
@@ -2267,4 +2267,4 @@ The following methods have been dropped:
 - `Toolbox::get_magic_quotes_gpc()`
 - `Dropdown::showAllItems()`
 
-For older entries, please check [GLPI website](http://glpi-project.org).
+For older entries, please check [ZENTRA website](http://zentra-project.org).

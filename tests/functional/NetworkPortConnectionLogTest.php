@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/networkport_networkport.class.php */
 
@@ -43,7 +43,7 @@ class NetworkPortConnectionLogTest extends DbTestCase
     private function createPort(\CommonDBTM $asset, string $mac): \NetworkPort
     {
         $port = new \NetworkPort();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $ports_id = $port->add([
             'items_id'           => $asset->getID(),
             'itemtype'           => $asset->getType(),
@@ -55,7 +55,7 @@ class NetworkPortConnectionLogTest extends DbTestCase
             'name'               => 'eth1',
         ]);
         $this->assertGreaterThan(0, (int) $ports_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         return $port;
     }

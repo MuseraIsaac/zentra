@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
-use Glpi\ContentTemplates\Parameters\TicketParameters;
-use Glpi\ContentTemplates\ParametersPreset;
-use Glpi\ContentTemplates\TemplateManager;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Event;
-use Glpi\RichText\RichText;
-use Glpi\RichText\UserMention;
-use Glpi\Search\DefaultSearchRequestInterface;
-use Glpi\Urgency;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\ContentTemplates\Parameters\CommonITILObjectParameters;
+use Zentra\ContentTemplates\Parameters\TicketParameters;
+use Zentra\ContentTemplates\ParametersPreset;
+use Zentra\ContentTemplates\TemplateManager;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Event;
+use Zentra\RichText\RichText;
+use Zentra\RichText\UserMention;
+use Zentra\Search\DefaultSearchRequestInterface;
+use Zentra\Urgency;
 use Safe\DateTime;
 
 use function Safe\preg_match;
@@ -269,10 +269,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // Can see my groups tickets
         if (
             Session::haveRight(self::$rightname, self::READGROUP)
-            && isset($_SESSION["glpigroups"])
+            && isset($_SESSION["zentragroups"])
             && (
-                $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
-                || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])
+                $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["zentragroups"])
+                || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["zentragroups"])
             )
         ) {
             return true;
@@ -292,8 +292,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             && (
                 $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                 || (
-                    isset($_SESSION["glpigroups"])
-                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])
+                    isset($_SESSION["zentragroups"])
+                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["zentragroups"])
                 )
             )
         ) {
@@ -323,8 +323,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
                &&  Session::haveRight('ticket', Ticket::SURVEY))
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
+              || (isset($_SESSION["zentragroups"])
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["zentragroups"])));
     }
 
 
@@ -370,8 +370,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // Can take into account if user is assigned user
         if (
             $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-            || (isset($_SESSION["glpigroups"])
-             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups']))
+            || (isset($_SESSION["zentragroups"])
+             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['zentragroups']))
         ) {
             return true;
         }
@@ -379,8 +379,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // Cannot take into account if user is a requester (and not assigned)
         if (
             $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-            || (isset($_SESSION["glpigroups"])
-             && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups']))
+            || (isset($_SESSION["zentragroups"])
+             && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['zentragroups']))
         ) {
             return false;
         }
@@ -698,31 +698,31 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function pre_deleteItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA['use_notifications']) {
             NotificationEvent::raiseEvent('delete', $this);
         }
         return true;
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (static::canView()) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 switch (get_class($item)) {
                     case User::class:
                         $nb = countElementsInTable(
-                            ['glpi_tickets', 'glpi_tickets_users'],
+                            ['zentra_tickets', 'zentra_tickets_users'],
                             [
-                                'glpi_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                'glpi_tickets_users.users_id'    => $item->getID(),
-                                'glpi_tickets_users.type'        => CommonITILActor::REQUESTER,
-                                'glpi_tickets.is_deleted'        => 0,
+                                'zentra_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('zentra_tickets.id')),
+                                'zentra_tickets_users.users_id'    => $item->getID(),
+                                'zentra_tickets_users.type'        => CommonITILActor::REQUESTER,
+                                'zentra_tickets.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                         $title = __('Created tickets');
@@ -730,18 +730,18 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
                     case Supplier::class:
                         $nb = countElementsInTable(
-                            ['glpi_tickets', 'glpi_suppliers_tickets'],
+                            ['zentra_tickets', 'zentra_suppliers_tickets'],
                             [
-                                'glpi_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                'glpi_suppliers_tickets.suppliers_id'  => $item->getID(),
-                                'glpi_tickets.is_deleted'              => 0,
+                                'zentra_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('zentra_tickets.id')),
+                                'zentra_suppliers_tickets.suppliers_id'  => $item->getID(),
+                                'zentra_tickets.is_deleted'              => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                         break;
 
                     case SLA::class:
                         $nb = countElementsInTable(
-                            'glpi_tickets',
+                            'zentra_tickets',
                             [
                                 'OR'  => [
                                     'slas_id_tto'  => $item->getID(),
@@ -754,7 +754,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
                     case OLA::class:
                         $nb = countElementsInTable(
-                            'glpi_tickets',
+                            'zentra_tickets',
                             [
                                 'OR'  => [
                                     'olas_id_tto'  => $item->getID(),
@@ -767,12 +767,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
                     case Group::class:
                         $nb = countElementsInTable(
-                            ['glpi_tickets', 'glpi_groups_tickets'],
+                            ['zentra_tickets', 'zentra_groups_tickets'],
                             [
-                                'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                'glpi_groups_tickets.groups_id'  => $item->getID(),
-                                'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
-                                'glpi_tickets.is_deleted'        => 0,
+                                'zentra_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('zentra_tickets.id')),
+                                'zentra_groups_tickets.groups_id'  => $item->getID(),
+                                'zentra_groups_tickets.type'       => CommonITILActor::REQUESTER,
+                                'zentra_tickets.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                         $title = __('Created tickets');
@@ -815,7 +815,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -1211,7 +1211,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 && ($input[$olaField] != $this->fields[$olaField]
                  || isset($input['_' . $olaField]))
             ) {
-                $date = $_SESSION['glpi_currenttime'];
+                $date = $_SESSION['zentra_currenttime'];
 
                 // Get datas to initialize OLA and set it
                 $ola_data = $this->getDatasToAddOLA(
@@ -1331,7 +1331,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             && !$this->isNew()
         ) {
             $this->updates[]                            = "takeintoaccountdate";
-            $this->fields['takeintoaccountdate']        = $_SESSION["glpi_currenttime"];
+            $this->fields['takeintoaccountdate']        = $_SESSION["zentra_currenttime"];
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
@@ -1369,11 +1369,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
                     $this->fields['date'],
-                    $_SESSION["glpi_currenttime"]
+                    $_SESSION["zentra_currenttime"]
                 ));
             }
             // Not calendar defined
-            return max(1, strtotime($_SESSION["glpi_currenttime"]) - strtotime($this->fields['date']));
+            return max(1, strtotime($_SESSION["zentra_currenttime"]) - strtotime($this->fields['date']));
         }
         return 0;
     }
@@ -1396,7 +1396,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         parent::post_updateItem($history);
 
@@ -1468,7 +1468,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $donotif = false;
         }
 
-        if ($donotif && $CFG_GLPI["use_notifications"]) {
+        if ($donotif && $CFG_ZENTRA["use_notifications"]) {
             $mailtype = "update";
 
             if (
@@ -1569,7 +1569,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                             $input['items_businesscriticities']
                              = Dropdown::getDropdownName(
-                                 'glpi_businesscriticities',
+                                 'zentra_businesscriticities',
                                  $infocom->fields['businesscriticities_id']
                              );
                         }
@@ -1671,8 +1671,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
         // Log this event
         $username = 'anonymous';
-        if (isset($_SESSION["glpiname"])) {
-            $username = $_SESSION["glpiname"];
+        if (isset($_SESSION["zentraname"])) {
+            $username = $_SESSION["zentraname"];
         }
         Event::log(
             $this->fields['id'],
@@ -1731,8 +1731,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $toadd["plan"] = $this->input["plan"];
             }
 
-            if (isset($_SESSION['glpitask_private'])) {
-                $toadd['is_private'] = $_SESSION['glpitask_private'];
+            if (isset($_SESSION['zentratask_private'])) {
+                $toadd['is_private'] = $_SESSION['zentratask_private'];
             }
 
             $task->add($toadd);
@@ -1784,7 +1784,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 "ticket",
                 4,
                 "tracking",
-                sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id'])
+                sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["zentraname"], $fup->fields['items_id'])
             );
         }
 
@@ -1800,7 +1800,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 "ticket",
                 4,
                 "tracking",
-                sprintf(__('%s promotes a task from ticket %s'), $_SESSION["glpiname"], $tickettask->fields['tickets_id'])
+                sprintf(__('%s promotes a task from ticket %s'), $_SESSION["zentraname"], $tickettask->fields['tickets_id'])
             );
         }
 
@@ -1857,16 +1857,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             'COUNT'     => 'cpt',
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                'zentra_items_tickets' => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
+                        'zentra_items_tickets' => 'tickets_id',
                         $this->getTable()    => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.itemtype' => $itemtype,
-                'glpi_items_tickets.items_id' => $items_id,
+                'zentra_items_tickets.itemtype' => $itemtype,
+                'zentra_items_tickets.items_id' => $items_id,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
                         static::getSolvedStatusArray(),
@@ -1901,16 +1901,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             ],
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                'zentra_items_tickets' => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
+                        'zentra_items_tickets' => 'tickets_id',
                         $this->getTable()    => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.itemtype'    => $itemtype,
-                'glpi_items_tickets.items_id'    => $items_id,
+                'zentra_items_tickets.itemtype'    => $itemtype,
+                'zentra_items_tickets.items_id'    => $items_id,
                 $this->getTable() . '.is_deleted' => 0,
                 $this->getTable() . '.type'      => $type,
                 'NOT'                         => [
@@ -1942,16 +1942,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             'COUNT'     => 'cpt',
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                'zentra_items_tickets' => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
+                        'zentra_items_tickets' => 'tickets_id',
                         $this->getTable()    => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.itemtype' => $itemtype,
-                'glpi_items_tickets.items_id' => $items_id,
+                'zentra_items_tickets.itemtype' => $itemtype,
+                'zentra_items_tickets.items_id' => $items_id,
                 $this->getTable() . '.status' => array_merge(
                     static::getSolvedStatusArray(),
                     static::getClosedStatusArray()
@@ -1986,7 +1986,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
-                        'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
+                        'takeintoaccountdate'        => $_SESSION["zentra_currenttime"],
                         '_disablenotif'              => true,
                     ]
                 );
@@ -2092,12 +2092,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         // if the connected user is the ticket requester, we can create
-        if ($requester_id == $_SESSION['glpiID']) {
+        if ($requester_id == $_SESSION['zentraID']) {
             return true;
         }
 
         if ($entity_restrict === null) {
-            $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
+            $entity_restrict = $_SESSION["zentraactive_entity"] ?? 0;
         }
 
         // if user has no delegate groups, he can't create ticket for another user
@@ -2218,7 +2218,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         switch ($ma->getAction()) {
             case 'merge_as_followup':
@@ -2304,7 +2304,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $JS = <<<JAVASCRIPT
                function solutiontemplate_update{$rand}(value) {
                   $.ajax({
-                     url: CFG_GLPI.root_doc + '/ajax/solution.php',
+                     url: CFG_ZENTRA.root_doc + '/ajax/solution.php',
                      type: 'POST',
                      data: {
                         solutiontemplates_id: value
@@ -2635,7 +2635,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '159',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'sla_tto_is_late',
             'name'               => __('Time to own exceeded'),
             'datatype'           => 'bool',
@@ -2697,7 +2697,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '187',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'ola_tto_is_late',
             'name'               => __('Internal time to own exceeded'),
             'datatype'           => 'bool',
@@ -2759,7 +2759,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_items_tickets',
+            'table'              => 'zentra_items_tickets',
             'field'              => 'items_id',
             'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
             'datatype'           => 'specific',
@@ -2776,7 +2776,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => 'glpi_items_tickets',
+            'table'              => 'zentra_items_tickets',
             'field'              => 'itemtype',
             'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
             'datatype'           => 'itemtypename',
@@ -2792,7 +2792,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_requesttypes',
+            'table'              => 'zentra_requesttypes',
             'field'              => 'name',
             'name'               => RequestType::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -2807,7 +2807,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '37',
-            'table'              => 'glpi_slas',
+            'table'              => 'zentra_slas',
             'field'              => 'name',
             'linkfield'          => 'slas_id_tto',
             'name'               => __('SLA') . ' ' . __('Time to own'),
@@ -2816,12 +2816,12 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTO],
             ],
-            'condition'          => ['glpi_slas.type' => SLM::TTO],
+            'condition'          => ['zentra_slas.type' => SLM::TTO],
         ];
 
         $tab[] = [
             'id'                 => '30',
-            'table'              => 'glpi_slas',
+            'table'              => 'zentra_slas',
             'field'              => 'name',
             'linkfield'          => 'slas_id_ttr',
             'name'               => __('SLA') . ' ' . __('Time to resolve'),
@@ -2830,19 +2830,19 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTR],
             ],
-            'condition'          => ['glpi_slas.type' => SLM::TTR],
+            'condition'          => ['zentra_slas.type' => SLM::TTR],
         ];
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_slalevels',
+            'table'              => 'zentra_slalevels',
             'field'              => 'name',
             'name'               => __('SLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_slalevels_tickets',
+                    'table'              => 'zentra_slalevels_tickets',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -2858,7 +2858,7 @@ JAVASCRIPT;
 
         $tab[] = [
             'id'                 => '190',
-            'table'              => 'glpi_olas',
+            'table'              => 'zentra_olas',
             'field'              => 'name',
             'linkfield'          => 'olas_id_tto',
             'name'               => __('OLA') . ' ' . __('Internal time to own'),
@@ -2867,12 +2867,12 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTO],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTO],
+            'condition'          => ['zentra_olas.type' => SLM::TTO],
         ];
 
         $tab[] = [
             'id'                 => '191',
-            'table'              => 'glpi_olas',
+            'table'              => 'zentra_olas',
             'field'              => 'name',
             'linkfield'          => 'olas_id_ttr',
             'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
@@ -2881,19 +2881,19 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTR],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTR],
+            'condition'          => ['zentra_olas.type' => SLM::TTR],
         ];
 
         $tab[] = [
             'id'                 => '192',
-            'table'              => 'glpi_olalevels',
+            'table'              => 'zentra_olalevels',
             'field'              => 'name',
             'name'               => __('OLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_olalevels_tickets',
+                    'table'              => 'zentra_olalevels_tickets',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -2951,7 +2951,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '40',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'tickets_id_1',
                 'name'               => __('All linked tickets'),
                 'massiveaction'      => false,
@@ -2965,7 +2965,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '47',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'tickets_id_1',
                 'name'               => __('Duplicated tickets'),
                 'massiveaction'      => false,
@@ -2980,7 +2980,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '41',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'id',
                 'name'               => __('Number of all linked tickets'),
                 'massiveaction'      => false,
@@ -2993,7 +2993,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '46',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'id',
                 'name'               => __('Number of duplicated tickets'),
                 'massiveaction'      => false,
@@ -3007,7 +3007,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '50',
-                'table'              => 'glpi_tickets',
+                'table'              => 'zentra_tickets',
                 'field'              => 'id',
                 'linkfield'          => 'tickets_id_2',
                 'name'               => __('Parent tickets'),
@@ -3017,7 +3017,7 @@ JAVASCRIPT;
                 'usehaving'          => true,
                 'joinparams'         => [
                     'beforejoin'         => [
-                        'table'              => 'glpi_tickets_tickets',
+                        'table'              => 'zentra_tickets_tickets',
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'linkfield'          => 'tickets_id_1',
@@ -3030,7 +3030,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '67',
-                'table'              => 'glpi_tickets',
+                'table'              => 'zentra_tickets',
                 'field'              => 'id',
                 'linkfield'          => 'tickets_id_1',
                 'name'               => __('Child tickets'),
@@ -3040,7 +3040,7 @@ JAVASCRIPT;
                 'usehaving'          => true,
                 'joinparams'         => [
                     'beforejoin'         => [
-                        'table'              => 'glpi_tickets_tickets',
+                        'table'              => 'zentra_tickets_tickets',
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'linkfield'          => 'tickets_id_2',
@@ -3053,7 +3053,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '68',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'id',
                 'name'               => __('Number of sons tickets'),
                 'massiveaction'      => false,
@@ -3069,7 +3069,7 @@ JAVASCRIPT;
 
             $tab[] = [
                 'id'                 => '69',
-                'table'              => 'glpi_tickets_tickets',
+                'table'              => 'zentra_tickets_tickets',
                 'field'              => 'id',
                 'name'               => __('Number of parent tickets'),
                 'massiveaction'      => false,
@@ -3222,10 +3222,10 @@ JAVASCRIPT;
                 if ($calendars_id) {
                     $calendar = new Calendar();
                     $calendar->getFromDB($calendars_id);
-                    $time = $calendar->getActiveTimeBetween($values['date'], $_SESSION["glpi_currenttime"]);
+                    $time = $calendar->getActiveTimeBetween($values['date'], $_SESSION["zentra_currenttime"]);
                 } else {
                     $ticket_date = new DateTime($values['date']);
-                    $now = new DateTime($_SESSION["glpi_currenttime"]);
+                    $now = new DateTime($_SESSION["zentra_currenttime"]);
                     $time = $now->getTimestamp() - $ticket_date->getTimestamp();
                 }
 
@@ -3418,23 +3418,23 @@ JAVASCRIPT;
         $totalcost = 0;
 
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_ticketcosts.*',
-            'FROM'      => 'glpi_ticketcosts',
+            'SELECT'    => 'zentra_ticketcosts.*',
+            'FROM'      => 'zentra_ticketcosts',
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                'zentra_items_tickets' => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        'glpi_ticketcosts'   => 'tickets_id',
+                        'zentra_items_tickets' => 'tickets_id',
+                        'zentra_ticketcosts'   => 'tickets_id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.itemtype' => get_class($item),
-                'glpi_items_tickets.items_id' => $item->getField('id'),
+                'zentra_items_tickets.itemtype' => get_class($item),
+                'zentra_items_tickets.items_id' => $item->getField('id'),
                 'OR'                          => [
-                    'glpi_ticketcosts.cost_time'     => ['>', 0],
-                    'glpi_ticketcosts.cost_fixed'    => ['>', 0],
-                    'glpi_ticketcosts.cost_material' => ['>', 0],
+                    'zentra_ticketcosts.cost_time'     => ['>', 0],
+                    'zentra_ticketcosts.cost_fixed'    => ['>', 0],
+                    'zentra_ticketcosts.cost_material' => ['>', 0],
                 ],
             ],
         ]);
@@ -3452,31 +3452,31 @@ JAVASCRIPT;
 
     public static function getDefaultValues($entity = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
             $users_id_assign    = Session::getLoginUserID();
-            $requester_notification_enable = $_SESSION['glpiis_notif_enable_default'];
-            $assignee_notification_enable  = $_SESSION['glpiis_notif_enable_default'];
+            $requester_notification_enable = $_SESSION['zentrais_notif_enable_default'];
+            $assignee_notification_enable  = $_SESSION['zentrais_notif_enable_default'];
 
             // No default requester if own ticket right = tech and update_ticket right to update requester
-            if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
+            if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['zentraset_default_requester']) {
                 $users_id_requester = 0;
                 $requester_notification_enable = 1; // no default requester reset to true
             }
-            if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
+            if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['zentraset_default_tech']) {
                 $users_id_assign = 0;
                 $assignee_notification_enable = 1; // no default assign reset to true
             }
-            $entity      = $_SESSION['glpiactive_entity'];
-            $requesttype = $_SESSION['glpidefault_requesttypes_id'];
+            $entity      = $_SESSION['zentraactive_entity'];
+            $requesttype = $_SESSION['zentradefault_requesttypes_id'];
         } else {
             $requester_notification_enable = 1;
             $assignee_notification_enable = 1;
             $users_id_requester = 0;
             $users_id_assign    = 0;
-            $requesttype        = $CFG_GLPI['default_requesttypes_id'];
+            $requesttype        = $CFG_ZENTRA['default_requesttypes_id'];
         }
 
         $type = Entity::getUsedConfig('tickettype', $entity, '', Ticket::INCIDENT_TYPE);
@@ -3580,7 +3580,7 @@ JAVASCRIPT;
                 $cat->fields['entities_id'] != $input['entities_id']
                 && !(
                     $cat->isRecursive()
-                    && in_array($input['entities_id'], getSonsOf('glpi_entities', $cat->fields['entities_id']))
+                    && in_array($input['entities_id'], getSonsOf('zentra_entities', $cat->fields['entities_id']))
                 )
             ) {
                 return false;
@@ -3837,42 +3837,42 @@ JAVASCRIPT;
             return false;
         }
 
-        $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
+        $SELECT = ['zentra_tickets.id', 'zentra_tickets.date_mod'];
         $JOINS = [];
         $WHERE = [
-            'glpi_tickets.is_deleted' => 0,
+            'zentra_tickets.is_deleted' => 0,
         ];
         $search_users_id = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
+            'zentra_tickets_users.users_id' => Session::getLoginUserID(),
+            'zentra_tickets_users.type'     => CommonITILActor::REQUESTER,
         ];
         $search_assign = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
+            'zentra_tickets_users.users_id' => Session::getLoginUserID(),
+            'zentra_tickets_users.type'     => CommonITILActor::ASSIGN,
         ];
         $search_observer = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
+            'zentra_tickets_users.users_id' => Session::getLoginUserID(),
+            'zentra_tickets_users.type'     => CommonITILActor::OBSERVER,
         ];
 
         if ($showgrouptickets) {
             $search_users_id  = [0];
             $search_assign = [0];
 
-            if (count($_SESSION['glpigroups'])) {
+            if (count($_SESSION['zentragroups'])) {
                 $search_assign = [
-                    'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
-                    'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
+                    'zentra_groups_tickets.groups_id'  => $_SESSION['zentragroups'],
+                    'zentra_groups_tickets.type'       => CommonITILActor::ASSIGN,
                 ];
 
                 if (Session::haveRight(self::$rightname, self::READGROUP)) {
                     $search_users_id = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,
+                        'zentra_groups_tickets.groups_id' => $_SESSION['zentragroups'],
+                        'zentra_groups_tickets.type'      => CommonITILActor::REQUESTER,
                     ];
                     $search_observer = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::OBSERVER,
+                        'zentra_groups_tickets.groups_id' => $_SESSION['zentragroups'],
+                        'zentra_groups_tickets.type'      => CommonITILActor::OBSERVER,
                     ];
                 }
             }
@@ -3883,7 +3883,7 @@ JAVASCRIPT;
                 $WHERE = array_merge(
                     $WHERE,
                     $search_assign,
-                    ['glpi_tickets.status' => self::WAITING]
+                    ['zentra_tickets.status' => self::WAITING]
                 );
                 break;
 
@@ -3891,7 +3891,7 @@ JAVASCRIPT;
                 $WHERE = array_merge(
                     $WHERE,
                     $search_assign,
-                    ['glpi_tickets.status' => array_merge(self::getProcessStatusArray(), [self::INCOMING])]
+                    ['zentra_tickets.status' => array_merge(self::getProcessStatusArray(), [self::INCOMING])]
                 );
 
                 break;
@@ -3899,18 +3899,18 @@ JAVASCRIPT;
             case "toapprove": //tickets waiting for approval
                 $ORWHERE = ['AND' => $search_users_id];
                 if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
-                    $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
+                    $ORWHERE[] = ['zentra_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
-                $WHERE['glpi_tickets.status'] = self::SOLVED;
+                $WHERE['zentra_tickets.status'] = self::SOLVED;
                 break;
 
             case "tovalidate": // tickets waiting for validation
                 $JOINS['LEFT JOIN'] = [
-                    'glpi_ticketvalidations' => [
+                    'zentra_ticketvalidations' => [
                         'ON' => [
-                            'glpi_ticketvalidations'   => 'tickets_id',
-                            'glpi_tickets'             => 'id',
+                            'zentra_ticketvalidations'   => 'tickets_id',
+                            'zentra_tickets'             => 'id',
                         ],
                     ],
                 ];
@@ -3918,10 +3918,10 @@ JAVASCRIPT;
                     $WHERE,
                     [
                         TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID()),
-                        'glpi_ticketvalidations.status'  => CommonITILValidation::WAITING,
-                        'glpi_tickets.global_validation' => CommonITILValidation::WAITING,
+                        'zentra_ticketvalidations.status'  => CommonITILValidation::WAITING,
+                        'zentra_tickets.global_validation' => CommonITILValidation::WAITING,
                         'NOT'                            => [
-                            'glpi_tickets.status'   => [self::SOLVED, self::CLOSED],
+                            'zentra_tickets.status'   => [self::SOLVED, self::CLOSED],
                         ],
                     ]
                 );
@@ -3933,8 +3933,8 @@ JAVASCRIPT;
                     $WHERE,
                     $search_assign,
                     [
-                        'glpi_tickets.status'            => ['<>', self::CLOSED],
-                        'glpi_tickets.global_validation' => CommonITILValidation::REFUSED,
+                        'zentra_tickets.status'            => ['<>', self::CLOSED],
+                        'zentra_tickets.global_validation' => CommonITILValidation::REFUSED,
                     ]
                 );
                 break;
@@ -3942,9 +3942,9 @@ JAVASCRIPT;
             case "solution.rejected": // tickets with rejected solution
                 $subq = new QuerySubQuery([
                     'SELECT' => 'last_solution.id',
-                    'FROM'   => 'glpi_itilsolutions AS last_solution',
+                    'FROM'   => 'zentra_itilsolutions AS last_solution',
                     'WHERE'  => [
-                        'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
+                        'last_solution.items_id'   => new QueryExpression($DB->quoteName('zentra_tickets.id')),
                         'last_solution.itemtype'   => self::class,
                     ],
                     'ORDER'  => 'last_solution.id DESC',
@@ -3952,9 +3952,9 @@ JAVASCRIPT;
                 ]);
 
                 $JOINS['LEFT JOIN'] = [
-                    'glpi_itilsolutions' => [
+                    'zentra_itilsolutions' => [
                         'ON' => [
-                            'glpi_itilsolutions' => 'id',
+                            'zentra_itilsolutions' => 'id',
                             $subq,
                         ],
                     ],
@@ -3964,8 +3964,8 @@ JAVASCRIPT;
                     $WHERE,
                     $search_assign,
                     [
-                        'glpi_tickets.status'         => ['<>', self::CLOSED],
-                        'glpi_itilsolutions.status'   => CommonITILValidation::REFUSED,
+                        'zentra_tickets.status'         => ['<>', self::CLOSED],
+                        'zentra_itilsolutions.status'   => CommonITILValidation::REFUSED,
                     ]
                 );
                 break;
@@ -3974,7 +3974,7 @@ JAVASCRIPT;
                     $WHERE,
                     $search_observer,
                     [
-                        'glpi_tickets.status'   => [
+                        'zentra_tickets.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
@@ -3989,52 +3989,52 @@ JAVASCRIPT;
                 break;
 
             case "survey": // tickets for which the satisfaction survey has not been completed and is still valid
-                $SELECT[] = 'glpi_tickets.entities_id';
-                $SELECT[] = 'glpi_entities.inquest_config';
-                $SELECT[] = 'glpi_ticketsatisfactions.date_begin';
+                $SELECT[] = 'zentra_tickets.entities_id';
+                $SELECT[] = 'zentra_entities.inquest_config';
+                $SELECT[] = 'zentra_ticketsatisfactions.date_begin';
                 $JOINS['INNER JOIN'] = [
-                    'glpi_ticketsatisfactions' => [
+                    'zentra_ticketsatisfactions' => [
                         'ON' => [
-                            'glpi_ticketsatisfactions' => 'tickets_id',
-                            'glpi_tickets'             => 'id',
+                            'zentra_ticketsatisfactions' => 'tickets_id',
+                            'zentra_tickets'             => 'id',
                         ],
                     ],
-                    'glpi_entities'            => [
+                    'zentra_entities'            => [
                         'ON' => [
-                            'glpi_tickets'    => 'entities_id',
-                            'glpi_entities'   => 'id',
+                            'zentra_tickets'    => 'entities_id',
+                            'zentra_entities'   => 'id',
                         ],
                     ],
                 ];
                 $ORWHERE = ['AND' => $search_users_id];
                 if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
-                    $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
+                    $ORWHERE[] = ['zentra_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
 
                 $WHERE = array_merge(
                     $WHERE,
                     [
-                        'glpi_tickets.status'   => self::CLOSED,
+                        'zentra_tickets.status'   => self::CLOSED,
                         // We can ignore any tickets closed more than Entity::MAX_INQUEST_DURATION_DAYS days ago as no survey is valid after that
                         new QueryExpression(
                             QueryFunction::dateDiff(
                                 expression1: QueryFunction::curDate(),
-                                expression2: 'glpi_tickets.closedate'
+                                expression2: 'zentra_tickets.closedate'
                             ) . ' <= ' . Entity::MAX_INQUEST_DURATION_DAYS
                         ),
                         [
                             'OR' => [
                                 [
-                                    'glpi_tickets.entities_id' => ['<>', 0], // Root entity never inherits
-                                    'glpi_entities.inquest_config' => Entity::CONFIG_PARENT, // We need to resolve the inquest_duration in PHP
+                                    'zentra_tickets.entities_id' => ['<>', 0], // Root entity never inherits
+                                    'zentra_entities.inquest_config' => Entity::CONFIG_PARENT, // We need to resolve the inquest_duration in PHP
                                 ],
-                                'glpi_entities.inquest_duration' => 0,
+                                'zentra_entities.inquest_duration' => 0,
                                 new QueryExpression(
                                     QueryFunction::dateDiff(
                                         expression1: QueryFunction::dateAdd(
-                                            date: 'glpi_ticketsatisfactions.date_begin',
-                                            interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                                            date: 'zentra_ticketsatisfactions.date_begin',
+                                            interval: new QueryExpression($DB::quoteName('zentra_entities.inquest_duration')),
                                             interval_unit: 'DAY'
                                         ),
                                         expression2: QueryFunction::curDate()
@@ -4042,7 +4042,7 @@ JAVASCRIPT;
                                 ),
                             ],
                         ],
-                        'glpi_ticketsatisfactions.date_answered'  => null,
+                        'zentra_ticketsatisfactions.date_answered'  => null,
                     ]
                 );
                 break;
@@ -4055,7 +4055,7 @@ JAVASCRIPT;
                     $WHERE,
                     $search_users_id,
                     [
-                        'glpi_tickets.status'   => [
+                        'zentra_tickets.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
@@ -4069,23 +4069,23 @@ JAVASCRIPT;
         $criteria = [
             'SELECT'          => $SELECT,
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_tickets',
+            'FROM'            => 'zentra_tickets',
             'LEFT JOIN'       => [
-                'glpi_tickets_users'    => [
+                'zentra_tickets_users'    => [
                     'ON' => [
-                        'glpi_tickets_users' => 'tickets_id',
-                        'glpi_tickets'       => 'id',
+                        'zentra_tickets_users' => 'tickets_id',
+                        'zentra_tickets'       => 'id',
                     ],
                 ],
-                'glpi_groups_tickets'   => [
+                'zentra_groups_tickets'   => [
                     'ON' => [
-                        'glpi_groups_tickets'   => 'tickets_id',
-                        'glpi_tickets'          => 'id',
+                        'zentra_groups_tickets'   => 'tickets_id',
+                        'zentra_tickets'          => 'id',
                     ],
                 ],
             ],
-            'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_tickets'),
-            'ORDERBY'         => 'glpi_tickets.date_mod DESC',
+            'WHERE'           => $WHERE + getEntitiesRestrictCriteria('zentra_tickets'),
+            'ORDERBY'         => 'zentra_tickets.date_mod DESC',
         ];
         if (count($JOINS)) {
             $criteria = array_merge_recursive($criteria, $JOINS);
@@ -4108,7 +4108,7 @@ JAVASCRIPT;
 
                 // Is the survey still valid?
                 $is_valid = $duration_cache[$entities_id] === 0
-                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime($_SESSION['glpi_currenttime']);
+                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime($_SESSION['zentra_currenttime']);
                 if (!$is_valid) {
                     // Remove the result from the list
                     unset($results[$k]);
@@ -4117,7 +4117,7 @@ JAVASCRIPT;
         }
 
         $total_row_count = count($results);
-        $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
+        $displayed_row_count = min((int) $_SESSION['zentradisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
             $options  = [
@@ -4511,7 +4511,7 @@ JAVASCRIPT;
                         'values' => [],
                     ];
                     if ($job->getFromDBwithData($data['id'])) {
-                        $bgcolor = htmlescape($_SESSION["glpipriority_" . $job->fields["priority"]]);
+                        $bgcolor = htmlescape($_SESSION["zentrapriority_" . $job->fields["priority"]]);
                         $name = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
                         $row['values'][] = [
                             'content' => "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>",
@@ -4540,7 +4540,7 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
                                 $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
-                                    . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                                    . htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
@@ -4621,7 +4621,7 @@ JAVASCRIPT;
         $table = self::getTable();
         $criteria = [
             'SELECT'    => [
-                'glpi_tickets.status',
+                'zentra_tickets.status',
                 'COUNT DISTINCT' => ["$table.id AS COUNT"],
             ],
             'FROM'      => $table,
@@ -4646,7 +4646,7 @@ JAVASCRIPT;
      */
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // show a tab with count of jobs in the central and give link
         if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
@@ -4658,8 +4658,8 @@ JAVASCRIPT;
 
         $criteria = self::showCentralCountCriteria($foruser);
         $deleted_criteria = $criteria;
-        $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
-        $deleted_criteria['WHERE']['glpi_tickets.is_deleted'] = 1;
+        $criteria['WHERE']['zentra_tickets.is_deleted'] = 0;
+        $deleted_criteria['WHERE']['zentra_tickets.is_deleted'] = 1;
         $iterator = $DB->request($criteria);
         $deleted_iterator = $DB->request($deleted_criteria);
 
@@ -4697,7 +4697,7 @@ JAVASCRIPT;
 
         if (Session::getCurrentInterface() != "central") {
             $twig_params['title']['button'] = [
-                'link'   => $CFG_GLPI["root_doc"] . '/ServiceCatalog',
+                'link'   => $CFG_ZENTRA["root_doc"] . '/ServiceCatalog',
                 'text'   => __('Create a ticket'),
                 'icon'   => 'ti ti-plus',
             ];
@@ -4789,7 +4789,7 @@ JAVASCRIPT;
             self::getTable() . '.status'       => self::INCOMING,
             'is_deleted'   => 0,
         ] + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = (int) $_SESSION['zentralist_limit'];
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
@@ -4893,7 +4893,7 @@ JAVASCRIPT;
         $job  = new self();
         $rand = mt_rand();
         if ($job->getFromDBwithData($ID)) {
-            $bgcolor = htmlescape($_SESSION["glpipriority_" . $job->fields["priority"]]);
+            $bgcolor = htmlescape($_SESSION["zentrapriority_" . $job->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
             // $rand    = mt_rand();
             echo "<tr class='tab_bg_2'>";
@@ -4936,7 +4936,7 @@ JAVASCRIPT;
                 && count($job->groups[CommonITILActor::REQUESTER])
             ) {
                 foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                    echo htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                     echo "<br>";
                 }
             }
@@ -5000,17 +5000,17 @@ JAVASCRIPT;
     {
         $criteria = parent::getCommonCriteria();
 
-        $criteria['LEFT JOIN']['glpi_tickettasks'] = [
+        $criteria['LEFT JOIN']['zentra_tickettasks'] = [
             'ON' => [
                 self::getTable()     => 'id',
-                'glpi_tickettasks'   => 'tickets_id',
+                'zentra_tickettasks'   => 'tickets_id',
             ],
         ];
 
-        $criteria['LEFT JOIN']['glpi_ticketvalidations'] = [
+        $criteria['LEFT JOIN']['zentra_ticketvalidations'] = [
             'ON' => [
                 self::getTable()         => 'id',
-                'glpi_ticketvalidations' => 'tickets_id',
+                'zentra_ticketvalidations' => 'tickets_id',
             ],
         ];
 
@@ -5150,7 +5150,7 @@ JAVASCRIPT;
                 if ($nb) {
                     $tot += $nb;
                     $task->addVolume($nb);
-                    $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id']) . " : $nb");
+                    $task->log(Dropdown::getDropdownName('zentra_entities', $entity['id']) . " : $nb");
                 }
             }
         }
@@ -5168,9 +5168,9 @@ JAVASCRIPT;
      **/
     public static function cronAlertNotClosed($task)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
         // Recherche des entit??s
@@ -5216,7 +5216,7 @@ JAVASCRIPT;
                     $task->addVolume(count($tickets));
                     $task->log(sprintf(
                         __('%1$s: %2$s'),
-                        Dropdown::getDropdownName('glpi_entities', $entity),
+                        Dropdown::getDropdownName('zentra_entities', $entity),
                         count($tickets)
                     ));
                 }
@@ -5294,7 +5294,7 @@ JAVASCRIPT;
                 if ($nb) {
                     $tot += $nb;
                     $task->addVolume($nb);
-                    $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id']) . " : $nb");
+                    $task->log(Dropdown::getDropdownName('zentra_entities', $entity['id']) . " : $nb");
                 }
             }
         }
@@ -5432,7 +5432,7 @@ JAVASCRIPT;
         if (isset($field_id_or_search_options['linkfield'])) {
             switch ($field_id_or_search_options['linkfield']) {
                 case 'requesttypes_id':
-                    if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_itilfollowups', $field_id_or_search_options['joinparams'])) {
+                    if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('zentra_itilfollowups', $field_id_or_search_options['joinparams'])) {
                         $opt = ['is_itilfollowup' => 1];
                     } else {
                         $opt = [
@@ -5609,7 +5609,7 @@ JAVASCRIPT;
 
         $condition = "";
         $user   = Session::getLoginUserID();
-        $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+        $groups = "'" . implode("','", $_SESSION['zentragroups']) . "'";
 
         $requester = CommonITILActor::REQUESTER;
         $assign    = CommonITILActor::ASSIGN;
@@ -5624,13 +5624,13 @@ JAVASCRIPT;
             // Add tickets where the users is requester, observer or recipient
             // Subquery for requester/observer user
             $user_query = "SELECT `tickets_id`
-            FROM `glpi_tickets_users`
+            FROM `zentra_tickets_users`
             WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
             $condition .= "OR `$fieldID` IN ($user_query) ";
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
-            FROM `glpi_tickets`
+            FROM `zentra_tickets`
             WHERE `users_id_recipient` = '$user'";
             $condition .= "OR `$fieldID` IN ($recipient_query) ";
         }
@@ -5639,7 +5639,7 @@ JAVASCRIPT;
             // Add tickets where the users is in a requester or observer group
             // Subquery for requester/observer group
             $group_query = "SELECT `tickets_id`
-            FROM `glpi_groups_tickets`
+            FROM `zentra_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
             $condition .= "OR `$fieldID` IN ($group_query) ";
         }
@@ -5653,7 +5653,7 @@ JAVASCRIPT;
             // Add tickets where the users is assigned
             // Subquery for assigned user
             $user_query = "SELECT `tickets_id`
-            FROM `glpi_tickets_users`
+            FROM `zentra_tickets_users`
             WHERE `users_id` = '$user' AND type = $assign";
             $condition .= "OR `$fieldID` IN ($user_query) ";
         }
@@ -5662,14 +5662,14 @@ JAVASCRIPT;
             // Add tickets where the users is part of an assigned group
             // Subquery for assigned group
             $group_query = "SELECT `tickets_id`
-            FROM `glpi_groups_tickets`
+            FROM `zentra_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type = $assign";
             $condition .= "OR `$fieldID` IN ($group_query) ";
 
             if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                 // Add new tickets
                 $tickets_query = "SELECT `id`
-               FROM `glpi_tickets`
+               FROM `zentra_tickets`
                WHERE `status` = '" . CommonITILObject::INCOMING . "'";
                 $condition .= "OR `$fieldID` IN ($tickets_query) ";
             }
@@ -5684,9 +5684,9 @@ JAVASCRIPT;
             // Add tickets where the users is the validator
             // Subquery for validator
             $validation_query = "SELECT `tickets_id`
-            FROM `glpi_ticketvalidations`
+            FROM `zentra_ticketvalidations`
             WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
-                OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
+                OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `zentra_groups_users`.`groups_id` FROM `zentra_groups_users` WHERE `zentra_groups_users`.`users_id` = '$user'))";
             $condition .= "OR `$fieldID` IN ($validation_query) ";
         }
 
@@ -6007,7 +6007,7 @@ JAVASCRIPT;
                         'tracking',
                         sprintf(
                             __('%s merges ticket %s into %s'),
-                            $_SESSION['glpiname'],
+                            $_SESSION['zentraname'],
                             $id,
                             $merge_target_id
                         )
@@ -6092,15 +6092,15 @@ JAVASCRIPT;
                             ['tu.type' => CommonITILActor::OBSERVER],
                         ],
                     ],
-                    "glpi_tickets.users_id_recipient" => Session::getLoginUserID(),
+                    "zentra_tickets.users_id_recipient" => Session::getLoginUserID(),
                 ],
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
+        if (Session::haveRight("ticket", Ticket::READGROUP) && count($_SESSION['zentragroups'])) {
             $groups = true;
             $where_profile[] = [
-                'gt.groups_id' => $_SESSION['glpigroups'],
+                'gt.groups_id' => $_SESSION['zentragroups'],
                 'OR' => [
                     ['gt.type' => CommonITILActor::REQUESTER],
                     ['gt.type' => CommonITILActor::OBSERVER],
@@ -6127,17 +6127,17 @@ JAVASCRIPT;
                 ],
             ];
 
-            if (count($_SESSION['glpigroups'])) {
+            if (count($_SESSION['zentragroups'])) {
                 $groups = true;
                 $temp['OR'][] = [
-                    'gt.groups_id' => $_SESSION['glpigroups'],
+                    'gt.groups_id' => $_SESSION['zentragroups'],
                     'gt.type'      => CommonITILActor::ASSIGN,
                 ];
             }
 
             if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                 $temp['OR'][] = [
-                    ['glpi_tickets.status' => CommonITILObject::INCOMING],
+                    ['zentra_tickets.status' => CommonITILObject::INCOMING],
                 ];
             }
 
@@ -6157,26 +6157,26 @@ JAVASCRIPT;
         // joins needed tables
         $join_profile  = [];
         if ($users) {
-            $join_profile['glpi_tickets_users AS tu'] = [
+            $join_profile['zentra_tickets_users AS tu'] = [
                 'ON' => [
                     'tu'           => 'tickets_id',
-                    'glpi_tickets' => 'id',
+                    'zentra_tickets' => 'id',
                 ],
             ];
         }
         if ($groups) {
-            $join_profile['glpi_groups_tickets AS gt'] = [
+            $join_profile['zentra_groups_tickets AS gt'] = [
                 'ON' => [
                     'gt'           => 'tickets_id',
-                    'glpi_tickets' => 'id',
+                    'zentra_tickets' => 'id',
                 ],
             ];
         }
         if ($valid) {
-            $join_profile['glpi_ticketvalidations'] = [
+            $join_profile['zentra_ticketvalidations'] = [
                 'ON' => [
-                    'glpi_ticketvalidations' => 'tickets_id',
-                    'glpi_tickets' => 'id',
+                    'zentra_ticketvalidations' => 'tickets_id',
+                    'zentra_tickets' => 'id',
                 ],
             ];
         }
@@ -6263,11 +6263,11 @@ JAVASCRIPT;
      */
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $options = [];
 
-        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+        if (in_array($itemtype, $CFG_ZENTRA["ticket_types"])) {
             $options[] = [
                 'id'            => 60,
                 'table'         => self::getTable(),
@@ -6302,8 +6302,8 @@ JAVASCRIPT;
 
         switch (true) {
             case $item instanceof User:
-                $restrict['glpi_tickets_users.users_id'] = $item->getID();
-                $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
+                $restrict['zentra_tickets_users.users_id'] = $item->getID();
+                $restrict['zentra_tickets_users.type'] = CommonITILActor::REQUESTER;
                 break;
 
             case $item instanceof SLA:
@@ -6325,8 +6325,8 @@ JAVASCRIPT;
                 break;
 
             case $item instanceof Supplier:
-                $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
-                $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
+                $restrict['zentra_suppliers_tickets.suppliers_id'] = $item->getID();
+                $restrict['zentra_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
                 break;
 
             case $item instanceof Group:
@@ -6335,35 +6335,35 @@ JAVASCRIPT;
                 } else {
                     $tree = 0;
                 }
-                $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
+                $restrict['zentra_groups_tickets.groups_id'] = ($tree ? getSonsOf('zentra_groups', $item->getID()) : $item->getID());
+                $restrict['zentra_groups_tickets.type'] = CommonITILActor::REQUESTER;
                 break;
 
             default:
-                $restrict['glpi_items_tickets.items_id'] = $item->getID();
-                $restrict['glpi_items_tickets.itemtype'] = $item->getType();
+                $restrict['zentra_items_tickets.items_id'] = $item->getID();
+                $restrict['zentra_items_tickets.itemtype'] = $item->getType();
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [
-                        'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
+                        'zentra_tickets.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_tickets_users.tickets_id'  => new QueryExpression('glpi_tickets.id'),
-                                'glpi_tickets_users.users_id'    => Session::getLoginUserID(),
+                                'zentra_tickets_users.tickets_id'  => new QueryExpression('zentra_tickets.id'),
+                                'zentra_tickets_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],
                     ];
                     if (Session::haveRightsOr(TicketValidation::$rightname, [TicketValidation::VALIDATEINCIDENT, TicketValidation::VALIDATEREQUEST])) {
                         $or[] = [
                             'AND' => [
-                                'glpi_ticketvalidations.tickets_id'        => new QueryExpression('glpi_tickets.id'),
-                                'glpi_ticketvalidations.itemtype_target'   => User::class,
-                                'glpi_ticketvalidations.items_id_target' => Session::getLoginUserID(),
+                                'zentra_ticketvalidations.tickets_id'        => new QueryExpression('zentra_tickets.id'),
+                                'zentra_ticketvalidations.itemtype_target'   => User::class,
+                                'zentra_ticketvalidations.items_id_target' => Session::getLoginUserID(),
                             ],
                         ];
                     }
-                    if (count($_SESSION['glpigroups'])) {
-                        $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
+                    if (count($_SESSION['zentragroups'])) {
+                        $or['zentra_groups_tickets.groups_id'] = $_SESSION['zentragroups'];
                     }
                     $restrict[] = ['OR' => $or];
                 }

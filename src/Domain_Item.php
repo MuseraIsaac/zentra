@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
 
 class Domain_Item extends CommonDBRelation
 {
@@ -65,7 +65,7 @@ class Domain_Item extends CommonDBRelation
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -73,7 +73,7 @@ class Domain_Item extends CommonDBRelation
 
         if ($item instanceof Domain && count(Domain::getTypes(false))) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
             }
             return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
@@ -84,7 +84,7 @@ class Domain_Item extends CommonDBRelation
                 && Session::haveRight('domain', READ))
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
             return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -92,7 +92,7 @@ class Domain_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -121,7 +121,7 @@ class Domain_Item extends CommonDBRelation
             return 0;
         }
         return countElementsInTable(
-            'glpi_domains_items',
+            'zentra_domains_items',
             [
                 "domains_id"   => $item->getID(),
                 "itemtype"     => $types,
@@ -231,7 +231,7 @@ class Domain_Item extends CommonDBRelation
                 'domain' => $domain,
                 'itemtypes' => Domain::getTypes(true),
                 'entity_restrict' => $domain->fields['is_recursive']
-                    ? getSonsOf('glpi_entities', $domain->fields['entities_id'])
+                    ? getSonsOf('zentra_entities', $domain->fields['entities_id'])
                     : $domain->fields['entities_id'],
                 'btn_msg' => _x('button', 'Add'),
                 'items_field_label' => _n('Item', 'Items', 1),
@@ -244,7 +244,7 @@ class Domain_Item extends CommonDBRelation
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domain.getID()) }}
 
                         <div class="d-flex">
@@ -283,9 +283,9 @@ TWIG, $twig_params);
             $linked_criteria = [
                 'SELECT' => [
                     "$itemTable.*",
-                    'glpi_domains_items.id AS items_id',
-                    'glpi_domains_items.domainrelations_id',
-                    'glpi_entities.id AS entity',
+                    'zentra_domains_items.id AS items_id',
+                    'zentra_domains_items.domainrelations_id',
+                    'zentra_entities.id AS entity',
                 ],
                 'FROM'   => self::getTable(),
                 'INNER JOIN'   => [
@@ -297,9 +297,9 @@ TWIG, $twig_params);
                     ],
                 ],
                 'LEFT JOIN'    => [
-                    'glpi_entities'   => [
+                    'zentra_entities'   => [
                         'ON'  => [
-                            'glpi_entities'   => 'id',
+                            'zentra_entities'   => 'id',
                             $itemTable        => 'entities_id',
                         ],
                     ],
@@ -320,7 +320,7 @@ TWIG, $twig_params);
                 $item->getFromDB($linked_data["id"]);
 
                 $name = $linked_data["name"];
-                if ($_SESSION["glpiis_ids_visible"] || $name === '') {
+                if ($_SESSION["zentrais_ids_visible"] || $name === '') {
                     $name .= " (" . $linked_data["id"] . ")";
                 }
 
@@ -339,12 +339,12 @@ TWIG, $twig_params);
                 ];
                 if (Session::isMultiEntitiesMode()) {
                     if (!isset($entity_names[$linked_data['entity']])) {
-                        $entity_names[$linked_data['entity']] = Dropdown::getDropdownName("glpi_entities", $linked_data['entity']);
+                        $entity_names[$linked_data['entity']] = Dropdown::getDropdownName("zentra_entities", $linked_data['entity']);
                     }
                     $entry['entity'] = $entity_names[$linked_data['entity']];
                 }
                 if (!isset($relation_names[$linked_data['domainrelations_id']])) {
-                    $relation_names[$linked_data['domainrelations_id']] = Dropdown::getDropdownName("glpi_domainrelations", $linked_data['domainrelations_id']);
+                    $relation_names[$linked_data['domainrelations_id']] = Dropdown::getDropdownName("zentra_domainrelations", $linked_data['domainrelations_id']);
                 }
                 $entry['domainrelations_id'] = $relation_names[$linked_data['domainrelations_id']];
                 $entries[] = $entry;
@@ -392,13 +392,13 @@ TWIG, $twig_params);
 
         $criteria = [
             'SELECT'    => [
-                'glpi_domains_items.id AS assocID',
-                'glpi_domains_items.domainrelations_id',
-                'glpi_domains_items.is_deleted',
-                'glpi_domains_items.is_dynamic',
-                'glpi_entities.id AS entity',
-                'glpi_domains.name AS assocName',
-                'glpi_domains.*',
+                'zentra_domains_items.id AS assocID',
+                'zentra_domains_items.domainrelations_id',
+                'zentra_domains_items.is_deleted',
+                'zentra_domains_items.is_dynamic',
+                'zentra_entities.id AS entity',
+                'zentra_domains.name AS assocName',
+                'zentra_domains.*',
                 QueryFunction::groupConcat(
                     expression: Group_Item::getTable() . '.groups_id',
                     separator: ',',
@@ -434,16 +434,16 @@ TWIG, $twig_params);
             'WHERE'     => [],//to be filled
             'ORDER'     => 'assocName',
             'GROUPBY' => [
-                'glpi_domains_items.id',
+                'zentra_domains_items.id',
             ],
         ];
 
         if ($item instanceof DomainRelation) {
-            $criteria['WHERE'] = ['glpi_domains_items.domainrelations_id' => $item->getID()];
+            $criteria['WHERE'] = ['zentra_domains_items.domainrelations_id' => $item->getID()];
         } else {
             $criteria['WHERE'] = [
-                'glpi_domains_items.itemtype' => $item::class,
-                'glpi_domains_items.items_id' => $item->getID(),
+                'zentra_domains_items.itemtype' => $item::class,
+                'zentra_domains_items.items_id' => $item->getID(),
             ];
         }
         $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
@@ -454,10 +454,10 @@ TWIG, $twig_params);
             += [
                 'OR'  => [
                     'AND' => [
-                        "glpi_domains_items.is_deleted" => 0,
-                        "glpi_domains_items.is_dynamic" => 1,
+                        "zentra_domains_items.is_deleted" => 0,
+                        "zentra_domains_items.is_dynamic" => 1,
                     ],
-                    "glpi_domains_items.is_dynamic" => 0,
+                    "zentra_domains_items.is_dynamic" => 0,
                 ],
             ];
 
@@ -511,7 +511,7 @@ TWIG, $twig_params);
         ) {
             // Restrict entity for knowbase
             $entities = "";
-            $entity   = $_SESSION["glpiactive_entity"];
+            $entity   = $_SESSION["zentraactive_entity"];
 
             if ($item->isEntityAssign()) {
                 // Case of personal items : entity = -1 : create on active entity (Reminder case))
@@ -520,7 +520,7 @@ TWIG, $twig_params);
                 }
 
                 if ($item->isRecursive()) {
-                    $entities = getSonsOf('glpi_entities', $entity);
+                    $entities = getSonsOf('zentra_entities', $entity);
                 } else {
                     $entities = $entity;
                 }
@@ -552,7 +552,7 @@ TWIG, $twig_params);
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('entities_id', entity) }}
                         {{ inputs.hidden('is_recursive', is_recursive ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}
@@ -599,14 +599,14 @@ TWIG, $twig_params);
             }
 
             if (Session::isMultiEntitiesMode() && !isset($entity_names[$data['entity']])) {
-                $entity_names[$data['entity']] = Dropdown::getDropdownName(table: "glpi_entities", id: $data['entity'], default: '');
+                $entity_names[$data['entity']] = Dropdown::getDropdownName(table: "zentra_entities", id: $data['entity'], default: '');
             }
 
             $groups = explode(',', $data['groups_id_tech'] ?? '');
             $entry_groups = [];
             foreach ($groups as $group) {
                 if (!isset($group_names[$group])) {
-                    $group_names[$group] = Dropdown::getDropdownName(table: "glpi_groups", id: (int) $group, default: '');
+                    $group_names[$group] = Dropdown::getDropdownName(table: "zentra_groups", id: (int) $group, default: '');
                 }
                 $entry_groups[] = $group_names[$group];
             }
@@ -614,10 +614,10 @@ TWIG, $twig_params);
                 $user_names[$data['users_id_tech']] = getUserName($data['users_id_tech']);
             }
             if (!isset($type_names[$data['domaintypes_id']])) {
-                $type_names[$data['domaintypes_id']] = Dropdown::getDropdownName(table: "glpi_domaintypes", id: $data['domaintypes_id'], default: '');
+                $type_names[$data['domaintypes_id']] = Dropdown::getDropdownName(table: "zentra_domaintypes", id: $data['domaintypes_id'], default: '');
             }
             if (!$item instanceof DomainRelation && !isset($relation_names[$data['domainrelations_id']])) {
-                $relation_names[$data['domainrelations_id']] = Dropdown::getDropdownName(table: "glpi_domainrelations", id: $data['domainrelations_id'], default: '');
+                $relation_names[$data['domainrelations_id']] = Dropdown::getDropdownName(table: "zentra_domainrelations", id: $data['domainrelations_id'], default: '');
             }
 
             $expiration = htmlescape(Html::convDate($data["date_expiration"]));

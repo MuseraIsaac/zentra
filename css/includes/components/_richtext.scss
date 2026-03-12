@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-:root:not([glpi-theme-dark="1"]) {
+:root:not([zentra-theme-dark="1"]) {
     body.mce-content-body {
         background: transparent;
     }
@@ -96,7 +96,7 @@ body.mce-content-body {
         overflow: hidden;
 
         .read_more {
-            background: linear-gradient(to bottom, rgb(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
+            background: linear-gradient(to bottom, rgb(255, 255, 255, 0%) 0%, var(--zentra-timeline-itil-content-bg) 100%);
         }
     }
 

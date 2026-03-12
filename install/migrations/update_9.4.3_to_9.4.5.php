@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ function update943to945()
     /** Add OLA TTR begin date field to Tickets */
     $iterator = new DBmysqlIterator(null);
     $migration->addField(
-        'glpi_tickets',
+        'zentra_tickets',
         'ola_ttr_begin_date',
         'datetime',
         [
@@ -65,11 +65,11 @@ function update943to945()
 
     /** Fix language fields */
     $translatable_tables = [
-        'glpi_dropdowntranslations'             => 'DEFAULT NULL',
-        'glpi_knowbaseitemtranslations'         => 'DEFAULT NULL',
-        'glpi_notificationtemplatetranslations' => "NOT NULL DEFAULT ''",
-        'glpi_knowbaseitems_revisions'          => 'DEFAULT NULL',
-        'glpi_knowbaseitems_comments'           => 'DEFAULT NULL',
+        'zentra_dropdowntranslations'             => 'DEFAULT NULL',
+        'zentra_knowbaseitemtranslations'         => 'DEFAULT NULL',
+        'zentra_notificationtemplatetranslations' => "NOT NULL DEFAULT ''",
+        'zentra_knowbaseitems_revisions'          => 'DEFAULT NULL',
+        'zentra_knowbaseitems_comments'           => 'DEFAULT NULL',
     ];
     foreach ($translatable_tables as $table => $default) {
         $migration->changeField(

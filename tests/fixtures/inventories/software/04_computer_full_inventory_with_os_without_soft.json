@@ -56,19 +56,19 @@
             },
             "version": "21H2"
         },
-        "versionclient": "GLPI-Agent_v1.9",
+        "versionclient": "ZENTRA-Agent_v1.9",
         "versionprovider": {
             "comments": [
                 "Provided by Teclib Edition",
                 "Installer built on Tue May 28 09:10:25 2024 UTC",
                 "Built with Strawberry Perl 5.38.2",
-                "Built on github actions windows image for glpi-project\/glpi-agent repository"
+                "Built on github actions windows image for zentra-project\/zentra-agent repository"
             ],
             "etime": 25,
-            "name": "GLPI",
-            "perl_exe": "C:\\Program Files\\GLPI-Agent\\perl\\bin\\glpi-agent.exe",
+            "name": "ZENTRA",
+            "perl_exe": "C:\\Program Files\\ZENTRA-Agent\\perl\\bin\\zentra-agent.exe",
             "perl_version": "v5.38.2",
-            "program": "C:\\Program Files\\GLPI-Agent\\perl\\bin\\glpi-win32-service",
+            "program": "C:\\Program Files\\ZENTRA-Agent\\perl\\bin\\zentra-win32-service",
             "version": "1.9"
         }
     },

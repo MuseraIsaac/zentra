@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,27 +30,27 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var blocks Glpi\Form\Block[] #}
+{# @var blocks Zentra\Form\Block[] #}
 {# @var can_update bool #}
-{# @var form Glpi\Form\Form #}
+{# @var form Zentra\Form\Form #}
 
 {# Add a small div to avoid an issue with the html5sortable library which
    otherwise does not allow placing an element before the horizontal layout block
    if there is no element other than a horizontal layout block
 #}
 <div
-    data-glpi-form-editor-horizontal-blocks-fix-sortable-issue
+    data-zentra-form-editor-horizontal-blocks-fix-sortable-issue
     style="height: 1px;">
 </div>
 
 <section
     class="d-flex align-items-end"
-    data-glpi-form-editor-horizontal-blocks-container
+    data-zentra-form-editor-horizontal-blocks-container
     aria-label="{{ __("Horizontal blocks layout") }}"
 >
     <section
         class="flex-grow-1 w-100"
-        data-glpi-form-editor-horizontal-blocks
+        data-zentra-form-editor-horizontal-blocks
         aria-label="{{ __("Horizontal blocks") }}"
     >
         {% set previous_index = -1 %}
@@ -102,6 +102,6 @@
    if there is no element other than a horizontal layout block
 #}
 <div
-    data-glpi-form-editor-horizontal-blocks-fix-sortable-issue
+    data-zentra-form-editor-horizontal-blocks-fix-sortable-issue
     style="height: 1px;">
 </div>

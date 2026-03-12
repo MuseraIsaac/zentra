@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\DCBreadcrumbInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\DCBreadcrumb;
+use Zentra\Features\DCBreadcrumbInterface;
 
 use function Safe\preg_match;
 
@@ -162,7 +162,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         if (isset($input["_blueprint"])) {
             $blueprint = array_shift($input["_blueprint"]);
 
-            if ($dest = Toolbox::savePicture(GLPI_TMP_DIR . '/' . $blueprint)) {
+            if ($dest = Toolbox::savePicture(ZENTRA_TMP_DIR . '/' . $blueprint)) {
                 $input['blueprint'] = $dest;
             } else {
                 Session::addMessageAfterRedirect(__s('Unable to save picture file.'), true, ERROR);
@@ -249,7 +249,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -277,18 +277,18 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
         $tab[] = [
             'id'                 => '1450',
-            'table'              => 'glpi_dcrooms',
+            'table'              => 'zentra_dcrooms',
             'field'              => 'name',
             'datatype'           => 'itemlink',
             'name'               => self::getTypeName(1),
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_racks',
+                    'table'              => 'zentra_racks',
                     'linkfield'          => 'racks_id',
                     'joinparams'         => [
                         'beforejoin'         => [
-                            'table'              => 'glpi_items_racks',
+                            'table'              => 'zentra_items_racks',
                             'joinparams'         => [
                                 'jointype'           => 'itemtype_item',
                             ],
@@ -301,12 +301,12 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         switch ($item::class) {
             case Datacenter::class:
                 $nb = 0;
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = countElementsInTable(
                         self::getTable(),
                         [
@@ -325,7 +325,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof Datacenter) {
             return false;
@@ -400,7 +400,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);

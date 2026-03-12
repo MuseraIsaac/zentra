@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Plugin\Hooks;
-use Glpi\Search\SearchOption;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\SearchOption;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -71,7 +71,7 @@ if (
 
     $search            = $search[$_POST["id_field"]];
 
-    echo "<table class='tab_glpi w-100'><tr><td>";
+    echo "<table class='tab_zentra w-100'><tr><td>";
 
     $plugdisplay = false;
     // Specific plugin Type case
@@ -93,7 +93,7 @@ if (
 
     if (
         empty($search["linkfield"])
-        || ($search['table'] == 'glpi_infocoms')
+        || ($search['table'] == 'zentra_infocoms')
     ) {
         $fieldname = $search["field"];
     } else {

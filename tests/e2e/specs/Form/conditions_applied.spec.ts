@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { FormPreviewPage } from '../../pages/FormRenderPage';
 import { Profiles } from '../../utils/Profiles';
 
@@ -47,12 +47,12 @@ test(`Conditions are applied on the submit button`, async ({
     // The question is empty, the submit button should not be visible
     await expect(page.getByRole('button', { name: 'Submit' })).toBeHidden();
 
-    // Set answer to "I love GLPI", the submit button should become visible
-    await page.getByRole('textbox', { name: 'My question used as a criteria' }).fill('I love GLPI');
+    // Set answer to "I love ZENTRA", the submit button should become visible
+    await page.getByRole('textbox', { name: 'My question used as a criteria' }).fill('I love ZENTRA');
     await expect(page.getByRole('button', { name: 'Submit' })).toBeVisible();
 
-    // Change answer to "I love GLPI 2", the submit button should be hidden again
-    await page.getByRole('textbox', { name: 'My question used as a criteria' }).fill('I love GLPI 2');
+    // Change answer to "I love ZENTRA 2", the submit button should be hidden again
+    await page.getByRole('textbox', { name: 'My question used as a criteria' }).fill('I love ZENTRA 2');
     await expect(page.getByRole('button', { name: 'Submit' })).toBeHidden();
 });
 

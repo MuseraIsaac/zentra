@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
 Html::header(__('Transfer'), '', 'admin', 'rule', 'Transfer');
 
@@ -44,19 +44,19 @@ $transfer = new Transfer();
 $transfer->checkGlobal(READ);
 
 if (isset($_POST['transfer'])) {
-    if (isset($_SESSION['glpitransfer_list'])) {
+    if (isset($_SESSION['zentratransfer_list'])) {
         if (!Session::haveAccessToEntity($_POST['to_entity'])) {
             throw new AccessDeniedHttpException();
         }
-        $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
-        unset($_SESSION['glpitransfer_list']);
+        $transfer->moveItems($_SESSION['zentratransfer_list'], $_POST['to_entity'], $_POST);
+        unset($_SESSION['zentratransfer_list']);
         echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
         echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
         Html::footer();
         return;
     }
 } elseif (isset($_POST['clear'])) {
-    unset($_SESSION['glpitransfer_list']);
+    unset($_SESSION['zentratransfer_list']);
     echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
     echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
     echo "</div>";
@@ -64,7 +64,7 @@ if (isset($_POST['transfer'])) {
     return;
 }
 
-unset($_SESSION['glpimassiveactionselected']);
+unset($_SESSION['zentramassiveactionselected']);
 
 $transfer->showTransferList();
 

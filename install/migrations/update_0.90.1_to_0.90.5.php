@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,9 +50,9 @@ function update0901to0905()
 
     $migration->setVersion('0.90.5');
 
-    // fix https://github.com/glpi-project/glpi/issues/820
+    // fix https://github.com/zentra-project/zentra/issues/820
     // remove empty suppliers in tickets
-    $DB->delete("glpi_suppliers_tickets", [
+    $DB->delete("zentra_suppliers_tickets", [
         'suppliers_id'       => 0,
         'alternative_email'  => "",
     ]);

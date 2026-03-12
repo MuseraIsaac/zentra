@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ export class TeamBadgeProvider {
             Contact: {}
         };
         this.user_pictures_to_load = new Set([]);
-        this.dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
+        this.dark_theme = $('html').attr('data-zentra-theme-dark') === '1';
         /**
          * The size in pixels for the team badges
          * @type {number}
@@ -130,7 +130,7 @@ export class TeamBadgeProvider {
 
         $.ajax({
             type: 'POST', // Too much data may break GET limit
-            url: `${CFG_GLPI['root_doc']}/ajax/getUserPicture.php`,
+            url: `${CFG_ZENTRA['root_doc']}/ajax/getUserPicture.php`,
             data: {
                 users_id: users_ids,
                 size: this.team_image_size,

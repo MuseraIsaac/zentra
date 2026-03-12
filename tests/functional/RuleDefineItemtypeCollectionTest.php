@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\InventoryTestCase;
+use Zentra\Tests\InventoryTestCase;
 
 class RuleDefineItemtypeCollectionTest extends InventoryTestCase
 {
@@ -62,8 +62,8 @@ class RuleDefineItemtypeCollectionTest extends InventoryTestCase
         $expected = array_merge($input, [
             '_auto'                  => 1,
             'tag'                    => '000005',
-            'deviceid'               => 'glpixps-2018-07-09-09-07-13',
-            'autoupdatesystems_id'   => 'GLPI Native Inventory',
+            'deviceid'               => 'zentraxps-2018-07-09-09-07-13',
+            'autoupdatesystems_id'   => 'ZENTRA Native Inventory',
             'last_boot'              => '2020-06-09 07:58:08',
             'chassis_type'           => 'Laptop',
             'datelastloggeduser'     => 'Fri Jun 12 14:15',

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Plugin\Hooks;
-use Glpi\Socket;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Plugin\Hooks;
+use Zentra\Socket;
 
 use function Safe\preg_replace;
 use function Safe\strtotime;
@@ -187,9 +187,9 @@ class NetworkPort extends CommonDBChild
      **/
     public static function getNetworkPortInstantiations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        return $CFG_GLPI['networkport_instantiations'];
+        return $CFG_ZENTRA['networkport_instantiations'];
     }
 
     public static function getTypeName($nb = 0)
@@ -298,7 +298,7 @@ class NetworkPort extends CommonDBChild
                 // Update IPAddress
                 foreach (
                     $DB->request([
-                        'FROM' => 'glpi_networknames',
+                        'FROM' => 'zentra_networknames',
                         'WHERE' => [
                             'itemtype' => NetworkPort::class,
                             'items_id' => $this->getID(),
@@ -307,7 +307,7 @@ class NetworkPort extends CommonDBChild
                 ) {
                     foreach (
                         $DB->request([
-                            'FROM' => 'glpi_ipaddresses',
+                            'FROM' => 'zentra_ipaddresses',
                             'WHERE' => [
                                 'itemtype' => NetworkName::class,
                                 'items_id' => $dataname['id'],
@@ -490,7 +490,7 @@ class NetworkPort extends CommonDBChild
     {
         $unicity_input = [
             'networkports_id' => $this->fields['id'],
-            'date'            => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+            'date'            => date('Y-m-d', strtotime($_SESSION['zentra_currenttime'])),
         ];
         $input = array_merge(
             [
@@ -605,7 +605,7 @@ class NetworkPort extends CommonDBChild
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $itemtype = $item::class;
         $items_id = $item->getField('id');
@@ -651,7 +651,7 @@ class NetworkPort extends CommonDBChild
         $aggregated_ports = [];
         foreach ($aggegate_iterator as $row) {
             $port_iterator = $DB->request([
-                'FROM'   => 'glpi_networkportaggregates',
+                'FROM'   => 'zentra_networkportaggregates',
                 'WHERE'  => ['networkports_id' => $row['id']],
                 'LIMIT'  => 1,
             ]);
@@ -757,7 +757,7 @@ class NetworkPort extends CommonDBChild
             . __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
             <span class='sr-only'>" . __s('Select default items to show') . "</span></span>";
 
-            $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype="
+            $pref_url = $CFG_ZENTRA["root_doc"] . "/front/displaypreference.form.php?itemtype="
                      . self::getType();
             $search_config_top .= Ajax::createIframeModalWindow(
                 'search_config_top',
@@ -788,7 +788,7 @@ class NetworkPort extends CommonDBChild
         echo "<div class='table-responsive'>";
         if ($showmassiveactions) {
             $massiveactionparams = [
-                'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
+                'num_displayed'  => min($_SESSION['zentralist_limit'], count($ports_iterator)),
                 'check_itemtype' => $itemtype,
                 'container'      => 'mass' . self::class . $rand,
                 'check_items_id' => $items_id,
@@ -936,7 +936,7 @@ class NetworkPort extends CommonDBChild
      */
     protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $css_class = 'netport';
         if ((int) $port['ifstatus'] === 1) {
@@ -970,7 +970,7 @@ class NetworkPort extends CommonDBChild
 
                             $name = $port['name'];
                             $url = NetworkPort::getFormURLWithID($port['id']);
-                            if ($_SESSION["glpiis_ids_visible"] || empty($name)) {
+                            if ($_SESSION["zentrais_ids_visible"] || empty($name)) {
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $port['id']);
                             }
 
@@ -1136,7 +1136,7 @@ class NetworkPort extends CommonDBChild
                                         $list_ports[] = $npo;
                                     }
 
-                                    $itemtypes = $CFG_GLPI["networkport_types"];
+                                    $itemtypes = $CFG_ZENTRA["networkport_types"];
                                     $union = new QueryUnion();
                                     foreach ($itemtypes as $related_class) {
                                         $table = getTableForItemType($related_class);
@@ -1243,7 +1243,7 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 127:
                             $names_iterator = $DB->request([
-                                'FROM'   => 'glpi_networknames',
+                                'FROM'   => 'zentra_networknames',
                                 'WHERE'  => [
                                     'itemtype'  => NetworkPort::class,
                                     'items_id'  => $port['id'],
@@ -1377,7 +1377,7 @@ class NetworkPort extends CommonDBChild
             $lastItem             = $recursiveItems[count($recursiveItems) - 1];
             $options['entities_id'] = $lastItem->getField('entities_id');
         } else {
-            $options['entities_id'] = $_SESSION['glpiactive_entity'];
+            $options['entities_id'] = $_SESSION['zentraactive_entity'];
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/networkport/form.html.twig', [
@@ -1408,7 +1408,7 @@ class NetworkPort extends CommonDBChild
 
         $tab[] = [
             'id'                 => '21',
-            'table'              => 'glpi_networkports',
+            'table'              => 'zentra_networkports',
             'field'              => 'mac',
             'name'               => __('MAC address'),
             'datatype'           => 'mac',
@@ -1419,7 +1419,7 @@ class NetworkPort extends CommonDBChild
 
         $tab[] = [
             'id'                 => '87',
-            'table'              => 'glpi_networkports',
+            'table'              => 'zentra_networkports',
             'field'              => 'instantiation_type',
             'name'               => NetworkPortType::getTypeName(1),
             'datatype'           => 'itemtypename',
@@ -1431,14 +1431,14 @@ class NetworkPort extends CommonDBChild
         $networkNameJoin = ['jointype'          => 'itemtype_item',
             'specific_itemtype' => 'NetworkPort',
             'condition'         => ['NEWTABLE.is_deleted' => 0],
-            'beforejoin'        => ['table'      => 'glpi_networkports',
+            'beforejoin'        => ['table'      => 'zentra_networkports',
                 'joinparams' => $joinparams,
             ],
         ];
         NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin);
 
         $instantjoin = ['jointype'   => 'child',
-            'beforejoin' => ['table'      => 'glpi_networkports',
+            'beforejoin' => ['table'      => 'zentra_networkports',
                 'joinparams' => $joinparams,
             ],
         ];
@@ -1448,18 +1448,18 @@ class NetworkPort extends CommonDBChild
 
         $netportjoin = [
             [
-                'table'      => 'glpi_networkports',
+                'table'      => 'zentra_networkports',
                 'joinparams' => ['jointype' => 'itemtype_item'],
             ],
             [
-                'table'      => 'glpi_networkports_vlans',
+                'table'      => 'zentra_networkports_vlans',
                 'joinparams' => ['jointype' => 'child'],
             ],
         ];
 
         $tab[] = [
             'id'                 => '88',
-            'table'              => 'glpi_vlans',
+            'table'              => 'zentra_vlans',
             'field'              => 'name',
             'name'               => Vlan::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -1588,7 +1588,7 @@ class NetworkPort extends CommonDBChild
         if ($this->isField('sockets_id')) {
             $tab[] = [
                 'id'                 => '9',
-                'table'              => 'glpi_sockets',
+                'table'              => 'zentra_sockets',
                 'field'              => 'name',
                 'name'               => Socket::getTypeName(1),
                 'datatype'           => 'dropdown',
@@ -1673,10 +1673,10 @@ class NetworkPort extends CommonDBChild
 
         $netportjoin = [
             [
-                'table'      => 'glpi_networkports',
+                'table'      => 'zentra_networkports',
                 'joinparams' => ['jointype' => 'itemtype_item'],
             ], [
-                'table'      => 'glpi_networkports_vlans',
+                'table'      => 'zentra_networkports_vlans',
                 'joinparams' => ['jointype' => 'child'],
             ],
         ];
@@ -1728,7 +1728,7 @@ class NetworkPort extends CommonDBChild
             'jointype'          => 'itemtype_item',
             'specific_itemtype' => 'NetworkPort',
             'condition'         => ['NEWTABLE.is_deleted' => 0],
-            'beforejoin'        => ['table'      => 'glpi_networkports',
+            'beforejoin'        => ['table'      => 'zentra_networkports',
                 'joinparams' => $joinparams,
             ],
         ];
@@ -1737,9 +1737,9 @@ class NetworkPort extends CommonDBChild
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -1748,8 +1748,8 @@ class NetworkPort extends CommonDBChild
         // Can exist on template
         $nb = 0;
         if (NetworkEquipment::canView()) {
-            if (in_array($item::class, $CFG_GLPI["networkport_types"], true)) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+            if (in_array($item::class, $CFG_ZENTRA["networkport_types"], true)) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -1758,7 +1758,7 @@ class NetworkPort extends CommonDBChild
 
         if ($item::class === self::class) {
             $nbAlias = countElementsInTable(
-                'glpi_networkportaliases',
+                'zentra_networkportaliases',
                 ['networkports_id_alias' => $item->getField('id')]
             );
             if ($nbAlias > 0) {
@@ -1767,7 +1767,7 @@ class NetworkPort extends CommonDBChild
                 $aliases = '';
             }
             $nbAggregates = countElementsInTable(
-                'glpi_networkportaggregates',
+                'zentra_networkportaggregates',
                 ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']]
             );
             if ($nbAggregates > 0) {
@@ -1794,7 +1794,7 @@ class NetworkPort extends CommonDBChild
     public static function countForItem(CommonDBTM $item): int
     {
         return countElementsInTable(
-            'glpi_networkports',
+            'zentra_networkports',
             [
                 'itemtype'   => $item::class,
                 'items_id'   => $item->getField('id'),
@@ -1803,9 +1803,9 @@ class NetworkPort extends CommonDBChild
         );
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -1813,7 +1813,7 @@ class NetworkPort extends CommonDBChild
 
         if (
             $item::class === self::class
-            || in_array($item::class, $CFG_GLPI["networkport_types"], true)
+            || in_array($item::class, $CFG_ZENTRA["networkport_types"], true)
         ) {
             self::showForItem($item, $withtemplate);
         }

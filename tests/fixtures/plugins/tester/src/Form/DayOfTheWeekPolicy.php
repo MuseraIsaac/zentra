@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiPlugin\Tester\Form;
+namespace ZentraPlugin\Tester\Form;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\AccessVote;
-use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
-use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Serializer\DynamicExportDataField;
-use Glpi\Form\Form;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\JsonFieldInterface;
+use Zentra\Form\AccessControl\AccessVote;
+use Zentra\Form\AccessControl\ControlType\ControlTypeInterface;
+use Zentra\Form\AccessControl\FormAccessControl;
+use Zentra\Form\AccessControl\FormAccessParameters;
+use Zentra\Form\Export\Context\DatabaseMapper;
+use Zentra\Form\Export\Serializer\DynamicExportDataField;
+use Zentra\Form\Form;
 use InvalidArgumentException;
 use Override;
 use Session;

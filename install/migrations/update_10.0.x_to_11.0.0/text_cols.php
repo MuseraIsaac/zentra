@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,9 +37,9 @@
  * @var Migration $migration
  */
 $text_cols = [
-    ['glpi_notificationtemplatetranslations', 'content_text', 'longtext'],
-    ['glpi_notificationtemplatetranslations', 'content_html', 'longtext'],
-    ['glpi_items_kanbans', 'state', 'mediumtext'],
+    ['zentra_notificationtemplatetranslations', 'content_text', 'longtext'],
+    ['zentra_notificationtemplatetranslations', 'content_html', 'longtext'],
+    ['zentra_items_kanbans', 'state', 'mediumtext'],
 ];
 
 foreach ($text_cols as $data) {

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Item_RemoteManagement extends CommonDBChild
 {
@@ -54,11 +54,11 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $nb = 0;
         if (
-            $_SESSION['glpishow_count_on_tabs']
+            $_SESSION['zentrashow_count_on_tabs']
             && ($item instanceof CommonDBTM)
         ) {
             $nb = countElementsInTable(
@@ -73,7 +73,7 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -147,7 +147,7 @@ class Item_RemoteManagement extends CommonDBChild
             'form_url' => self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&withtemplate=$withtemplate",
             'entries'  => $entries,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . mt_rand(),
             ],
         ]);

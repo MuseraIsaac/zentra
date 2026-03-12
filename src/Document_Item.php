@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * Document_Item Class
@@ -202,7 +202,7 @@ class Document_Item extends CommonDBRelation
             $ticket = new Ticket();
             $input  = [
                 'id'              => $this->fields['items_id'],
-                'date_mod'        => $_SESSION["glpi_currenttime"],
+                'date_mod'        => $_SESSION["zentra_currenttime"],
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -238,7 +238,7 @@ class Document_Item extends CommonDBRelation
             $ticket = new Ticket();
             $input = [
                 'id'              => $this->fields['items_id'],
-                'date_mod'        => $_SESSION["glpi_currenttime"],
+                'date_mod'        => $_SESSION["zentra_currenttime"],
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -261,7 +261,7 @@ class Document_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -271,7 +271,7 @@ class Document_Item extends CommonDBRelation
         switch ($item::class) {
             case Document::class:
                 $ong = [];
-                if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
+                if ($_SESSION['zentrashow_count_on_tabs'] && !$item->isNewItem()) {
                     $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => Document::class]]);
                     $nbitem = self::countForMainItem($item, ['itemtype' => Document::class]);
                 }
@@ -295,7 +295,7 @@ class Document_Item extends CommonDBRelation
                     || ($item::class === Reminder::class)
                     || ($item::class === KnowbaseItem::class)
                 ) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nbitem = self::countForItem($item);
                     }
                     return self::createTabEntry(
@@ -308,7 +308,7 @@ class Document_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -345,7 +345,7 @@ class Document_Item extends CommonDBRelation
         if ($canedit) {
             $twig_params = [
                 'doc' => $doc,
-                'entity_restrict' => $doc->fields['is_recursive'] ? getSonsOf('glpi_entities', $doc->fields['entities_id']) : $doc->fields['entities_id'],
+                'entity_restrict' => $doc->fields['is_recursive'] ? getSonsOf('zentra_entities', $doc->fields['entities_id']) : $doc->fields['entities_id'],
                 'add_item_msg' => __('Add an item'),
                 'add_btn_msg' => _x('button', 'Add'),
             ];
@@ -356,7 +356,7 @@ class Document_Item extends CommonDBRelation
                 {% set rand = random() %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}">
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('documents_id', doc.fields['id']) }}
                         {{ fields.dropdownItemsFromItemtypes('', add_item_msg, {
                             'itemtypes': doc.getItemtypesThatCanHave(),
@@ -425,7 +425,7 @@ TWIG, $twig_params);
                         };
 
                         if (
-                            $_SESSION["glpiis_ids_visible"]
+                            $_SESSION["zentrais_ids_visible"]
                             || empty($data["name"])
                         ) {
                             $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
@@ -438,7 +438,7 @@ TWIG, $twig_params);
                     if (isset($data['entity'])) {
                         if (!isset($entity_names[$data['entity']])) {
                             $entity_names[$data['entity']] = Dropdown::getDropdownName(
-                                "glpi_entities",
+                                "zentra_entities",
                                 $data['entity']
                             );
                         }
@@ -531,7 +531,7 @@ TWIG, $twig_params);
      */
     public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         //default options
         $params['rand'] = mt_rand();
@@ -564,7 +564,7 @@ TWIG, $twig_params);
         ) {
             // Restrict entity for knowbase
             $entities = "";
-            $entity   = $_SESSION["glpiactive_entity"];
+            $entity   = $_SESSION["zentraactive_entity"];
 
             if ($item->isEntityAssign()) {
                 // Case of personal items : entity = -1 : create on active entity (Reminder case))
@@ -573,7 +573,7 @@ TWIG, $twig_params);
                 }
 
                 if ($item->isRecursive()) {
-                    $entities = getSonsOf('glpi_entities', $entity);
+                    $entities = getSonsOf('zentra_entities', $entity);
                 } else {
                     $entities = $entity;
                 }
@@ -581,10 +581,10 @@ TWIG, $twig_params);
 
             $count = $DB->request([
                 'COUNT'     => 'cpt',
-                'FROM'      => 'glpi_documents',
+                'FROM'      => 'zentra_documents',
                 'WHERE'     => [
                     'is_deleted' => 0,
-                ] + getEntitiesRestrictCriteria('glpi_documents', '', $entities, true),
+                ] + getEntitiesRestrictCriteria('zentra_documents', '', $entities, true),
             ])->current();
             $nb = $count['cpt'];
 
@@ -653,8 +653,8 @@ TWIG, $twig_params);
         // Document : search links in both order using union
         if ($item::class === Document::class) {
             $owhere = $criteria['WHERE'];
-            $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
-            unset($o2where['glpi_documents_items.items_id']);
+            $o2where =  $owhere + ['zentra_documents_items.documents_id' => $item->getID()];
+            unset($o2where['zentra_documents_items.items_id']);
             $criteria['WHERE'] = [
                 'OR' => [
                     $owhere,
@@ -694,7 +694,7 @@ TWIG, $twig_params);
 
             if (!isset($category_names[$data["documentcategories_id"]])) {
                 $category_names[$data["documentcategories_id"]] = Dropdown::getDropdownName(
-                    "glpi_documentcategories",
+                    "zentra_documentcategories",
                     $data["documentcategories_id"]
                 );
             }
@@ -793,8 +793,8 @@ TWIG, $twig_params);
             if (!Session::getLoginUserID()) {
                 // Anonymous access
                 $kb_params['WHERE'] = [
-                    'glpi_entities_knowbaseitems.entities_id'    => 0,
-                    'glpi_entities_knowbaseitems.is_recursive'   => 1,
+                    'zentra_entities_knowbaseitems.entities_id'    => 0,
+                    'zentra_entities_knowbaseitems.is_recursive'   => 1,
                 ];
             }
 
@@ -897,46 +897,46 @@ TWIG, $twig_params);
     {
         $criteria = [
             'SELECT'    => [
-                'glpi_documents_items.id AS assocID',
-                'glpi_documents_items.date_creation AS assocdate',
-                'glpi_entities.id AS entityID',
-                'glpi_entities.completename AS entity',
-                'glpi_documentcategories.completename AS headings',
-                'glpi_documents.*',
+                'zentra_documents_items.id AS assocID',
+                'zentra_documents_items.date_creation AS assocdate',
+                'zentra_entities.id AS entityID',
+                'zentra_entities.completename AS entity',
+                'zentra_documentcategories.completename AS headings',
+                'zentra_documents.*',
             ],
-            'FROM'      => 'glpi_documents_items',
+            'FROM'      => 'zentra_documents_items',
             'LEFT JOIN' => [
-                'glpi_documents'  => [
+                'zentra_documents'  => [
                     'ON' => [
-                        'glpi_documents_items'  => 'documents_id',
-                        'glpi_documents'        => 'id',
+                        'zentra_documents_items'  => 'documents_id',
+                        'zentra_documents'        => 'id',
                     ],
                 ],
-                'glpi_entities'   => [
+                'zentra_entities'   => [
                     'ON' => [
-                        'glpi_documents'  => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_documents'  => 'entities_id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
-                'glpi_documentcategories'  => [
+                'zentra_documentcategories'  => [
                     'ON' => [
-                        'glpi_documentcategories'  => 'id',
-                        'glpi_documents'           => 'documentcategories_id',
+                        'zentra_documentcategories'  => 'id',
+                        'zentra_documents'           => 'documentcategories_id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_documents_items.items_id'  => $item->getID(),
-                'glpi_documents_items.itemtype'  => $item::class,
+                'zentra_documents_items.items_id'  => $item->getID(),
+                'zentra_documents_items.itemtype'  => $item::class,
             ],
             'ORDERBY'   => $order,
         ];
 
         if (Session::getLoginUserID()) {
-            $criteria['WHERE'] += getEntitiesRestrictCriteria('glpi_documents', '', '', true);
+            $criteria['WHERE'] += getEntitiesRestrictCriteria('zentra_documents', '', '', true);
         } else {
             // Anonymous access from FAQ
-            $criteria['WHERE']['glpi_documents.entities_id'] = 0;
+            $criteria['WHERE']['zentra_documents.entities_id'] = 0;
         }
 
         return $criteria;

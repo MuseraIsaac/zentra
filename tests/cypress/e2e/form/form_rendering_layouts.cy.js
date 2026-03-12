@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ describe('Form rendering layouts', () => {
     describe('Step-by-step layout (default)', () => {
         it('Shows navigation buttons and one section at a time with validation', () => {
             // Create a form with step-by-step layout (default)
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Step-by-step form',
                 'render_layout': 'step_by_step'
             }).as('form_id');
@@ -48,7 +48,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'First question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0,
                     null,
                     null,
@@ -57,14 +57,14 @@ describe('Form rendering layouts', () => {
                 );
 
                 // Add second section with mandatory question
-                cy.createWithAPI('Glpi\\Form\\Section', {
+                cy.createWithAPI('Zentra\\Form\\Section', {
                     'name': 'Second section',
                     'rank': 1,
                     'forms_forms_id': form_id,
                 }).then((second_section_id) => {
-                    cy.createWithAPI('Glpi\\Form\\Question', {
+                    cy.createWithAPI('Zentra\\Form\\Question', {
                         'name': 'Second question',
-                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                        'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                         'vertical_rank': 1,
                         'forms_sections_id': second_section_id,
                         'is_mandatory': true,
@@ -72,14 +72,14 @@ describe('Form rendering layouts', () => {
                 });
 
                 // Add third section with optional question
-                cy.createWithAPI('Glpi\\Form\\Section', {
+                cy.createWithAPI('Zentra\\Form\\Section', {
                     'name': 'Third section',
                     'rank': 2,
                     'forms_forms_id': form_id,
                 }).then((third_section_id) => {
-                    cy.createWithAPI('Glpi\\Form\\Question', {
+                    cy.createWithAPI('Zentra\\Form\\Question', {
                         'name': 'Third question',
-                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                        'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                         'vertical_rank': 1,
                         'forms_sections_id': third_section_id,
                         'is_mandatory': false,
@@ -152,7 +152,7 @@ describe('Form rendering layouts', () => {
 
         it('Works correctly with single section form', () => {
             // Create form with only one section
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Single section step-by-step form',
                 'render_layout': 'step_by_step'
             }).as('form_id');
@@ -162,7 +162,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Only question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0
                 );
 
@@ -187,7 +187,7 @@ describe('Form rendering layouts', () => {
     describe('Single page layout', () => {
         it('Shows all sections at once with only submit button', () => {
             // Create a form with single page layout
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Single page form',
                 'render_layout': 'single_page'
             }).as('form_id');
@@ -197,7 +197,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'First question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0,
                     null,
                     null,
@@ -206,14 +206,14 @@ describe('Form rendering layouts', () => {
                 );
 
                 // Add second section
-                cy.createWithAPI('Glpi\\Form\\Section', {
+                cy.createWithAPI('Zentra\\Form\\Section', {
                     'name': 'Second section',
                     'rank': 1,
                     'forms_forms_id': form_id,
                 }).then((second_section_id) => {
-                    cy.createWithAPI('Glpi\\Form\\Question', {
+                    cy.createWithAPI('Zentra\\Form\\Question', {
                         'name': 'Second question',
-                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                        'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                         'vertical_rank': 1,
                         'forms_sections_id': second_section_id,
                         'is_mandatory': true,
@@ -221,14 +221,14 @@ describe('Form rendering layouts', () => {
                 });
 
                 // Add third section
-                cy.createWithAPI('Glpi\\Form\\Section', {
+                cy.createWithAPI('Zentra\\Form\\Section', {
                     'name': 'Third section',
                     'rank': 2,
                     'forms_forms_id': form_id,
                 }).then((third_section_id) => {
-                    cy.createWithAPI('Glpi\\Form\\Question', {
+                    cy.createWithAPI('Zentra\\Form\\Question', {
                         'name': 'Third question',
-                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                        'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                         'vertical_rank': 1,
                         'forms_sections_id': third_section_id,
                         'is_mandatory': false,
@@ -281,7 +281,7 @@ describe('Form rendering layouts', () => {
 
         it('Works correctly with single section form', () => {
             // Create single page form with only one section
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Single section single page form',
                 'render_layout': 'single_page'
             }).as('form_id');
@@ -291,7 +291,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Only question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0
                 );
 
@@ -315,7 +315,7 @@ describe('Form rendering layouts', () => {
 
         it('Validates all sections at once with mixed field types', () => {
             // Create single page form with different question types
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Mixed fields single page form',
                 'render_layout': 'single_page'
             }).as('form_id');
@@ -325,7 +325,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Text field',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0,
                     null,
                     null,
@@ -337,7 +337,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Long text field',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeLongText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeLongText',
                     1,
                     null,
                     null,
@@ -349,7 +349,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Number field',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     2,
                     null,
                     null,
@@ -361,7 +361,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Checkbox field',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeCheckbox',
                     3,
                     null,
                     null,
@@ -408,7 +408,7 @@ describe('Form rendering layouts', () => {
     describe('Layout consistency and edge cases', () => {
         it('Prevents multiple form submissions in both layouts', () => {
             // Test step-by-step layout
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Step-by-step submission test',
                 'render_layout': 'step_by_step'
             }).as('step_form_id');
@@ -417,7 +417,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0
                 );
 
@@ -430,7 +430,7 @@ describe('Form rendering layouts', () => {
             });
 
             // Test single page layout
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Single page submission test',
                 'render_layout': 'single_page'
             }).as('single_form_id');
@@ -439,7 +439,7 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0
                 );
 
@@ -453,7 +453,7 @@ describe('Form rendering layouts', () => {
         });
 
         it('Preserves form data when navigating in step-by-step mode', () => {
-            cy.createWithAPI('Glpi\\Form\\Form', {
+            cy.createWithAPI('Zentra\\Form\\Form', {
                 'name': 'Data preservation test',
                 'render_layout': 'step_by_step'
             }).as('form_id');
@@ -463,18 +463,18 @@ describe('Form rendering layouts', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'First question',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     0
                 );
 
-                cy.createWithAPI('Glpi\\Form\\Section', {
+                cy.createWithAPI('Zentra\\Form\\Section', {
                     'name': 'Second section',
                     'rank': 1,
                     'forms_forms_id': form_id,
                 }).then((second_section_id) => {
-                    cy.createWithAPI('Glpi\\Form\\Question', {
+                    cy.createWithAPI('Zentra\\Form\\Question', {
                         'name': 'Second question',
-                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                        'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                         'vertical_rank': 1,
                         'forms_sections_id': second_section_id,
                         'is_mandatory': false,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,12 +77,12 @@ if (isset($_GET['checkavailability'])) {
             if (isset($_GET['entities_id']) && isset($_GET['is_recursive'])) {
                 // load entities & profiles
                 // needed to pass canViewItem() in populatePlanning functions in case of ical export
-                $_SESSION["glpidefault_entity"]  = $user->fields['entities_id'];
+                $_SESSION["zentradefault_entity"]  = $user->fields['entities_id'];
                 Session::initEntityProfiles($user->getID());
-                if (isset($_SESSION['glpiprofiles'][$user->fields['profiles_id']])) {
+                if (isset($_SESSION['zentraprofiles'][$user->fields['profiles_id']])) {
                     Session::changeProfile($user->fields['profiles_id']);
                 } else {
-                    Session::changeProfile(key($_SESSION['glpiprofiles']));
+                    Session::changeProfile(key($_SESSION['zentraprofiles']));
                 }
             }
             //// check if the request is valid: rights on uID / gID

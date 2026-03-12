@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
+ *
+ * http://zentra-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of ZENTRA.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Zentra\Asset;
+
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasPeripheralAssetsCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
+use Monitor;
+use Toolbox;
+
+class Asset_PeripheralAssetTest extends DbTestCase
+{
+    public function testRelatedItemHasTab()
+    {
+        global $CFG_ZENTRA;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_ZENTRA['directconnect_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Zentra\\Asset\\Asset_PeripheralAsset$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        global $CFG_ZENTRA;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]);
+
+        foreach ($CFG_ZENTRA['directconnect_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Asset_PeripheralAsset::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
+    public function testUnglobalizeReturnsBoolean(): void
+    {
+        $monitor = $this->createItem(
+            Monitor::class,
+            [
+                'name' => 'Test Monitor',
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_global' => 1,
+            ]
+        );
+
+        $result = $monitor->unglobalize();
+
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
+    }
+}

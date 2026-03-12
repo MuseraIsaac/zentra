@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ namespace tests\units;
 use CommonDBTM;
 use Computer;
 use DropdownVisibility;
-use Glpi\Features\StateInterface;
-use Glpi\Tests\DbTestCase;
+use Zentra\Features\StateInterface;
+use Zentra\Tests\DbTestCase;
 use Phone;
 use Printer;
 use ReflectionClass;
@@ -94,7 +94,7 @@ class StateTest extends DbTestCase
 
     public function testVisibility(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $state = new \State();
 
@@ -175,7 +175,7 @@ class StateTest extends DbTestCase
 
         $expected_values = [];
         // Default values
-        foreach ($CFG_GLPI['state_types'] as $type) {
+        foreach ($CFG_ZENTRA['state_types'] as $type) {
             $expected_values['is_visible_' . strtolower($type)] = 0;
         }
         $expected_values['is_visible_computer'] = 0;
@@ -188,9 +188,9 @@ class StateTest extends DbTestCase
 
     public function testHasFeature(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        foreach ($CFG_GLPI['state_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['state_types'] as $itemtype) {
             $this->assertTrue(
                 is_a($itemtype, StateInterface::class, true),
                 $itemtype . ' must implement ' . StateInterface::class
@@ -200,9 +200,9 @@ class StateTest extends DbTestCase
 
     public function testRegisteredTypes(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        foreach ($CFG_GLPI['state_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['state_types'] as $itemtype) {
             $this->assertTrue(
                 $DB->fieldExists($itemtype::getTable(), 'states_id'),
                 $itemtype . ' should have a `states_id` field.'
@@ -225,14 +225,14 @@ class StateTest extends DbTestCase
             if ($has_field) {
                 $this->assertContains(
                     $classname,
-                    $CFG_GLPI['state_types'],
-                    $classname . ' should be declared in `$CFG_GLPI[\'state_types\']`.'
+                    $CFG_ZENTRA['state_types'],
+                    $classname . ' should be declared in `$CFG_ZENTRA[\'state_types\']`.'
                 );
             } else {
                 $this->assertNotContains(
                     $classname,
-                    $CFG_GLPI['state_types'],
-                    $classname . ' should not be declared in `$CFG_GLPI[\'state_types\']`.'
+                    $CFG_ZENTRA['state_types'],
+                    $classname . ' should not be declared in `$CFG_ZENTRA[\'state_types\']`.'
                 );
             }
         }
@@ -240,9 +240,9 @@ class StateTest extends DbTestCase
 
     public function testIsStateVisible(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $itemtype = $CFG_GLPI['state_types'][0];
+        $itemtype = $CFG_ZENTRA['state_types'][0];
 
         $state = new \State();
         $states_id = $state->add([
@@ -255,18 +255,18 @@ class StateTest extends DbTestCase
         $this->assertTrue(method_exists($itemtype, 'isStateVisible'), $itemtype . ' misses isStateVisible() method!');
         $this->assertTrue($item->isStateVisible($states_id));
 
-        unset($CFG_GLPI['state_types'][0]);
+        unset($CFG_ZENTRA['state_types'][0]);
         $this->assertTrue(method_exists($itemtype, 'isStateVisible'), $itemtype . ' misses isStateVisible() method!');
 
-        $this->expectExceptionMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype));
+        $this->expectExceptionMessage(sprintf('Class %s must be present in $CFG_ZENTRA[\'state_types\']', $itemtype));
         $this->assertTrue($item->isStateVisible($states_id));
     }
 
     public function testGetStateVisibilityCriteria(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $itemtype = $CFG_GLPI['state_types'][0];
+        $itemtype = $CFG_ZENTRA['state_types'][0];
 
         $item = new $itemtype();
         $this->assertSame(
@@ -295,7 +295,7 @@ class StateTest extends DbTestCase
 
     public function testShowSummary()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         // Create a state
         $state = $this->createItem(\State::class, ['name' => 'Test State', 'entities_id' => 0]);
@@ -304,7 +304,7 @@ class StateTest extends DbTestCase
         $this->createItem(Computer::class, ['name' => 'Computer with state', 'states_id' => $state->getID(), 'entities_id' => 0]);
         $this->createItem(\Monitor::class, ['name' => 'Monitor with state', 'states_id' => $state->getID(), 'entities_id' => 0]);
         $this->createItem(
-            'Glpi\\CustomAsset\\Test01Asset',
+            'Zentra\\CustomAsset\\Test01Asset',
             [
                 'name' => 'Custom asset with state',
                 'states_id' => $state->getID(),

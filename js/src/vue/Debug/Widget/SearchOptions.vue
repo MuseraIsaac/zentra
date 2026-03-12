@@ -64,7 +64,7 @@
             return;
         }
         $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/debug.php',
             data: {
                 action: 'get_search_options',
                 itemtype: current_itemtype.value
@@ -76,7 +76,7 @@
 
     onMounted(() => {
         $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/debug.php',
             data: {
                 action: 'get_itemtypes'
             },

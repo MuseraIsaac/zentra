@@ -1,5 +1,5 @@
-Return-Path: <normal@glpi-project.org>
-Delivered-To: <unittests@glpi-project.org>
+Return-Path: <normal@zentra-project.org>
+Delivered-To: <unittests@zentra-project.org>
 Received: from mxs.XXXX
 	by mxs.XXXX with LMTP id 6OnXN+L3ZWVRYwAA1CwxZw
 	for <support@XXXX>; Tue, 28 Nov 2023 15:23:30 +0100
@@ -17,8 +17,8 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=XXXX;
 	 YxCg1S6bzPqLHVKjJFnZIjMx1jkxIlAMFp4wkpWRdJ7K5WCpVTna+fJJQg/dRL5TgX
 	 DKfwlqZMC18JF2KyqcEb/KFP61iOMX3v2r0zXIu3Y6NEEMymWwaNdyI0sow3+OC02H
 	 t21xTSoQv6j4g==
-From: <normal@glpi-project.org>
-To: GLPI debug <unittests@glpi-project.org>
+From: <normal@zentra-project.org>
+To: ZENTRA debug <unittests@zentra-project.org>
 Subject: 42 - Missing Content Type
 Date: Tue, 28 Nov 2023 15:23:30 +0100
 X-Rspamd-Queue-Id: D6C65116E44C9

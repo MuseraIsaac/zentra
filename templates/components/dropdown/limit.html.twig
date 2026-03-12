@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -43,10 +43,10 @@
 
 {% if no_onchange is not defined or not no_onchange %}
    {% if is_tab is defined and is_tab == true %}
-      {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+      {% set href = "javascript:reloadTab('zentralist_limit='+this.value+'" ~ additional_params ~ "');" %}
    {% elseif href is defined %}
       {% set href_separator = '?' in href ? '&' : '?' %}
-      {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+      {% set href = "location.href='" ~ href ~ href_separator ~ "zentralist_limit='+this.value+'" ~ additional_params ~ "'" %}
    {% endif %}
 {% endif %}
 

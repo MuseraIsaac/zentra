@@ -1,24 +1,24 @@
-Return-Path: normal@glpi-project.org
-Received: from 192.168.1.3 (LHLO mail.glpi-project.org) (192.168.1.3)
- by mail.glpi-project.org with LMTP; Wed, 16 Jan 2019 17:41:45 +0100
+Return-Path: normal@zentra-project.org
+Received: from 192.168.1.3 (LHLO mail.zentra-project.org) (192.168.1.3)
+ by mail.zentra-project.org with LMTP; Wed, 16 Jan 2019 17:41:45 +0100
  (CET)
-Received: from mail.glpi-project.org (localhost [127.0.0.1])
-	by mail.glpi-project.org (Postfix) with ESMTP id 0DCF17E808E7
-	for <unittests@glpi-project.org>; Wed, 16 Jan 2019 17:41:45 +0100 (CET)
+Received: from mail.zentra-project.org (localhost [127.0.0.1])
+	by mail.zentra-project.org (Postfix) with ESMTP id 0DCF17E808E7
+	for <unittests@zentra-project.org>; Wed, 16 Jan 2019 17:41:45 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.glpi-project.org (Postfix) with ESMTP id 0258B7E808DA
-	for <unittests@glpi-project.org>; Wed, 16 Jan 2019 17:41:45 +0100 (CET)
-Received: from mail.glpi-project.org ([127.0.0.1])
-	by localhost (mail.glpi-project.org [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id SVnwGgVd05t9 for <unittests@glpi-project.org>;
+	by mail.zentra-project.org (Postfix) with ESMTP id 0258B7E808DA
+	for <unittests@zentra-project.org>; Wed, 16 Jan 2019 17:41:45 +0100 (CET)
+Received: from mail.zentra-project.org ([127.0.0.1])
+	by localhost (mail.zentra-project.org [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id SVnwGgVd05t9 for <unittests@zentra-project.org>;
 	Wed, 16 Jan 2019 17:41:44 +0100 (CET)
-Received: from mail.glpi-project.org (localhost [127.0.0.1])
-	by mail.glpi-project.org (Postfix) with ESMTP id D913A7E804C5
-	for <unittests@glpi-project.org>; Wed, 16 Jan 2019 17:41:44 +0100 (CET)
+Received: from mail.zentra-project.org (localhost [127.0.0.1])
+	by mail.zentra-project.org (Postfix) with ESMTP id D913A7E804C5
+	for <unittests@zentra-project.org>; Wed, 16 Jan 2019 17:41:44 +0100 (CET)
 Date: Wed, 16 Jan 2019 17:41:44 +0100 (CET)
-From: Normal User <normal@glpi-project.org>
-To: unittests@glpi-project.org
-Message-ID: <955882229.3412097.1547656904836.JavaMail.zimbra@glpi-project.org>
+From: Normal User <normal@zentra-project.org>
+To: unittests@zentra-project.org
+Message-ID: <955882229.3412097.1547656904836.JavaMail.zimbra@zentra-project.org>
 Subject: =?utf-8?Q?Test_import_mail_avec_emoticons_=F0=9F=98=83_unicode?=
 MIME-Version: 1.0
 Content-Type: multipart/alternative; 
@@ -129,7 +129,7 @@ le=3D"color: #606163; font-family: 'times new roman', 'new york', times, se=
 rif; font-size: large;" data-mce-style=3D"color: #606163; font-family: 'tim=
 es new roman', 'new york', times, serif; font-size: large;"><b><img src=3D"=
 cid:3242f466bb5076c49a176740dfd0a1d18f1ca954@zimbra" data-mce-src=3D"http:/=
-/mail.glpi-project.org/home/normal@glpi-project.org/Briefcase/logoteclib.png" doc=
+/mail.zentra-project.org/home/normal@zentra-project.org/Briefcase/logoteclib.png" doc=
 =3D"Briefcase/logoteclib.png"><br></b></span></div><div><span style=3D"colo=
 r: #606163; font-family: 'times new roman', 'new york', times, serif; font-=
 size: large;" data-mce-style=3D"color: #606163; font-family: 'times new rom=
@@ -145,11 +145,11 @@ imes, serif; font-size: medium;"><b><br></b></span></div><div><span style=
 f; font-size: large;" data-mce-style=3D"color: #606163; font-family: 'times=
  new roman', 'new york', times, serif; font-size: large;"><b>Associ=C3=A9, =
 Responsable des Services Professionnels</b></span></div><a href=3D"mailto:f=
-rancois@glpi-project.org" data-mce-href=3D"mailto:francois@glpi-project.org"><span styl=
+rancois@zentra-project.org" data-mce-href=3D"mailto:francois@zentra-project.org"><span styl=
 e=3D"font-family: 'times new roman', 'new york', times, serif;" data-mce-st=
 yle=3D"font-family: 'times new roman', 'new york', times, serif;"></span></=
-a><a href=3D"mailto:francois@glpi-project.org" data-mce-href=3D"mailto:francois@t=
-eclib.com">francois@glpi-project.org</a><br data-mce-bogus=3D"1"></div><div><br><=
+a><a href=3D"mailto:francois@zentra-project.org" data-mce-href=3D"mailto:francois@t=
+eclib.com">francois@zentra-project.org</a><br data-mce-bogus=3D"1"></div><div><br><=
 span style=3D"color: #aaaaaa; font-family: 'times new roman', 'new york', t=
 imes, serif;" data-mce-style=3D"color: #aaaaaa; font-family: 'times new rom=
 an', 'new york', times, serif;"><span style=3D"color: #aaaaaa; font-family:=

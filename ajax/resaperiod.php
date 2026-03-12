@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ if (isset($_POST['type'], $_POST['end'])) {
             echo "<tr><td>" . __s('End date') . '</td><td>';
             Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
             echo "</td></tr></table>";
-            echo "<table class='tab_glpi'>";
+            echo "<table class='tab_zentra'>";
             echo "<tr class='center'><td>&nbsp;</td>";
             $days = [
                 'Monday'    => __('Monday'),

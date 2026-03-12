@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use NotificationTarget;
 
 /* Test for inc/notificationtargetticket.class.php */
@@ -43,7 +43,7 @@ class NotificationTargetTicketTest extends DbTestCase
 {
     public function testgetDataForObject()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $tkt = getItemByTypeName('Ticket', '_ticket01');
         $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
@@ -94,7 +94,7 @@ class NotificationTargetTicketTest extends DbTestCase
         // advanced test for ##ticket.externalid## tag
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
             ],
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -142,7 +142,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertEquals(
             sprintf(
                 '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
-                $CFG_GLPI['url_base'],
+                $CFG_ZENTRA['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
             ),
@@ -165,7 +165,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertEquals(
             sprintf(
                 '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
-                $CFG_GLPI['url_base'],
+                $CFG_ZENTRA['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
             ),
@@ -173,8 +173,8 @@ class NotificationTargetTicketTest extends DbTestCase
         );
 
         // test of the getDataForObject for default language fr_FR
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
-        $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+        $_SESSION["zentralanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION['zentra_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["zentralanguage"]);
 
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
@@ -200,7 +200,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertSame($expected, $ret['tasks']);
 
         // switch back to default language
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+        $_SESSION["zentralanguage"] = \Session::loadLanguage('en_GB');
     }
 
 
@@ -239,7 +239,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 0,
             'items_id' => $tickets_id,
-            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 1),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 1),
         ]);
         $this->assertGreaterThan(0, $fup1_id);
 
@@ -252,7 +252,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 0,
             'items_id' => $tickets_id,
-            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 2),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 2),
         ]);
         $this->assertGreaterThan(0, $fup2_id);
 
@@ -265,7 +265,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'is_private' => 1,
             'items_id' => $tickets_id,
-            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 3),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 3),
         ]);
         $this->assertGreaterThan(0, $fup3_id);
 
@@ -280,7 +280,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'actiontime'        => "172800",                                  //1hours
             'content'           => "Private Task",
             'users_id_tech'     => getItemByTypeName('User', 'tech', true),
-            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 4),
+            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 4),
         ]);
         $this->assertGreaterThan(0, $task1_id);
 
@@ -295,7 +295,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'actiontime'        => "172800", //1hour
             'content'           => "Task",
             'users_id_tech'     => getItemByTypeName('User', 'tech', true),
-            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 5),
+            'date_creation'     => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 5),
         ]);
         $this->assertGreaterThan(0, $task2_id);
 
@@ -307,7 +307,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'users_id_editor' => getItemByTypeName('User', 'tech', true),
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
-            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 6),
+            'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['zentra_currenttime']) + 6),
         ]);
         $this->assertGreaterThan(0, $solutions_id);
 
@@ -316,7 +316,7 @@ class NotificationTargetTicketTest extends DbTestCase
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
                 'is_self_service' => false,
                 'show_private'    => true,
             ],
@@ -378,7 +378,7 @@ class NotificationTargetTicketTest extends DbTestCase
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
                 'is_self_service' => true,
                 'show_private'    => false,
             ],
@@ -423,7 +423,7 @@ class NotificationTargetTicketTest extends DbTestCase
         //hide private items
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
                 'is_self_service' => false,
                 'show_private'    => false,
             ],
@@ -473,11 +473,11 @@ class NotificationTargetTicketTest extends DbTestCase
      */
     public function testUrlTag()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
-        $CFG_GLPI['url_base'] = 'root.tld';
+        $CFG_ZENTRA['url_base'] = 'root.tld';
 
         $root    = getItemByTypeName("Entity", "Root entity", true);
         $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -494,7 +494,7 @@ class NotificationTargetTicketTest extends DbTestCase
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
                 'is_self_service' => false,
                 'show_private'    => true,
             ],

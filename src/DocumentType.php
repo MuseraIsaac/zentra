@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ class DocumentType extends CommonDropdown
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -127,7 +127,7 @@ class DocumentType extends CommonDropdown
             case 'icon':
                 if (!empty($values[$field])) {
                     return "&nbsp;<img style='vertical-align:middle;' alt='' src='"
-                      . htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
+                      . htmlescape($CFG_ZENTRA["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -167,7 +167,7 @@ class DocumentType extends CommonDropdown
      */
     public static function showAvailableTypesLink($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'display' => true,
@@ -183,7 +183,7 @@ class DocumentType extends CommonDropdown
         $display .= "</a>";
         $display .= Ajax::createIframeModalWindow(
             "documenttypelist_{$p['rand']}",
-            $CFG_GLPI["root_doc"] . "/front/documenttype.list.php",
+            $CFG_ZENTRA["root_doc"] . "/front/documenttype.list.php",
             [
                 'title'   => static::getTypeName(Session::getPluralNumber()),
                 'display' => false,
@@ -208,7 +208,7 @@ class DocumentType extends CommonDropdown
 
         if (self::$uploadable_patterns === null) {
             $valid_type_iterator = $DB->request([
-                'FROM'   => 'glpi_documenttypes',
+                'FROM'   => 'zentra_documenttypes',
                 'WHERE'  => [
                     'is_uploadable'   => 1,
                 ],

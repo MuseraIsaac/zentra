@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Change Ticket recurent items
-// Add glpi_items_ticketrecurrents table for associated elements
-if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
-    $query = "CREATE TABLE `glpi_items_ticketrecurrents` (
+// Add zentra_items_ticketrecurrents table for associated elements
+if (!$DB->tableExists('zentra_items_ticketrecurrents')) {
+    $query = "CREATE TABLE `zentra_items_ticketrecurrents` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(255) DEFAULT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -56,6 +56,6 @@ if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
     $DB->doQuery($query);
 }
 
-// Add glpi_items_ticketrecurrents table for associated elements
-$migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
-$migration->addKey('glpi_ticketrecurrents', 'ticket_per_item');
+// Add zentra_items_ticketrecurrents table for associated elements
+$migration->addField('zentra_ticketrecurrents', 'ticket_per_item', 'bool');
+$migration->addKey('zentra_ticketrecurrents', 'ticket_per_item');

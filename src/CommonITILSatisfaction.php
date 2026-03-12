@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 use function Safe\preg_replace;
 use function Safe\strtotime;
@@ -122,8 +122,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if (
             $item->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
             || ($item->fields["users_id_recipient"] === Session::getLoginUserID() && Session::haveRight($item::$rightname, $item::SURVEY))
-            || (isset($_SESSION["glpigroups"])
-                && $item->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"]))
+            || (isset($_SESSION["zentragroups"])
+                && $item->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["zentragroups"]))
         ) {
             return true;
         }
@@ -177,7 +177,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
-            $input["date_answered"] = $_SESSION["glpi_currenttime"];
+            $input["date_answered"] = $_SESSION["zentra_currenttime"];
         }
 
         if (array_key_exists('satisfaction', $input) || array_key_exists('comment', $input)) {
@@ -216,9 +216,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             $item = static::getItemInstance();
             if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("satisfaction", $item, [], $this);
@@ -233,9 +233,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      */
     public function post_UpdateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             // Send notification only if fields related to reply are updated.
             $answer_updates = array_filter(
                 $this->updates,
@@ -446,7 +446,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                     entities_id,
                     inquest_duration
                 FROM
-                    glpi_entities
+                    zentra_entities
                 WHERE
                     inquest_config != -2
                 UNION ALL
@@ -455,7 +455,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                     e.entities_id,
                     et.inquest_duration
                 FROM
-                    glpi_entities e
+                    zentra_entities e
                 INNER JOIN
                     entity_tree et
                     ON e.entities_id = et.id

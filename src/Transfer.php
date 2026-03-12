@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Error\ErrorHandler;
-use Glpi\Plugin\Hooks;
-use Glpi\Socket;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Error\ErrorHandler;
+use Zentra\Plugin\Hooks;
+use Zentra\Socket;
+use Zentra\Toolbox\URL;
 
 /**
  * Transfer engine.
@@ -310,7 +310,7 @@ final class Transfer extends CommonDBTM
     private function getDestinationEntityAncestors(): array
     {
         if ($this->to_entity_ancestors === null) {
-            $this->to_entity_ancestors = getAncestorsOf("glpi_entities", $this->to);
+            $this->to_entity_ancestors = getAncestorsOf("zentra_entities", $this->to);
         }
         return $this->to_entity_ancestors;
     }
@@ -431,45 +431,45 @@ final class Transfer extends CommonDBTM
 
     private function simulateSoftware(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!$this->options['keep_software']) {
             return;
         }
         // Clean DB
-        $DB->delete('glpi_items_softwareversions', ['glpi_softwareversions.id'  => null], [
+        $DB->delete('zentra_items_softwareversions', ['zentra_softwareversions.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_softwareversions'  => [
+                'zentra_softwareversions'  => [
                     'ON' => [
-                        'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id',
+                        'zentra_items_softwareversions' => 'softwareversions_id',
+                        'zentra_softwareversions'       => 'id',
                     ],
                 ],
             ],
         ]);
 
         // Clean DB
-        $DB->delete('glpi_softwareversions', ['glpi_softwares.id'  => null], [
+        $DB->delete('zentra_softwareversions', ['zentra_softwares.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_softwares'  => [
+                'zentra_softwares'  => [
                     'ON' => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
+                        'zentra_softwareversions' => 'softwares_id',
+                        'zentra_softwares'        => 'id',
                     ],
                 ],
             ],
         ]);
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['software_types'] as $itemtype) {
             $itemtable = getTableForItemType($itemtype);
             // Clean DB
-            $DB->delete('glpi_items_softwareversions', [
+            $DB->delete('zentra_items_softwareversions', [
                 "{$itemtable}.id"  => null,
-                'glpi_items_softwareversions.itemtype' => $itemtype,
+                'zentra_items_softwareversions.itemtype' => $itemtype,
             ], [
                 'LEFT JOIN' => [
                     $itemtable  => [
                         'ON' => [
-                            'glpi_items_softwareversions' => 'items_id',
+                            'zentra_items_softwareversions' => 'items_id',
                             $itemtable                    => 'id',
                         ],
                     ],
@@ -479,29 +479,29 @@ final class Transfer extends CommonDBTM
             if ($this->haveItemsToTransfer($itemtype)) {
                 $iterator = $DB->request([
                     'SELECT'       => [
-                        'glpi_softwares.id',
-                        'glpi_softwares.entities_id',
-                        'glpi_softwares.is_recursive',
-                        'glpi_softwareversions.id AS vID',
+                        'zentra_softwares.id',
+                        'zentra_softwares.entities_id',
+                        'zentra_softwares.is_recursive',
+                        'zentra_softwareversions.id AS vID',
                     ],
-                    'FROM'         => 'glpi_items_softwareversions',
+                    'FROM'         => 'zentra_items_softwareversions',
                     'INNER JOIN'   => [
-                        'glpi_softwareversions' => [
+                        'zentra_softwareversions' => [
                             'ON' => [
-                                'glpi_items_softwareversions' => 'softwareversions_id',
-                                'glpi_softwareversions'       => 'id',
+                                'zentra_items_softwareversions' => 'softwareversions_id',
+                                'zentra_softwareversions'       => 'id',
                             ],
                         ],
-                        'glpi_softwares'        => [
+                        'zentra_softwares'        => [
                             'ON' => [
-                                'glpi_softwareversions' => 'softwares_id',
-                                'glpi_softwares'        => 'id',
+                                'zentra_softwareversions' => 'softwares_id',
+                                'zentra_softwares'        => 'id',
                             ],
                         ],
                     ],
                     'WHERE'        => [
-                        'glpi_items_softwareversions.items_id' => $this->needtobe_transfer[$itemtype],
-                        'glpi_items_softwareversions.itemtype' => $itemtype,
+                        'zentra_items_softwareversions.items_id' => $this->needtobe_transfer[$itemtype],
+                        'zentra_items_softwareversions.itemtype' => $itemtype,
                     ],
                 ]);
 
@@ -520,7 +520,7 @@ final class Transfer extends CommonDBTM
             // TODO : should we transfer "affected license" ?
             $iterator = $DB->request([
                 'SELECT' => ['id', 'softwareversions_id_buy', 'softwareversions_id_use'],
-                'FROM'   => 'glpi_softwarelicenses',
+                'FROM'   => 'zentra_softwarelicenses',
                 'WHERE'  => ['softwares_id' => $this->needtobe_transfer['Software']],
             ]);
 
@@ -606,23 +606,23 @@ final class Transfer extends CommonDBTM
 
     private function simulateTickets(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!$this->options['keep_ticket']) {
             return;
         }
-        foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["ticket_types"] as $itemtype) {
             if (!$this->haveItemsToTransfer($itemtype)) {
                 continue;
             }
             $iterator = $DB->request([
-                'SELECT'    => 'glpi_tickets.id',
-                'FROM'      => 'glpi_tickets',
+                'SELECT'    => 'zentra_tickets.id',
+                'FROM'      => 'zentra_tickets',
                 'LEFT JOIN' => [
-                    'glpi_items_tickets' => [
+                    'zentra_items_tickets' => [
                         'ON' => [
-                            'glpi_items_tickets' => 'tickets_id',
-                            'glpi_tickets'       => 'id',
+                            'zentra_items_tickets' => 'tickets_id',
+                            'zentra_tickets'       => 'id',
                         ],
                     ],
                 ],
@@ -640,12 +640,12 @@ final class Transfer extends CommonDBTM
 
     private function simulateCertificates(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!$this->options['keep_certificate']) {
             return;
         }
-        foreach ($CFG_GLPI["certificate_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["certificate_types"] as $itemtype) {
             if (!$this->haveItemsToTransfer($itemtype)) {
                 continue;
             }
@@ -653,16 +653,16 @@ final class Transfer extends CommonDBTM
 
             // Clean DB
             $DB->delete(
-                'glpi_certificates_items',
+                'zentra_certificates_items',
                 [
                     "$itemtable.id"                 => null,
-                    "glpi_certificates_items.itemtype" => $itemtype,
+                    "zentra_certificates_items.itemtype" => $itemtype,
                 ],
                 [
                     'LEFT JOIN' => [
                         $itemtable  => [
                             'ON' => [
-                                'glpi_certificates_items'  => 'items_id',
+                                'zentra_certificates_items'  => 'items_id',
                                 $itemtable              => 'id',
                             ],
                         ],
@@ -672,16 +672,16 @@ final class Transfer extends CommonDBTM
 
             // Clean DB
             $DB->delete(
-                'glpi_certificates_items',
+                'zentra_certificates_items',
                 [
-                    'glpi_certificates.id'  => null,
+                    'zentra_certificates.id'  => null,
                 ],
                 [
                     'LEFT JOIN' => [
-                        'glpi_certificates'  => [
+                        'zentra_certificates'  => [
                             'ON' => [
-                                'glpi_certificates_items'  => 'certificates_id',
-                                'glpi_certificates'        => 'id',
+                                'zentra_certificates_items'  => 'certificates_id',
+                                'zentra_certificates'        => 'id',
                             ],
                         ],
                     ],
@@ -691,15 +691,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'certificates_id',
-                    'glpi_certificates.entities_id',
-                    'glpi_certificates.is_recursive',
+                    'zentra_certificates.entities_id',
+                    'zentra_certificates.is_recursive',
                 ],
-                'FROM'      => 'glpi_certificates_items',
+                'FROM'      => 'zentra_certificates_items',
                 'LEFT JOIN' => [
-                    'glpi_certificates' => [
+                    'zentra_certificates' => [
                         'ON' => [
-                            'glpi_certificates_items'  => 'certificates_id',
-                            'glpi_certificates'        => 'id',
+                            'zentra_certificates_items'  => 'certificates_id',
+                            'zentra_certificates'        => 'id',
                         ],
                     ],
                 ],
@@ -717,11 +717,11 @@ final class Transfer extends CommonDBTM
 
     private function simulateContracts(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
         if (!$this->options['keep_contract']) {
             return;
         }
-        foreach ($CFG_GLPI["contract_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["contract_types"] as $itemtype) {
             if (!$this->haveItemsToTransfer($itemtype)) {
                 continue;
             }
@@ -729,16 +729,16 @@ final class Transfer extends CommonDBTM
 
             // Clean DB
             $DB->delete(
-                'glpi_contracts_items',
+                'zentra_contracts_items',
                 [
                     "$itemtable.id"                 => null,
-                    "glpi_contracts_items.itemtype" => $itemtype,
+                    "zentra_contracts_items.itemtype" => $itemtype,
                 ],
                 [
                     'LEFT JOIN' => [
                         $itemtable  => [
                             'ON' => [
-                                'glpi_contracts_items'  => 'items_id',
+                                'zentra_contracts_items'  => 'items_id',
                                 $itemtable              => 'id',
                             ],
                         ],
@@ -747,12 +747,12 @@ final class Transfer extends CommonDBTM
             );
 
             // Clean DB
-            $DB->delete('glpi_contracts_items', ['glpi_contracts.id'  => null], [
+            $DB->delete('zentra_contracts_items', ['zentra_contracts.id'  => null], [
                 'LEFT JOIN' => [
-                    'glpi_contracts'  => [
+                    'zentra_contracts'  => [
                         'ON' => [
-                            'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id',
+                            'zentra_contracts_items'  => 'contracts_id',
+                            'zentra_contracts'        => 'id',
                         ],
                     ],
                 ],
@@ -761,15 +761,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'contracts_id',
-                    'glpi_contracts.entities_id',
-                    'glpi_contracts.is_recursive',
+                    'zentra_contracts.entities_id',
+                    'zentra_contracts.is_recursive',
                 ],
-                'FROM'      => 'glpi_contracts_items',
+                'FROM'      => 'zentra_contracts_items',
                 'LEFT JOIN' => [
-                    'glpi_contracts' => [
+                    'zentra_contracts' => [
                         'ON' => [
-                            'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id',
+                            'zentra_contracts_items'  => 'contracts_id',
+                            'zentra_contracts'        => 'id',
                         ],
                     ],
                 ],
@@ -786,23 +786,23 @@ final class Transfer extends CommonDBTM
 
         if ($this->haveItemsToTransfer(Ticket::class)) {
             // Clean DB
-            $DB->delete('glpi_tickets_contracts', ['glpi_contracts.id'  => null], [
+            $DB->delete('zentra_tickets_contracts', ['zentra_contracts.id'  => null], [
                 'LEFT JOIN' => [
-                    'glpi_contracts'  => [
+                    'zentra_contracts'  => [
                         'ON' => [
-                            'glpi_tickets_contracts'  => 'contracts_id',
-                            'glpi_contracts'          => 'id',
+                            'zentra_tickets_contracts'  => 'contracts_id',
+                            'zentra_contracts'          => 'id',
                         ],
                     ],
                 ],
             ]);
 
-            $DB->delete('glpi_tickets_contracts', ['glpi_tickets.id'  => null], [
+            $DB->delete('zentra_tickets_contracts', ['zentra_tickets.id'  => null], [
                 'LEFT JOIN' => [
-                    'glpi_tickets'  => [
+                    'zentra_tickets'  => [
                         'ON' => [
-                            'glpi_tickets_contracts'  => 'tickets_id',
-                            'glpi_tickets'            => 'id',
+                            'zentra_tickets_contracts'  => 'tickets_id',
+                            'zentra_tickets'            => 'id',
                         ],
                     ],
                 ],
@@ -811,15 +811,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'contracts_id',
-                    'glpi_contracts.entities_id',
-                    'glpi_contracts.is_recursive',
+                    'zentra_contracts.entities_id',
+                    'zentra_contracts.is_recursive',
                 ],
-                'FROM'      => 'glpi_tickets_contracts',
+                'FROM'      => 'zentra_tickets_contracts',
                 'LEFT JOIN' => [
-                    'glpi_contracts' => [
+                    'zentra_contracts' => [
                         'ON' => [
-                            'glpi_tickets_contracts'  => 'contracts_id',
-                            'glpi_contracts'          => 'id',
+                            'zentra_tickets_contracts'  => 'contracts_id',
+                            'zentra_contracts'          => 'id',
                         ],
                     ],
                 ],
@@ -843,24 +843,24 @@ final class Transfer extends CommonDBTM
         }
 
         // Clean DB
-        $DB->delete('glpi_contracts_suppliers', ['glpi_contracts.id'  => null], [
+        $DB->delete('zentra_contracts_suppliers', ['zentra_contracts.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_contracts'  => [
+                'zentra_contracts'  => [
                     'ON' => [
-                        'glpi_contracts_suppliers' => 'contracts_id',
-                        'glpi_contracts'           => 'id',
+                        'zentra_contracts_suppliers' => 'contracts_id',
+                        'zentra_contracts'           => 'id',
                     ],
                 ],
             ],
         ]);
 
         // Clean DB
-        $DB->delete('glpi_contracts_suppliers', ['glpi_suppliers.id'  => null], [
+        $DB->delete('zentra_contracts_suppliers', ['zentra_suppliers.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_suppliers'  => [
+                'zentra_suppliers'  => [
                     'ON' => [
-                        'glpi_contracts_suppliers' => 'suppliers_id',
-                        'glpi_suppliers'           => 'id',
+                        'zentra_contracts_suppliers' => 'suppliers_id',
+                        'zentra_suppliers'           => 'id',
                     ],
                 ],
             ],
@@ -871,15 +871,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'suppliers_id',
-                    'glpi_suppliers.entities_id',
-                    'glpi_suppliers.is_recursive',
+                    'zentra_suppliers.entities_id',
+                    'zentra_suppliers.is_recursive',
                 ],
-                'FROM'      => 'glpi_contracts_suppliers',
+                'FROM'      => 'zentra_contracts_suppliers',
                 'LEFT JOIN' => [
-                    'glpi_suppliers' => [
+                    'zentra_suppliers' => [
                         'ON' => [
-                            'glpi_contracts_suppliers' => 'suppliers_id',
-                            'glpi_suppliers'           => 'id',
+                            'zentra_contracts_suppliers' => 'suppliers_id',
+                            'zentra_suppliers'           => 'id',
                         ],
                     ],
                 ],
@@ -908,8 +908,8 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT' => [
                     "$link_table.suppliers_id",
-                    'glpi_suppliers.entities_id',
-                    'glpi_suppliers.is_recursive',
+                    'zentra_suppliers.entities_id',
+                    'zentra_suppliers.is_recursive',
                 ],
                 'FROM' => $itil_table,
                 'LEFT JOIN' => [
@@ -919,10 +919,10 @@ final class Transfer extends CommonDBTM
                             $itil_table => 'id',
                         ],
                     ],
-                    'glpi_suppliers' => [
+                    'zentra_suppliers' => [
                         'ON' => [
                             $link_table => 'suppliers_id',
-                            'glpi_suppliers' => 'id',
+                            'zentra_suppliers' => 'id',
                         ],
                     ],
                 ],
@@ -947,16 +947,16 @@ final class Transfer extends CommonDBTM
 
                 // Clean DB
                 $DB->delete(
-                    'glpi_infocoms',
+                    'zentra_infocoms',
                     [
                         "$itemtable.id"  => null,
-                        'glpi_infocoms.itemtype' => $itemtype,
+                        'zentra_infocoms.itemtype' => $itemtype,
                     ],
                     [
                         'LEFT JOIN' => [
                             $itemtable => [
                                 'ON' => [
-                                    'glpi_infocoms'   => 'items_id',
+                                    'zentra_infocoms'   => 'items_id',
                                     $itemtable        => 'id',
                                 ],
                             ],
@@ -967,15 +967,15 @@ final class Transfer extends CommonDBTM
                 $iterator = $DB->request([
                     'SELECT'    => [
                         'suppliers_id',
-                        'glpi_suppliers.entities_id',
-                        'glpi_suppliers.is_recursive',
+                        'zentra_suppliers.entities_id',
+                        'zentra_suppliers.is_recursive',
                     ],
-                    'FROM'      => 'glpi_infocoms',
+                    'FROM'      => 'zentra_infocoms',
                     'LEFT JOIN' => [
-                        'glpi_suppliers'  => [
+                        'zentra_suppliers'  => [
                             'ON' => [
-                                'glpi_infocoms'   => 'suppliers_id',
-                                'glpi_suppliers'  => 'id',
+                                'zentra_infocoms'   => 'suppliers_id',
+                                'zentra_suppliers'  => 'id',
                             ],
                         ],
                     ],
@@ -1001,24 +1001,24 @@ final class Transfer extends CommonDBTM
         }
 
         // Clean DB
-        $DB->delete('glpi_contacts_suppliers', ['glpi_contacts.id'  => null], [
+        $DB->delete('zentra_contacts_suppliers', ['zentra_contacts.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_contacts' => [
+                'zentra_contacts' => [
                     'ON' => [
-                        'glpi_contacts_suppliers'  => 'contacts_id',
-                        'glpi_contacts'            => 'id',
+                        'zentra_contacts_suppliers'  => 'contacts_id',
+                        'zentra_contacts'            => 'id',
                     ],
                 ],
             ],
         ]);
 
         // Clean DB
-        $DB->delete('glpi_contacts_suppliers', ['glpi_suppliers.id'  => null], [
+        $DB->delete('zentra_contacts_suppliers', ['zentra_suppliers.id'  => null], [
             'LEFT JOIN' => [
-                'glpi_suppliers' => [
+                'zentra_suppliers' => [
                     'ON' => [
-                        'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id',
+                        'zentra_contacts_suppliers'  => 'suppliers_id',
+                        'zentra_suppliers'           => 'id',
                     ],
                 ],
             ],
@@ -1029,15 +1029,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'contacts_id',
-                    'glpi_contacts.entities_id',
-                    'glpi_contacts.is_recursive',
+                    'zentra_contacts.entities_id',
+                    'zentra_contacts.is_recursive',
                 ],
-                'FROM'      => 'glpi_contacts_suppliers',
+                'FROM'      => 'zentra_contacts_suppliers',
                 'LEFT JOIN' => [
-                    'glpi_contacts'  => [
+                    'zentra_contacts'  => [
                         'ON' => [
-                            'glpi_contacts_suppliers'  => 'contacts_id',
-                            'glpi_contacts'            => 'id',
+                            'zentra_contacts_suppliers'  => 'contacts_id',
+                            'zentra_contacts'            => 'id',
                         ],
                     ],
                 ],
@@ -1065,16 +1065,16 @@ final class Transfer extends CommonDBTM
             $itemtable = getTableForItemType($itemtype);
             // Clean DB
             $DB->delete(
-                'glpi_documents_items',
+                'zentra_documents_items',
                 [
                     "$itemtable.id"  => null,
-                    'glpi_documents_items.itemtype' => $itemtype,
+                    'zentra_documents_items.itemtype' => $itemtype,
                 ],
                 [
                     'LEFT JOIN' => [
                         $itemtable => [
                             'ON' => [
-                                'glpi_documents_items'  => 'items_id',
+                                'zentra_documents_items'  => 'items_id',
                                 $itemtable              => 'id',
                             ],
                         ],
@@ -1085,15 +1085,15 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT'    => [
                     'documents_id',
-                    'glpi_documents.entities_id',
-                    'glpi_documents.is_recursive',
+                    'zentra_documents.entities_id',
+                    'zentra_documents.is_recursive',
                 ],
-                'FROM'      => 'glpi_documents_items',
+                'FROM'      => 'zentra_documents_items',
                 'LEFT JOIN' => [
-                    'glpi_documents'  => [
+                    'zentra_documents'  => [
                         'ON' => [
-                            'glpi_documents_items'  => 'documents_id',
-                            'glpi_documents'        => 'id', [
+                            'zentra_documents_items'  => 'documents_id',
+                            'zentra_documents'        => 'id', [
                                 'AND' => [
                                     'itemtype' => $itemtype,
                                 ],
@@ -1121,7 +1121,7 @@ final class Transfer extends CommonDBTM
         }
         $iterator = $DB->request([
             'SELECT' => 'cartridgeitems_id',
-            'FROM'   => 'glpi_cartridges',
+            'FROM'   => 'zentra_cartridges',
             'WHERE'  => ['printers_id' => $this->needtobe_transfer[Printer::class]],
         ]);
 
@@ -1140,12 +1140,12 @@ final class Transfer extends CommonDBTM
      **/
     private function simulateTransfer(array $items): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Init types :
         $types = $this->getItemtypes();
 
-        $types = array_merge($types, $CFG_GLPI['device_types']);
+        $types = array_merge($types, $CFG_ZENTRA['device_types']);
         $types = array_merge($types, Item_Devices::getDeviceTypes());
 
         $this->needtobe_transfer = array_fill_keys($types, []);
@@ -1186,7 +1186,7 @@ final class Transfer extends CommonDBTM
      **/
     private function transferItem(string $itemtype, int $ID, int $newID): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!($item = getItemForItemtype($itemtype))) {
             return;
@@ -1197,7 +1197,7 @@ final class Transfer extends CommonDBTM
         }
 
         // Network connection ? keep connected / keep_disconnected / delete
-        if (in_array($itemtype, $CFG_GLPI['networkport_types'], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA['networkport_types'], true)) {
             $this->transferNetworkLink($itemtype, $ID, $newID);
         }
 
@@ -1207,7 +1207,7 @@ final class Transfer extends CommonDBTM
         }
 
         // Reservation : keep / delete
-        if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["reservation_types"], true)) {
             $this->transferReservations($itemtype, $ID, $newID);
         }
 
@@ -1226,17 +1226,17 @@ final class Transfer extends CommonDBTM
         }
 
         // Connected item is transferred
-        if (in_array($itemtype, $CFG_GLPI["directconnect_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["directconnect_types"], true)) {
             $this->managePeripheralMainAsset($itemtype, $ID);
         }
 
         // Certificate : keep / delete + clean unused / keep unused
-        if (in_array($itemtype, $CFG_GLPI["certificate_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["certificate_types"], true)) {
             $this->transferCertificates($itemtype, $ID, $newID);
         }
 
         // Contract : keep / delete + clean unused / keep unused
-        if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["contract_types"], true)) {
             $this->transferContracts($itemtype, $ID, $newID);
         }
 
@@ -1324,7 +1324,7 @@ final class Transfer extends CommonDBTM
             $this->transferItem_Disks($itemtype, $ID);
         }
 
-        if (in_array($itemtype, $CFG_GLPI['software_types'], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA['software_types'], true)) {
             // License / Software :  keep / delete + clean unused / keep unused
             $this->transferItemSoftwares($itemtype, $ID);
         }
@@ -1414,7 +1414,7 @@ final class Transfer extends CommonDBTM
                 // Search if the locations_id already exists in the destination entity
                 $iterator = $DB->request([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_sockets',
+                    'FROM'   => 'zentra_sockets',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
                         'name'         => $socket->fields['name'],
@@ -1463,7 +1463,7 @@ final class Transfer extends CommonDBTM
         // Get cartridges linked
         $iterator = $DB->request([
             'SELECT' => ['id', 'cartridgeitems_id'],
-            'FROM'   => 'glpi_cartridges',
+            'FROM'   => 'zentra_cartridges',
             'WHERE'  => ['printers_id' => $ID],
         ]);
 
@@ -1490,7 +1490,7 @@ final class Transfer extends CommonDBTM
                             // Not already transfer cartype
                             $ccriteria = [
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_cartridges',
+                                'FROM'   => 'zentra_cartridges',
                                 'WHERE'  => [
                                     'cartridgeitems_id'  => $data['cartridgeitems_id'],
                                     'printers_id'        => ['>', 0],
@@ -1518,7 +1518,7 @@ final class Transfer extends CommonDBTM
                                 $carttype->getFromDB($data['cartridgeitems_id']);
                                 // Is existing carttype in the destination entity ?
                                 $items_iterator = $DB->request([
-                                    'FROM'   => 'glpi_cartridgeitems',
+                                    'FROM'   => 'zentra_cartridgeitems',
                                     'WHERE'  => [
                                         'entities_id'  => $this->to,
                                         'name'         => $carttype->fields['name'],
@@ -1565,7 +1565,7 @@ final class Transfer extends CommonDBTM
                 } else { // Do not keep
                     // If same printer : delete cartridges
                     if ($ID == $newID) {
-                        $DB->delete('glpi_cartridges', ['printers_id' => $ID]);
+                        $DB->delete('zentra_cartridges', ['printers_id' => $ID]);
                     }
                     $need_clean_process = true;
                 }
@@ -1578,7 +1578,7 @@ final class Transfer extends CommonDBTM
                     // Clean carttype
                     $result = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_cartridges',
+                        'FROM'   => 'zentra_cartridges',
                         'WHERE'  => [
                             'cartridgeitems_id'  => $data['cartridgeitems_id'],
                         ],
@@ -1617,7 +1617,7 @@ final class Transfer extends CommonDBTM
             if (
                 $soft->fields['is_recursive']
                 && in_array($soft->fields['entities_id'], getAncestorsOf(
-                    "glpi_entities",
+                    "zentra_entities",
                     $this->to
                 ))
             ) {
@@ -1634,7 +1634,7 @@ final class Transfer extends CommonDBTM
 
                 $iterator = $DB->request([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_softwares',
+                    'FROM'   => 'zentra_softwares',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
                         'name'         => $soft->fields['name'],
@@ -1685,7 +1685,7 @@ final class Transfer extends CommonDBTM
             } else {
                 $iterator = $DB->request([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_softwareversions',
+                    'FROM'   => 'zentra_softwareversions',
                     'WHERE'  => [
                         'softwares_id' => $newsoftID,
                         'name'         => $vers->fields['name'],
@@ -1746,7 +1746,7 @@ final class Transfer extends CommonDBTM
         // Get Installed version
         $criteria = [
             'SELECT' => ['id', 'softwareversions_id'],
-            'FROM'   => 'glpi_items_softwareversions',
+            'FROM'   => 'zentra_items_softwareversions',
             'WHERE'  => [
                 'items_id'     => $ID,
                 'itemtype'     => $itemtype,
@@ -1813,7 +1813,7 @@ final class Transfer extends CommonDBTM
                 }
             } else { // Do not keep
                 // Delete inst software for item
-                $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
+                $DB->delete('zentra_items_softwareversions', ['id' => $data['id']]);
             }
         }
 
@@ -1821,7 +1821,7 @@ final class Transfer extends CommonDBTM
         if ($this->options['keep_software']) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_items_softwarelicenses',
+                'FROM'   => 'zentra_items_softwarelicenses',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -1831,7 +1831,7 @@ final class Transfer extends CommonDBTM
                 $this->transferAffectedLicense($data['id']);
             }
         } else {
-            $DB->delete('glpi_items_softwarelicenses', [
+            $DB->delete('zentra_items_softwarelicenses', [
                 'items_id'  => $ID,
                 'itemtype'  => $itemtype,
             ]);
@@ -1873,7 +1873,7 @@ final class Transfer extends CommonDBTM
                     //// If license already exists : increment number by one
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'number'],
-                        'FROM'   => 'glpi_softwarelicenses',
+                        'FROM'   => 'zentra_softwarelicenses',
                         'WHERE'  => [
                             'softwares_id' => $newsoftID,
                             'name'         => $license->fields['name'],
@@ -1939,7 +1939,7 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_softwarelicenses',
+            'FROM'   => 'zentra_softwarelicenses',
             'WHERE'  => ['softwares_id' => $ID],
         ]);
 
@@ -1949,7 +1949,7 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_softwareversions',
+            'FROM'   => 'zentra_softwareversions',
             'WHERE'  => ['softwares_id' => $ID],
         ]);
 
@@ -1972,10 +1972,10 @@ final class Transfer extends CommonDBTM
         $vers = new SoftwareVersion();
         foreach (array_keys($this->already_transfer[SoftwareVersion::class]) as $old) {
             if (
-                (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy' => $old]) === 0)
-                && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use' => $old]) === 0)
+                (countElementsInTable("zentra_softwarelicenses", ['softwareversions_id_buy' => $old]) === 0)
+                && (countElementsInTable("zentra_softwarelicenses", ['softwareversions_id_use' => $old]) === 0)
                 && (countElementsInTable(
-                    "glpi_items_softwareversions",
+                    "zentra_items_softwareversions",
                     ['softwareversions_id' => $old]
                 ) === 0)
             ) {
@@ -1998,8 +1998,8 @@ final class Transfer extends CommonDBTM
         $soft = new Software();
         foreach (array_keys($this->already_transfer[Software::class]) as $old) {
             if (
-                (countElementsInTable("glpi_softwarelicenses", ['softwares_id' => $old]) == 0)
-                && (countElementsInTable("glpi_softwareversions", ['softwares_id' => $old]) == 0)
+                (countElementsInTable("zentra_softwarelicenses", ['softwares_id' => $old]) == 0)
+                && (countElementsInTable("zentra_softwareversions", ['softwares_id' => $old]) == 0)
             ) {
                 if ($this->options['clean_software'] == 1) { // delete
                     $soft->delete(['id' => $old]);
@@ -2029,7 +2029,7 @@ final class Transfer extends CommonDBTM
             // Get certificates for the item
             $certificates_items_query = [
                 'SELECT' => ['id', 'certificates_id'],
-                'FROM'   => 'glpi_certificates_items',
+                'FROM'   => 'zentra_certificates_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2067,7 +2067,7 @@ final class Transfer extends CommonDBTM
                             // No items to transfer -> exists links
                             $result = $DB->request([
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_certificates_items',
+                                'FROM'   => 'zentra_certificates_items',
                                 'WHERE'  => [
                                     'certificates_id' => $item_ID,
                                     'itemtype'        => $dtype,
@@ -2097,7 +2097,7 @@ final class Transfer extends CommonDBTM
                         // No : search certificate
                         $certificate_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_certificates',
+                            'FROM'   => 'zentra_certificates',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $certificate->fields['name'],
@@ -2131,7 +2131,7 @@ final class Transfer extends CommonDBTM
                 if ($ID == $newID) {
                     if ($item_ID != $newcertificateID) {
                         $DB->update(
-                            'glpi_certificates_items',
+                            'zentra_certificates_items',
                             [
                                 'certificates_id' => $newcertificateID,
                             ],
@@ -2144,7 +2144,7 @@ final class Transfer extends CommonDBTM
                     // Copy Item -> copy links
                     if ($item_ID != $newcertificateID) {
                         $DB->insert(
-                            'glpi_certificates_items',
+                            'zentra_certificates_items',
                             [
                                 'certificates_id' => $newcertificateID,
                                 'items_id'        => $newID,
@@ -2153,7 +2153,7 @@ final class Transfer extends CommonDBTM
                         );
                     } else { // same certificate for new item update link
                         $DB->update(
-                            'glpi_certificates_items',
+                            'zentra_certificates_items',
                             [
                                 'items_id' => $newID,
                             ],
@@ -2171,7 +2171,7 @@ final class Transfer extends CommonDBTM
                 ) {
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_certificates_items',
+                        'FROM'   => 'zentra_certificates_items',
                         'WHERE'  => ['certificates_id' => $item_ID],
                     ])->current();
 
@@ -2187,7 +2187,7 @@ final class Transfer extends CommonDBTM
             }
         } else {// else unlink
             $DB->delete(
-                'glpi_certificates_items',
+                'zentra_certificates_items',
                 [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2215,7 +2215,7 @@ final class Transfer extends CommonDBTM
             // Get contracts for the item
             $contracts_items_query = [
                 'SELECT' => ['id', 'contracts_id'],
-                'FROM'   => 'glpi_contracts_items',
+                'FROM'   => 'zentra_contracts_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2253,7 +2253,7 @@ final class Transfer extends CommonDBTM
                             // No items to transfer -> exists links
                             $result = $DB->request([
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_contracts_items',
+                                'FROM'   => 'zentra_contracts_items',
                                 'WHERE'  => [
                                     'contracts_id' => $item_ID,
                                     'itemtype'     => $dtype,
@@ -2283,7 +2283,7 @@ final class Transfer extends CommonDBTM
                         // No : search in target entity if existing contract
                         $contract_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_contracts',
+                            'FROM'   => 'zentra_contracts',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $contract->fields['name'],
@@ -2318,7 +2318,7 @@ final class Transfer extends CommonDBTM
                 if ($ID == $newID) {
                     if ($item_ID != $newcontractID) {
                         $DB->update(
-                            'glpi_contracts_items',
+                            'zentra_contracts_items',
                             [
                                 'contracts_id' => $newcontractID,
                             ],
@@ -2331,7 +2331,7 @@ final class Transfer extends CommonDBTM
                     // Copy Item -> copy links
                     if ($item_ID != $newcontractID) {
                         $DB->insert(
-                            'glpi_contracts_items',
+                            'zentra_contracts_items',
                             [
                                 'contracts_id' => $newcontractID,
                                 'items_id'     => $newID,
@@ -2340,7 +2340,7 @@ final class Transfer extends CommonDBTM
                         );
                     } else { // same contract for new item update link
                         $DB->update(
-                            'glpi_contracts_items',
+                            'zentra_contracts_items',
                             [
                                 'items_id' => $newID,
                             ],
@@ -2358,7 +2358,7 @@ final class Transfer extends CommonDBTM
                 ) {
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_contracts_items',
+                        'FROM'   => 'zentra_contracts_items',
                         'WHERE'  => ['contracts_id' => $item_ID],
                     ])->current();
 
@@ -2376,7 +2376,7 @@ final class Transfer extends CommonDBTM
             $contract = new Contract();
             $iterator = $DB->request([
                 'SELECT' => ['contracts_id'],
-                'FROM'   => 'glpi_contracts_items',
+                'FROM'   => 'zentra_contracts_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2389,7 +2389,7 @@ final class Transfer extends CommonDBTM
             }
 
             $DB->delete(
-                'glpi_contracts_items',
+                'zentra_contracts_items',
                 [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2399,13 +2399,13 @@ final class Transfer extends CommonDBTM
             foreach ($contracts_to_check as $contract_id) {
                 $remain_tickets = $DB->request([
                     'COUNT'  => 'cpt',
-                    'FROM'   => 'glpi_tickets_contracts',
+                    'FROM'   => 'zentra_tickets_contracts',
                     'WHERE'  => ['contracts_id' => $contract_id],
                 ])->current();
 
                 $remain_items = $DB->request([
                     'COUNT'  => 'cpt',
-                    'FROM'   => 'glpi_contracts_items',
+                    'FROM'   => 'zentra_contracts_items',
                     'WHERE'  => ['contracts_id' => $contract_id],
                 ])->current();
 
@@ -2432,7 +2432,7 @@ final class Transfer extends CommonDBTM
             $contract = new Contract();
             $tickets_contracts_query = [
                 'SELECT' => ['id', 'contracts_id'],
-                'FROM'   => 'glpi_tickets_contracts',
+                'FROM'   => 'zentra_tickets_contracts',
                 'WHERE'  => [
                     'tickets_id'  => $ID,
                 ],
@@ -2459,7 +2459,7 @@ final class Transfer extends CommonDBTM
 
                     $ticket_links = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_tickets_contracts',
+                        'FROM'   => 'zentra_tickets_contracts',
                         'WHERE'  => [
                             'contracts_id' => $item_ID,
                             'NOT'          => ['tickets_id' => $this->needtobe_transfer[Ticket::class] ?? []],
@@ -2478,7 +2478,7 @@ final class Transfer extends CommonDBTM
                             if ($this->haveItemsToTransfer($dtype)) {
                                 $result = $DB->request([
                                     'COUNT'  => 'cpt',
-                                    'FROM'   => 'glpi_contracts_items',
+                                    'FROM'   => 'zentra_contracts_items',
                                     'WHERE'  => [
                                         'contracts_id' => $item_ID,
                                         'itemtype'     => $dtype,
@@ -2507,7 +2507,7 @@ final class Transfer extends CommonDBTM
                         $contract->getFromDB($item_ID);
                         $contract_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_contracts',
+                            'FROM'   => 'zentra_contracts',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $contract->fields['name'],
@@ -2536,7 +2536,7 @@ final class Transfer extends CommonDBTM
                 if ($ID == $newID) {
                     if ($item_ID != $newcontractID) {
                         $DB->update(
-                            'glpi_tickets_contracts',
+                            'zentra_tickets_contracts',
                             [
                                 'contracts_id' => $newcontractID,
                             ],
@@ -2548,7 +2548,7 @@ final class Transfer extends CommonDBTM
                 } else {
                     if ($item_ID != $newcontractID) {
                         $DB->insert(
-                            'glpi_tickets_contracts',
+                            'zentra_tickets_contracts',
                             [
                                 'contracts_id' => $newcontractID,
                                 'tickets_id'   => $newID,
@@ -2556,7 +2556,7 @@ final class Transfer extends CommonDBTM
                         );
                     } else {
                         $DB->update(
-                            'glpi_tickets_contracts',
+                            'zentra_tickets_contracts',
                             [
                                 'tickets_id' => $newID,
                             ],
@@ -2573,13 +2573,13 @@ final class Transfer extends CommonDBTM
                 ) {
                     $remain_tickets = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_tickets_contracts',
+                        'FROM'   => 'zentra_tickets_contracts',
                         'WHERE'  => ['contracts_id' => $item_ID],
                     ])->current();
 
                     $remain_items = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_contracts_items',
+                        'FROM'   => 'zentra_contracts_items',
                         'WHERE'  => ['contracts_id' => $item_ID],
                     ])->current();
 
@@ -2597,7 +2597,7 @@ final class Transfer extends CommonDBTM
             $contract = new Contract();
             $iterator = $DB->request([
                 'SELECT' => ['contracts_id'],
-                'FROM'   => 'glpi_tickets_contracts',
+                'FROM'   => 'zentra_tickets_contracts',
                 'WHERE'  => [
                     'tickets_id'  => $ID,
                 ],
@@ -2609,7 +2609,7 @@ final class Transfer extends CommonDBTM
             }
 
             $DB->delete(
-                'glpi_tickets_contracts',
+                'zentra_tickets_contracts',
                 [
                     'tickets_id'  => $ID,
                 ]
@@ -2618,13 +2618,13 @@ final class Transfer extends CommonDBTM
             foreach ($contracts_to_check as $contract_id) {
                 $remain_tickets = $DB->request([
                     'COUNT'  => 'cpt',
-                    'FROM'   => 'glpi_tickets_contracts',
+                    'FROM'   => 'zentra_tickets_contracts',
                     'WHERE'  => ['contracts_id' => $contract_id],
                 ])->current();
 
                 $remain_items = $DB->request([
                     'COUNT'  => 'cpt',
-                    'FROM'   => 'glpi_contracts_items',
+                    'FROM'   => 'zentra_contracts_items',
                     'WHERE'  => ['contracts_id' => $contract_id],
                 ])->current();
 
@@ -2654,7 +2654,7 @@ final class Transfer extends CommonDBTM
             // Get documents for the item
             $documents_items_query = [
                 'SELECT' => ['id', 'documents_id'],
-                'FROM'   => 'glpi_documents_items',
+                'FROM'   => 'zentra_documents_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -2706,7 +2706,7 @@ final class Transfer extends CommonDBTM
 
                             $result = $DB->request([
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_documents_items',
+                                'FROM'   => 'zentra_documents_items',
                                 'WHERE'  => $where,
                             ])->current();
 
@@ -2730,7 +2730,7 @@ final class Transfer extends CommonDBTM
                         // No : search contract
                         $doc_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_documents',
+                            'FROM'   => 'zentra_documents',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $document->fields['name'],
@@ -2766,14 +2766,14 @@ final class Transfer extends CommonDBTM
                         // Check if the target relation already exists
                         $existing = $DB->request([
                             'COUNT'  => 'cpt',
-                            'FROM'   => 'glpi_documents_items',
+                            'FROM'   => 'zentra_documents_items',
                             'WHERE'  => [
                                 'documents_id'      => $newdocID,
                                 'itemtype'          => $itemtype,
                                 'items_id'          => $newID,
                                 'timeline_position' => new QuerySubQuery([
                                     'SELECT' => 'timeline_position',
-                                    'FROM'   => 'glpi_documents_items',
+                                    'FROM'   => 'zentra_documents_items',
                                     'WHERE'  => ['id' => $data['id']],
                                 ]),
                                 'NOT'               => ['id' => $data['id']],
@@ -2782,11 +2782,11 @@ final class Transfer extends CommonDBTM
 
                         if ($existing['cpt'] > 0) {
                             // Relation already exists, delete the old one
-                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                            $DB->delete('zentra_documents_items', ['id' => $data['id']]);
                         } else {
                             // No duplicate, safe to update
                             $DB->update(
-                                'glpi_documents_items',
+                                'zentra_documents_items',
                                 [
                                     'documents_id' => $newdocID,
                                 ],
@@ -2802,14 +2802,14 @@ final class Transfer extends CommonDBTM
                         // Get timeline_position to check for duplicates
                         $existing = $DB->request([
                             'COUNT'  => 'cpt',
-                            'FROM'   => 'glpi_documents_items',
+                            'FROM'   => 'zentra_documents_items',
                             'WHERE'  => [
                                 'documents_id'      => $newdocID,
                                 'itemtype'          => $itemtype,
                                 'items_id'          => $newID,
                                 'timeline_position' => new QuerySubQuery([
                                     'SELECT' => 'timeline_position',
-                                    'FROM'   => 'glpi_documents_items',
+                                    'FROM'   => 'zentra_documents_items',
                                     'WHERE'  => ['id' => $data['id']],
                                 ]),
                             ],
@@ -2818,7 +2818,7 @@ final class Transfer extends CommonDBTM
                         if ($existing['cpt'] == 0) {
                             // No duplicate, safe to insert
                             $DB->insert(
-                                'glpi_documents_items',
+                                'zentra_documents_items',
                                 [
                                     'documents_id'      => $newdocID,
                                     'items_id'          => $newID,
@@ -2832,14 +2832,14 @@ final class Transfer extends CommonDBTM
                         // Get timeline_position to check for duplicates
                         $existing = $DB->request([
                             'COUNT' => 'cpt',
-                            'FROM'  => 'glpi_documents_items',
+                            'FROM'  => 'zentra_documents_items',
                             'WHERE' => [
                                 'documents_id' => $item_ID,
                                 'itemtype'     => $itemtype,
                                 'items_id'     => $newID,
                                 'timeline_position' => [
                                     'SELECT' => 'timeline_position',
-                                    'FROM'   => 'glpi_documents_items',
+                                    'FROM'   => 'zentra_documents_items',
                                     'WHERE'  => ['id' => $data['id']],
                                 ],
                                 'NOT' => ['id' => $data['id']],
@@ -2848,11 +2848,11 @@ final class Transfer extends CommonDBTM
 
                         if ($existing['cpt'] > 0) {
                             // Relation already exists, delete the old one
-                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                            $DB->delete('zentra_documents_items', ['id' => $data['id']]);
                         } else {
                             // No duplicate, safe to update
                             $DB->update(
-                                'glpi_documents_items',
+                                'zentra_documents_items',
                                 [
                                     'items_id' => $newID,
                                 ],
@@ -2871,7 +2871,7 @@ final class Transfer extends CommonDBTM
                 ) {
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_documents_items',
+                        'FROM'   => 'zentra_documents_items',
                         'WHERE'  => [
                             'documents_id' => $item_ID,
                         ],
@@ -2889,7 +2889,7 @@ final class Transfer extends CommonDBTM
             }
         } else {// else unlink
             $DB->delete(
-                'glpi_documents_items',
+                'zentra_documents_items',
                 [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
@@ -3196,15 +3196,15 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_tickets.*',
-                'glpi_items_tickets.id AS _relid',
+                'zentra_tickets.*',
+                'zentra_items_tickets.id AS _relid',
             ],
-            'FROM'      => 'glpi_tickets',
+            'FROM'      => 'zentra_tickets',
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                'zentra_items_tickets' => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        'glpi_tickets'       => 'id',
+                        'zentra_items_tickets' => 'tickets_id',
+                        'zentra_tickets'       => 'id',
                     ],
                 ],
             ],
@@ -3307,7 +3307,7 @@ final class Transfer extends CommonDBTM
                     $newID = -1;
                     $iterator = $DB->request([
                         'SELECT' => 'id',
-                        'FROM'   => 'glpi_suppliers',
+                        'FROM'   => 'zentra_suppliers',
                         'WHERE'  => [
                             'entities_id'  => $this->to,
                             'name'         => $supplier->fields['name'],
@@ -3449,7 +3449,7 @@ final class Transfer extends CommonDBTM
         }
         if ($this->options['keep_history']) {
             $iterator = $DB->request([
-                'FROM'   => 'glpi_logs',
+                'FROM'   => 'zentra_logs',
                 'WHERE'  => [
                     'itemtype'  => $itemtype,
                     'items_id'  => $ID,
@@ -3462,11 +3462,11 @@ final class Transfer extends CommonDBTM
                     'items_id'  => $newID,
                     'itemtype'  => $itemtype,
                 ] + $data;
-                $DB->insert('glpi_logs', $data);
+                $DB->insert('zentra_logs', $data);
             }
         } else {
             // Delete history if transferred
-            $DB->delete('glpi_logs', [
+            $DB->delete('zentra_logs', [
                 'items_id'  => $ID,
                 'itemtype'  => $itemtype,
             ]);
@@ -3492,7 +3492,7 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => ['printermodels_id'],
-            'FROM'   => 'glpi_cartridgeitems_printermodels',
+            'FROM'   => 'zentra_cartridgeitems_printermodels',
             'WHERE'  => ['cartridgeitems_id' => $ID],
         ]);
 
@@ -3524,7 +3524,7 @@ final class Transfer extends CommonDBTM
                     // Same item -> delete
                     if ($ID == $newID) {
                         $DB->delete(
-                            'glpi_infocoms',
+                            'zentra_infocoms',
                             [
                                 'items_id'  => $ID,
                                 'itemtype'  => $itemtype,
@@ -3600,7 +3600,7 @@ final class Transfer extends CommonDBTM
             // Search for contract
             $criteria = [
                 'COUNT'  => 'cpt',
-                'FROM'   => 'glpi_contracts_suppliers',
+                'FROM'   => 'zentra_contracts_suppliers',
                 'WHERE'  => [
                     'suppliers_id' => $ID,
                 ],
@@ -3619,7 +3619,7 @@ final class Transfer extends CommonDBTM
                         if ($this->haveItemsToTransfer($itemtype)) {
                             $icriteria = [
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_infocoms',
+                                'FROM'   => 'zentra_infocoms',
                                 'WHERE'  => [
                                     'suppliers_id' => $ID,
                                     'itemtype'     => $itemtype,
@@ -3641,7 +3641,7 @@ final class Transfer extends CommonDBTM
             } else { // else Transfer by Copy
                 // Is existing item in the destination entity ?
                 $iterator = $DB->request([
-                    'FROM'   => 'glpi_suppliers',
+                    'FROM'   => 'zentra_suppliers',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
                         'name'         => $ent->fields['name'],
@@ -3692,7 +3692,7 @@ final class Transfer extends CommonDBTM
             $contact = new Contact();
             // Get contracts for the item
             $criteria = [
-                'FROM'   => 'glpi_contacts_suppliers',
+                'FROM'   => 'zentra_contacts_suppliers',
                 'WHERE'  => [
                     'suppliers_id' => $ID,
                 ],
@@ -3720,7 +3720,7 @@ final class Transfer extends CommonDBTM
                     if ($ID == $newID) {
                         $scriteria = [
                             'COUNT'  => 'cpt',
-                            'FROM'   => 'glpi_contacts_suppliers',
+                            'FROM'   => 'zentra_contacts_suppliers',
                             'WHERE'  => [
                                 'contacts_id'  => $item_ID,
                             ],
@@ -3746,7 +3746,7 @@ final class Transfer extends CommonDBTM
                         // No : search contract
                         $contact_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_contacts',
+                            'FROM'   => 'zentra_contacts',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $contact->fields['name'],
@@ -3781,7 +3781,7 @@ final class Transfer extends CommonDBTM
                 if ($ID == $newID) {
                     if ($item_ID != $newcontactID) {
                         $DB->update(
-                            'glpi_contacts_suppliers',
+                            'zentra_contacts_suppliers',
                             [
                                 'contacts_id' => $newcontactID,
                             ],
@@ -3794,7 +3794,7 @@ final class Transfer extends CommonDBTM
                     // Copy Item -> copy links
                     if ($item_ID != $newcontactID) {
                         $DB->insert(
-                            'glpi_contacts_suppliers',
+                            'zentra_contacts_suppliers',
                             [
                                 'contacts_id'  => $newcontactID,
                                 'suppliers_id' => $newID,
@@ -3802,7 +3802,7 @@ final class Transfer extends CommonDBTM
                         );
                     } else { // transfer contact but copy supplier : update link
                         $DB->update(
-                            'glpi_contacts_suppliers',
+                            'zentra_contacts_suppliers',
                             [
                                 'suppliers_id' => $newID,
                             ],
@@ -3820,7 +3820,7 @@ final class Transfer extends CommonDBTM
                 ) {
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
-                        'FROM'   => 'glpi_contacts_suppliers',
+                        'FROM'   => 'zentra_contacts_suppliers',
                         'WHERE'  => ['contacts_id' => $item_ID],
                     ])->current();
 
@@ -3836,7 +3836,7 @@ final class Transfer extends CommonDBTM
             }
         } else {// else unlink
             $DB->delete(
-                'glpi_contacts_suppliers',
+                'zentra_contacts_suppliers',
                 [
                     'suppliers_id' => $ID,
                 ]
@@ -4078,20 +4078,20 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_networkports.*',
+                'zentra_networkports.*',
             ],
-            'FROM'      => 'glpi_networkports',
+            'FROM'      => 'zentra_networkports',
             'LEFT JOIN' => [
-                'glpi_networkportethernets'   => [
+                'zentra_networkportethernets'   => [
                     'ON' => [
-                        'glpi_networkportethernets'   => 'networkports_id',
-                        'glpi_networkports'           => 'id',
+                        'zentra_networkportethernets'   => 'networkports_id',
+                        'zentra_networkports'           => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_networkports.items_id'  => $ID,
-                'glpi_networkports.itemtype'  => $itemtype,
+                'zentra_networkports.items_id'  => $ID,
+                'zentra_networkports.itemtype'  => $itemtype,
             ],
         ]);
 
@@ -4213,9 +4213,9 @@ final class Transfer extends CommonDBTM
         global $DB;
 
         $transfer_list = [];
-        if (!empty($_SESSION['glpitransfer_list'])) {
+        if (!empty($_SESSION['zentratransfer_list'])) {
             /** @var class-string<CommonDBTM> $itemtype */
-            foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
+            foreach ($_SESSION['zentratransfer_list'] as $itemtype => $tab) {
                 if (!empty($tab)) {
                     $table = $itemtype::getTable();
                     $name_field = $itemtype::getNameField();
@@ -4229,7 +4229,7 @@ final class Transfer extends CommonDBTM
                         ],
                         'FROM' => $table,
                         'LEFT JOIN' => [
-                            'glpi_entities AS entities' => [
+                            'zentra_entities AS entities' => [
                                 'ON' => [
                                     'entities' => 'id',
                                     $table => 'entities_id',

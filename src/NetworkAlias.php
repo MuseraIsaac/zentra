@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  *  NetworkAlias Class
@@ -194,7 +194,7 @@ class NetworkAlias extends FQDNLabel
 
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_networkaliases',
+            'FROM'   => 'zentra_networkaliases',
             'WHERE'  => ['networknames_id' => $item->getID()],
         ]);
 
@@ -225,7 +225,7 @@ class NetworkAlias extends FQDNLabel
      */
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {
@@ -236,7 +236,7 @@ class NetworkAlias extends FQDNLabel
         $rand    = mt_rand();
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_networkaliases',
+            'FROM'   => 'zentra_networkaliases',
             'WHERE'  => ['networknames_id' => $ID],
         ]);
         $number = count($iterator);
@@ -251,7 +251,7 @@ class NetworkAlias extends FQDNLabel
                 "function viewAddAlias$rand() {"
                 . Ajax::updateItemJsCode(
                     "viewnetworkalias$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/viewsubitem.php",
                     [
                         'type'            => self::class,
                         'parenttype'      => 'NetworkName',
@@ -276,7 +276,7 @@ class NetworkAlias extends FQDNLabel
         echo "<div class='spaced'>";
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . self::class . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+            $massiveactionparams = ['num_displayed' => min($_SESSION['zentralist_limit'], $number),
                 'container'     => 'mass' . self::class . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
@@ -312,7 +312,7 @@ class NetworkAlias extends FQDNLabel
                 echo "</td>";
             }
             $name = $data["name"];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            if ($_SESSION["zentrais_ids_visible"] || empty($data["name"])) {
                 $name = sprintf(__('%1$s (%2$s)'), $name, $id);
             }
             echo "<td class='center b' $showviewjs>";
@@ -320,7 +320,7 @@ class NetworkAlias extends FQDNLabel
                 $js = "function viewEditAlias" . $id . "$rand() {";
                 $js .= Ajax::updateItemJsCode(
                     "viewnetworkalias$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/viewsubitem.php",
                     [
                         'type'             => self::class,
                         'parenttype'       => 'NetworkName',
@@ -335,11 +335,11 @@ class NetworkAlias extends FQDNLabel
             echo "<a href='" . htmlescape(static::getFormURLWithID($id)) . "'>" . htmlescape($name) . "</a>";
             echo "</td>";
             echo "<td class='center' $showviewjs>" . htmlescape(Dropdown::getDropdownName(
-                "glpi_fqdns",
+                "zentra_fqdns",
                 $data["fqdns_id"]
             ));
             echo "<td class='center' $showviewjs>" . htmlescape(Dropdown::getDropdownName(
-                "glpi_entities",
+                "zentra_entities",
                 $data["entities_id"]
             ));
             echo "</tr>";
@@ -415,23 +415,23 @@ class NetworkAlias extends FQDNLabel
 
             $iterator = $DB->request([
                 'SELECT'    => [
-                    'glpi_networkaliases.id AS alias_id',
-                    'glpi_networkaliases.name AS alias',
-                    'glpi_networknames.id AS address_id',
-                    'glpi_networkaliases.comment AS comment',
+                    'zentra_networkaliases.id AS alias_id',
+                    'zentra_networkaliases.name AS alias',
+                    'zentra_networknames.id AS address_id',
+                    'zentra_networkaliases.comment AS comment',
                 ],
-                'FROM'      => 'glpi_networkaliases',
+                'FROM'      => 'zentra_networkaliases',
                 'INNER JOIN' => [
-                    'glpi_networknames'  => [
+                    'zentra_networknames'  => [
                         'ON' => [
-                            'glpi_networkaliases'   => 'networknames_id',
-                            'glpi_networknames'     => 'id',
+                            'zentra_networkaliases'   => 'networknames_id',
+                            'zentra_networknames'     => 'id',
                         ],
                     ],
                 ],
-                'WHERE'     => ['glpi_networkaliases.fqdns_id' => $item->getID()],
+                'WHERE'     => ['zentra_networkaliases.fqdns_id' => $item->getID()],
                 'ORDERBY'   => $order,
-                'LIMIT'     => $_SESSION['glpilist_limit'],
+                'LIMIT'     => $_SESSION['zentralist_limit'],
                 'START'     => $start,
             ]);
 
@@ -454,7 +454,7 @@ class NetworkAlias extends FQDNLabel
         echo "</div>";
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case NetworkName::class:
@@ -467,7 +467,7 @@ class NetworkAlias extends FQDNLabel
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)
@@ -475,7 +475,7 @@ class NetworkAlias extends FQDNLabel
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 switch ($item::class) {
                     case NetworkName::class:
                         $nb = countElementsInTable(
@@ -502,7 +502,7 @@ class NetworkAlias extends FQDNLabel
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_fqdns',
+            'table'              => 'zentra_fqdns',
             'field'              => 'fqdn',
             'name'               => FQDN::getTypeName(1),
             'datatype'           => 'string',
@@ -510,7 +510,7 @@ class NetworkAlias extends FQDNLabel
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => 'glpi_networknames',
+            'table'              => 'zentra_networknames',
             'field'              => 'name',
             'name'               => NetworkName::getTypeName(1),
             'massiveaction'      => false,

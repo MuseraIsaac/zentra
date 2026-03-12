@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 <div
     class="d-none"
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}"
+    data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}"
 >
-    {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
+    {% set actors_dropdown = call('Zentra\\Form\\Dropdown\\FormActorsDropdown::show', [
         specific_value_extra_field.input_name,
         specific_value_extra_field.values,
             {
@@ -61,7 +61,7 @@
 
 <div
     class="d-none"
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
+    data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
 >
     {{ fields.dropdownArrayField(
         specific_answer_extra_field.input_name,
@@ -89,7 +89,7 @@
 {% for strategy in group_object_strategies %}
     <div
         class="d-none"
-        data-glpi-itildestination-field-config-display-condition="{{ strategy }}"
+        data-zentra-itildestination-field-config-display-condition="{{ strategy }}"
     >
         {{ fields.dropdownArrayField(
             object_answer_extra_field.input_name,

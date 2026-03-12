@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @since 9.5
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
 
 use function Safe\json_encode;
 
@@ -84,7 +84,7 @@ if (!$parent->getFromDB($parents_id)) {
 $template->fields['content'] = $template->getRenderedContent($parent);
 
 //load requesttypes name (use to create OPTION dom)
-//need when template is used and when GLPI preselected type if defined
+//need when template is used and when ZENTRA preselected type if defined
 $template->fields['requesttypes_name'] = "";
 if ($template->fields['requesttypes_id']) {
     $requesttype = new RequestType();
@@ -99,7 +99,7 @@ if ($template->fields['requesttypes_id']) {
             false,
             true,
             false,
-            //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
+            //default value like "(id)" is the default behavior of ZENTRA when field 'name' is empty
             "(" . $template->fields['requesttypes_id'] . ")"
         );
     }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Group;
 use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -149,11 +149,11 @@ class RuleMailCollectorTest extends DbTestCase
         $this->assertTrue(
             $entity->update([
                 'id'          => $entity_id,
-                'mail_domain' => 'glpi-project.org',
+                'mail_domain' => 'zentra-project.org',
             ])
         );
         $entity->getFromDB($entity_id);
-        $this->assertSame('glpi-project.org', $entity->getField('mail_domain'));
+        $this->assertSame('zentra-project.org', $entity->getField('mail_domain'));
         $normal_user_id = getItemByTypeName('User', 'normal', true);
 
         // Delete all existing rule
@@ -218,7 +218,7 @@ class RuleMailCollectorTest extends DbTestCase
             [
                 'mailcollector'       => 0,
                 '_users_id_requester' => $normal_user_id,
-                'from'                => 'normal@glpi-project.org',
+                'from'                => 'normal@zentra-project.org',
             ]
         );
 

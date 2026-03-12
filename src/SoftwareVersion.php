@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\StateInterface;
 
 /**
  * SoftwareVersion Class
  **/
 class SoftwareVersion extends CommonDBChild implements StateInterface
 {
-    use Glpi\Features\State;
+    use Zentra\Features\State;
 
     // From CommonDBTM
     public $dohistory = true;
@@ -217,27 +217,27 @@ TWIG, $twig_params);
         // Make a select box
         $criteria = [
             'SELECT'    => [
-                'glpi_softwareversions.*',
-                'glpi_states.name AS sname',
+                'zentra_softwareversions.*',
+                'zentra_states.name AS sname',
             ],
             'DISTINCT'  => true,
-            'FROM'      => 'glpi_softwareversions',
+            'FROM'      => 'zentra_softwareversions',
             'LEFT JOIN' => [
                 State::getTable()  => [
                     'ON' => [
-                        'glpi_softwareversions' => 'states_id',
+                        'zentra_softwareversions' => 'states_id',
                         State::getTable()           => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_softwareversions.softwares_id'   => $p['softwares_id'],
+                'zentra_softwareversions.softwares_id'   => $p['softwares_id'],
             ],
             'ORDERBY'   => 'name',
         ];
 
         if (count($p['used'])) {
-            $criteria['WHERE']['NOT'] = ['glpi_softwareversions.id' => $p['used']];
+            $criteria['WHERE']['NOT'] = ['zentra_softwareversions.id' => $p['used']];
         }
 
         $iterator = $DB->request($criteria);
@@ -247,7 +247,7 @@ TWIG, $twig_params);
             $ID     = $data['id'];
             $output = $data['name'];
 
-            if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+            if (empty($output) || $_SESSION['zentrais_ids_visible']) {
                 $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
             }
             if (!empty($data['sname'])) {
@@ -324,7 +324,7 @@ TWIG, $twig_params);
                 'id' => $sv->getID(),
                 'version' => $sv->getLink(),
                 'status' => $data['sname'],
-                'os' => Dropdown::getDropdownName('glpi_operatingsystems', $data['operatingsystems_id']),
+                'os' => Dropdown::getDropdownName('zentra_operatingsystems', $data['operatingsystems_id']),
                 'arch' => $data['arch'],
                 'installations' => $nb,
                 'comments' => nl2br(htmlescape($data['comment'])),
@@ -362,13 +362,13 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case Software::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(static::getTable(), ['softwares_id' => $item->getID()]);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -377,7 +377,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === Software::class) {
             self::showForSoftware($item);

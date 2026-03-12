@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@
 
 {% set enable_anonymization = enable_anonymization ?? false %}
 {% set avatar_size = avatar_size ?? "avatar-md" %}
-{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
+{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('zentraactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
 {% set user = user_object ?? get_item('User', users_id) %}
 {% set with_link = with_link ?? true %}
 {% set force_initials = force_initials ?? false %}
 {% if not force_initials %}
     {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
-    {% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
+    {% if user_thumbnail == null and not entity_config('display_users_initials', session('zentraactive_entity')) %}
         {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
     {% endif %}
 {% else %}

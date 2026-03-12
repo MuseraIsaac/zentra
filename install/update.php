@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@
 
 require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\VersionParser;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Toolbox\VersionParser;
 
 /**
  * @var bool $HEADER_LOADED
  */
-global $CFG_GLPI, $DB, $HEADER_LOADED;
+global $CFG_ZENTRA, $DB, $HEADER_LOADED;
 
 if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
@@ -70,7 +70,7 @@ function showSecurityKeyCheckForm(): void
     echo '<form action="update.php" method="post">';
     echo '<input type="hidden" name="continue" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
-    echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+    echo Html::hidden('_zentra_csrf_token', ['value' => Session::getNewCSRFToken()]);
     echo '<div class="text-center">';
     echo '<h3>' . __s('Missing security key file') . '</h3>';
     echo '<div class="d-flex alert alert-warning">';
@@ -95,7 +95,7 @@ $HEADER_LOADED = true;
 header("Content-Type: text/html; charset=UTF-8");
 
 TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
-    'lang'  => $_SESSION['glpilanguage'],
+    'lang'  => $_SESSION['zentralanguage'],
     'title' => __('Zentra setup'),
     'css_files' => [
         ['path' => 'lib/tabler.css'],
@@ -106,7 +106,7 @@ TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
         ['path' => 'lib/base.js'],
         ['path' => 'lib/fuzzy.js'],
         ['path' => 'js/common.js'],
-        ['path' => 'js/glpi_dialog.js'],
+        ['path' => 'js/zentra_dialog.js'],
     ],
     'js_modules' => [],
     'custom_header_tags' => [],
@@ -134,8 +134,8 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
     echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the Zentra database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
 
     echo "<form action='update.php' method='post'>";
-    if (!VersionParser::isStableRelease(GLPI_VERSION)) {
-        echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
+    if (!VersionParser::isStableRelease(ZENTRA_VERSION)) {
+        echo Config::agreeUnstableMessage(VersionParser::isDevVersion(ZENTRA_VERSION));
     }
     echo "<button type='submit' class='btn btn-primary' name='continue' value='1'>
          " . __s('Continue') . "
@@ -163,10 +163,10 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
         } else {
             echo "<p>" . __s('Updating the database...') . "</p>";
 
-            echo '<div id="glpi_update_messages_container"></div>';
+            echo '<div id="zentra_update_messages_container"></div>';
 
             echo '<div class="text-center">';
-            echo '<div id="glpi_update_success" class="d-none">';
+            echo '<div id="zentra_update_success" class="d-none">';
             echo "<form action='update.php' method='post' class='d-inline'>";
             echo "<input type='hidden' name='post_update_step' value='1'>";
             echo "<button type='submit' name='submit' class='btn btn-primary' disabled='disabled'>";
@@ -179,7 +179,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
 
             echo <<<HTML
                 <script defer type="module">
-                    import { update_database } from '/js/modules/GlpiInstall.js';
+                    import { update_database } from '/js/modules/ZentraInstall.js';
                     update_database();
                 </script>
             HTML;
@@ -193,8 +193,8 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
 
     TemplateRenderer::getInstance()->display('install/post_update_step.html.twig', [
         'is_db_consistent'  => (new Update($DB))->isUpdatedSchemaConsistent(),
-        'glpinetwork'       => GLPINetwork::showInstallMessage(),
-        'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
+        'zentranetwork'       => ZENTRANetwork::showInstallMessage(),
+        'zentranetwork_url'   => ZENTRA_NETWORK_SERVICES,
         'telemetry_enabled' => Telemetry::isEnabled(),
         'telemetry_info'    => Telemetry::showTelemetry(),
         'reference_info'    => Telemetry::showReference(),

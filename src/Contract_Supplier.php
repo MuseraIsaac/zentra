@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Toolbox\URL;
 
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
@@ -53,7 +53,7 @@ class Contract_Supplier extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -64,7 +64,7 @@ class Contract_Supplier extends CommonDBRelation
             switch ($item::class) {
                 case Supplier::class:
                     if (Contract::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb =  self::countForItem($item);
                         }
                         return self::createTabEntry(
@@ -77,7 +77,7 @@ class Contract_Supplier extends CommonDBRelation
 
                 case Contract::class:
                     if (Session::haveRight("contact_enterprise", READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -88,7 +88,7 @@ class Contract_Supplier extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -149,7 +149,7 @@ class Contract_Supplier extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Supplier'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="suppliers_id" value="{{ supplier.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
                                 used: used,
                                 entity: supplier.fields['entities_id'],
@@ -182,12 +182,12 @@ TWIG, $twig_params);
             ];
 
             if (!isset($entity_cache[$data['entity']])) {
-                $entity_cache[$data['entity']] = Dropdown::getDropdownName("glpi_entities", $data['entity']);
+                $entity_cache[$data['entity']] = Dropdown::getDropdownName("zentra_entities", $data['entity']);
             }
             $entry['entity'] = $entity_cache[$data['entity']];
 
             if (!isset($type_cache[$data['contracttypes_id']])) {
-                $type_cache[$data['contracttypes_id']] = Dropdown::getDropdownName("glpi_contracttypes", $data['contracttypes_id']);
+                $type_cache[$data['contracttypes_id']] = Dropdown::getDropdownName("zentra_contracttypes", $data['contracttypes_id']);
             }
             $entry['type'] = $type_cache[$data['contracttypes_id']];
 
@@ -271,7 +271,7 @@ TWIG, $twig_params);
                     <form method="post" action="{{ 'Contract_Supplier'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Supplier', 'suppliers_id', 0, null, {
                                 used: used,
                                 entity: contract.fields['entities_id'],
@@ -312,11 +312,11 @@ TWIG, $twig_params);
             }
 
             if (!isset($entity_cache[$data['entity']])) {
-                $entity_cache[$data['entity']] = Dropdown::getDropdownName("glpi_entities", $data['entity']);
+                $entity_cache[$data['entity']] = Dropdown::getDropdownName("zentra_entities", $data['entity']);
             }
             $entry['entity'] = $entity_cache[$data['entity']];
             if (!isset($type_cache[$data['suppliertypes_id']])) {
-                $type_cache[$data['suppliertypes_id']] = Dropdown::getDropdownName("glpi_suppliertypes", $data['suppliertypes_id']);
+                $type_cache[$data['suppliertypes_id']] = Dropdown::getDropdownName("zentra_suppliertypes", $data['suppliertypes_id']);
             }
             $entry['type'] = $type_cache[$data['suppliertypes_id']];
             $entry['phonenumber'] = $data['phonenumber'];

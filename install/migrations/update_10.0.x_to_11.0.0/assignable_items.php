@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
 
 /**
  * @var array $ADDTODISPLAYPREF
@@ -59,106 +59,106 @@ foreach ($assignable_asset_rights as $rightname) {
 
 $assignable_itemtypes = [
     'Appliance' => [
-        'table' => 'glpi_appliances',
+        'table' => 'zentra_appliances',
         'rightname' => 'appliance',
     ],
     'Cable' => [
-        'table' => 'glpi_cables',
+        'table' => 'zentra_cables',
         'rightname' => 'cable_management',
     ],
     'CartridgeItem' => [
-        'table' => 'glpi_cartridgeitems',
+        'table' => 'zentra_cartridgeitems',
         'rightname' => 'cartridge',
     ],
     'Certificate' => [
-        'table' => 'glpi_certificates',
+        'table' => 'zentra_certificates',
         'rightname' => 'certificate',
     ],
     'Cluster' => [
-        'table' => 'glpi_clusters',
+        'table' => 'zentra_clusters',
         'rightname' => 'cluster',
     ],
     'Computer' => [
-        'table' => 'glpi_computers',
+        'table' => 'zentra_computers',
         'rightname' => 'computer',
     ],
     'ConsumableItem' => [
-        'table' => 'glpi_consumableitems',
+        'table' => 'zentra_consumableitems',
         'rightname' => 'consumable',
     ],
     'DatabaseInstance' => [
-        'table' => 'glpi_databaseinstances',
+        'table' => 'zentra_databaseinstances',
         'rightname' => 'databaseinstance',
     ],
     'Domain' => [
-        'table' => 'glpi_domains',
+        'table' => 'zentra_domains',
         'rightname' => 'domain',
     ],
     'DomainRecord' => [
-        'table' => 'glpi_domainrecords',
+        'table' => 'zentra_domainrecords',
         'rightname' => 'domain',
     ],
     'Enclosure' => [
-        'table' => 'glpi_enclosures',
+        'table' => 'zentra_enclosures',
         'rightname' => 'datacenter',
     ],
     'Item_DeviceSimcard' => [
-        'table' => 'glpi_items_devicesimcards',
+        'table' => 'zentra_items_devicesimcards',
         'rightname' => 'device',
     ],
     'Line' => [
-        'table' => 'glpi_lines',
+        'table' => 'zentra_lines',
         'rightname' => 'line',
     ],
     'Monitor' => [
-        'table' => 'glpi_monitors',
+        'table' => 'zentra_monitors',
         'rightname' => 'monitor',
     ],
     'NetworkEquipment' => [
-        'table' => 'glpi_networkequipments',
+        'table' => 'zentra_networkequipments',
         'rightname' => 'networking',
     ],
     'PassiveDCEquipment' => [
-        'table' => 'glpi_passivedcequipments',
+        'table' => 'zentra_passivedcequipments',
         'rightname' => 'datacenter',
     ],
     'PDU' => [
-        'table' => 'glpi_pdus',
+        'table' => 'zentra_pdus',
         'rightname' => 'datacenter',
     ],
     'Peripheral' => [
-        'table' => 'glpi_peripherals',
+        'table' => 'zentra_peripherals',
         'rightname' => 'peripheral',
     ],
     'Phone' => [
-        'table' => 'glpi_phones',
+        'table' => 'zentra_phones',
         'rightname' => 'phone',
     ],
     'Printer' => [
-        'table' => 'glpi_printers',
+        'table' => 'zentra_printers',
         'rightname' => 'printer',
     ],
     'Rack' => [
-        'table' => 'glpi_racks',
+        'table' => 'zentra_racks',
         'rightname' => 'datacenter',
     ],
     'Software' => [
-        'table' => 'glpi_softwares',
+        'table' => 'zentra_softwares',
         'rightname' => 'software',
     ],
     'SoftwareLicense' => [
-        'table' => 'glpi_softwarelicenses',
+        'table' => 'zentra_softwarelicenses',
         'rightname' => 'license',
     ],
     'Unmanaged' => [
-        'table' => 'glpi_unmanageds',
+        'table' => 'zentra_unmanageds',
         'rightname' => 'unmanaged',
     ],
 ];
 
-if (!$DB->tableExists('glpi_groups_items')) {
+if (!$DB->tableExists('zentra_groups_items')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_groups_items` (
+        CREATE TABLE `zentra_groups_items` (
           `id` int unsigned NOT NULL AUTO_INCREMENT,
           `groups_id` int {$default_key_sign} NOT NULL DEFAULT '0',
           `itemtype` varchar(255) NOT NULL DEFAULT '',
@@ -188,7 +188,7 @@ foreach ($assignable_itemtypes as $itemtype => $specs) {
 
     // move groups to the new link table
     if ($DB->fieldExists($itemtype_table, 'groups_id')) {
-        $DB->insert('glpi_groups_items', new QuerySubQuery([
+        $DB->insert('zentra_groups_items', new QuerySubQuery([
             'SELECT' => [
                 new QueryExpression('NULL', 'id'),
                 'groups_id',
@@ -203,7 +203,7 @@ foreach ($assignable_itemtypes as $itemtype => $specs) {
         ]));
     }
     if ($DB->fieldExists($itemtype_table, 'groups_id_tech')) {
-        $DB->insert('glpi_groups_items', new QuerySubQuery([
+        $DB->insert('zentra_groups_items', new QuerySubQuery([
             'SELECT' => [
                 new QueryExpression('NULL', 'id'),
                 'groups_id_tech AS groups_id',

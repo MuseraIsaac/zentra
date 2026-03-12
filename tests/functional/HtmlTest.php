@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
-use Glpi\Toolbox\FrontEnd;
-use GlpiPlugin\Tester\MyPsr4Class;
+use Zentra\Tests\DbTestCase;
+use Zentra\Toolbox\FrontEnd;
+use ZentraPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -54,9 +54,9 @@ class HtmlTest extends DbTestCase
         $mydate = date('Y-m-d H:i:s');
 
         $expected = date('Y-m-d');
-        unset($_SESSION['glpidate_format']);
+        unset($_SESSION['zentradate_format']);
         $this->assertSame($expected, \Html::convDate($mydate));
-        $_SESSION['glpidate_format'] = 0;
+        $_SESSION['zentradate_format'] = 0;
         $this->assertSame($expected, \Html::convDate($mydate));
 
         $this->assertSame($expected, \Html::convDate(date('Y-m-d')));
@@ -68,9 +68,9 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, \Html::convDate($mydate, 2));
 
         // Check type casting when session property is not an int
-        $_SESSION['glpidate_format'] = '1';
+        $_SESSION['zentradate_format'] = '1';
         $this->assertSame(date('d-m-Y'), \Html::convDate($mydate, 1));
-        $_SESSION['glpidate_format'] = '2';
+        $_SESSION['zentradate_format'] = '2';
         $this->assertSame(date('m-d-Y'), \Html::convDate($mydate, 2));
 
         $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
@@ -115,8 +115,8 @@ class HtmlTest extends DbTestCase
 
     public function cleanParametersURL()
     {
-        $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
-        $expected = 'http://host/glpi/path/to/file.php';
+        $url = 'http://host/zentra/path/to/file.php?var1=2&var2=3';
+        $expected = 'http://host/zentra/path/to/file.php';
         $this->assertSame($expected, \Html::cleanParametersURL($url));
     }
 
@@ -145,7 +145,7 @@ class HtmlTest extends DbTestCase
 
     public function testFormatNumber()
     {
-        $_SESSION['glpinumber_format'] = 0;
+        $_SESSION['zentranumber_format'] = 0;
         $origin = '';
         $expected = '0.00';
         $this->assertSame($expected, \Html::formatNumber($origin));
@@ -181,25 +181,25 @@ class HtmlTest extends DbTestCase
 
         $this->assertSame('-', \Html::formatNumber('-'));
 
-        $_SESSION['glpinumber_format'] = 2;
+        $_SESSION['zentranumber_format'] = 2;
 
         $origin = '1207.3';
         $expected = '1 207,30';
         $this->assertSame($expected, \Html::formatNumber($origin));
 
-        $_SESSION['glpinumber_format'] = 3;
+        $_SESSION['zentranumber_format'] = 3;
 
         $origin = '1207.3';
         $expected = '1207.30';
         $this->assertSame($expected, \Html::formatNumber($origin));
 
-        $_SESSION['glpinumber_format'] = 4;
+        $_SESSION['zentranumber_format'] = 4;
 
         $origin = '1207.3';
         $expected = '1207,30';
         $this->assertSame($expected, \Html::formatNumber($origin));
 
-        $_SESSION['glpinumber_format'] = 1337;
+        $_SESSION['zentranumber_format'] = 1337;
         $origin = '1207.3';
 
         $expected = '1,207.30';
@@ -280,8 +280,8 @@ class HtmlTest extends DbTestCase
             'PassiveDCEquipment',
             'Unmanaged',
             'Cable',
-            'Glpi\CustomAsset\Test01Asset',
-            'Glpi\CustomAsset\Test02Asset',
+            'Zentra\CustomAsset\Test01Asset',
+            'Zentra\CustomAsset\Test02Asset',
             'Item_DeviceSimcard',
         ];
         $this->assertSame('Assets', $menu['assets']['title']);
@@ -289,7 +289,7 @@ class HtmlTest extends DbTestCase
 
         $expected = [
             'Ticket',
-            'Glpi\Form\ServiceCatalog\ServiceCatalog',
+            'Zentra\Form\ServiceCatalog\ServiceCatalog',
             'Problem',
             'Change',
             'Planning',
@@ -342,15 +342,15 @@ class HtmlTest extends DbTestCase
             'Rule',
             'Profile',
             'QueuedNotification',
-            'Glpi\System\Log\LogViewer',
-            'Glpi\Inventory\Inventory',
-            'Glpi\Form\Form',
+            'Zentra\System\Log\LogViewer',
+            'Zentra\Inventory\Inventory',
+            'Zentra\Form\Form',
         ];
         $this->assertSame('Administration', $menu['admin']['title']);
         $this->assertSame($expected, $menu['admin']['types']);
 
         $expected = [
-            'Glpi\Asset\AssetDefinition',
+            'Zentra\Asset\AssetDefinition',
             'CommonDropdown',
             'CommonDevice',
             'Notification',
@@ -376,17 +376,17 @@ class HtmlTest extends DbTestCase
     public function testGetCopyrightMessage()
     {
         $message = \Html::getCopyrightMessage();
-        $this->assertStringContainsString(GLPI_VERSION, $message);
-        $this->assertStringContainsString(GLPI_YEAR, $message);
+        $this->assertStringContainsString(ZENTRA_VERSION, $message);
+        $this->assertStringContainsString(ZENTRA_YEAR, $message);
 
         $message = \Html::getCopyrightMessage(false);
-        $this->assertStringNotContainsString(GLPI_VERSION, $message);
-        $this->assertStringContainsString(GLPI_YEAR, $message);
+        $this->assertStringNotContainsString(ZENTRA_VERSION, $message);
+        $this->assertStringContainsString(ZENTRA_YEAR, $message);
     }
 
     public function testCss()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //fake files
         $fake_files = [
@@ -395,15 +395,15 @@ class HtmlTest extends DbTestCase
             'other.css',
             'other-min.css',
         ];
-        $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
-        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
+        $dir = str_replace(realpath(ZENTRA_ROOT), '', realpath(ZENTRA_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(ZENTRA_VERSION);
         $base_expected = '<link rel="stylesheet" type="text/css" href="'
-         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
+         . $CFG_ZENTRA['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
         //create test files
         foreach ($fake_files as $fake_file) {
-            $this->assertTrue(touch(GLPI_TMP_DIR . '/' . $fake_file));
+            $this->assertTrue(touch(ZENTRA_TMP_DIR . '/' . $fake_file));
         }
 
         //expect minified file
@@ -423,14 +423,14 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, \Html::css($dir . '/file.css', [], false));
 
         //activate debug mode: expect not minified file
-        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        $_SESSION['zentra_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.css', $base_attrs],
             $base_expected
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css'));
-        $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+        $_SESSION['zentra_use_mode'] = \Session::NORMAL_MODE;
 
         //expect original file
         $expected = str_replace(
@@ -491,13 +491,13 @@ class HtmlTest extends DbTestCase
 
         //remove test files
         foreach ($fake_files as $fake_file) {
-            unlink(GLPI_TMP_DIR . '/' . $fake_file);
+            unlink(ZENTRA_TMP_DIR . '/' . $fake_file);
         }
     }
 
     public function testScript()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //fake files
         $fake_files = [
@@ -506,14 +506,14 @@ class HtmlTest extends DbTestCase
             'other.js',
             'other-min.js',
         ];
-        $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
-        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
+        $dir = str_replace(realpath(ZENTRA_ROOT), '', realpath(ZENTRA_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(ZENTRA_VERSION);
         $base_expected = '<script type="text/javascript" src="'
-         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
+         . $CFG_ZENTRA['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
         //create test files
         foreach ($fake_files as $fake_file) {
-            touch(GLPI_TMP_DIR . '/' . $fake_file);
+            touch(ZENTRA_TMP_DIR . '/' . $fake_file);
         }
 
         //expect minified file
@@ -533,14 +533,14 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, \Html::script($dir . '/file.js', [], false));
 
         //activate debug mode: expect not minified file
-        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        $_SESSION['zentra_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             '%url',
             'file.js',
             $base_expected
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js'));
-        $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+        $_SESSION['zentra_use_mode'] = \Session::NORMAL_MODE;
 
         //expect original file
         $expected = str_replace(
@@ -577,15 +577,15 @@ class HtmlTest extends DbTestCase
 
         //remove test files
         foreach ($fake_files as $fake_file) {
-            unlink(GLPI_TMP_DIR . '/' . $fake_file);
+            unlink(ZENTRA_TMP_DIR . '/' . $fake_file);
         }
     }
 
     public function testManageRefreshPage()
     {
         //no session refresh, no args => no timer
-        if (isset($_SESSION['glpirefresh_views'])) {
-            unset($_SESSION['glpirefresh_views']);
+        if (isset($_SESSION['zentrarefresh_views'])) {
+            unset($_SESSION['zentrarefresh_views']);
         }
 
         $base_script = \Html::scriptBlock("window.setInterval(function() {
@@ -597,7 +597,7 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, $message);
 
         //Set session refresh to one minute
-        $_SESSION['glpirefresh_views'] = 1;
+        $_SESSION['zentrarefresh_views'] = 1;
         $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
         $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
         $message = \Html::manageRefreshPage();
@@ -627,9 +627,9 @@ class HtmlTest extends DbTestCase
 
         $menu = \Html::generateMenuSession(true);
 
-        $this->assertArrayHasKey('glpimenu', $_SESSION);
+        $this->assertArrayHasKey('zentramenu', $_SESSION);
 
-        $this->assertSame($menu, $_SESSION['glpimenu']);
+        $this->assertSame($menu, $_SESSION['zentramenu']);
 
         foreach ($menu as $menu_entry) {
             $this->assertArrayHasKey('title', $menu_entry);
@@ -714,7 +714,7 @@ class HtmlTest extends DbTestCase
 
     public function testDisplayBackLink()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         ob_start();
         \Html::displayBackLink();
@@ -861,9 +861,9 @@ class HtmlTest extends DbTestCase
             'referer'  => 'http://example.org/',
             'expected' => 'http://example.org/',
         ];
-        yield 'http://localhost/glpi/front/change.form.php?id=1' => [
-            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1',
-            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        yield 'http://localhost/zentra/front/change.form.php?id=1' => [
+            'referer'  => 'http://localhost/zentra/front/change.form.php?id=1',
+            'expected' => 'http://localhost/zentra/front/change.form.php?id=1',
         ];
 
         // Invalid referer
@@ -887,61 +887,61 @@ class HtmlTest extends DbTestCase
     public static function providerGetBackUrl(): iterable
     {
         // Basic cases
-        yield 'http://localhost/glpi/front/change.form.php?id=1' => [
-            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        yield 'http://localhost/zentra/front/change.form.php?id=1' => [
+            'referer'  => 'http://localhost/zentra/front/change.form.php?id=1',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra/front/change.form.php?id=1',
         ];
-        yield 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3' => [
-            'referer'  => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
+        yield 'http://localhost/zentra/test.php?param1=1&param2=2&param3=3' => [
+            'referer'  => 'http://localhost/zentra/test.php?param1=1&param2=2&param3=3',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra/test.php?param1=1&param2=2&param3=3',
         ];
 
         // `forcetab` param stripping
-        yield 'http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2' => [
-            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        yield 'http://localhost/zentra/front/change.form.php?id=1&forcetab=Change$2' => [
+            'referer'  => 'http://localhost/zentra/front/change.form.php?id=1&forcetab=Change$2',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra/front/change.form.php?id=1',
         ];
-        yield 'http://localhost/glpi/test.php?param1=1&param2=2&forcetab=test&param3=3' => [
-            'referer'  => 'http://localhost/glpi/test.php?param1=1&param2=2&forcetab=test&param3=3',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
+        yield 'http://localhost/zentra/test.php?param1=1&param2=2&forcetab=test&param3=3' => [
+            'referer'  => 'http://localhost/zentra/test.php?param1=1&param2=2&forcetab=test&param3=3',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra/test.php?param1=1&param2=2&param3=3',
         ];
 
         // Prevent switch between http and https schemes
-        yield 'http://localhost/glpi/front/computer.form.php?id=1' => [
-            'referer'  => 'http://localhost/glpi/front/computer.form.php?id=1',
-            'base_url' => 'https://localhost/glpi',
-            'expected' => 'http://localhost/glpi/front/computer.form.php?id=1',
+        yield 'http://localhost/zentra/front/computer.form.php?id=1' => [
+            'referer'  => 'http://localhost/zentra/front/computer.form.php?id=1',
+            'base_url' => 'https://localhost/zentra',
+            'expected' => 'http://localhost/zentra/front/computer.form.php?id=1',
         ];
-        yield 'https://localhost/glpi/front/computer.form.php?id=1' => [
-            'referer'  => 'https://localhost/glpi/front/computer.form.php?id=1',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'https://localhost/glpi/front/computer.form.php?id=1',
+        yield 'https://localhost/zentra/front/computer.form.php?id=1' => [
+            'referer'  => 'https://localhost/zentra/front/computer.form.php?id=1',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'https://localhost/zentra/front/computer.form.php?id=1',
         ];
 
         // Invalid referer
         yield '/invalid/referer' => [
             'referer'  => '/invalid/referer',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra',
         ];
         yield '' => [
             'referer'  => '',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi',
+            'base_url' => 'http://localhost/zentra',
+            'expected' => 'http://localhost/zentra',
         ];
     }
 
     #[DataProvider('providerGetBackUrl')]
     public function testGetBackUrl(string $referer, string $base_url, string $expected): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $_SERVER['HTTP_REFERER'] = $referer;
-        $CFG_GLPI['url_base'] = $base_url;
+        $CFG_ZENTRA['url_base'] = $base_url;
 
         $this->assertSame($expected, \Html::getBackUrl());
     }
@@ -979,25 +979,25 @@ SCSS,
                 ],
             ],
         ];
-        vfsStream::setup('glpi', null, $structure);
+        vfsStream::setup('zentra', null, $structure);
 
         $files_md5 = [
-            'all.scss'             => md5_file(vfsStream::url('glpi/css/all.scss')),
-            'another.scss'         => md5_file(vfsStream::url('glpi/css/another.scss')),
-            'imports/borders.scss' => md5_file(vfsStream::url('glpi/css/imports/borders.scss')),
-            'imports/colors.scss'  => md5_file(vfsStream::url('glpi/css/imports/colors.scss')),
+            'all.scss'             => md5_file(vfsStream::url('zentra/css/all.scss')),
+            'another.scss'         => md5_file(vfsStream::url('zentra/css/another.scss')),
+            'imports/borders.scss' => md5_file(vfsStream::url('zentra/css/imports/borders.scss')),
+            'imports/colors.scss'  => md5_file(vfsStream::url('zentra/css/imports/colors.scss')),
         ];
 
         // Composite scss file hash corresponds to self md5 suffixed by all imported scss md5
         $this->assertEquals(
             $files_md5['all.scss'] . $files_md5['imports/borders.scss'] . $files_md5['imports/colors.scss'],
-            \Html::getScssFileHash(vfsStream::url('glpi/css/all.scss'))
+            \Html::getScssFileHash(vfsStream::url('zentra/css/all.scss'))
         );
 
         // Simple scss file hash corresponds to self md5
         $this->assertEquals(
             $files_md5['another.scss'],
-            \Html::getScssFileHash(vfsStream::url('glpi/css/another.scss'))
+            \Html::getScssFileHash(vfsStream::url('zentra/css/another.scss'))
         );
     }
 
@@ -1141,8 +1141,8 @@ SCSS,
 
         // Make sure the format used in form destination config is not broken
         yield [
-            'name'     => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
-            'expected' => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
+            'name'     => 'config[zentra-form-destination-commonitilfield-olattrfield][slm_id]',
+            'expected' => 'config[zentra-form-destination-commonitilfield-olattrfield][slm_id]',
         ];
     }
 
@@ -1433,8 +1433,8 @@ SCSS,
     {
         $this->login();
 
-        $_SESSION['glpi_currenttime'] = $current;
-        $_SESSION['glpilanguage'] = 'en_GB';
+        $_SESSION['zentra_currenttime'] = $current;
+        $_SESSION['zentralanguage'] = 'en_GB';
 
         $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
     }

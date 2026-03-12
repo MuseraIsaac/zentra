@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 describe('Item form question type', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Tests form for the item form question type suite',
         }).as('form_id');
 
@@ -45,7 +45,7 @@ describe('Item form question type', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Form$main';
+            const tab = 'Zentra\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
             // Add a question
@@ -102,7 +102,7 @@ describe('Item form question type', () => {
         }).as('itil_category_id');
 
         // Select the Dropdowns question type
-        cy.findByRole("combobox", { name: "GLPI Objects" }).should('exist').select("Dropdowns");
+        cy.findByRole("combobox", { name: "ZENTRA Objects" }).should('exist').select("Dropdowns");
 
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select a dropdown type").click();

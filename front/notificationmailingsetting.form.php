@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Error\ErrorHandler;
-use Glpi\Event;
-use Glpi\Http\RedirectResponse;
-use Glpi\Mail\SMTP\OauthConfig;
+use Zentra\Error\ErrorHandler;
+use Zentra\Event;
+use Zentra\Http\RedirectResponse;
+use Zentra\Mail\SMTP\OauthConfig;
 
 Session::checkRight("config", UPDATE);
 
@@ -47,7 +47,7 @@ if (isset($_POST["update"])) {
     $config->update($_POST);
     Event::log(0, "system", 3, "setup", sprintf(
         __('%1$s edited the emails notifications configuration'),
-        $_SESSION["glpiname"] ?? __("Unknown"),
+        $_SESSION["zentraname"] ?? __("Unknown"),
     ));
 
     $redirect_to_smtp_oauth = $_SESSION['redirect_to_smtp_oauth'] ?? false;

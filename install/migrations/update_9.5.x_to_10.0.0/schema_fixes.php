@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,18 +40,18 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Remove the `NOT NULL` flag of comment fields and fix collation
 $tables = [
-    'glpi_apiclients',
-    'glpi_applianceenvironments',
-    'glpi_appliances',
-    'glpi_appliancetypes',
-    'glpi_devicesimcards',
-    'glpi_knowbaseitems_comments',
-    'glpi_lines',
-    'glpi_rulerightparameters',
-    'glpi_ssovariables',
-    'glpi_virtualmachinestates',
-    'glpi_virtualmachinesystems',
-    'glpi_virtualmachinetypes',
+    'zentra_apiclients',
+    'zentra_applianceenvironments',
+    'zentra_appliances',
+    'zentra_appliancetypes',
+    'zentra_devicesimcards',
+    'zentra_knowbaseitems_comments',
+    'zentra_lines',
+    'zentra_rulerightparameters',
+    'zentra_ssovariables',
+    'zentra_virtualmachinestates',
+    'zentra_virtualmachinesystems',
+    'zentra_virtualmachinetypes',
 ];
 foreach ($tables as $table) {
     $migration->changeField($table, 'comment', 'comment', 'text');
@@ -59,36 +59,36 @@ foreach ($tables as $table) {
 
 // Add `DEFAULT CURRENT_TIMESTAMP` to some date fields
 $tables = [
-    'glpi_alerts',
-    'glpi_crontasklogs',
-    'glpi_notimportedemails',
+    'zentra_alerts',
+    'zentra_crontasklogs',
+    'zentra_notimportedemails',
 ];
 foreach ($tables as $table) {
     $migration->changeField($table, 'date', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
 }
 
-// Fix charset for glpi_notimportedemails table
+// Fix charset for zentra_notimportedemails table
 $migration->addPreQuery(
     sprintf(
         'ALTER TABLE %s CONVERT TO CHARACTER SET %s COLLATE %s',
-        $DB->quoteName('glpi_notimportedemails'),
+        $DB->quoteName('zentra_notimportedemails'),
         DBConnection::getDefaultCharset(),
         DBConnection::getDefaultCollation()
     )
 );
 // Put back `subject` type to text (charset convertion changed it from text to mediumtext)
-$migration->changeField('glpi_notimportedemails', 'subject', 'subject', 'text', ['nodefault' => true]);
+$migration->changeField('zentra_notimportedemails', 'subject', 'subject', 'text', ['nodefault' => true]);
 
 // Drop malformed keys
 $malformed_keys = [
-    'glpi_ipaddresses' => [
+    'zentra_ipaddresses' => [
         'textual',
     ],
-    'glpi_items_softwareversions' => [
+    'zentra_items_softwareversions' => [
         'is_deleted',
         'is_template',
     ],
-    'glpi_registeredids' => [
+    'zentra_registeredids' => [
         'item',
     ],
 ];
@@ -101,152 +101,152 @@ foreach ($malformed_keys as $table => $keys) {
 
 // Drop useless keys
 $useless_keys = [
-    'glpi_appliances_items' => [
+    'zentra_appliances_items' => [
         'appliances_id',
     ],
-    'glpi_appliances_items_relations' => [
+    'zentra_appliances_items_relations' => [
         'itemtype',
         'items_id',
     ],
-    'glpi_certificates_items' => [
+    'zentra_certificates_items' => [
         'device',
     ],
-    'glpi_changetemplatehiddenfields' => [
+    'zentra_changetemplatehiddenfields' => [
         'changetemplates_id',
     ],
-    'glpi_changetemplatemandatoryfields' => [
+    'zentra_changetemplatemandatoryfields' => [
         'changetemplates_id',
     ],
-    'glpi_contracts_items' => [
+    'zentra_contracts_items' => [
         'FK_device',
     ],
-    'glpi_dashboards_rights' => [
+    'zentra_dashboards_rights' => [
         'dashboards_dashboards_id',
     ],
-    'glpi_domains_items' => [
+    'zentra_domains_items' => [
         'domains_id',
         'FK_device',
     ],
-    'glpi_dropdowntranslations' => [
+    'zentra_dropdowntranslations' => [
         'typeid',
     ],
-    'glpi_entities' => [
+    'zentra_entities' => [
         'entities_id',
     ],
-    'glpi_impactrelations' => [
+    'zentra_impactrelations' => [
         'source_asset',
     ],
-    'glpi_ipaddresses_ipnetworks' => [
+    'zentra_ipaddresses_ipnetworks' => [
         'ipaddresses_id',
     ],
-    'glpi_items_devicebatteries' => [
+    'zentra_items_devicebatteries' => [
         'computers_id',
     ],
-    'glpi_items_devicecases' => [
+    'zentra_items_devicecases' => [
         'computers_id',
     ],
-    'glpi_items_devicecontrols' => [
+    'zentra_items_devicecontrols' => [
         'computers_id',
     ],
-    'glpi_items_devicedrives' => [
+    'zentra_items_devicedrives' => [
         'computers_id',
     ],
-    'glpi_items_devicefirmwares' => [
+    'zentra_items_devicefirmwares' => [
         'computers_id',
     ],
-    'glpi_items_devicegenerics' => [
+    'zentra_items_devicegenerics' => [
         'computers_id',
     ],
-    'glpi_items_devicegraphiccards' => [
+    'zentra_items_devicegraphiccards' => [
         'computers_id',
     ],
-    'glpi_items_deviceharddrives' => [
+    'zentra_items_deviceharddrives' => [
         'computers_id',
     ],
-    'glpi_items_devicememories' => [
+    'zentra_items_devicememories' => [
         'computers_id',
     ],
-    'glpi_items_devicemotherboards' => [
+    'zentra_items_devicemotherboards' => [
         'computers_id',
     ],
-    'glpi_items_devicenetworkcards' => [
+    'zentra_items_devicenetworkcards' => [
         'computers_id',
     ],
-    'glpi_items_devicepcis' => [
+    'zentra_items_devicepcis' => [
         'computers_id',
     ],
-    'glpi_items_devicepowersupplies' => [
+    'zentra_items_devicepowersupplies' => [
         'computers_id',
     ],
-    'glpi_items_deviceprocessors' => [
+    'zentra_items_deviceprocessors' => [
         'computers_id',
     ],
-    'glpi_items_devicesensors' => [
+    'zentra_items_devicesensors' => [
         'computers_id',
     ],
-    'glpi_items_devicesoundcards' => [
+    'zentra_items_devicesoundcards' => [
         'computers_id',
     ],
-    'glpi_items_disks' => [
+    'zentra_items_disks' => [
         'itemtype',
         'items_id',
     ],
-    'glpi_items_operatingsystems' => [
+    'zentra_items_operatingsystems' => [
         'items_id',
     ],
-    'glpi_items_softwarelicenses' => [
+    'zentra_items_softwarelicenses' => [
         'itemtype',
         'items_id',
     ],
-    'glpi_items_softwareversions' => [
+    'zentra_items_softwareversions' => [
         'item',
         'itemtype',
         'items_id',
     ],
-    'glpi_itilfollowups' => [
+    'zentra_itilfollowups' => [
         'itemtype',
         'item_id',
     ],
-    'glpi_itilsolutions' => [
+    'zentra_itilsolutions' => [
         'itemtype',
         'item_id',
     ],
-    'glpi_knowbaseitemcategories' => [
+    'zentra_knowbaseitemcategories' => [
         'entities_id',
     ],
-    'glpi_knowbaseitems_items' => [
+    'zentra_knowbaseitems_items' => [
         'item',
         'itemtype',
         'item_id',
     ],
-    'glpi_networknames' => [
+    'zentra_networknames' => [
         'name',
     ],
-    'glpi_networkports' => [
+    'zentra_networkports' => [
         'on_device',
     ],
-    'glpi_notifications_notificationtemplates' => [
+    'zentra_notifications_notificationtemplates' => [
         'notifications_id',
     ],
-    'glpi_olalevels_tickets' => [
+    'zentra_olalevels_tickets' => [
         'tickets_id',
     ],
-    'glpi_problemtemplatehiddenfields' => [
+    'zentra_problemtemplatehiddenfields' => [
         'problemtemplates_id',
     ],
-    'glpi_problemtemplatemandatoryfields' => [
+    'zentra_problemtemplatemandatoryfields' => [
         'problemtemplates_id',
     ],
-    'glpi_reservations' => [
+    'zentra_reservations' => [
         'reservationitems_id',
     ],
-    'glpi_slalevels_tickets' => [
+    'zentra_slalevels_tickets' => [
         'tickets_id',
     ],
-    'glpi_tickettemplatehiddenfields' => [
+    'zentra_tickettemplatehiddenfields' => [
         'tickettemplates_id',
     ],
-    'glpi_tickettemplatemandatoryfields' => [
+    'zentra_tickettemplatemandatoryfields' => [
         'tickettemplates_id',
     ],
 ];
@@ -259,217 +259,217 @@ foreach ($useless_keys as $table => $keys) {
 
 // Add missing keys (based on tools:check_database_keys detection)
 $missing_keys = [
-    'glpi_apiclients' => [
+    'zentra_apiclients' => [
         'entities_id',
         'is_recursive',
         'name',
     ],
-    'glpi_appliances' => [
+    'zentra_appliances' => [
         'date_mod',
         'is_recursive',
     ],
-    'glpi_appliancetypes' => [
+    'zentra_appliancetypes' => [
         'is_recursive',
     ],
-    'glpi_authldapreplicates' => [
+    'zentra_authldapreplicates' => [
         'name',
     ],
-    'glpi_authldaps' => [
+    'zentra_authldaps' => [
         'name',
     ],
-    'glpi_authmails' => [
+    'zentra_authmails' => [
         'name',
     ],
-    'glpi_blacklistedmailcontents' => [
+    'zentra_blacklistedmailcontents' => [
         'name',
     ],
-    'glpi_businesscriticities' => [
+    'zentra_businesscriticities' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_calendarsegments' => [
+    'zentra_calendarsegments' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_cartridgeitems' => [
+    'zentra_cartridgeitems' => [
         'is_recursive',
     ],
-    'glpi_certificates' => [
+    'zentra_certificates' => [
         'is_recursive',
     ],
-    'glpi_clusters' => [
+    'zentra_clusters' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_computerantiviruses' => [
+    'zentra_computerantiviruses' => [
         'manufacturers_id',
     ],
-    'glpi_computervirtualmachines' => [
+    'zentra_computervirtualmachines' => [
         'virtualmachinetypes_id',
     ],
-    'glpi_configs' => [
+    'zentra_configs' => [
         'name',
     ],
-    'glpi_consumableitems' => [
+    'zentra_consumableitems' => [
         'is_recursive',
     ],
-    'glpi_contacts' => [
+    'zentra_contacts' => [
         'is_recursive',
     ],
-    'glpi_contracts' => [
+    'zentra_contracts' => [
         'is_recursive',
         'is_template',
     ],
-    'glpi_crontasks' => [
+    'zentra_crontasks' => [
         'name',
     ],
-    'glpi_dashboards_dashboards' => [
+    'zentra_dashboards_dashboards' => [
         'name',
     ],
-    'glpi_dashboards_rights' => [
+    'zentra_dashboards_rights' => [
         'item' => ['itemtype', 'items_id'],
     ],
-    'glpi_datacenters' => [
+    'zentra_datacenters' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_dcrooms' => [
+    'zentra_dcrooms' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_devicesensors' => [
+    'zentra_devicesensors' => [
         'devicesensormodels_id',
     ],
-    'glpi_documents' => [
+    'zentra_documents' => [
         'is_recursive',
     ],
-    'glpi_documents_items' => [
+    'zentra_documents_items' => [
         'entities_id',
         'is_recursive',
         'date_mod',
     ],
-    'glpi_domainrecords' => [
+    'zentra_domainrecords' => [
         'is_recursive',
     ],
-    'glpi_domainrecordtypes' => [
+    'zentra_domainrecordtypes' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_domainrelations' => [
+    'zentra_domainrelations' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_domains' => [
+    'zentra_domains' => [
         'is_recursive',
     ],
-    'glpi_domaintypes' => [
+    'zentra_domaintypes' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_enclosures' => [
+    'zentra_enclosures' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_entities' => [
+    'zentra_entities' => [
         'authldaps_id',
         'calendars_id',
         'entities_id_software',
         'name',
     ],
-    'glpi_fieldblacklists' => [
+    'zentra_fieldblacklists' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_fieldunicities' => [
+    'zentra_fieldunicities' => [
         'entities_id',
         'is_active',
         'is_recursive',
         'name',
     ],
-    'glpi_groups' => [
+    'zentra_groups' => [
         'is_recursive',
     ],
-    'glpi_groups_users' => [
+    'zentra_groups_users' => [
         'is_dynamic',
     ],
-    'glpi_holidays' => [
+    'zentra_holidays' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_impactcompounds' => [
+    'zentra_impactcompounds' => [
         'name',
     ],
-    'glpi_ipaddresses' => [
+    'zentra_ipaddresses' => [
         'name',
     ],
-    'glpi_ipnetworks' => [
+    'zentra_ipnetworks' => [
         'ipnetworks_id',
         'is_recursive',
     ],
-    'glpi_ipnetworks_vlans' => [
+    'zentra_ipnetworks_vlans' => [
         'vlans_id',
     ],
-    'glpi_items_devicebatteries' => [
+    'zentra_items_devicebatteries' => [
         'locations_id',
         'states_id',
     ],
-    'glpi_items_devicefirmwares' => [
+    'zentra_items_devicefirmwares' => [
         'locations_id',
         'states_id',
     ],
-    'glpi_items_devicegenerics' => [
+    'zentra_items_devicegenerics' => [
         'locations_id',
         'states_id',
     ],
-    'glpi_items_devicesensors' => [
+    'zentra_items_devicesensors' => [
         'locations_id',
         'states_id',
     ],
-    'glpi_items_kanbans' => [
+    'zentra_items_kanbans' => [
         'users_id',
         'date_creation',
         'date_mod',
     ],
-    'glpi_items_operatingsystems' => [
+    'zentra_items_operatingsystems' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_items_softwareversions' => [
+    'zentra_items_softwareversions' => [
         'is_deleted',
         'is_deleted_item',
         'is_template_item',
     ],
-    'glpi_itilsolutions' => [
+    'zentra_itilsolutions' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_knowbaseitemcategories' => [
+    'zentra_knowbaseitemcategories' => [
         'knowbaseitemcategories_id',
     ],
-    'glpi_knowbaseitems_comments' => [
+    'zentra_knowbaseitems_comments' => [
         'knowbaseitems_id',
         'parent_comment_id',
         'users_id',
         'date_creation',
         'date_mod',
     ],
-    'glpi_knowbaseitems_items' => [
+    'zentra_knowbaseitems_items' => [
         'knowbaseitems_id',
         'date_creation',
         'date_mod',
     ],
-    'glpi_knowbaseitems_revisions' => [
+    'zentra_knowbaseitems_revisions' => [
         'users_id',
     ],
-    'glpi_knowbaseitemtranslations' => [
+    'zentra_knowbaseitemtranslations' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_lines' => [
+    'zentra_lines' => [
         'is_deleted',
         'groups_id',
         'linetypes_id',
@@ -479,194 +479,194 @@ $missing_keys = [
         'date_mod',
         'name',
     ],
-    'glpi_links' => [
+    'zentra_links' => [
         'is_recursive',
         'name',
     ],
-    'glpi_mailcollectors' => [
+    'zentra_mailcollectors' => [
         'name',
     ],
-    'glpi_manuallinks' => [
+    'zentra_manuallinks' => [
         'name',
     ],
-    'glpi_monitors' => [
+    'zentra_monitors' => [
         'date_mod',
     ],
-    'glpi_networkaliases' => [
+    'zentra_networkaliases' => [
         'fqdns_id',
     ],
-    'glpi_networkequipments' => [
+    'zentra_networkequipments' => [
         'is_recursive',
     ],
-    'glpi_networkports' => [
+    'zentra_networkports' => [
         'name',
     ],
-    'glpi_networkportwifis' => [
+    'zentra_networkportwifis' => [
         'networkportwifis_id',
     ],
-    'glpi_objectlocks' => [
+    'zentra_objectlocks' => [
         'users_id',
     ],
-    'glpi_olalevels' => [
+    'zentra_olalevels' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_olas' => [
+    'zentra_olas' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_operatingsystemeditions' => [
+    'zentra_operatingsystemeditions' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_operatingsystemkernels' => [
+    'zentra_operatingsystemkernels' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_operatingsystemkernelversions' => [
+    'zentra_operatingsystemkernelversions' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_passivedcequipments' => [
-        'date_creation',
-        'date_mod',
-        'name',
-    ],
-    'glpi_pdumodels' => [
-        'date_creation',
-        'date_mod',
-    ],
-    'glpi_pdus' => [
+    'zentra_passivedcequipments' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_pdus_plugs' => [
+    'zentra_pdumodels' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_pdus_racks' => [
+    'zentra_pdus' => [
+        'date_creation',
+        'date_mod',
+        'name',
+    ],
+    'zentra_pdus_plugs' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_planningexternalevents' => [
+    'zentra_pdus_racks' => [
+        'date_creation',
+        'date_mod',
+    ],
+    'zentra_planningexternalevents' => [
         'name',
     ],
-    'glpi_planningexternaleventtemplates' => [
+    'zentra_planningexternaleventtemplates' => [
         'name',
     ],
-    'glpi_plugins' => [
+    'zentra_plugins' => [
         'name',
     ],
-    'glpi_printers' => [
+    'zentra_printers' => [
         'is_recursive',
     ],
-    'glpi_profilerights' => [
+    'zentra_profilerights' => [
         'name',
     ],
-    'glpi_profiles' => [
+    'zentra_profiles' => [
         'name',
     ],
-    'glpi_projects' => [
+    'zentra_projects' => [
         'is_deleted',
     ],
-    'glpi_queuednotifications' => [
+    'zentra_queuednotifications' => [
         'notificationtemplates_id',
     ],
-    'glpi_rackmodels' => [
+    'zentra_rackmodels' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_racks' => [
+    'zentra_racks' => [
         'date_creation',
         'date_mod',
         'name',
     ],
-    'glpi_recurrentchanges' => [
+    'zentra_recurrentchanges' => [
         'calendars_id',
         'name',
     ],
-    'glpi_refusedequipments' => [
+    'zentra_refusedequipments' => [
         'name',
     ],
-    'glpi_registeredids' => [
+    'zentra_registeredids' => [
         'item' => ['itemtype', 'items_id'],
     ],
-    'glpi_remindertranslations' => [
+    'zentra_remindertranslations' => [
         'date_creation',
         'date_mod',
     ],
-    'glpi_reminders' => [
+    'zentra_reminders' => [
         'name',
     ],
-    'glpi_rulerightparameters' => [
+    'zentra_rulerightparameters' => [
         'name',
     ],
-    'glpi_rules' => [
+    'zentra_rules' => [
         'name',
     ],
-    'glpi_savedsearches' => [
+    'zentra_savedsearches' => [
         'name',
     ],
-    'glpi_softwarecategories' => [
+    'zentra_softwarecategories' => [
         'name',
     ],
-    'glpi_softwarelicenses' => [
+    'zentra_softwarelicenses' => [
         'is_recursive',
         'softwarelicenses_id',
     ],
-    'glpi_softwarelicensetypes' => [
+    'zentra_softwarelicensetypes' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_softwares' => [
+    'zentra_softwares' => [
         'is_recursive',
     ],
-    'glpi_slalevels' => [
+    'zentra_slalevels' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_slas' => [
+    'zentra_slas' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_ssovariables' => [
+    'zentra_ssovariables' => [
         'name',
     ],
-    'glpi_states' => [
+    'zentra_states' => [
         'entities_id',
         'is_recursive',
     ],
-    'glpi_suppliers' => [
+    'zentra_suppliers' => [
         'is_recursive',
     ],
-    'glpi_ticketrecurrents' => [
+    'zentra_ticketrecurrents' => [
         'calendars_id',
         'name',
     ],
-    'glpi_tickets_tickets' => [
+    'zentra_tickets_tickets' => [
         'tickets_id_2',
     ],
-    'glpi_transfers' => [
+    'zentra_transfers' => [
         'name',
     ],
-    'glpi_users' => [
+    'zentra_users' => [
         'auths_id',
         'default_requesttypes_id',
     ],
-    'glpi_virtualmachinestates' => [
+    'zentra_virtualmachinestates' => [
         'name',
     ],
-    'glpi_virtualmachinesystems' => [
+    'zentra_virtualmachinesystems' => [
         'name',
     ],
-    'glpi_virtualmachinetypes' => [
+    'zentra_virtualmachinetypes' => [
         'name',
     ],
-    'glpi_vlans' => [
+    'zentra_vlans' => [
         'is_recursive',
     ],
-    'glpi_wifinetworks' => [
+    'zentra_wifinetworks' => [
         'is_recursive',
     ],
 ];
@@ -678,10 +678,10 @@ foreach ($missing_keys as $table => $fields) {
 
 // Add missing `date_creation` field on tables that already have `date_mod` field
 $tables = [
-    'glpi_apiclients',
-    'glpi_appliances',
-    'glpi_authmails',
-    'glpi_transfers',
+    'zentra_apiclients',
+    'zentra_appliances',
+    'zentra_authmails',
+    'zentra_transfers',
 ];
 foreach ($tables as $table) {
     $migration->addField($table, 'date_creation', 'timestamp');
@@ -690,7 +690,7 @@ foreach ($tables as $table) {
 
 // Add missing `date_mod` field on tables that already have `date_creation` field
 $tables = [
-    'glpi_lockedfields',
+    'zentra_lockedfields',
 ];
 foreach ($tables as $table) {
     $migration->addField($table, 'date_mod', 'timestamp');
@@ -699,9 +699,9 @@ foreach ($tables as $table) {
 
 // Rename `date` fields to `date_creation` when value is just a DB insert timestamp
 $tables = [
-    'glpi_knowbaseitems',
-    'glpi_notepads',
-    'glpi_projecttasks',
+    'zentra_knowbaseitems',
+    'zentra_notepads',
+    'zentra_projecttasks',
 ];
 foreach ($tables as $table) {
     if ($DB->fieldExists($table, 'date', false)) {
@@ -714,18 +714,18 @@ foreach ($tables as $table) {
 $migration->changeSearchOption(KnowbaseItem::class, 5, 121);
 $migration->changeSearchOption(ProjectTask::class, 15, 121);
 
-// Rename `glpi_objectlocks` `date_mod` to `date`
-if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
-    $migration->dropKey('glpi_objectlocks', 'date_mod');
-    $migration->migrationOneTable('glpi_objectlocks');
-    $migration->changeField('glpi_objectlocks', 'date_mod', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
-    $migration->addKey('glpi_objectlocks', 'date');
+// Rename `zentra_objectlocks` `date_mod` to `date`
+if ($DB->fieldExists('zentra_objectlocks', 'date_mod', false)) {
+    $migration->dropKey('zentra_objectlocks', 'date_mod');
+    $migration->migrationOneTable('zentra_objectlocks');
+    $migration->changeField('zentra_objectlocks', 'date_mod', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+    $migration->addKey('zentra_objectlocks', 'date');
 }
 
 // Rename `date_creation` to `date` when field refers to a valuable date and not just to db insert timestamps
 $tables = [
-    'glpi_knowbaseitems_revisions',
-    'glpi_networkportconnectionlogs',
+    'zentra_knowbaseitems_revisions',
+    'zentra_networkportconnectionlogs',
 ];
 foreach ($tables as $table) {
     if ($DB->fieldExists($table, 'date_creation', false)) {
@@ -738,12 +738,12 @@ foreach ($tables as $table) {
 
 // Replace -1 default values on entities_id foreign keys (visibility tables)
 $tables = [
-    'glpi_groups_knowbaseitems',
-    'glpi_groups_reminders',
-    'glpi_groups_rssfeeds',
-    'glpi_knowbaseitems_profiles',
-    'glpi_profiles_reminders',
-    'glpi_profiles_rssfeeds',
+    'zentra_groups_knowbaseitems',
+    'zentra_groups_reminders',
+    'zentra_groups_rssfeeds',
+    'zentra_knowbaseitems_profiles',
+    'zentra_profiles_reminders',
+    'zentra_profiles_rssfeeds',
 ];
 foreach ($tables as $table) {
     $migration->addField($table, 'no_entity_restriction', 'boolean', ['update' => 0]);
@@ -762,25 +762,25 @@ foreach ($tables as $table) {
     );
 }
 
-// Replace -1 default values on glpi_rules.entities_id
+// Replace -1 default values on zentra_rules.entities_id
 $DB->update(
-    'glpi_rules',
+    'zentra_rules',
     ['entities_id' => 0],
     ['entities_id' => -1]
 );
 
 // Replace unused -1 default values on entities_id foreign keys
 $tables = [
-    'glpi_fieldunicities',
-    'glpi_savedsearches',
+    'zentra_fieldunicities',
+    'zentra_savedsearches',
 ];
 foreach ($tables as $table) {
     $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 }
 
-// Replace -1 default values on glpi_queuednotifications.items_id
+// Replace -1 default values on zentra_queuednotifications.items_id
 $DB->update(
-    'glpi_queuednotifications',
+    'zentra_queuednotifications',
     ['items_id' => 0],
     ['items_id' => -1]
 );

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * NotImportedEmail Class
@@ -159,7 +159,7 @@ class NotImportedEmail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_mailcollectors',
+            'table'              => 'zentra_mailcollectors',
             'field'              => 'name',
             'name'               => __('Mails receiver'),
             'datatype'           => 'itemlink',
@@ -176,7 +176,7 @@ class NotImportedEmail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => _n('Requester', 'Requesters', 1),
             'datatype'           => 'dropdown',
@@ -212,7 +212,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->delete('glpi_notimportedemails', [new QueryExpression('true')]);
+        $DB->delete('zentra_notimportedemails', [new QueryExpression('true')]);
     }
 
 

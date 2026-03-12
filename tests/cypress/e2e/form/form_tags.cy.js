@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,26 +34,26 @@ let last_name_question_id;
 
 describe('Form tags', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test form for the form tags suite',
         }).as('form_id').then((form_id) => {
-            cy.createWithAPI('Glpi\\Form\\Section', {
+            cy.createWithAPI('Zentra\\Form\\Section', {
                 'name': 'Section 1',
                 'forms_forms_id': form_id,
             }).then((section_id) => {
-                cy.createWithAPI('Glpi\\Form\\Question', {
+                cy.createWithAPI('Zentra\\Form\\Question', {
                     'name': 'First name',
                     'forms_sections_id': section_id,
-                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                 });
-                cy.createWithAPI('Glpi\\Form\\Question', {
+                cy.createWithAPI('Zentra\\Form\\Question', {
                     'name': 'Last name',
                     'forms_sections_id': section_id,
-                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                 }).then((question_id) => {
                     last_name_question_id = question_id;
                 });
-                cy.createWithAPI('Glpi\\Form\\Comment', {
+                cy.createWithAPI('Zentra\\Form\\Comment', {
                     'name': 'Comment title',
                     'description': 'Comment description',
                     'forms_sections_id': section_id,
@@ -65,7 +65,7 @@ describe('Form tags', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
+            const tab = 'Zentra\\Form\\Destination\\FormDestination$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
     });

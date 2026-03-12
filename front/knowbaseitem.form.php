@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
@@ -63,12 +63,12 @@ if (isset($_POST["add"])) {
         "knowbaseitem",
         5,
         "tools",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
+        sprintf(__('%1$s adds the item %2$s'), $_SESSION["zentraname"], $newID)
     );
     if (isset($_POST['_in_modal']) && $_POST['_in_modal']) {
         Html::redirect($kb->getFormURLWithID($newID) . "&_in_modal=1");
     } else {
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/knowbaseitem.php");
+        Html::redirect($CFG_ZENTRA["root_doc"] . "/front/knowbaseitem.php");
     }
 } elseif (isset($_POST["update"])) {
     // actualiser  un item dans la base de connaissances
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
         5,
         "tools",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::redirect($kb->getFormURLWithID($_POST['id']));
 } elseif (isset($_POST["purge"])) {
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
         5,
         "tools",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
     $kb->redirectToList();
 } elseif (isset($_POST["addvisibility"])) {
@@ -139,7 +139,7 @@ if (isset($_POST["add"])) {
                 4,
                 "tools",
                 //TRANS: %s is the user login
-                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+                sprintf(__('%s adds a target'), $_SESSION["zentraname"])
             );
         }
     }

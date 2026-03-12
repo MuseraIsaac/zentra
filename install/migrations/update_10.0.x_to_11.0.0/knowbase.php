@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@
  */
 
 /** KnowbaseItem notifications */
-if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) === 0) {
+if (countElementsInTable('zentra_notifications', ['itemtype' => 'KnowbaseItem']) === 0) {
     $DB->insert(
-        'glpi_notificationtemplates',
+        'zentra_notificationtemplates',
         [
             'name'            => 'Knowledge base item',
             'itemtype'        => 'KnowbaseItem',
@@ -49,7 +49,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
     $notificationtemplate_id = $DB->insertId();
 
     $DB->insert(
-        'glpi_notificationtemplatetranslations',
+        'zentra_notificationtemplatetranslations',
         [
             'notificationtemplates_id' => $notificationtemplate_id,
             'language'                 => '',
@@ -122,7 +122,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
 
     foreach ($notifications_data as $notification_data) {
         $DB->insert(
-            'glpi_notifications',
+            'zentra_notifications',
             [
                 'name'            => $notification_data['name'],
                 'entities_id'     => 0,
@@ -138,7 +138,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
         $notification_id = $DB->insertId();
 
         $DB->insert(
-            'glpi_notifications_notificationtemplates',
+            'zentra_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,

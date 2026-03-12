@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ $(function() {
       }
 
       $.ajax({
-         url: CFG_GLPI.root_doc + '/ajax/savedsearch.php',
+         url: CFG_ZENTRA.root_doc + '/ajax/savedsearch.php',
          type: 'GET',
          data: {
             mark_default: to_set_default,
@@ -179,7 +179,7 @@ $(function() {
       var pin_button = $(this);
 
       $.ajax({
-         url: CFG_GLPI.root_doc + '/ajax/pin_savedsearches.php',
+         url: CFG_ZENTRA.root_doc + '/ajax/pin_savedsearches.php',
          type: 'POST',
          data: {
             itemtype: '{{ itemtype }}'

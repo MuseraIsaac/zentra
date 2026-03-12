@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-use Glpi\Helpdesk\DefaultDataManager;
-use Glpi\Message\MessageType;
-use Glpi\OAuth\Server;
-use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Rules\RulesManager;
-use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
-use Glpi\Toolbox\VersionParser;
+use Zentra\Event;
+use Zentra\Helpdesk\DefaultDataManager;
+use Zentra\Message\MessageType;
+use Zentra\OAuth\Server;
+use Zentra\Progress\AbstractProgressIndicator;
+use Zentra\Rules\RulesManager;
+use Zentra\System\Diagnostic\DatabaseSchemaIntegrityChecker;
+use Zentra\Toolbox\VersionParser;
 use Psr\Log\LoggerAwareTrait;
 
 use function Safe\preg_match;
@@ -70,7 +70,7 @@ class Update
      *
      * @since 11.0.0 The `$args` parameter has been removed.
      */
-    public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
+    public function __construct($DB, string $migrations_directory = ZENTRA_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
         $this->migrations_directory = $migrations_directory;
@@ -86,7 +86,7 @@ class Update
         $currents = [];
         $DB = $this->DB;
 
-        if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
+        if (!$DB->tableExists('zentra_config') && !$DB->tableExists('zentra_configs')) {
             if ($DB->listTables()->count() > 0) {
                 // < 0.31
                 // Version was not yet stored in DB
@@ -96,30 +96,30 @@ class Update
                     'language'  => 'en_GB',
                 ];
             } else {
-                // Not a GLPI database
+                // Not a ZENTRA database
                 $currents = [
                     'version'   => null,
                     'dbversion' => null,
                     'language'  => 'en_GB',
                 ];
             }
-        } elseif (!$DB->tableExists("glpi_configs")) {
+        } elseif (!$DB->tableExists("zentra_configs")) {
             // >= 0.31 and < 0.78
             // Get current version
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
-                'FROM'   => 'glpi_config',
+                'FROM'   => 'zentra_config',
             ])->current();
 
             $currents['version']    = trim($result['version']);
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
-        } elseif ($DB->fieldExists('glpi_configs', 'version')) {
+        } elseif ($DB->fieldExists('zentra_configs', 'version')) {
             // < 0.85
             // Get current version and language
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
-                'FROM'   => 'glpi_configs',
+                'FROM'   => 'zentra_configs',
             ])->current();
 
             $currents['version']    = trim($result['version']);
@@ -154,7 +154,7 @@ class Update
 
         $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
         $differences = $checker->checkCompleteSchema(
-            sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT),
+            sprintf('%s/install/mysql/zentra-empty.sql', ZENTRA_ROOT),
             true
         );
 
@@ -189,10 +189,10 @@ class Update
             $progress_indicator?->fail();
             return false;
         }
-        if (version_compare($current_version, GLPI_VERSION, '>')) {
+        if (version_compare($current_version, ZENTRA_VERSION, '>')) {
             $progress_indicator?->addMessage(
                 MessageType::Error,
-                sprintf(__('Downgrading to version %s is not supported.'), GLPI_VERSION)
+                sprintf(__('Downgrading to version %s is not supported.'), ZENTRA_VERSION)
             );
             $progress_indicator?->fail();
             return false;
@@ -242,7 +242,7 @@ class Update
             + $structure_check_weight
             + $post_update_weight
             + $generate_keys_weight;
-        if (GLPI_SYSTEM_CRON) {
+        if (ZENTRA_SYSTEM_CRON) {
             $number_of_steps += $cron_config_weight;
         }
 
@@ -274,9 +274,9 @@ class Update
                 //
                 // /!\ Do not dot this for last migration:
                 // 1. This should be done at the end of the whole update process.
-                // 2. Last migration target version value may be higher than GLPI_VERSION, when GLPI_VERSION uses a pre-release suffix.
+                // 2. Last migration target version value may be higher than ZENTRA_VERSION, when ZENTRA_VERSION uses a pre-release suffix.
                 $DB->updateOrInsert(
-                    'glpi_configs',
+                    'zentra_configs',
                     [
                         'value' => $migration_specs['target_version'],
                     ],
@@ -344,10 +344,10 @@ class Update
 
         $progress_indicator?->setProgressBarMessage(__('Finalizing the update…'));
 
-        if (GLPI_SYSTEM_CRON) {
+        if (ZENTRA_SYSTEM_CRON) {
             // Downstream packages may provide a good system cron
             $DB->update(
-                'glpi_crontasks',
+                'zentra_crontasks',
                 [
                     'mode'   => 2,
                 ],
@@ -361,14 +361,14 @@ class Update
 
         // Update version number and default langage and new version_founded ---- LEAVE AT THE END
         $configs = [
-            'version'             => GLPI_VERSION,
-            'dbversion'           => GLPI_SCHEMA_VERSION,
+            'version'             => ZENTRA_VERSION,
+            'dbversion'           => ZENTRA_SCHEMA_VERSION,
             'language'            => $this->language,
             'found_new_version' => '',
         ];
         foreach ($configs as $name => $value) {
             $DB->updateOrInsert(
-                'glpi_configs',
+                'zentra_configs',
                 [
                     'value' => $value,
                 ],
@@ -392,8 +392,8 @@ class Update
         $progress_indicator?->setProgressBarMessage(__('Generating security keys if needed…'));
 
         //generate security key if missing, and update db
-        $glpikey = new GLPIKey();
-        if (!$glpikey->keyExists() && !$glpikey->generate()) {
+        $zentrakey = new ZENTRAKey();
+        if (!$zentrakey->keyExists() && !$zentrakey->generate()) {
             $progress_indicator?->addMessage(
                 MessageType::Error,
                 sprintf(
@@ -413,10 +413,10 @@ class Update
 
         if (
             (Config::getConfigurationValue('core', 'plugins_execution_mode') ?? null) === Plugin::EXECUTION_MODE_SUSPENDED_BY_UPDATE
-            && VersionParser::getIntermediateVersion($current_version) === VersionParser::getIntermediateVersion(GLPI_VERSION)
+            && VersionParser::getIntermediateVersion($current_version) === VersionParser::getIntermediateVersion(ZENTRA_VERSION)
         ) {
             // The target version is the same intermediate/major version.
-            // Resume plugins execution if it was previously suspended by a GLPI codebase update.
+            // Resume plugins execution if it was previously suspended by a ZENTRA codebase update.
             $progress_indicator?->setProgressBarMessage(__('Resuming plugins execution…'));
 
             (new Plugin())->resumeAllPluginsExecution();
@@ -473,14 +473,14 @@ class Update
 
     /**
      * Returns expected security key file path.
-     * Will return null for GLPI versions that was not yet handling a custom security key.
+     * Will return null for ZENTRA versions that was not yet handling a custom security key.
      *
      * @return string|null
      */
     public function getExpectedSecurityKeyFilePath(): ?string
     {
-        $glpikey = new GLPIKey();
-        return $glpikey->getExpectedKeyPath($this->getCurrents()['version']);
+        $zentrakey = new ZENTRAKey();
+        return $zentrakey->getExpectedKeyPath($this->getCurrents()['version']);
     }
 
     /**
@@ -507,7 +507,7 @@ class Update
 
             $force_migration = false;
             if ($current_version === '9.2.2' && $versions_matches['target_version'] === '9.2.2') {
-                //9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
+                //9.2.2 upgrade script was not run from the release, see https://github.com/zentra-project/zentra/issues/3659
                 $force_migration = true;
             } elseif ($force_latest && version_compare($versions_matches['target_version'], $current_version, '=')) {
                 $force_migration = true;
@@ -537,14 +537,14 @@ class Update
      */
     public static function isDbUpToDate(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!array_key_exists('dbversion', $CFG_GLPI)) {
+        if (!array_key_exists('dbversion', $CFG_ZENTRA)) {
             return false; // Considered as outdated if installed version is unknown.
         }
 
-        $installed_db_version = trim($CFG_GLPI['dbversion']);
-        $defined_db_version   = GLPI_SCHEMA_VERSION;
+        $installed_db_version = trim($CFG_ZENTRA['dbversion']);
+        $defined_db_version   = ZENTRA_SCHEMA_VERSION;
 
         if (!str_contains($installed_db_version, '@') || !str_contains($defined_db_version, '@')) {
             // Either installed or defined version is not containing schema hash.
@@ -563,12 +563,12 @@ class Update
      */
     public static function isUpdateMandatory(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (GLPI_SKIP_UPDATES) {
-            // If `GLPI_SKIP_UPDATES` is set to `true`, bugfixes update are not mandatory.
-            $installed_intermediate_version = VersionParser::getIntermediateVersion($CFG_GLPI['version'] ?? '0.0.0-dev');
-            $defined_intermediate_version   = VersionParser::getIntermediateVersion(GLPI_VERSION);
+        if (ZENTRA_SKIP_UPDATES) {
+            // If `ZENTRA_SKIP_UPDATES` is set to `true`, bugfixes update are not mandatory.
+            $installed_intermediate_version = VersionParser::getIntermediateVersion($CFG_ZENTRA['version'] ?? '0.0.0-dev');
+            $defined_intermediate_version   = VersionParser::getIntermediateVersion(ZENTRA_VERSION);
             return $installed_intermediate_version !== $defined_intermediate_version;
         }
 

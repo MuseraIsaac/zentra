@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * LevelAgreementLevel class
@@ -64,7 +64,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      **/
     public function __construct()
     {
-        // Override in order not to use glpi_rules table.
+        // Override in order not to use zentra_rules table.
     }
 
     /**
@@ -364,14 +364,14 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $result;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
                 case static::$parentclass:
                     if (
-                        $_SESSION['glpishow_count_on_tabs']
+                        $_SESSION['zentrashow_count_on_tabs']
                         && ($item instanceof CommonDBTM)
                     ) {
                         $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
@@ -382,7 +382,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof LevelAgreement) {
             $level = new static();

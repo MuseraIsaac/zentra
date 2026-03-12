@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown
@@ -48,9 +48,9 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getFormURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
         $itemtype = static::class;
         $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
 
@@ -59,9 +59,9 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
         $itemtype = static::class;
         $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
 

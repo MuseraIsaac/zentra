@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/ticket_ticket.class.php */
 
@@ -231,7 +231,7 @@ class Ticket_TicketTest extends DbTestCase
             $other_tickets_id = $ticket->add([
                 'name'      => 'Linked ticket 03',
                 'content'   => 'Linked ticket 03',
-                'users_id'  => $_SESSION['glpiID'] + 1, // Not current user
+                'users_id'  => $_SESSION['zentraID'] + 1, // Not current user
                 '_skip_auto_assign' => true,
                 'entities_id' => $this->getTestRootEntity(true),
             ])
@@ -254,7 +254,7 @@ class Ticket_TicketTest extends DbTestCase
         );
 
         // Remove READALL ticket permission
-        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $_SESSION['zentraactiveprofile']['ticket'] = READ;
         $linked = @\Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
         $this->assertCount(2, $linked);
         $this->assertEqualsCanonicalizing(

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Inventory\FilesToJSON;
+use Zentra\Inventory\FilesToJSON;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -120,8 +120,8 @@ class NetworkPortType extends CommonDropdown
             'comment'            => null,
             'is_importable'      => 0,
             'instantiation_type' => null,
-            'date_creation'      => $_SESSION['glpi_currenttime'],
-            'date_mod'           => $_SESSION['glpi_currenttime'],
+            'date_creation'      => $_SESSION['zentra_currenttime'],
+            'date_mod'           => $_SESSION['zentra_currenttime'],
         ];
 
         $defaults = [];
@@ -157,13 +157,13 @@ class NetworkPortType extends CommonDropdown
      */
     public static function getInstantiationType($type)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         if (empty($type)) {
             return self::DEFAULT_TYPE;
         }
 
-        if (($import_types = $GLPI_CACHE->get('glpi_inventory_ports_types')) === null) {
+        if (($import_types = $ZENTRA_CACHE->get('zentra_inventory_ports_types')) === null) {
             $iterator = $DB->request([
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
@@ -175,7 +175,7 @@ class NetworkPortType extends CommonDropdown
             foreach ($iterator as $row) {
                 $import_types[$row['value_decimal']] = $row;
             }
-            $GLPI_CACHE->set('glpi_inventory_ports_types', $import_types);
+            $ZENTRA_CACHE->set('zentra_inventory_ports_types', $import_types);
         }
 
         foreach ($import_types as $num => $entry) {
@@ -213,7 +213,7 @@ class NetworkPortType extends CommonDropdown
      */
     protected function invalidateCache()
     {
-        global $GLPI_CACHE;
-        $GLPI_CACHE->delete('glpi_inventory_ports_types');
+        global $ZENTRA_CACHE;
+        $ZENTRA_CACHE->delete('zentra_inventory_ports_types');
     }
 }

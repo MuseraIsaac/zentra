@@ -4,7 +4,7 @@
     },
     "1": {
         "name": "Description",
-        "table": "glpi_ticketfollowups",
+        "table": "zentra_ticketfollowups",
         "field": "content",
         "datatype": "text",
         "nosearch": false,
@@ -16,7 +16,7 @@
     },
     "2": {
         "name": "Request source",
-        "table": "glpi_requesttypes",
+        "table": "zentra_requesttypes",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,
@@ -30,7 +30,7 @@
     },
     "3": {
         "name": "Date",
-        "table": "glpi_ticketfollowups",
+        "table": "zentra_ticketfollowups",
         "field": "date",
         "datatype": "datetime",
         "nosearch": false,
@@ -46,7 +46,7 @@
     },
     "4": {
         "name": "Private",
-        "table": "glpi_ticketfollowups",
+        "table": "zentra_ticketfollowups",
         "field": "is_private",
         "datatype": "bool",
         "nosearch": false,
@@ -60,7 +60,7 @@
     },
     "5": {
         "name": "User",
-        "table": "glpi_users",
+        "table": "zentra_users",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,
@@ -74,7 +74,7 @@
     },
     "7": {
         "name": "ID",
-        "table": "glpi_ticketfollowups",
+        "table": "zentra_ticketfollowups",
         "field": "id",
         "datatype": "number",
         "nosearch": false,

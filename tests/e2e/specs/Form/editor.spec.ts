@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 import { Locator, Page } from "@playwright/test";
 import { randomUUID } from "crypto";
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { FormPage } from "../../pages/FormPage";
@@ -78,7 +78,7 @@ test('Can enable child entities', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test child entities - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -99,7 +99,7 @@ test('Can create and delete a question', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test create delete question - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -140,7 +140,7 @@ test('Can create an item question', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test item question - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -171,7 +171,7 @@ test('Can move question', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test move question - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -205,7 +205,7 @@ test('Can create and delete a section', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test create delete section - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -253,7 +253,7 @@ test('Can delete a non-empty section with confirmation modal', async ({ page, pr
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test delete non-empty section - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -303,7 +303,7 @@ test('Can duplicate a section', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test duplicate section - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -380,7 +380,7 @@ test('Can merge sections', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test merge sections - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -428,7 +428,7 @@ test('Can insert a section at the start of another section', async ({ page, prof
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test insert section start - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -474,7 +474,7 @@ test('Can insert a section in the middle of another section', async ({ page, pro
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test insert section middle - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -519,7 +519,7 @@ test('Can collapse sections', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test collapse sections - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -549,7 +549,7 @@ test('Can display correct element count in section badge', async ({ page, profil
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test section badge - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -623,7 +623,7 @@ test('Can reorder sections', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test reorder sections - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -683,7 +683,7 @@ test('Can duplicate a question and change its type', async ({ page, profile, api
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test duplicate change type - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -770,7 +770,7 @@ test('Can duplicate a section with questions and change their types', async ({ p
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test dup section change types - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -892,33 +892,33 @@ test('Can change render layout', async ({ page, profile, api }) => {
     const form = new FormPage(page);
 
     // Create form with a question in the default section
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test render layout - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
 
     // Get default section and add a question
     const sections = await api.getSubItems(
-        'Glpi\\Form\\Form', form_id, 'Glpi\\Form\\Section'
+        'Zentra\\Form\\Form', form_id, 'Zentra\\Form\\Section'
     );
     const default_section_id = sections[0].id;
 
-    await api.createItem('Glpi\\Form\\Question', {
+    await api.createItem('Zentra\\Form\\Question', {
         name: 'First question',
-        type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+        type: 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
         vertical_rank: 0,
         forms_sections_id: default_section_id,
     });
 
     // Add a second section with a question
-    const second_section_id = await api.createItem('Glpi\\Form\\Section', {
+    const second_section_id = await api.createItem('Zentra\\Form\\Section', {
         name: 'Second section',
         rank: 1,
         forms_forms_id: form_id,
     });
-    await api.createItem('Glpi\\Form\\Question', {
+    await api.createItem('Zentra\\Form\\Question', {
         name: 'Second question',
-        type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+        type: 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
         vertical_rank: 0,
         forms_sections_id: second_section_id,
     });
@@ -980,20 +980,20 @@ test('Can save a form with many inputs', async ({ page, profile, api }) => {
     const form = new FormPage(page);
 
     // Create form and get its default section
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test many inputs - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
     const sections = await api.getSubItems(
-        'Glpi\\Form\\Form', form_id, 'Glpi\\Form\\Section'
+        'Zentra\\Form\\Form', form_id, 'Zentra\\Form\\Section'
     );
     const section_id = sections[0].id;
 
     // Create 60 questions with ItemDropdown type via API
     for (let i = 0; i < 60; i++) {
-        await api.createItem('Glpi\\Form\\Question', {
+        await api.createItem('Zentra\\Form\\Question', {
             name: `Question ${i}`,
-            type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+            type: 'Zentra\\Form\\QuestionType\\QuestionTypeItemDropdown',
             vertical_rank: i,
             forms_sections_id: section_id,
             extra_data: JSON.stringify({
@@ -1048,7 +1048,7 @@ test('Can duplicate a question', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test duplicate question - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1091,7 +1091,7 @@ test('Can paste image in form description', async ({ page, profile, api }) => {
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1111,11 +1111,11 @@ test('Can paste image in section description', async ({ page, profile, api }) =>
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
-    await api.createItem('Glpi\\Form\\Section', {
+    await api.createItem('Zentra\\Form\\Section', {
         name: 'Second section',
         forms_forms_id: form_id,
     });
@@ -1139,7 +1139,7 @@ test('Can paste image in new section description', async ({ page, profile, api }
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1163,16 +1163,16 @@ test('Can paste image in question description', async ({ page, profile, api }) =
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
-    const sections = await api.getSubItems('Glpi\\Form\\Form', form_id, 'Glpi\\Form\\Section');
+    const sections = await api.getSubItems('Zentra\\Form\\Form', form_id, 'Zentra\\Form\\Section');
     const section_id = sections[0].id;
-    await api.createItem('Glpi\\Form\\Question', {
+    await api.createItem('Zentra\\Form\\Question', {
         name: 'First question',
         forms_sections_id: section_id,
-        type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+        type: 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
     });
     await form.goto(form_id);
 
@@ -1193,7 +1193,7 @@ test('Can paste image in new question description', async ({ page, profile, api 
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1216,7 +1216,7 @@ test('Can duplicate a question with an image in description', async ({ page, pro
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1254,13 +1254,13 @@ test('Can paste image in comment description', async ({ page, profile, api }) =>
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
-    const sections = await api.getSubItems('Glpi\\Form\\Form', form_id, 'Glpi\\Form\\Section');
+    const sections = await api.getSubItems('Zentra\\Form\\Form', form_id, 'Zentra\\Form\\Section');
     const section_id = sections[0].id;
-    await api.createItem('Glpi\\Form\\Comment', {
+    await api.createItem('Zentra\\Form\\Comment', {
         name: 'First comment',
         forms_sections_id: section_id,
     });
@@ -1283,7 +1283,7 @@ test('Can paste image in new comment description', async ({ page, profile, api }
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });
@@ -1306,7 +1306,7 @@ test('Can duplicate a comment with an image in description', async ({ page, prof
 
     // Create a form and navigate to its editor
     const uuid = randomUUID();
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Form - ${uuid}`,
         entities_id: getWorkerEntityId(),
     });

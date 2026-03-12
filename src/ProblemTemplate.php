@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 /**
  * Problem template class
@@ -86,9 +86,9 @@ class ProblemTemplate extends ITILTemplate
     {
         $problem = new Problem();
         return [
-            $problem->getSearchOptionIDByField('field', 'impactcontent', 'glpi_problems')  => 'impactcontent',
-            $problem->getSearchOptionIDByField('field', 'causecontent', 'glpi_problems')   => 'causecontent',
-            $problem->getSearchOptionIDByField('field', 'symptomcontent', 'glpi_problems') => 'symptomcontent',
+            $problem->getSearchOptionIDByField('field', 'impactcontent', 'zentra_problems')  => 'impactcontent',
+            $problem->getSearchOptionIDByField('field', 'causecontent', 'zentra_problems')   => 'causecontent',
+            $problem->getSearchOptionIDByField('field', 'symptomcontent', 'zentra_problems') => 'symptomcontent',
         ];
     }
 }

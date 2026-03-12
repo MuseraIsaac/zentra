@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,17 +37,17 @@
  * Based on cacti plugin system
  */
 use Composer\Autoload\ClassLoader;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
-use Glpi\Dashboard\Grid;
-use Glpi\Debug\Profiler;
-use Glpi\Event;
-use Glpi\Exception\RedirectException;
-use Glpi\Exception\SessionExpiredException;
-use Glpi\Marketplace\Controller as MarketplaceController;
-use Glpi\Marketplace\View as MarketplaceView;
-use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\VersionParser;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Cache\CacheManager;
+use Zentra\Dashboard\Grid;
+use Zentra\Debug\Profiler;
+use Zentra\Event;
+use Zentra\Exception\RedirectException;
+use Zentra\Exception\SessionExpiredException;
+use Zentra\Marketplace\Controller as MarketplaceController;
+use Zentra\Marketplace\View as MarketplaceView;
+use Zentra\Plugin\Hooks;
+use Zentra\Toolbox\VersionParser;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -122,7 +122,7 @@ class Plugin extends CommonDBTM
     public const EXECUTION_MODE_ON = 'on';
 
     /**
-     * Plugins execution has been suspended by a GLPI codebase update.
+     * Plugins execution has been suspended by a ZENTRA codebase update.
      */
     public const EXECUTION_MODE_SUSPENDED_BY_UPDATE = 'suspended_by_update';
 
@@ -320,11 +320,11 @@ class Plugin extends CommonDBTM
     /**
      * Mockable method to get the plugin directories.
      * @return string[]
-     * @see GLPI_PLUGINS_DIRECTORIES
+     * @see ZENTRA_PLUGINS_DIRECTORIES
      */
     protected static function getPluginDirectories(): array
     {
-        return GLPI_PLUGINS_DIRECTORIES;
+        return ZENTRA_PLUGINS_DIRECTORIES;
     }
 
     /**
@@ -533,8 +533,8 @@ class Plugin extends CommonDBTM
         }
 
         // reset menu
-        if (isset($_SESSION['glpimenu'])) {
-            unset($_SESSION['glpimenu']);
+        if (isset($_SESSION['zentramenu'])) {
+            unset($_SESSION['zentramenu']);
         }
 
         $this->resetHookableCacheEntries($plugin_key);
@@ -552,15 +552,15 @@ class Plugin extends CommonDBTM
      **/
     public static function loadLang($plugin_key, $forcelang = '', $coretrytoload = '')
     {
-        global $CFG_GLPI, $TRANSLATE;
+        global $CFG_ZENTRA, $TRANSLATE;
 
         if ((new Plugin())->isPluginsExecutionSuspended()) {
             throw new RuntimeException('Loading plugin locales is forbidden when plugins execution is suspended.');
         }
 
         $trytoload = 'en_GB';
-        if (isset($_SESSION['glpilanguage'])) {
-            $trytoload = $_SESSION["glpilanguage"];
+        if (isset($_SESSION['zentralanguage'])) {
+            $trytoload = $_SESSION["zentralanguage"];
         }
         // Force to load a specific lang
         if (!empty($forcelang)) {
@@ -569,7 +569,7 @@ class Plugin extends CommonDBTM
 
         // If not set try default lang file
         if (empty($trytoload)) {
-            $trytoload = $CFG_GLPI["language"];
+            $trytoload = $CFG_ZENTRA["language"];
         }
 
         if (empty($coretrytoload)) {
@@ -584,16 +584,16 @@ class Plugin extends CommonDBTM
             }
             $locales_dir = "$base_dir/$plugin_key/locales/";
             if (
-                array_key_exists($trytoload, $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$trytoload][1])
+                array_key_exists($trytoload, $CFG_ZENTRA["languages"])
+                && file_exists($locales_dir . $CFG_ZENTRA["languages"][$trytoload][1])
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$trytoload][1];
+                $mofile = $locales_dir . $CFG_ZENTRA["languages"][$trytoload][1];
             } elseif (
-                !empty($CFG_GLPI["language"])
-                && array_key_exists($CFG_GLPI["language"], $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])
+                !empty($CFG_ZENTRA["language"])
+                && array_key_exists($CFG_ZENTRA["language"], $CFG_ZENTRA["languages"])
+                && file_exists($locales_dir . $CFG_ZENTRA["languages"][$CFG_ZENTRA["language"]][1])
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
+                $mofile = $locales_dir . $CFG_ZENTRA["languages"][$CFG_ZENTRA["language"]][1];
             } elseif (file_exists($locales_dir . "en_GB.mo")) {
                 $mofile = $locales_dir . "en_GB.mo";
             }
@@ -612,9 +612,9 @@ class Plugin extends CommonDBTM
             );
         }
 
-        $plugin_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
+        $plugin_folders = is_dir(ZENTRA_LOCAL_I18N_DIR) ? scandir(ZENTRA_LOCAL_I18N_DIR) : [];
         $plugin_folders = array_filter($plugin_folders, function ($dir) use ($plugin_key) {
-            if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+            if (!is_dir(ZENTRA_LOCAL_I18N_DIR . "/$dir")) {
                 return false;
             }
 
@@ -626,7 +626,7 @@ class Plugin extends CommonDBTM
         });
 
         foreach ($plugin_folders as $plugin_folder) {
-            $mofile = GLPI_LOCAL_I18N_DIR . "/$plugin_folder/$coretrytoload.mo";
+            $mofile = ZENTRA_LOCAL_I18N_DIR . "/$plugin_folder/$coretrytoload.mo";
             $phpfile = str_replace('.mo', '.php', $mofile);
 
             // Load local PHP file if it exists
@@ -696,7 +696,7 @@ class Plugin extends CommonDBTM
      */
     public function checkStates($scan_inactive_and_new_plugins = false)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
             // Do not check plugins states when their execution is suspended.
@@ -1372,13 +1372,13 @@ class Plugin extends CommonDBTM
                 if (
                     isset($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])
                     && is_callable($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])
-                    && isset($_SESSION['glpiactiveprofile'])
+                    && isset($_SESSION['zentraactiveprofile'])
                 ) {
                     call_user_func($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']]);
                 }
                 // reset menu
-                if (isset($_SESSION['glpimenu'])) {
-                    unset($_SESSION['glpimenu']);
+                if (isset($_SESSION['zentramenu'])) {
+                    unset($_SESSION['zentramenu']);
                 }
                 self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
@@ -1651,7 +1651,7 @@ class Plugin extends CommonDBTM
             $version = Toolbox::stripTags($plugin['version']);
             $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
             $state = self::getState($state, shouldTranslate: false);
-            $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
+            $is_marketplace = file_exists(ZENTRA_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $install_method = $is_marketplace ? "Marketplace" : "Manual";
 
             $msg  = substr(str_pad($plugin['directory'], 30), 0, 20)
@@ -1679,7 +1679,7 @@ class Plugin extends CommonDBTM
      **/
     public static function registerClass($itemtype, $attrib = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $plug = isPluginItemType($itemtype);
         if (!$plug) {
@@ -1699,7 +1699,7 @@ class Plugin extends CommonDBTM
             $attrib['assignable_types'] = true;
         }
 
-        $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+        $all_types = preg_grep('/.+_types/', array_keys($CFG_ZENTRA));
         $all_types[] = 'networkport_instantiations';
 
         $blacklist = ['device_types'];
@@ -1708,7 +1708,7 @@ class Plugin extends CommonDBTM
                 continue;
             }
             if ($attrib[$att]) {
-                $CFG_GLPI[$att][] = $itemtype;
+                $CFG_ZENTRA[$att][] = $itemtype;
             }
             unset($attrib[$att]);
         }
@@ -1718,7 +1718,7 @@ class Plugin extends CommonDBTM
             && method_exists($itemtype, 'getItem_DeviceType')
         ) {
             if (class_exists($itemtype::getItem_DeviceType())) {
-                $CFG_GLPI['device_types'][] = $itemtype;
+                $CFG_ZENTRA['device_types'][] = $itemtype;
             }
             unset($attrib['device_types']);
         }
@@ -1728,7 +1728,7 @@ class Plugin extends CommonDBTM
                 $attrib['addtabon'] = [$attrib['addtabon']];
             }
             foreach ($attrib['addtabon'] as $form) {
-                CommonGLPI::registerStandardTab($form, $itemtype);
+                CommonZENTRA::registerStandardTab($form, $itemtype);
             }
             unset($attrib['addtabon']);
         }
@@ -1743,10 +1743,10 @@ class Plugin extends CommonDBTM
         foreach ($attrib as $key => $value) {
             if (preg_match('/^plugin[a-z]+_types$/', $key)) {
                 if ($value) {
-                    if (!array_key_exists($key, $CFG_GLPI)) {
-                        $CFG_GLPI[$key] = [];
+                    if (!array_key_exists($key, $CFG_ZENTRA)) {
+                        $CFG_ZENTRA[$key] = [];
                     }
-                    $CFG_GLPI[$key][] = $itemtype;
+                    $CFG_ZENTRA[$key][] = $itemtype;
                 }
                 unset($attrib[$key]);
             }
@@ -1942,8 +1942,8 @@ class Plugin extends CommonDBTM
         $fct = 'plugin_version_' . strtolower($plugin);
         if (function_exists($fct)) {
             $res = $fct();
-            if (!isset($res['requirements']) && isset($res['minGlpiVersion'])) {
-                $res['requirements'] = ['glpi' => ['min' => $res['minGlpiVersion']]];
+            if (!isset($res['requirements']) && isset($res['minZentraVersion'])) {
+                $res['requirements'] = ['zentra' => ['min' => $res['minZentraVersion']]];
             }
         } else {
             trigger_error("$fct method must be defined!", E_USER_WARNING);
@@ -2170,7 +2170,7 @@ class Plugin extends CommonDBTM
      *
      * @return array An *indexed* array of search options
      *
-     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
+     * @see https://zentra-developer-documentation.rtfd.io/en/master/devapi/search.html
      **/
     public static function getAddSearchOptionsNew($itemtype)
     {
@@ -2221,7 +2221,7 @@ class Plugin extends CommonDBTM
      */
     public static function messageIncompatible($type = 'core', $min = null, $max = null)
     {
-        $type = ($type === 'core' ? __('GLPI') : __('PHP'));
+        $type = ($type === 'core' ? __('ZENTRA') : __('PHP'));
         if ($min === null && $max !== null) {
             return sprintf(
                 __('This plugin requires %1$s < %2$s.'),
@@ -2251,7 +2251,7 @@ class Plugin extends CommonDBTM
      *                     - ext (PHP module)
      *                     - plugin (other plugin)
      *                     - compil (compilation option)
-     *                     - param (GLPI configuration parameter)
+     *                     - param (ZENTRA configuration parameter)
      * @param string $name Missing name
      *
      * @since 9.2
@@ -2281,9 +2281,9 @@ class Plugin extends CommonDBTM
                     __('This plugin requires PHP parameter %1$s'),
                     $name
                 );
-            case 'glpiparam':
+            case 'zentraparam':
                 return sprintf(
-                    __('This plugin requires GLPI parameter %1$s'),
+                    __('This plugin requires ZENTRA parameter %1$s'),
                     $name
                 );
             default:
@@ -2292,7 +2292,7 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Check declared versions (GLPI, PHP, ...)
+     * Check declared versions (ZENTRA, PHP, ...)
      *
      * @since 9.2
      *
@@ -2305,16 +2305,16 @@ class Plugin extends CommonDBTM
         $infos = self::getInfo($name);
         $ret = true;
         if (isset($infos['requirements'])) {
-            if (isset($infos['requirements']['glpi'])) {
-                $glpi = $infos['requirements']['glpi'];
-                if (isset($glpi['min']) || isset($glpi['max'])) {
-                    $ret = $this->checkGlpiVersion($infos['requirements']['glpi']);
+            if (isset($infos['requirements']['zentra'])) {
+                $zentra = $infos['requirements']['zentra'];
+                if (isset($zentra['min']) || isset($zentra['max'])) {
+                    $ret = $this->checkZentraVersion($infos['requirements']['zentra']);
                 }
-                if (isset($glpi['params'])) {
-                    $ret = $ret && $this->checkGlpiParameters($glpi['params']);
+                if (isset($zentra['params'])) {
+                    $ret = $ret && $this->checkZentraParameters($zentra['params']);
                 }
-                if (isset($glpi['plugins'])) {
-                    $ret = $ret && $this->checkGlpiPlugins($glpi['plugins']);
+                if (isset($zentra['plugins'])) {
+                    $ret = $ret && $this->checkZentraPlugins($zentra['plugins']);
                 }
             }
             if (isset($infos['requirements']['php'])) {
@@ -2334,7 +2334,7 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Check for GLPI version
+     * Check for ZENTRA version
      *
      * @since 9.2
      * @since 9.3 Removed the 'dev' key of $info parameter.
@@ -2346,19 +2346,19 @@ class Plugin extends CommonDBTM
      *
      * @return bool
      */
-    public function checkGlpiVersion($infos)
+    public function checkZentraVersion($infos)
     {
         if (!isset($infos['min']) && !isset($infos['max'])) {
-            throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+            throw new LogicException('Either "min" or "max" is required for ZENTRA requirements!');
         }
 
-        $glpiVersion = $this->getGlpiVersion();
+        $zentraVersion = $this->getZentraVersion();
 
         $compat = true;
-        if (isset($infos['min']) && !version_compare($glpiVersion, $infos['min'], '>=')) {
+        if (isset($infos['min']) && !version_compare($zentraVersion, $infos['min'], '>=')) {
             $compat = false;
         }
-        if (isset($infos['max']) && !version_compare($glpiVersion, $infos['max'], '<')) {
+        if (isset($infos['max']) && !version_compare($zentraVersion, $infos['max'], '<')) {
             $compat = false;
         }
 
@@ -2464,7 +2464,7 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * Check expected GLPI parameters
+     * Check expected ZENTRA parameters
      *
      * @since 9.2
      *
@@ -2472,15 +2472,15 @@ class Plugin extends CommonDBTM
      *
      * @return bool
      */
-    public function checkGlpiParameters($params)
+    public function checkZentraParameters($params)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $compat = true;
         $messages = [];
         foreach ($params as $param) {
-            if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-                $messages[] = self::messageMissingRequirement('glpiparam', $param);
+            if (!isset($CFG_ZENTRA[$param]) || trim($CFG_ZENTRA[$param]) == '' || !$CFG_ZENTRA[$param]) {
+                $messages[] = self::messageMissingRequirement('zentraparam', $param);
                 $compat = false;
             }
         }
@@ -2540,7 +2540,7 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * Check expected GLPI plugins
+     * Check expected ZENTRA plugins
      *
      * @since 9.2
      *
@@ -2548,7 +2548,7 @@ class Plugin extends CommonDBTM
      *
      * @return bool
      */
-    public function checkGlpiPlugins($plugins)
+    public function checkZentraPlugins($plugins)
     {
         $compat = true;
         $messages = [];
@@ -2577,16 +2577,16 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * Get GLPI version
+     * Get ZENTRA version
      * Used from unit tests to mock.
      *
      * @since 9.2
      *
      * @return string
      */
-    public function getGlpiVersion()
+    public function getZentraVersion()
     {
-        return VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+        return VersionParser::getNormalizedVersion(ZENTRA_VERSION, false);
     }
 
     /**
@@ -2808,7 +2808,7 @@ class Plugin extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -2847,7 +2847,7 @@ class Plugin extends CommonDBTM
                     && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
                     // Configuration button for activated or configurable plugins
-                    $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
+                    $config_url = htmlescape("{$CFG_ZENTRA['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="ti ti-tool fs-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -3031,7 +3031,7 @@ class Plugin extends CommonDBTM
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                     && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
-                    $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
+                    $config_url = htmlescape("{$CFG_ZENTRA['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     return "<a href='$config_url'><span class='b'>$value</span></a>";
                 } else {
                     return $value;
@@ -3108,7 +3108,7 @@ class Plugin extends CommonDBTM
         }
 
         if (!$full) {
-            $directory = str_replace(GLPI_ROOT, "", $directory);
+            $directory = str_replace(ZENTRA_ROOT, "", $directory);
         }
 
         return str_replace('\\', '/', $directory);
@@ -3130,12 +3130,12 @@ class Plugin extends CommonDBTM
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
 
         try {
-            $marketplace_dir = realpath(GLPI_MARKETPLACE_DIR);
+            $marketplace_dir = realpath(ZENTRA_MARKETPLACE_DIR);
         } catch (FilesystemException) {
             $marketplace_dir = null;
         }
@@ -3157,7 +3157,7 @@ class Plugin extends CommonDBTM
         $path = ($marketplace ? 'marketplace' : 'plugins') . '/' . $plugin_key;
 
         if ($full) {
-            $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
+            $root = $use_url_base ? $CFG_ZENTRA['url_base'] : $CFG_ZENTRA["root_doc"];
             $path = "$root/$path";
         }
 
@@ -3336,7 +3336,7 @@ class Plugin extends CommonDBTM
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {
-        global $CFG_GLPI, $GLPI_CACHE;
+        global $CFG_ZENTRA, $ZENTRA_CACHE;
 
         $to_clear = [
             // Plugin lowercase/case-sensitive class names mapping.
@@ -3347,13 +3347,13 @@ class Plugin extends CommonDBTM
             'all_possible_rights',
         ];
 
-        foreach (array_keys($CFG_GLPI['languages']) as $language) {
-            // Hookable using `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
+        foreach (array_keys($CFG_ZENTRA['languages']) as $language) {
+            // Hookable using `$CFG_ZENTRA['device_types']`, `$CFG_ZENTRA['asset_types']`,
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
 
-        return $GLPI_CACHE->deleteMultiple($to_clear);
+        return $ZENTRA_CACHE->deleteMultiple($to_clear);
     }
 
     final public function getPluginsListSuspendBanner(): string
@@ -3382,14 +3382,14 @@ class Plugin extends CommonDBTM
      */
     public function isPluginsExecutionSuspended(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (self::$force_plugins_execution) {
             return false;
         }
 
         return in_array(
-            $CFG_GLPI['plugins_execution_mode'] ?? null,
+            $CFG_ZENTRA['plugins_execution_mode'] ?? null,
             [
                 self::EXECUTION_MODE_SUSPENDED_BY_UPDATE,
                 self::EXECUTION_MODE_SUSPENDED_MANUALLY,

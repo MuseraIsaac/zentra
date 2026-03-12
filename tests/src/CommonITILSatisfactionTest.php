@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
-use Glpi\Team\Team;
+use Zentra\Team\Team;
 
 abstract class CommonITILSatisfactionTest extends DbTestCase
 {
@@ -71,7 +71,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => $root_entity_id,
-            'solvedate'   => $_SESSION['glpi_currenttime'],
+            'solvedate'   => $_SESSION['zentra_currenttime'],
         ]);
         $this->assertGreaterThan(0, $items_id);
 
@@ -113,7 +113,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'solvedate'   => $_SESSION['glpi_currenttime'],
+            'solvedate'   => $_SESSION['zentra_currenttime'],
         ]);
         $this->assertGreaterThan(0, $items_id);
 
@@ -126,7 +126,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             $item::getForeignKeyField() => $items_id,
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date'        => $_SESSION['glpi_currenttime'],
+            'date'        => $_SESSION['zentra_currenttime'],
         ]);
         $this->assertGreaterThan(0, $satisfaction_id);
 
@@ -149,7 +149,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'solvedate'   => $_SESSION['glpi_currenttime'],
+            'solvedate'   => $_SESSION['zentra_currenttime'],
             'users_id_recipient' => getItemByTypeName('User', TU_USER, true),
         ]);
         $this->assertGreaterThan(0, $items_id);
@@ -167,7 +167,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             $item::getForeignKeyField()  => $items_id,
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date'        => $_SESSION['glpi_currenttime'],
+            'date'        => $_SESSION['zentra_currenttime'],
         ]);
         $this->assertGreaterThan(0, $satisfaction_id);
         $this->assertNull($satisfaction->fields['date_answered']);
@@ -180,6 +180,6 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
         ]));
 
         $this->assertNotNull($satisfaction->fields['date_answered']);
-        $this->assertEquals($_SESSION['glpi_currenttime'], $satisfaction->fields['date_answered']);
+        $this->assertEquals($_SESSION['zentra_currenttime'], $satisfaction->fields['date_answered']);
     }
 }

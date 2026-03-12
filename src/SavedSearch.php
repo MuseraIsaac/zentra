@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\Error\ErrorHandler;
-use Glpi\Features\Clonable;
-use Glpi\Toolbox\ArrayNormalizer;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\Error\ErrorHandler;
+use Zentra\Features\Clonable;
+use Zentra\Toolbox\ArrayNormalizer;
 use Safe\DateTime;
 
 use function Safe\parse_url;
@@ -123,8 +123,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 break;
 
             case 'change_entity':
-                Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
-                    'value'  => $_SESSION['glpiactive_entity'],
+                Entity::dropdown(['entity' => $_SESSION['zentraactiveentities'],
+                    'value'  => $_SESSION['zentraactive_entity'],
                     'name'   => 'entities_id',
                 ]);
                 echo '<br/>';
@@ -381,7 +381,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -506,7 +506,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     'delete_search_count',
                     'delete_search_count2',
                     'start',
-                    '_glpi_csrf_token',
+                    '_zentra_csrf_token',
                 ];
                 foreach ($fields_toclean as $field) {
                     if (isset($query_tab[$field])) {
@@ -544,7 +544,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $url .= "?" . Toolbox::append_params($params);
 
         // keep last loaded to set an active state on saved search panel
-        $_SESSION['glpi_loaded_savedsearch'] = $ID;
+        $_SESSION['zentra_loaded_savedsearch'] = $ID;
 
         Html::redirect($url);
     }
@@ -591,7 +591,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             // Is default view for this itemtype already exists ?
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_savedsearches_users',
+                'FROM'   => 'zentra_savedsearches_users',
                 'WHERE'  => [
                     'users_id'  => Session::getLoginUserID(),
                     'itemtype'  => $this->fields['itemtype'],
@@ -634,7 +634,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             // Is default view for this itemtype already exists ?
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_savedsearches_users',
+                'FROM'   => 'zentra_savedsearches_users',
                 'WHERE'  => [
                     'users_id'           => Session::getLoginUserID(),
                     'savedsearches_id'   => $ID,
@@ -663,7 +663,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         if (Session::haveRight('config', UPDATE)) {
             return $DB->delete(
-                'glpi_savedsearches_users',
+                'zentra_savedsearches_users',
                 [
                     'savedsearches_id'   => $ids,
                 ]
@@ -688,7 +688,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $searches = [];
 
         $table = $this->getTable();
-        $utable = 'glpi_savedsearches_users';
+        $utable = 'zentra_savedsearches_users';
         $criteria = [
             'SELECT'    => [
                 "$table.*",
@@ -727,7 +727,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         foreach ($iterator as $data) {
             $error = false;
 
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $this->fields = $data;
                 $count = null;
                 $search_data = null;
@@ -801,7 +801,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public function displayMine(?string $itemtype = null, bool $inverse = false)
     {
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
-            'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
+            'active'         => $_SESSION['zentra_loaded_savedsearch'] ?? "",
             'saved_searches' => $this->getMine($itemtype, $inverse),
         ]);
     }
@@ -873,7 +873,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $DB;
 
-        if ($_SESSION['glpishow_count_on_tabs']) {
+        if ($_SESSION['zentrashow_count_on_tabs']) {
             $DB->update(
                 static::getTable(),
                 [
@@ -1029,11 +1029,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function croncountAll($task)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $cron_status = 0;
 
-        if ($CFG_GLPI['show_count_on_tabs'] != -1) {
+        if ($CFG_ZENTRA['show_count_on_tabs'] != -1) {
             $lastdate = new DateTime($task->getField('lastrun'));
             $lastdate->sub(new DateInterval('P7D'));
 
@@ -1061,12 +1061,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 );
                 $stmt = $DB->prepare($query);
 
-                if (!isset($_SESSION['glpiname'])) {
+                if (!isset($_SESSION['zentraname'])) {
                     //required from search class
-                    $_SESSION['glpiname'] = 'crontab';
+                    $_SESSION['zentraname'] = 'crontab';
                 }
-                if (!isset($_SESSION['glpigroups'])) {
-                    $_SESSION['glpigroups'] = [];
+                if (!isset($_SESSION['zentragroups'])) {
+                    $_SESSION['zentragroups'] = [];
                 }
 
                 $DB->beginTransaction();
@@ -1116,14 +1116,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function execute($force = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
             ($force === true)
             || (($this->fields['do_count'] == self::COUNT_YES)
               || ($this->fields['do_count'] == self::COUNT_AUTO)
               && ($this->fields['last_execution_time'] !== null && $this->fields['last_execution_time'] !== '')
-              && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))
+              && ($this->fields['last_execution_time'] <= $CFG_ZENTRA['max_time_for_count']))
         ) {
             $search = new Search();
             //Do the same as self::getParameters() but getFromDB is useless
@@ -1165,7 +1165,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         if ($notif->isNewItem()) {
             $notif->check(-1, CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
-                'entities_id'     => $_SESSION["glpidefault_entity"],
+                'entities_id'     => $_SESSION["zentradefault_entity"],
                 'itemtype'        => SavedSearch_Alert::getType(),
                 'event'           => 'alert_' . $this->getID(),
                 'is_active'       => 0,

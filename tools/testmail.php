@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
+use Zentra\Kernel\Kernel;
 
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
@@ -57,7 +57,7 @@ $NEEDED_ITEMS = ["mailgate", "mailing"];
 if (isset($_GET['from'])) {
     $from = $_GET['from'];
 } else {
-    $from = $CFG_GLPI['admin_email'];
+    $from = $CFG_ZENTRA['admin_email'];
 }
 
 if (isset($_GET['to'])) {
@@ -86,23 +86,23 @@ echo "Date : $dat\n";
 
 $mmail = new NotificationMailing();
 $mmail->From = $from;
-$mmail->FromName = "GLPI test";
+$mmail->FromName = "ZENTRA test";
 $mmail->isHTML(true);
 
 if ($enc) {
     $mmail->Encoding = $enc;
 }
 
-$mmail->Subject = "GLPI test mail" . ($enc ? " ($enc)" : '');
-$mmail->Body = "<html><body><h3>GLPI test mail</h3><p>Encoding = <span class='b'>$enc</span></p>"
+$mmail->Subject = "ZENTRA test mail" . ($enc ? " ($enc)" : '');
+$mmail->Body = "<html><body><h3>ZENTRA test mail</h3><p>Encoding = <span class='b'>$enc</span></p>"
              . "<p>Date = <span class='b'>$dat</span></p><p>Secret = <span class='b'>$secret</span>"
              . "</p></body></html>";
-$mmail->AltBody = "GLPI test mail\nEncoding : $enc\nDate : $dat\nSecret=$secret";
+$mmail->AltBody = "ZENTRA test mail\nEncoding : $enc\nDate : $dat\nSecret=$secret";
 
 $mmail->AddAddress($dest, "");
 
-$logo = file_get_contents("../pics/logos/logo-GLPI-100-black.png");
-$mmail->AddStringAttachment($logo, 'glpi.png', ($enc ?: 'base64'), 'image/png');
+$logo = file_get_contents("../pics/logos/logo-ZENTRA-100-black.png");
+$mmail->AddStringAttachment($logo, 'zentra.png', ($enc ?: 'base64'), 'image/png');
 
 $mmail->AddStringAttachment($secret, 'secret.txt', ($enc ?: 'base64'), 'text/plain');
 

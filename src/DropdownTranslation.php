@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\RichText\RichText;
 
 /**
  * DropdownTranslation Class
@@ -69,11 +69,11 @@ class DropdownTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -81,7 +81,7 @@ class DropdownTranslation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             self::showTranslations($item);
@@ -157,7 +157,7 @@ class DropdownTranslation extends CommonDBChild
     public function post_addItem()
     {
         // Add to session
-        $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
+        $_SESSION['zentra_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
             = $this->fields['field'];
 
         if (!isset($this->input['_no_completename'])) {
@@ -359,7 +359,7 @@ class DropdownTranslation extends CommonDBChild
                     function viewEditTranslation{{ rand }}(translations_id = -1) {
                         $('button[name="new_translation"]').toggleClass('d-none', translations_id <= 0);
                         $('#viewtranslation{{ rand }}').load(
-                            CFG_GLPI['root_doc'] + '/ajax/viewsubitem.php',
+                            CFG_ZENTRA['root_doc'] + '/ajax/viewsubitem.php',
                             {
                                 type: 'DropdownTranslation',
                                 parenttype: '{{ itemtype|e('js') }}',
@@ -529,11 +529,11 @@ TWIG, $twig_params);
         }
 
         if ($language === '') {
-            $language = $_SESSION['glpilanguage'];
+            $language = $_SESSION['zentralanguage'];
         }
 
-        $translated_fields = $language === $_SESSION['glpilanguage'] && isset($_SESSION['glpi_dropdowntranslations'])
-            ? $_SESSION['glpi_dropdowntranslations']
+        $translated_fields = $language === $_SESSION['zentralanguage'] && isset($_SESSION['zentra_dropdowntranslations'])
+            ? $_SESSION['zentra_dropdowntranslations']
             : self::getAvailableTranslations($language);
 
         // If dropdown translation is globally off, or if this itemtype cannot be translated,

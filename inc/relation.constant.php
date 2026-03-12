@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
-use Glpi\Socket;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Zentra\Socket;
 
 /**
  * Relation constants between tables.
@@ -73,1646 +73,1646 @@ use Glpi\Socket;
  */
 $RELATION = [
 
-    'glpi_agents' => [
-        'glpi_refusedequipments' => 'agents_id',
-        'glpi_rulematchedlogs'   => 'agents_id',
-        'glpi_unmanageds'        => 'agents_id',
+    'zentra_agents' => [
+        'zentra_refusedequipments' => 'agents_id',
+        'zentra_rulematchedlogs'   => 'agents_id',
+        'zentra_unmanageds'        => 'agents_id',
     ],
 
-    'glpi_agenttypes' => [
-        '_glpi_agents' => 'agenttypes_id',
+    'zentra_agenttypes' => [
+        '_zentra_agents' => 'agenttypes_id',
     ],
 
-    'glpi_applianceenvironments' => [
-        'glpi_appliances' => 'applianceenvironments_id',
+    'zentra_applianceenvironments' => [
+        'zentra_appliances' => 'applianceenvironments_id',
     ],
 
-    'glpi_appliances'     => [
-        '_glpi_appliances_items' => 'appliances_id',
+    'zentra_appliances'     => [
+        '_zentra_appliances_items' => 'appliances_id',
     ],
 
-    'glpi_appliances_items' => [
-        '_glpi_appliances_items_relations' => 'appliances_items_id',
+    'zentra_appliances_items' => [
+        '_zentra_appliances_items_relations' => 'appliances_items_id',
     ],
 
-    'glpi_appliancetypes' => [
-        'glpi_appliances' => 'appliancetypes_id',
+    'zentra_appliancetypes' => [
+        'zentra_appliances' => 'appliancetypes_id',
     ],
 
-    'glpi_assets_assetdefinitions' => [
-        '_glpi_assets_assets' => 'assets_assetdefinitions_id',
-        '_glpi_assets_assetmodels' => 'assets_assetdefinitions_id',
-        '_glpi_assets_assettypes' => 'assets_assetdefinitions_id',
-        '_glpi_assets_customfielddefinitions' => 'assets_assetdefinitions_id',
+    'zentra_assets_assetdefinitions' => [
+        '_zentra_assets_assets' => 'assets_assetdefinitions_id',
+        '_zentra_assets_assetmodels' => 'assets_assetdefinitions_id',
+        '_zentra_assets_assettypes' => 'assets_assetdefinitions_id',
+        '_zentra_assets_customfielddefinitions' => 'assets_assetdefinitions_id',
     ],
 
-    'glpi_assets_assetmodels' => [
-        'glpi_assets_assets' => 'assets_assetmodels_id',
+    'zentra_assets_assetmodels' => [
+        'zentra_assets_assets' => 'assets_assetmodels_id',
     ],
 
-    'glpi_assets_assettypes' => [
-        'glpi_assets_assets' => 'assets_assettypes_id',
+    'zentra_assets_assettypes' => [
+        'zentra_assets_assets' => 'assets_assettypes_id',
     ],
 
-    'glpi_databaseinstancetypes' => [
-        'glpi_databaseinstances' => 'databaseinstancetypes_id',
+    'zentra_databaseinstancetypes' => [
+        'zentra_databaseinstances' => 'databaseinstancetypes_id',
     ],
 
-    'glpi_authldaps' => [
-        'glpi_authldapreplicates' => 'authldaps_id',
-        'glpi_entities'           => 'authldaps_id',
-        'glpi_users'              => 'auths_id',
+    'zentra_authldaps' => [
+        'zentra_authldapreplicates' => 'authldaps_id',
+        'zentra_entities'           => 'authldaps_id',
+        'zentra_users'              => 'auths_id',
     ],
 
-    'glpi_authmails' => [
-        'glpi_users' => 'auths_id',
+    'zentra_authmails' => [
+        'zentra_users' => 'auths_id',
     ],
 
-    'glpi_autoupdatesystems' => [
-        'glpi_clusters'          => 'autoupdatesystems_id',
-        'glpi_computers'         => 'autoupdatesystems_id',
-        'glpi_databaseinstances' => 'autoupdatesystems_id',
-        'glpi_monitors'          => 'autoupdatesystems_id',
-        'glpi_networkequipments' => 'autoupdatesystems_id',
-        'glpi_peripherals'       => 'autoupdatesystems_id',
-        'glpi_phones'            => 'autoupdatesystems_id',
-        'glpi_printers'          => 'autoupdatesystems_id',
-        'glpi_refusedequipments' => 'autoupdatesystems_id',
-        'glpi_unmanageds'        => 'autoupdatesystems_id',
-        'glpi_assets_assets'     => 'autoupdatesystems_id',
+    'zentra_autoupdatesystems' => [
+        'zentra_clusters'          => 'autoupdatesystems_id',
+        'zentra_computers'         => 'autoupdatesystems_id',
+        'zentra_databaseinstances' => 'autoupdatesystems_id',
+        'zentra_monitors'          => 'autoupdatesystems_id',
+        'zentra_networkequipments' => 'autoupdatesystems_id',
+        'zentra_peripherals'       => 'autoupdatesystems_id',
+        'zentra_phones'            => 'autoupdatesystems_id',
+        'zentra_printers'          => 'autoupdatesystems_id',
+        'zentra_refusedequipments' => 'autoupdatesystems_id',
+        'zentra_unmanageds'        => 'autoupdatesystems_id',
+        'zentra_assets_assets'     => 'autoupdatesystems_id',
     ],
 
-    'glpi_budgets' => [
-        'glpi_changecosts'   => 'budgets_id',
-        'glpi_contractcosts' => 'budgets_id',
-        'glpi_infocoms'      => 'budgets_id',
-        'glpi_problemcosts'  => 'budgets_id',
-        'glpi_projectcosts'  => 'budgets_id',
-        'glpi_ticketcosts'   => 'budgets_id',
+    'zentra_budgets' => [
+        'zentra_changecosts'   => 'budgets_id',
+        'zentra_contractcosts' => 'budgets_id',
+        'zentra_infocoms'      => 'budgets_id',
+        'zentra_problemcosts'  => 'budgets_id',
+        'zentra_projectcosts'  => 'budgets_id',
+        'zentra_ticketcosts'   => 'budgets_id',
     ],
 
-    'glpi_budgettypes' => [
-        'glpi_budgets' => 'budgettypes_id',
+    'zentra_budgettypes' => [
+        'zentra_budgets' => 'budgettypes_id',
     ],
 
-    'glpi_businesscriticities' => [
-        '_glpi_businesscriticities' => 'businesscriticities_id',
-        'glpi_infocoms'             => 'businesscriticities_id',
+    'zentra_businesscriticities' => [
+        '_zentra_businesscriticities' => 'businesscriticities_id',
+        'zentra_infocoms'             => 'businesscriticities_id',
     ],
 
-    'glpi_cablestrands' => [
-        'glpi_cables' => 'cablestrands_id',
+    'zentra_cablestrands' => [
+        'zentra_cables' => 'cablestrands_id',
     ],
 
-    'glpi_cabletypes' => [
-        'glpi_cables' => 'cabletypes_id',
+    'zentra_cabletypes' => [
+        'zentra_cables' => 'cabletypes_id',
     ],
 
-    'glpi_calendars' => [
-        '_glpi_calendars_holidays' => 'calendars_id',
-        '_glpi_calendarsegments'   => 'calendars_id',
-        'glpi_entities'            => 'calendars_id',
-        'glpi_olas'                => 'calendars_id',
-        'glpi_slas'                => 'calendars_id',
-        'glpi_slms'                => 'calendars_id',
-        'glpi_recurrentchanges'    => 'calendars_id',
-        'glpi_ticketrecurrents'    => 'calendars_id',
-        'glpi_pendingreasons'     => 'calendars_id',
+    'zentra_calendars' => [
+        '_zentra_calendars_holidays' => 'calendars_id',
+        '_zentra_calendarsegments'   => 'calendars_id',
+        'zentra_entities'            => 'calendars_id',
+        'zentra_olas'                => 'calendars_id',
+        'zentra_slas'                => 'calendars_id',
+        'zentra_slms'                => 'calendars_id',
+        'zentra_recurrentchanges'    => 'calendars_id',
+        'zentra_ticketrecurrents'    => 'calendars_id',
+        'zentra_pendingreasons'     => 'calendars_id',
     ],
 
-    'glpi_cartridgeitems' => [
-        '_glpi_cartridgeitems_printermodels' => 'cartridgeitems_id',
-        '_glpi_cartridges'                   => 'cartridgeitems_id',
+    'zentra_cartridgeitems' => [
+        '_zentra_cartridgeitems_printermodels' => 'cartridgeitems_id',
+        '_zentra_cartridges'                   => 'cartridgeitems_id',
     ],
 
-    'glpi_cartridgeitemtypes' => [
-        'glpi_cartridgeitems' => 'cartridgeitemtypes_id',
+    'zentra_cartridgeitemtypes' => [
+        'zentra_cartridgeitems' => 'cartridgeitemtypes_id',
     ],
 
-    'glpi_certificates' => [
-        '_glpi_certificates_items' => 'certificates_id',
+    'zentra_certificates' => [
+        '_zentra_certificates_items' => 'certificates_id',
     ],
 
-    'glpi_certificatetypes' => [
-        'glpi_certificates' => 'certificatetypes_id',
+    'zentra_certificatetypes' => [
+        'zentra_certificates' => 'certificatetypes_id',
     ],
 
-    'glpi_changes' => [
-        '_glpi_changecosts'           => 'changes_id',
-        '_glpi_changes_changes'       => [
+    'zentra_changes' => [
+        '_zentra_changecosts'           => 'changes_id',
+        '_zentra_changes_changes'       => [
             'changes_id_1',
             'changes_id_2',
         ],
-        '_glpi_changes_groups'        => 'changes_id',
-        '_glpi_changes_items'         => 'changes_id',
-        '_glpi_changes_problems'      => 'changes_id',
-        '_glpi_changes_suppliers'     => 'changes_id',
-        '_glpi_changes_tickets'       => 'changes_id',
-        '_glpi_changes_users'         => 'changes_id',
-        '_glpi_changesatisfactions'   => 'changes_id',
-        '_glpi_changetasks'           => 'changes_id',
-        '_glpi_changevalidations'     => 'changes_id',
-        '_glpi_itils_projects'        => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'         => [['items_id', 'itemtype']],
-        '_glpi_itils_validationsteps' => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'         => [['items_id', 'itemtype']],
+        '_zentra_changes_groups'        => 'changes_id',
+        '_zentra_changes_items'         => 'changes_id',
+        '_zentra_changes_problems'      => 'changes_id',
+        '_zentra_changes_suppliers'     => 'changes_id',
+        '_zentra_changes_tickets'       => 'changes_id',
+        '_zentra_changes_users'         => 'changes_id',
+        '_zentra_changesatisfactions'   => 'changes_id',
+        '_zentra_changetasks'           => 'changes_id',
+        '_zentra_changevalidations'     => 'changes_id',
+        '_zentra_itils_projects'        => [['items_id', 'itemtype']],
+        '_zentra_itilfollowups'         => [['items_id', 'itemtype']],
+        '_zentra_itils_validationsteps' => [['items_id', 'itemtype']],
+        '_zentra_itilsolutions'         => [['items_id', 'itemtype']],
     ],
 
-    'glpi_changetemplates' => [
-        'glpi_entities'                        => 'changetemplates_id',
-        'glpi_itilcategories'                  => [
+    'zentra_changetemplates' => [
+        'zentra_entities'                        => 'changetemplates_id',
+        'zentra_itilcategories'                  => [
             'changetemplates_id',
         ],
-        'glpi_changes'                         => 'changetemplates_id',
-        '_glpi_changetemplatehiddenfields'     => 'changetemplates_id',
-        '_glpi_changetemplatemandatoryfields'  => 'changetemplates_id',
-        '_glpi_changetemplatepredefinedfields' => 'changetemplates_id',
-        '_glpi_changetemplatereadonlyfields'   => 'changetemplates_id',
-        'glpi_profiles'                        => 'changetemplates_id',
-        'glpi_recurrentchanges'                => 'changetemplates_id',
+        'zentra_changes'                         => 'changetemplates_id',
+        '_zentra_changetemplatehiddenfields'     => 'changetemplates_id',
+        '_zentra_changetemplatemandatoryfields'  => 'changetemplates_id',
+        '_zentra_changetemplatepredefinedfields' => 'changetemplates_id',
+        '_zentra_changetemplatereadonlyfields'   => 'changetemplates_id',
+        'zentra_profiles'                        => 'changetemplates_id',
+        'zentra_recurrentchanges'                => 'changetemplates_id',
     ],
 
-    'glpi_clusters' => [
-        '_glpi_items_clusters' => 'clusters_id',
+    'zentra_clusters' => [
+        '_zentra_items_clusters' => 'clusters_id',
     ],
 
-    'glpi_clustertypes' => [
-        'glpi_clusters' => 'clustertypes_id',
+    'zentra_clustertypes' => [
+        'zentra_clusters' => 'clustertypes_id',
     ],
 
-    'glpi_computermodels' => [
-        'glpi_computers' => 'computermodels_id',
+    'zentra_computermodels' => [
+        'zentra_computers' => 'computermodels_id',
     ],
 
-    'glpi_computers' => [
-        'glpi_networknames' => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
+    'zentra_computers' => [
+        'zentra_networknames' => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
     ],
 
-    'glpi_computertypes' => [
-        'glpi_computers' => 'computertypes_id',
+    'zentra_computertypes' => [
+        'zentra_computers' => 'computertypes_id',
     ],
 
-    'glpi_consumableitems' => [
-        '_glpi_consumables' => 'consumableitems_id',
+    'zentra_consumableitems' => [
+        '_zentra_consumables' => 'consumableitems_id',
     ],
 
-    'glpi_consumableitemtypes' => [
-        'glpi_consumableitems' => 'consumableitemtypes_id',
+    'zentra_consumableitemtypes' => [
+        'zentra_consumableitems' => 'consumableitemtypes_id',
     ],
 
-    'glpi_contacts' => [
-        '_glpi_contacts_suppliers' => 'contacts_id',
+    'zentra_contacts' => [
+        '_zentra_contacts_suppliers' => 'contacts_id',
     ],
 
-    'glpi_contacttypes' => [
-        'glpi_contacts' => 'contacttypes_id',
+    'zentra_contacttypes' => [
+        'zentra_contacts' => 'contacttypes_id',
     ],
 
-    'glpi_contracts' => [
-        '_glpi_contractcosts'       => 'contracts_id',
-        '_glpi_contracts_items'     => 'contracts_id',
-        '_glpi_contracts_suppliers' => 'contracts_id',
-        'glpi_entities'             => 'contracts_id_default',
-        '_glpi_tickets_contracts'   => 'contracts_id',
-        '_glpi_contracts_users'    => 'contracts_id',
+    'zentra_contracts' => [
+        '_zentra_contractcosts'       => 'contracts_id',
+        '_zentra_contracts_items'     => 'contracts_id',
+        '_zentra_contracts_suppliers' => 'contracts_id',
+        'zentra_entities'             => 'contracts_id_default',
+        '_zentra_tickets_contracts'   => 'contracts_id',
+        '_zentra_contracts_users'    => 'contracts_id',
     ],
 
-    'glpi_contracttypes' => [
-        'glpi_contracts' => 'contracttypes_id',
+    'zentra_contracttypes' => [
+        'zentra_contracts' => 'contracttypes_id',
     ],
 
-    'glpi_crontasklogs' => [
-        '_glpi_crontasklogs' => 'crontasklogs_id',
+    'zentra_crontasklogs' => [
+        '_zentra_crontasklogs' => 'crontasklogs_id',
     ],
 
-    'glpi_crontasks' => [
-        '_glpi_crontasklogs' => 'crontasks_id',
+    'zentra_crontasks' => [
+        '_zentra_crontasklogs' => 'crontasks_id',
     ],
 
-    'glpi_dashboards_dashboards' => [
-        '_glpi_dashboards_filters' => 'dashboards_dashboards_id',
-        '_glpi_dashboards_items'   => 'dashboards_dashboards_id',
-        '_glpi_dashboards_rights'  => 'dashboards_dashboards_id',
+    'zentra_dashboards_dashboards' => [
+        '_zentra_dashboards_filters' => 'dashboards_dashboards_id',
+        '_zentra_dashboards_items'   => 'dashboards_dashboards_id',
+        '_zentra_dashboards_rights'  => 'dashboards_dashboards_id',
     ],
 
-    'glpi_databaseinstancecategories' => [
-        'glpi_databaseinstances' => 'databaseinstancecategories_id',
+    'zentra_databaseinstancecategories' => [
+        'zentra_databaseinstances' => 'databaseinstancecategories_id',
     ],
 
-    'glpi_databaseinstances' => [
-        'glpi_databases' => 'databaseinstances_id',
+    'zentra_databaseinstances' => [
+        'zentra_databases' => 'databaseinstances_id',
     ],
 
-    'glpi_datacenters' => [
-        'glpi_dcrooms' => 'datacenters_id',
+    'zentra_datacenters' => [
+        'zentra_dcrooms' => 'datacenters_id',
     ],
 
-    'glpi_dcrooms' => [
-        'glpi_racks' => 'dcrooms_id',
+    'zentra_dcrooms' => [
+        'zentra_racks' => 'dcrooms_id',
     ],
 
-    'glpi_devicebatteries' => [
-        'glpi_items_devicebatteries' => 'devicebatteries_id',
+    'zentra_devicebatteries' => [
+        'zentra_items_devicebatteries' => 'devicebatteries_id',
     ],
 
-    'glpi_devicebatterymodels' => [
-        'glpi_devicebatteries' => 'devicebatterymodels_id',
+    'zentra_devicebatterymodels' => [
+        'zentra_devicebatteries' => 'devicebatterymodels_id',
     ],
 
-    'glpi_devicecameramodels' => [
-        'glpi_devicecameras' => 'devicecameramodels_id',
+    'zentra_devicecameramodels' => [
+        'zentra_devicecameras' => 'devicecameramodels_id',
     ],
 
-    'glpi_devicecameras' => [
-        'glpi_items_devicecameras' => 'devicecameras_id',
+    'zentra_devicecameras' => [
+        'zentra_items_devicecameras' => 'devicecameras_id',
     ],
 
-    'glpi_devicebatterytypes' => [
-        'glpi_devicebatteries' => 'devicebatterytypes_id',
+    'zentra_devicebatterytypes' => [
+        'zentra_devicebatteries' => 'devicebatterytypes_id',
     ],
 
-    'glpi_devicecasemodels' => [
-        'glpi_devicecases' => 'devicecasemodels_id',
+    'zentra_devicecasemodels' => [
+        'zentra_devicecases' => 'devicecasemodels_id',
     ],
 
-    'glpi_devicecases' => [
-        'glpi_items_devicecases' => 'devicecases_id',
+    'zentra_devicecases' => [
+        'zentra_items_devicecases' => 'devicecases_id',
     ],
 
-    'glpi_devicecasetypes' => [
-        'glpi_devicecases' => 'devicecasetypes_id',
+    'zentra_devicecasetypes' => [
+        'zentra_devicecases' => 'devicecasetypes_id',
     ],
 
-    'glpi_devicecontrolmodels' => [
-        'glpi_devicecontrols' => 'devicecontrolmodels_id',
+    'zentra_devicecontrolmodels' => [
+        'zentra_devicecontrols' => 'devicecontrolmodels_id',
     ],
 
-    'glpi_devicecontrols' => [
-        'glpi_items_devicecontrols' => 'devicecontrols_id',
+    'zentra_devicecontrols' => [
+        'zentra_items_devicecontrols' => 'devicecontrols_id',
     ],
 
-    'glpi_devicedrivemodels' => [
-        'glpi_devicedrives' => 'devicedrivemodels_id',
+    'zentra_devicedrivemodels' => [
+        'zentra_devicedrives' => 'devicedrivemodels_id',
     ],
 
-    'glpi_devicedrives' => [
-        'glpi_items_devicedrives' => 'devicedrives_id',
+    'zentra_devicedrives' => [
+        'zentra_items_devicedrives' => 'devicedrives_id',
     ],
 
-    'glpi_devicefirmwaremodels' => [
-        'glpi_devicefirmwares' => 'devicefirmwaremodels_id',
+    'zentra_devicefirmwaremodels' => [
+        'zentra_devicefirmwares' => 'devicefirmwaremodels_id',
     ],
 
-    'glpi_devicefirmwares' => [
-        'glpi_items_devicefirmwares' => 'devicefirmwares_id',
+    'zentra_devicefirmwares' => [
+        'zentra_items_devicefirmwares' => 'devicefirmwares_id',
     ],
 
-    'glpi_devicefirmwaretypes' => [
-        'glpi_devicefirmwares' => 'devicefirmwaretypes_id',
+    'zentra_devicefirmwaretypes' => [
+        'zentra_devicefirmwares' => 'devicefirmwaretypes_id',
     ],
 
-    'glpi_devicegenericmodels' => [
-        'glpi_devicegenerics' => 'devicegenericmodels_id',
+    'zentra_devicegenericmodels' => [
+        'zentra_devicegenerics' => 'devicegenericmodels_id',
     ],
 
-    'glpi_devicegenerics' => [
-        'glpi_items_devicegenerics' => 'devicegenerics_id',
+    'zentra_devicegenerics' => [
+        'zentra_items_devicegenerics' => 'devicegenerics_id',
     ],
 
-    'glpi_devicegenerictypes' => [
-        'glpi_devicegenerics' => 'devicegenerictypes_id',
+    'zentra_devicegenerictypes' => [
+        'zentra_devicegenerics' => 'devicegenerictypes_id',
     ],
 
-    'glpi_devicegraphiccardmodels' => [
-        'glpi_devicegraphiccards' => 'devicegraphiccardmodels_id',
+    'zentra_devicegraphiccardmodels' => [
+        'zentra_devicegraphiccards' => 'devicegraphiccardmodels_id',
     ],
 
-    'glpi_devicegraphiccards' => [
-        'glpi_items_devicegraphiccards' => 'devicegraphiccards_id',
+    'zentra_devicegraphiccards' => [
+        'zentra_items_devicegraphiccards' => 'devicegraphiccards_id',
     ],
 
-    'glpi_deviceharddrivemodels' => [
-        'glpi_deviceharddrives' => 'deviceharddrivemodels_id',
+    'zentra_deviceharddrivemodels' => [
+        'zentra_deviceharddrives' => 'deviceharddrivemodels_id',
     ],
 
-    'glpi_deviceharddrivetypes' => [
-        'glpi_deviceharddrives' => 'deviceharddrivetypes_id',
+    'zentra_deviceharddrivetypes' => [
+        'zentra_deviceharddrives' => 'deviceharddrivetypes_id',
     ],
 
-    'glpi_deviceharddrives' => [
-        'glpi_items_deviceharddrives' => 'deviceharddrives_id',
+    'zentra_deviceharddrives' => [
+        'zentra_items_deviceharddrives' => 'deviceharddrives_id',
     ],
 
-    'glpi_devicememories' => [
-        'glpi_items_devicememories' => 'devicememories_id',
+    'zentra_devicememories' => [
+        'zentra_items_devicememories' => 'devicememories_id',
     ],
 
-    'glpi_devicememorymodels' => [
-        'glpi_devicememories' => 'devicememorymodels_id',
+    'zentra_devicememorymodels' => [
+        'zentra_devicememories' => 'devicememorymodels_id',
     ],
 
-    'glpi_devicememorytypes' => [
-        'glpi_devicememories' => 'devicememorytypes_id',
+    'zentra_devicememorytypes' => [
+        'zentra_devicememories' => 'devicememorytypes_id',
     ],
 
-    'glpi_devicemotherboardmodels' => [
-        'glpi_devicemotherboards' => 'devicemotherboardmodels_id',
+    'zentra_devicemotherboardmodels' => [
+        'zentra_devicemotherboards' => 'devicemotherboardmodels_id',
     ],
 
-    'glpi_devicemotherboards' => [
-        'glpi_items_devicemotherboards' => 'devicemotherboards_id',
+    'zentra_devicemotherboards' => [
+        'zentra_items_devicemotherboards' => 'devicemotherboards_id',
     ],
 
-    'glpi_devicenetworkcardmodels' => [
-        'glpi_devicenetworkcards' => 'devicenetworkcardmodels_id',
-        'glpi_devicepcis'         => 'devicenetworkcardmodels_id', // FIXME This field should probably removed
+    'zentra_devicenetworkcardmodels' => [
+        'zentra_devicenetworkcards' => 'devicenetworkcardmodels_id',
+        'zentra_devicepcis'         => 'devicenetworkcardmodels_id', // FIXME This field should probably removed
     ],
 
-    'glpi_devicenetworkcards' => [
-        'glpi_items_devicenetworkcards' => 'devicenetworkcards_id',
+    'zentra_devicenetworkcards' => [
+        'zentra_items_devicenetworkcards' => 'devicenetworkcards_id',
     ],
 
-    'glpi_devicepcimodels' => [
-        'glpi_devicepcis' => 'devicepcimodels_id',
+    'zentra_devicepcimodels' => [
+        'zentra_devicepcis' => 'devicepcimodels_id',
     ],
 
-    'glpi_devicepcis' => [
-        'glpi_items_devicepcis' => 'devicepcis_id',
+    'zentra_devicepcis' => [
+        'zentra_items_devicepcis' => 'devicepcis_id',
     ],
 
-    'glpi_devicepowersupplies' => [
-        'glpi_items_devicepowersupplies' => 'devicepowersupplies_id',
+    'zentra_devicepowersupplies' => [
+        'zentra_items_devicepowersupplies' => 'devicepowersupplies_id',
     ],
 
-    'glpi_devicepowersupplymodels' => [
-        'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
+    'zentra_devicepowersupplymodels' => [
+        'zentra_devicepowersupplies' => 'devicepowersupplymodels_id',
     ],
 
-    'glpi_deviceprocessormodels' => [
-        'glpi_deviceprocessors' => 'deviceprocessormodels_id',
+    'zentra_deviceprocessormodels' => [
+        'zentra_deviceprocessors' => 'deviceprocessormodels_id',
     ],
 
-    'glpi_deviceprocessors' => [
-        'glpi_items_deviceprocessors' => 'deviceprocessors_id',
+    'zentra_deviceprocessors' => [
+        'zentra_items_deviceprocessors' => 'deviceprocessors_id',
     ],
 
-    'glpi_devicesensormodels' => [
-        'glpi_devicesensors' => 'devicesensormodels_id',
+    'zentra_devicesensormodels' => [
+        'zentra_devicesensors' => 'devicesensormodels_id',
     ],
 
-    'glpi_devicesensors' => [
-        'glpi_items_devicesensors' => 'devicesensors_id',
+    'zentra_devicesensors' => [
+        'zentra_items_devicesensors' => 'devicesensors_id',
     ],
 
-    'glpi_devicesensortypes' => [
-        'glpi_devicesensors' => 'devicesensortypes_id',
+    'zentra_devicesensortypes' => [
+        'zentra_devicesensors' => 'devicesensortypes_id',
     ],
 
-    'glpi_devicesimcards' => [
-        'glpi_items_devicesimcards' => 'devicesimcards_id',
+    'zentra_devicesimcards' => [
+        'zentra_items_devicesimcards' => 'devicesimcards_id',
     ],
 
-    'glpi_devicesimcardtypes' => [
-        'glpi_devicesimcards' => 'devicesimcardtypes_id',
+    'zentra_devicesimcardtypes' => [
+        'zentra_devicesimcards' => 'devicesimcardtypes_id',
     ],
 
-    'glpi_devicesoundcardmodels' => [
-        'glpi_devicesoundcards' => 'devicesoundcardmodels_id',
+    'zentra_devicesoundcardmodels' => [
+        'zentra_devicesoundcards' => 'devicesoundcardmodels_id',
     ],
 
-    'glpi_devicesoundcards' => [
-        'glpi_items_devicesoundcards' => 'devicesoundcards_id',
+    'zentra_devicesoundcards' => [
+        'zentra_items_devicesoundcards' => 'devicesoundcards_id',
     ],
 
-    'glpi_documentcategories' => [
-        'glpi_documentcategories' => 'documentcategories_id',
-        'glpi_documents'          => 'documentcategories_id',
+    'zentra_documentcategories' => [
+        'zentra_documentcategories' => 'documentcategories_id',
+        'zentra_documents'          => 'documentcategories_id',
     ],
 
-    'glpi_documents' => [
-        '_glpi_documents_items' => 'documents_id',
+    'zentra_documents' => [
+        '_zentra_documents_items' => 'documents_id',
     ],
 
-    'glpi_domainrelations' => [
-        'glpi_domains_items' => 'domainrelations_id',
+    'zentra_domainrelations' => [
+        'zentra_domains_items' => 'domainrelations_id',
     ],
 
-    'glpi_domains'    => [
-        '_glpi_domainrecords' => 'domains_id',
-        '_glpi_domains_items' => 'domains_id',
+    'zentra_domains'    => [
+        '_zentra_domainrecords' => 'domains_id',
+        '_zentra_domains_items' => 'domains_id',
     ],
 
-    'glpi_domaintypes' => [
-        'glpi_domains'  => 'domaintypes_id',
+    'zentra_domaintypes' => [
+        'zentra_domains'  => 'domaintypes_id',
     ],
 
-    'glpi_domainrecordtypes'    => [
-        'glpi_domainrecords'  => 'domainrecordtypes_id',
+    'zentra_domainrecordtypes'    => [
+        'zentra_domainrecords'  => 'domainrecordtypes_id',
     ],
 
-    'glpi_dropdowns_dropdowndefinitions' => [
-        '_glpi_dropdowns_dropdowns' => 'dropdowns_dropdowndefinitions_id',
+    'zentra_dropdowns_dropdowndefinitions' => [
+        '_zentra_dropdowns_dropdowns' => 'dropdowns_dropdowndefinitions_id',
     ],
 
-    'glpi_dropdowns_dropdowns' => [
-        'glpi_dropdowns_dropdowns' => 'dropdowns_dropdowns_id',
+    'zentra_dropdowns_dropdowns' => [
+        'zentra_dropdowns_dropdowns' => 'dropdowns_dropdowns_id',
     ],
 
-    'glpi_enclosuremodels' => [
-        'glpi_enclosures' => 'enclosuremodels_id',
+    'zentra_enclosuremodels' => [
+        'zentra_enclosures' => 'enclosuremodels_id',
     ],
 
-    'glpi_enclosures' => [
-        '_glpi_items_enclosures' => 'enclosures_id',
+    'zentra_enclosures' => [
+        '_zentra_items_enclosures' => 'enclosures_id',
     ],
 
-    'glpi_entities' => [
-        'glpi_agents'                      => 'entities_id',
-        'glpi_apiclients'                  => 'entities_id',
-        'glpi_appliances'                  => 'entities_id',
-        'glpi_appliancetypes'              => 'entities_id',
-        'glpi_assets_assets'               => 'entities_id',
-        'glpi_budgets'                     => 'entities_id',
-        'glpi_businesscriticities'         => 'entities_id',
-        'glpi_cables'                      => 'entities_id',
-        'glpi_calendars'                   => 'entities_id',
-        '_glpi_calendarsegments'           => 'entities_id',
-        'glpi_cartridgeitems'              => 'entities_id',
-        '_glpi_cartridges'                 => 'entities_id',
-        'glpi_certificates'                => 'entities_id',
-        'glpi_certificatetypes'            => 'entities_id',
-        '_glpi_changecosts'                => 'entities_id',
-        'glpi_changes'                     => 'entities_id',
-        'glpi_changetemplates'             => 'entities_id',
-        '_glpi_changevalidations'          => 'entities_id',
-        'glpi_clusters'                    => 'entities_id',
-        'glpi_clustertypes'                => 'entities_id',
-        'glpi_computers'                   => 'entities_id',
-        'glpi_dropdowns_dropdowns'         => 'entities_id',
-        'glpi_consumableitems'             => 'entities_id',
-        '_glpi_consumables'                => 'entities_id',
-        'glpi_contacts'                    => 'entities_id',
-        '_glpi_contractcosts'              => 'entities_id',
-        'glpi_contracts'                   => 'entities_id',
-        'glpi_databaseinstances'           => 'entities_id',
-        '_glpi_databases'                  => 'entities_id', // forwarded by Database
-        'glpi_datacenters'                 => 'entities_id',
-        'glpi_dcrooms'                     => 'entities_id',
-        'glpi_devicebatteries'             => 'entities_id',
-        'glpi_devicecameras'               => 'entities_id',
-        'glpi_devicecases'                 => 'entities_id',
-        'glpi_devicecontrols'              => 'entities_id',
-        'glpi_devicedrives'                => 'entities_id',
-        'glpi_devicefirmwares'             => 'entities_id',
-        'glpi_devicegenerics'              => 'entities_id',
-        'glpi_devicegraphiccards'          => 'entities_id',
-        'glpi_deviceharddrives'            => 'entities_id',
-        'glpi_devicememories'              => 'entities_id',
-        'glpi_devicemotherboards'          => 'entities_id',
-        'glpi_devicenetworkcards'          => 'entities_id',
-        'glpi_devicepcis'                  => 'entities_id',
-        'glpi_devicepowersupplies'         => 'entities_id',
-        'glpi_deviceprocessors'            => 'entities_id',
-        'glpi_devicesensors'               => 'entities_id',
-        'glpi_devicesimcards'              => 'entities_id',
-        'glpi_devicesoundcards'            => 'entities_id',
-        'glpi_documents'                   => 'entities_id',
-        '_glpi_documents_items'            => 'entities_id',
-        'glpi_domainrelations'             => 'entities_id',
-        'glpi_domainrecords'               => 'entities_id',
-        'glpi_domainrecordtypes'           => 'entities_id',
-        'glpi_domains'                     => 'entities_id',
-        'glpi_domaintypes'                 => 'entities_id',
-        'glpi_enclosures'                  => 'entities_id',
-        '_glpi_entities'                   => 'entities_id',
-        'glpi_entities'                    => 'entities_id_software',
-        '_glpi_entities_knowbaseitems'     => 'entities_id',
-        '_glpi_entities_reminders'         => 'entities_id',
-        '_glpi_entities_rssfeeds'          => 'entities_id',
-        'glpi_fieldblacklists'             => 'entities_id',
-        'glpi_fieldunicities'              => 'entities_id',
-        'glpi_forms_forms'                 => 'entities_id',
-        'glpi_forms_answerssets'           => 'entities_id',
-        'glpi_fqdns'                       => 'entities_id',
-        'glpi_groups'                      => 'entities_id',
-        'glpi_groups_knowbaseitems'        => 'entities_id',
-        'glpi_groups_reminders'            => 'entities_id',
-        'glpi_groups_rssfeeds'             => 'entities_id',
-        'glpi_holidays'                    => 'entities_id',
-        'glpi_imageformats'                => 'entities_id',
-        'glpi_imageresolutions'            => 'entities_id',
-        '_glpi_infocoms'                   => 'entities_id',
-        'glpi_ipaddresses'                 => 'entities_id',
-        'glpi_ipnetworks'                  => 'entities_id',
-        '_glpi_items_devicebatteries'      => 'entities_id',
-        '_glpi_items_devicecases'          => 'entities_id',
-        '_glpi_items_devicecameras'        => 'entities_id', // forwarded by DeviceCamera
-        '_glpi_items_devicecontrols'       => 'entities_id',
-        '_glpi_items_devicedrives'         => 'entities_id',
-        '_glpi_items_devicefirmwares'      => 'entities_id',
-        '_glpi_items_devicegenerics'       => 'entities_id',
-        '_glpi_items_devicegraphiccards'   => 'entities_id',
-        '_glpi_items_deviceharddrives'     => 'entities_id',
-        '_glpi_items_devicememories'       => 'entities_id',
-        '_glpi_items_devicemotherboards'   => 'entities_id',
-        '_glpi_items_devicenetworkcards'   => 'entities_id',
-        '_glpi_items_devicepcis'           => 'entities_id',
-        '_glpi_items_devicepowersupplies'  => 'entities_id',
-        '_glpi_items_deviceprocessors'     => 'entities_id',
-        '_glpi_items_devicesensors'        => 'entities_id',
-        '_glpi_items_devicesimcards'       => 'entities_id',
-        '_glpi_items_devicesoundcards'     => 'entities_id',
-        '_glpi_items_disks'                => 'entities_id',
-        '_glpi_items_operatingsystems'     => 'entities_id',
-        '_glpi_items_softwareversions'     => 'entities_id',
-        '_glpi_itemvirtualmachines'        => 'entities_id',
-        'glpi_itilcategories'              => 'entities_id',
-        'glpi_itilfollowuptemplates'       => 'entities_id',
-        'glpi_itilvalidationtemplates'     => 'entities_id',
-        'glpi_knowbaseitemcategories'      => 'entities_id',
-        'glpi_knowbaseitems'               => 'entities_id',
-        'glpi_knowbaseitems_profiles'      => 'entities_id',
-        'glpi_lineoperators'               => 'entities_id',
-        'glpi_lines'                       => 'entities_id',
-        'glpi_links'                       => 'entities_id',
-        'glpi_locations'                   => 'entities_id',
-        'glpi_monitors'                    => 'entities_id',
-        '_glpi_networkaliases'             => 'entities_id',
-        'glpi_networkequipments'           => 'entities_id',
-        'glpi_networknames'                => 'entities_id',
-        '_glpi_networkports'               => 'entities_id',
-        'glpi_networkporttypes'            => 'entities_id',
-        'glpi_notifications'               => 'entities_id',
-        '_glpi_olalevels'                  => 'entities_id',
-        '_glpi_olas'                       => 'entities_id',
-        'glpi_passivedcequipments'         => 'entities_id',
-        'glpi_pcivendors'                  => 'entities_id',
-        'glpi_pdus'                        => 'entities_id',
-        'glpi_pdutypes'                    => 'entities_id',
-        'glpi_pendingreasons'              => 'entities_id',
-        'glpi_peripherals'                 => 'entities_id',
-        'glpi_phones'                      => 'entities_id',
-        'glpi_planningexternalevents'      => 'entities_id',
-        'glpi_planningexternaleventtemplates' => 'entities_id',
-        'glpi_printers'                    => 'entities_id',
-        '_glpi_problemcosts'               => 'entities_id',
-        'glpi_problems'                    => 'entities_id',
-        'glpi_problemtemplates'            => 'entities_id',
-        'glpi_profiles_reminders'          => 'entities_id',
-        'glpi_profiles_rssfeeds'           => 'entities_id',
-        '_glpi_profiles_users'             => 'entities_id',
-        '_glpi_projectcosts'               => 'entities_id',
-        'glpi_projects'                    => 'entities_id',
-        '_glpi_projecttasks'               => 'entities_id',
-        'glpi_projecttasktemplates'        => 'entities_id',
-        'glpi_queuednotifications'         => 'entities_id',
-        'glpi_racks'                       => 'entities_id',
-        'glpi_racktypes'                   => 'entities_id',
-        'glpi_recurrentchanges'            => 'entities_id',
-        'glpi_refusedequipments'           => 'entities_id',
-        '_glpi_reservationitems'           => 'entities_id',
-        'glpi_rules'                       => 'entities_id',
-        'glpi_savedsearches'               => 'entities_id',
-        '_glpi_slalevels'                  => 'entities_id',
-        '_glpi_slas'                       => 'entities_id',
-        'glpi_slms'                        => 'entities_id',
-        'glpi_softwarelicenses'            => 'entities_id',
-        'glpi_softwarelicensetypes'        => 'entities_id',
-        'glpi_softwares'                   => 'entities_id',
-        '_glpi_softwareversions'           => 'entities_id',
-        'glpi_solutiontemplates'           => 'entities_id',
-        'glpi_solutiontypes'               => 'entities_id',
-        'glpi_states'                      => 'entities_id',
-        'glpi_suppliers'                   => 'entities_id',
-        'glpi_taskcategories'              => 'entities_id',
-        'glpi_tasktemplates'               => 'entities_id',
-        '_glpi_ticketcosts'                => 'entities_id',
-        'glpi_ticketrecurrents'            => 'entities_id',
-        'glpi_tickets'                     => 'entities_id',
-        'glpi_tickettemplates'             => 'entities_id',
-        '_glpi_ticketvalidations'          => 'entities_id',
-        'glpi_unmanageds'                  => 'entities_id',
-        'glpi_usbvendors'                  => 'entities_id',
-        'glpi_users'                       => 'entities_id',
-        'glpi_vlans'                       => 'entities_id',
-        'glpi_wifinetworks'                => 'entities_id',
-        'glpi_webhooks'                    => 'entities_id',
-        'glpi_queuedwebhooks'              => 'entities_id',
+    'zentra_entities' => [
+        'zentra_agents'                      => 'entities_id',
+        'zentra_apiclients'                  => 'entities_id',
+        'zentra_appliances'                  => 'entities_id',
+        'zentra_appliancetypes'              => 'entities_id',
+        'zentra_assets_assets'               => 'entities_id',
+        'zentra_budgets'                     => 'entities_id',
+        'zentra_businesscriticities'         => 'entities_id',
+        'zentra_cables'                      => 'entities_id',
+        'zentra_calendars'                   => 'entities_id',
+        '_zentra_calendarsegments'           => 'entities_id',
+        'zentra_cartridgeitems'              => 'entities_id',
+        '_zentra_cartridges'                 => 'entities_id',
+        'zentra_certificates'                => 'entities_id',
+        'zentra_certificatetypes'            => 'entities_id',
+        '_zentra_changecosts'                => 'entities_id',
+        'zentra_changes'                     => 'entities_id',
+        'zentra_changetemplates'             => 'entities_id',
+        '_zentra_changevalidations'          => 'entities_id',
+        'zentra_clusters'                    => 'entities_id',
+        'zentra_clustertypes'                => 'entities_id',
+        'zentra_computers'                   => 'entities_id',
+        'zentra_dropdowns_dropdowns'         => 'entities_id',
+        'zentra_consumableitems'             => 'entities_id',
+        '_zentra_consumables'                => 'entities_id',
+        'zentra_contacts'                    => 'entities_id',
+        '_zentra_contractcosts'              => 'entities_id',
+        'zentra_contracts'                   => 'entities_id',
+        'zentra_databaseinstances'           => 'entities_id',
+        '_zentra_databases'                  => 'entities_id', // forwarded by Database
+        'zentra_datacenters'                 => 'entities_id',
+        'zentra_dcrooms'                     => 'entities_id',
+        'zentra_devicebatteries'             => 'entities_id',
+        'zentra_devicecameras'               => 'entities_id',
+        'zentra_devicecases'                 => 'entities_id',
+        'zentra_devicecontrols'              => 'entities_id',
+        'zentra_devicedrives'                => 'entities_id',
+        'zentra_devicefirmwares'             => 'entities_id',
+        'zentra_devicegenerics'              => 'entities_id',
+        'zentra_devicegraphiccards'          => 'entities_id',
+        'zentra_deviceharddrives'            => 'entities_id',
+        'zentra_devicememories'              => 'entities_id',
+        'zentra_devicemotherboards'          => 'entities_id',
+        'zentra_devicenetworkcards'          => 'entities_id',
+        'zentra_devicepcis'                  => 'entities_id',
+        'zentra_devicepowersupplies'         => 'entities_id',
+        'zentra_deviceprocessors'            => 'entities_id',
+        'zentra_devicesensors'               => 'entities_id',
+        'zentra_devicesimcards'              => 'entities_id',
+        'zentra_devicesoundcards'            => 'entities_id',
+        'zentra_documents'                   => 'entities_id',
+        '_zentra_documents_items'            => 'entities_id',
+        'zentra_domainrelations'             => 'entities_id',
+        'zentra_domainrecords'               => 'entities_id',
+        'zentra_domainrecordtypes'           => 'entities_id',
+        'zentra_domains'                     => 'entities_id',
+        'zentra_domaintypes'                 => 'entities_id',
+        'zentra_enclosures'                  => 'entities_id',
+        '_zentra_entities'                   => 'entities_id',
+        'zentra_entities'                    => 'entities_id_software',
+        '_zentra_entities_knowbaseitems'     => 'entities_id',
+        '_zentra_entities_reminders'         => 'entities_id',
+        '_zentra_entities_rssfeeds'          => 'entities_id',
+        'zentra_fieldblacklists'             => 'entities_id',
+        'zentra_fieldunicities'              => 'entities_id',
+        'zentra_forms_forms'                 => 'entities_id',
+        'zentra_forms_answerssets'           => 'entities_id',
+        'zentra_fqdns'                       => 'entities_id',
+        'zentra_groups'                      => 'entities_id',
+        'zentra_groups_knowbaseitems'        => 'entities_id',
+        'zentra_groups_reminders'            => 'entities_id',
+        'zentra_groups_rssfeeds'             => 'entities_id',
+        'zentra_holidays'                    => 'entities_id',
+        'zentra_imageformats'                => 'entities_id',
+        'zentra_imageresolutions'            => 'entities_id',
+        '_zentra_infocoms'                   => 'entities_id',
+        'zentra_ipaddresses'                 => 'entities_id',
+        'zentra_ipnetworks'                  => 'entities_id',
+        '_zentra_items_devicebatteries'      => 'entities_id',
+        '_zentra_items_devicecases'          => 'entities_id',
+        '_zentra_items_devicecameras'        => 'entities_id', // forwarded by DeviceCamera
+        '_zentra_items_devicecontrols'       => 'entities_id',
+        '_zentra_items_devicedrives'         => 'entities_id',
+        '_zentra_items_devicefirmwares'      => 'entities_id',
+        '_zentra_items_devicegenerics'       => 'entities_id',
+        '_zentra_items_devicegraphiccards'   => 'entities_id',
+        '_zentra_items_deviceharddrives'     => 'entities_id',
+        '_zentra_items_devicememories'       => 'entities_id',
+        '_zentra_items_devicemotherboards'   => 'entities_id',
+        '_zentra_items_devicenetworkcards'   => 'entities_id',
+        '_zentra_items_devicepcis'           => 'entities_id',
+        '_zentra_items_devicepowersupplies'  => 'entities_id',
+        '_zentra_items_deviceprocessors'     => 'entities_id',
+        '_zentra_items_devicesensors'        => 'entities_id',
+        '_zentra_items_devicesimcards'       => 'entities_id',
+        '_zentra_items_devicesoundcards'     => 'entities_id',
+        '_zentra_items_disks'                => 'entities_id',
+        '_zentra_items_operatingsystems'     => 'entities_id',
+        '_zentra_items_softwareversions'     => 'entities_id',
+        '_zentra_itemvirtualmachines'        => 'entities_id',
+        'zentra_itilcategories'              => 'entities_id',
+        'zentra_itilfollowuptemplates'       => 'entities_id',
+        'zentra_itilvalidationtemplates'     => 'entities_id',
+        'zentra_knowbaseitemcategories'      => 'entities_id',
+        'zentra_knowbaseitems'               => 'entities_id',
+        'zentra_knowbaseitems_profiles'      => 'entities_id',
+        'zentra_lineoperators'               => 'entities_id',
+        'zentra_lines'                       => 'entities_id',
+        'zentra_links'                       => 'entities_id',
+        'zentra_locations'                   => 'entities_id',
+        'zentra_monitors'                    => 'entities_id',
+        '_zentra_networkaliases'             => 'entities_id',
+        'zentra_networkequipments'           => 'entities_id',
+        'zentra_networknames'                => 'entities_id',
+        '_zentra_networkports'               => 'entities_id',
+        'zentra_networkporttypes'            => 'entities_id',
+        'zentra_notifications'               => 'entities_id',
+        '_zentra_olalevels'                  => 'entities_id',
+        '_zentra_olas'                       => 'entities_id',
+        'zentra_passivedcequipments'         => 'entities_id',
+        'zentra_pcivendors'                  => 'entities_id',
+        'zentra_pdus'                        => 'entities_id',
+        'zentra_pdutypes'                    => 'entities_id',
+        'zentra_pendingreasons'              => 'entities_id',
+        'zentra_peripherals'                 => 'entities_id',
+        'zentra_phones'                      => 'entities_id',
+        'zentra_planningexternalevents'      => 'entities_id',
+        'zentra_planningexternaleventtemplates' => 'entities_id',
+        'zentra_printers'                    => 'entities_id',
+        '_zentra_problemcosts'               => 'entities_id',
+        'zentra_problems'                    => 'entities_id',
+        'zentra_problemtemplates'            => 'entities_id',
+        'zentra_profiles_reminders'          => 'entities_id',
+        'zentra_profiles_rssfeeds'           => 'entities_id',
+        '_zentra_profiles_users'             => 'entities_id',
+        '_zentra_projectcosts'               => 'entities_id',
+        'zentra_projects'                    => 'entities_id',
+        '_zentra_projecttasks'               => 'entities_id',
+        'zentra_projecttasktemplates'        => 'entities_id',
+        'zentra_queuednotifications'         => 'entities_id',
+        'zentra_racks'                       => 'entities_id',
+        'zentra_racktypes'                   => 'entities_id',
+        'zentra_recurrentchanges'            => 'entities_id',
+        'zentra_refusedequipments'           => 'entities_id',
+        '_zentra_reservationitems'           => 'entities_id',
+        'zentra_rules'                       => 'entities_id',
+        'zentra_savedsearches'               => 'entities_id',
+        '_zentra_slalevels'                  => 'entities_id',
+        '_zentra_slas'                       => 'entities_id',
+        'zentra_slms'                        => 'entities_id',
+        'zentra_softwarelicenses'            => 'entities_id',
+        'zentra_softwarelicensetypes'        => 'entities_id',
+        'zentra_softwares'                   => 'entities_id',
+        '_zentra_softwareversions'           => 'entities_id',
+        'zentra_solutiontemplates'           => 'entities_id',
+        'zentra_solutiontypes'               => 'entities_id',
+        'zentra_states'                      => 'entities_id',
+        'zentra_suppliers'                   => 'entities_id',
+        'zentra_taskcategories'              => 'entities_id',
+        'zentra_tasktemplates'               => 'entities_id',
+        '_zentra_ticketcosts'                => 'entities_id',
+        'zentra_ticketrecurrents'            => 'entities_id',
+        'zentra_tickets'                     => 'entities_id',
+        'zentra_tickettemplates'             => 'entities_id',
+        '_zentra_ticketvalidations'          => 'entities_id',
+        'zentra_unmanageds'                  => 'entities_id',
+        'zentra_usbvendors'                  => 'entities_id',
+        'zentra_users'                       => 'entities_id',
+        'zentra_vlans'                       => 'entities_id',
+        'zentra_wifinetworks'                => 'entities_id',
+        'zentra_webhooks'                    => 'entities_id',
+        'zentra_queuedwebhooks'              => 'entities_id',
     ],
 
-    'glpi_filesystems' => [
-        'glpi_items_disks' => 'filesystems_id',
+    'zentra_filesystems' => [
+        'zentra_items_disks' => 'filesystems_id',
     ],
 
-    'glpi_forms_answerssets' => [
-        "_glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
+    'zentra_forms_answerssets' => [
+        "_zentra_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
     ],
 
-    'glpi_forms_categories' => [
-        'glpi_forms_categories' => 'forms_categories_id',
-        'glpi_forms_forms' => 'forms_categories_id',
-        'glpi_knowbaseitems' => 'forms_categories_id',
+    'zentra_forms_categories' => [
+        'zentra_forms_categories' => 'forms_categories_id',
+        'zentra_forms_forms' => 'forms_categories_id',
+        'zentra_knowbaseitems' => 'forms_categories_id',
     ],
 
-    'glpi_forms_forms' => [
-        "_glpi_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
-        "_glpi_forms_answerssets"                       => "forms_forms_id",
-        "_glpi_forms_destinations_formdestinations"     => "forms_forms_id",
-        "_glpi_forms_sections"                          => "forms_forms_id",
-        "_glpi_helpdesks_tiles_formtiles"               => "forms_forms_id",
+    'zentra_forms_forms' => [
+        "_zentra_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
+        "_zentra_forms_answerssets"                       => "forms_forms_id",
+        "_zentra_forms_destinations_formdestinations"     => "forms_forms_id",
+        "_zentra_forms_sections"                          => "forms_forms_id",
+        "_zentra_helpdesks_tiles_formtiles"               => "forms_forms_id",
     ],
 
-    'glpi_forms_sections' => [
-        "_glpi_forms_questions" => "forms_sections_id",
-        "_glpi_forms_comments" => "forms_sections_id",
+    'zentra_forms_sections' => [
+        "_zentra_forms_questions" => "forms_sections_id",
+        "_zentra_forms_comments" => "forms_sections_id",
     ],
 
-    'glpi_fqdns' => [
-        'glpi_networkaliases' => 'fqdns_id',
-        'glpi_networknames'   => 'fqdns_id',
+    'zentra_fqdns' => [
+        'zentra_networkaliases' => 'fqdns_id',
+        'zentra_networknames'   => 'fqdns_id',
     ],
 
-    'glpi_groups' => [
-        '_glpi_changes_groups'       => 'groups_id',
-        'glpi_changetasks'           => 'groups_id_tech',
-        'glpi_groups'                => 'groups_id',
-        '_glpi_groups_items'         => 'groups_id',
-        '_glpi_groups_knowbaseitems' => 'groups_id',
-        '_glpi_groups_problems'      => 'groups_id',
-        '_glpi_groups_reminders'     => 'groups_id',
-        '_glpi_groups_rssfeeds'      => 'groups_id',
-        '_glpi_groups_tickets'       => 'groups_id',
-        '_glpi_groups_users'         => 'groups_id',
-        'glpi_itilcategories'        => 'groups_id',
-        'glpi_planningexternalevents' => 'groups_id',
-        'glpi_problemtasks'           => 'groups_id_tech',
-        'glpi_projects'               => 'groups_id',
-        'glpi_tasktemplates'          => 'groups_id_tech',
-        'glpi_tickettasks'            => 'groups_id_tech',
-        'glpi_users'                  => 'groups_id',
-        'glpi_itilvalidationtemplates_targets' => 'groups_id',
+    'zentra_groups' => [
+        '_zentra_changes_groups'       => 'groups_id',
+        'zentra_changetasks'           => 'groups_id_tech',
+        'zentra_groups'                => 'groups_id',
+        '_zentra_groups_items'         => 'groups_id',
+        '_zentra_groups_knowbaseitems' => 'groups_id',
+        '_zentra_groups_problems'      => 'groups_id',
+        '_zentra_groups_reminders'     => 'groups_id',
+        '_zentra_groups_rssfeeds'      => 'groups_id',
+        '_zentra_groups_tickets'       => 'groups_id',
+        '_zentra_groups_users'         => 'groups_id',
+        'zentra_itilcategories'        => 'groups_id',
+        'zentra_planningexternalevents' => 'groups_id',
+        'zentra_problemtasks'           => 'groups_id_tech',
+        'zentra_projects'               => 'groups_id',
+        'zentra_tasktemplates'          => 'groups_id_tech',
+        'zentra_tickettasks'            => 'groups_id_tech',
+        'zentra_users'                  => 'groups_id',
+        'zentra_itilvalidationtemplates_targets' => 'groups_id',
     ],
 
-    'glpi_holidays' => [
-        '_glpi_calendars_holidays' => 'holidays_id',
+    'zentra_holidays' => [
+        '_zentra_calendars_holidays' => 'holidays_id',
     ],
 
-    'glpi_imageformats' => [
-        '_glpi_items_devicecameras_imageformats' => 'imageformats_id',
+    'zentra_imageformats' => [
+        '_zentra_items_devicecameras_imageformats' => 'imageformats_id',
     ],
 
-    'glpi_imageresolutions' => [
-        '_glpi_items_devicecameras_imageresolutions' => 'imageresolutions_id',
+    'zentra_imageresolutions' => [
+        '_zentra_items_devicecameras_imageresolutions' => 'imageresolutions_id',
     ],
 
-    'glpi_impactcontexts' => [
-        'glpi_impactitems' => 'impactcontexts_id',
+    'zentra_impactcontexts' => [
+        'zentra_impactitems' => 'impactcontexts_id',
     ],
 
-    'glpi_interfacetypes' => [
-        'glpi_devicecontrols'     => 'interfacetypes_id',
-        'glpi_devicedrives'       => 'interfacetypes_id',
-        'glpi_devicegraphiccards' => 'interfacetypes_id',
-        'glpi_deviceharddrives'   => 'interfacetypes_id',
+    'zentra_interfacetypes' => [
+        'zentra_devicecontrols'     => 'interfacetypes_id',
+        'zentra_devicedrives'       => 'interfacetypes_id',
+        'zentra_devicegraphiccards' => 'interfacetypes_id',
+        'zentra_deviceharddrives'   => 'interfacetypes_id',
     ],
 
-    'glpi_ipaddresses' => [
-        '_glpi_ipaddresses_ipnetworks' => 'ipaddresses_id',
+    'zentra_ipaddresses' => [
+        '_zentra_ipaddresses_ipnetworks' => 'ipaddresses_id',
     ],
 
-    'glpi_ipnetworks' => [
-        '_glpi_ipaddresses_ipnetworks' => 'ipnetworks_id',
-        'glpi_networknames'            => 'ipnetworks_id',
-        'glpi_ipnetworks'              => 'ipnetworks_id',
-        '_glpi_ipnetworks_vlans'       => 'ipnetworks_id',
+    'zentra_ipnetworks' => [
+        '_zentra_ipaddresses_ipnetworks' => 'ipnetworks_id',
+        'zentra_networknames'            => 'ipnetworks_id',
+        'zentra_ipnetworks'              => 'ipnetworks_id',
+        '_zentra_ipnetworks_vlans'       => 'ipnetworks_id',
     ],
 
-    'glpi_items_devicecameras' => [
-        '_glpi_items_devicecameras_imageformats' => 'items_devicecameras_id',
-        '_glpi_items_devicecameras_imageresolutions' => 'items_devicecameras_id',
+    'zentra_items_devicecameras' => [
+        '_zentra_items_devicecameras_imageformats' => 'items_devicecameras_id',
+        '_zentra_items_devicecameras_imageresolutions' => 'items_devicecameras_id',
     ],
 
-    'glpi_items_devicenetworkcards' => [
-        'glpi_networkportethernets'     => 'items_devicenetworkcards_id',
-        'glpi_networkportfiberchannels' => 'items_devicenetworkcards_id',
-        'glpi_networkportwifis'         => 'items_devicenetworkcards_id',
+    'zentra_items_devicenetworkcards' => [
+        'zentra_networkportethernets'     => 'items_devicenetworkcards_id',
+        'zentra_networkportfiberchannels' => 'items_devicenetworkcards_id',
+        'zentra_networkportwifis'         => 'items_devicenetworkcards_id',
     ],
 
-    'glpi_itilcategories' => [
-        'glpi_changes'        => 'itilcategories_id',
-        'glpi_itilcategories' => 'itilcategories_id',
-        'glpi_problems'       => 'itilcategories_id',
-        'glpi_tickets'        => 'itilcategories_id',
+    'zentra_itilcategories' => [
+        'zentra_changes'        => 'itilcategories_id',
+        'zentra_itilcategories' => 'itilcategories_id',
+        'zentra_problems'       => 'itilcategories_id',
+        'zentra_tickets'        => 'itilcategories_id',
     ],
 
-    'glpi_itilfollowups' => [
-        'glpi_itilsolutions' => 'itilfollowups_id',
+    'zentra_itilfollowups' => [
+        'zentra_itilsolutions' => 'itilfollowups_id',
     ],
 
-    'glpi_itilfollowuptemplates' => [
-        'glpi_pendingreasons' => 'itilfollowuptemplates_id',
+    'zentra_itilfollowuptemplates' => [
+        'zentra_pendingreasons' => 'itilfollowuptemplates_id',
     ],
 
-    'glpi_itilvalidationtemplates' => [
-        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
-        'glpi_changevalidations' => 'itilvalidationtemplates_id',
-        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
+    'zentra_itilvalidationtemplates' => [
+        '_zentra_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
+        'zentra_changevalidations' => 'itilvalidationtemplates_id',
+        'zentra_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
 
-    'glpi_itils_validationsteps' => [
-        'glpi_ticketvalidations' => 'itils_validationsteps_id',
-        'glpi_changevalidations' => 'itils_validationsteps_id',
+    'zentra_itils_validationsteps' => [
+        'zentra_ticketvalidations' => 'itils_validationsteps_id',
+        'zentra_changevalidations' => 'itils_validationsteps_id',
     ],
 
-    'glpi_knowbaseitemcategories' => [
-        'glpi_itilcategories'            => 'knowbaseitemcategories_id',
-        'glpi_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
-        '_glpi_knowbaseitems_knowbaseitemcategories' => 'knowbaseitemcategories_id',
-        'glpi_taskcategories'            => 'knowbaseitemcategories_id',
+    'zentra_knowbaseitemcategories' => [
+        'zentra_itilcategories'            => 'knowbaseitemcategories_id',
+        'zentra_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
+        '_zentra_knowbaseitems_knowbaseitemcategories' => 'knowbaseitemcategories_id',
+        'zentra_taskcategories'            => 'knowbaseitemcategories_id',
     ],
 
-    'glpi_knowbaseitems' => [
-        '_glpi_entities_knowbaseitems'   => 'knowbaseitems_id',
-        '_glpi_groups_knowbaseitems'     => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_comments'   => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_items'      => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_profiles'   => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_revisions'  => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_users'      => 'knowbaseitems_id',
-        '_glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_knowbaseitemcategories' => 'knowbaseitems_id',
+    'zentra_knowbaseitems' => [
+        '_zentra_entities_knowbaseitems'   => 'knowbaseitems_id',
+        '_zentra_groups_knowbaseitems'     => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_comments'   => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_items'      => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_profiles'   => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_revisions'  => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_users'      => 'knowbaseitems_id',
+        '_zentra_knowbaseitemtranslations' => 'knowbaseitems_id',
+        '_zentra_knowbaseitems_knowbaseitemcategories' => 'knowbaseitems_id',
     ],
 
-    'glpi_knowbaseitems_comments' => [
-        'glpi_knowbaseitems_comments' => 'parent_comment_id',
+    'zentra_knowbaseitems_comments' => [
+        'zentra_knowbaseitems_comments' => 'parent_comment_id',
     ],
 
-    'glpi_lineoperators' => [
-        'glpi_lines' => 'lineoperators_id',
+    'zentra_lineoperators' => [
+        'zentra_lines' => 'lineoperators_id',
     ],
 
-    'glpi_lines' => [
-        'glpi_items_devicesimcards' => 'lines_id',
-        '_glpi_items_lines' => 'lines_id',
+    'zentra_lines' => [
+        'zentra_items_devicesimcards' => 'lines_id',
+        '_zentra_items_lines' => 'lines_id',
     ],
 
-    'glpi_linetypes' => [
-        'glpi_lines' => 'linetypes_id',
+    'zentra_linetypes' => [
+        'zentra_lines' => 'linetypes_id',
     ],
 
-    'glpi_links' => [
-        '_glpi_links_itemtypes' => 'links_id',
+    'zentra_links' => [
+        '_zentra_links_itemtypes' => 'links_id',
     ],
 
-    'glpi_locations' => [
-        'glpi_appliances'                => 'locations_id',
-        'glpi_assets_assets'             => 'locations_id',
-        'glpi_budgets'                   => 'locations_id',
-        'glpi_cartridgeitems'            => 'locations_id',
-        'glpi_certificates'              => 'locations_id',
-        'glpi_changes'                   => 'locations_id',
-        'glpi_computers'                 => 'locations_id',
-        'glpi_contracts'                 => 'locations_id',
-        'glpi_consumableitems'           => 'locations_id',
-        'glpi_databaseinstances'         => 'locations_id',
-        'glpi_datacenters'               => 'locations_id',
-        'glpi_dcrooms'                   => 'locations_id',
-        'glpi_devicegenerics'            => 'locations_id',
-        'glpi_devicesensors'             => 'locations_id',
-        'glpi_enclosures'                => 'locations_id',
-        'glpi_items_devicebatteries'     => 'locations_id',
-        'glpi_items_devicecameras'       => 'locations_id',
-        'glpi_items_devicecases'         => 'locations_id',
-        'glpi_items_devicecontrols'      => 'locations_id',
-        'glpi_items_devicedrives'        => 'locations_id',
-        'glpi_items_devicefirmwares'     => 'locations_id',
-        'glpi_items_devicegenerics'      => 'locations_id',
-        'glpi_items_devicegraphiccards'  => 'locations_id',
-        'glpi_items_deviceharddrives'    => 'locations_id',
-        'glpi_items_devicememories'      => 'locations_id',
-        'glpi_items_devicemotherboards'  => 'locations_id',
-        'glpi_items_devicenetworkcards'  => 'locations_id',
-        'glpi_items_devicepcis'          => 'locations_id',
-        'glpi_items_devicepowersupplies' => 'locations_id',
-        'glpi_items_deviceprocessors'    => 'locations_id',
-        'glpi_items_devicesensors'       => 'locations_id',
-        'glpi_items_devicesimcards'      => 'locations_id',
-        'glpi_items_devicesoundcards'    => 'locations_id',
-        'glpi_lines'                     => 'locations_id',
-        'glpi_locations'                 => 'locations_id',
-        'glpi_monitors'                  => 'locations_id',
-        'glpi_networkequipments'         => 'locations_id',
-        'glpi_passivedcequipments'       => 'locations_id',
-        'glpi_pdus'                      => 'locations_id',
-        'glpi_peripherals'               => 'locations_id',
-        'glpi_phones'                    => 'locations_id',
-        'glpi_printers'                  => 'locations_id',
-        'glpi_problems'                  => 'locations_id',
-        'glpi_racks'                     => 'locations_id',
-        'glpi_sockets'                   => 'locations_id',
-        'glpi_softwarelicenses'          => 'locations_id',
-        'glpi_softwares'                 => 'locations_id',
-        'glpi_tickets'                   => 'locations_id',
-        'glpi_unmanageds'                => 'locations_id',
-        'glpi_users'                     => 'locations_id',
+    'zentra_locations' => [
+        'zentra_appliances'                => 'locations_id',
+        'zentra_assets_assets'             => 'locations_id',
+        'zentra_budgets'                   => 'locations_id',
+        'zentra_cartridgeitems'            => 'locations_id',
+        'zentra_certificates'              => 'locations_id',
+        'zentra_changes'                   => 'locations_id',
+        'zentra_computers'                 => 'locations_id',
+        'zentra_contracts'                 => 'locations_id',
+        'zentra_consumableitems'           => 'locations_id',
+        'zentra_databaseinstances'         => 'locations_id',
+        'zentra_datacenters'               => 'locations_id',
+        'zentra_dcrooms'                   => 'locations_id',
+        'zentra_devicegenerics'            => 'locations_id',
+        'zentra_devicesensors'             => 'locations_id',
+        'zentra_enclosures'                => 'locations_id',
+        'zentra_items_devicebatteries'     => 'locations_id',
+        'zentra_items_devicecameras'       => 'locations_id',
+        'zentra_items_devicecases'         => 'locations_id',
+        'zentra_items_devicecontrols'      => 'locations_id',
+        'zentra_items_devicedrives'        => 'locations_id',
+        'zentra_items_devicefirmwares'     => 'locations_id',
+        'zentra_items_devicegenerics'      => 'locations_id',
+        'zentra_items_devicegraphiccards'  => 'locations_id',
+        'zentra_items_deviceharddrives'    => 'locations_id',
+        'zentra_items_devicememories'      => 'locations_id',
+        'zentra_items_devicemotherboards'  => 'locations_id',
+        'zentra_items_devicenetworkcards'  => 'locations_id',
+        'zentra_items_devicepcis'          => 'locations_id',
+        'zentra_items_devicepowersupplies' => 'locations_id',
+        'zentra_items_deviceprocessors'    => 'locations_id',
+        'zentra_items_devicesensors'       => 'locations_id',
+        'zentra_items_devicesimcards'      => 'locations_id',
+        'zentra_items_devicesoundcards'    => 'locations_id',
+        'zentra_lines'                     => 'locations_id',
+        'zentra_locations'                 => 'locations_id',
+        'zentra_monitors'                  => 'locations_id',
+        'zentra_networkequipments'         => 'locations_id',
+        'zentra_passivedcequipments'       => 'locations_id',
+        'zentra_pdus'                      => 'locations_id',
+        'zentra_peripherals'               => 'locations_id',
+        'zentra_phones'                    => 'locations_id',
+        'zentra_printers'                  => 'locations_id',
+        'zentra_problems'                  => 'locations_id',
+        'zentra_racks'                     => 'locations_id',
+        'zentra_sockets'                   => 'locations_id',
+        'zentra_softwarelicenses'          => 'locations_id',
+        'zentra_softwares'                 => 'locations_id',
+        'zentra_tickets'                   => 'locations_id',
+        'zentra_unmanageds'                => 'locations_id',
+        'zentra_users'                     => 'locations_id',
     ],
 
-    'glpi_mailcollectors' => [
-        'glpi_notimportedemails' => 'mailcollectors_id',
+    'zentra_mailcollectors' => [
+        'zentra_notimportedemails' => 'mailcollectors_id',
     ],
 
-    'glpi_manufacturers' => [
-        'glpi_appliances'          => 'manufacturers_id',
-        'glpi_assets_assets'       => 'manufacturers_id',
-        'glpi_cartridgeitems'      => 'manufacturers_id',
-        'glpi_certificates'        => 'manufacturers_id',
-        'glpi_itemantiviruses'    => 'manufacturers_id',
-        'glpi_computers'           => 'manufacturers_id',
-        'glpi_consumableitems'     => 'manufacturers_id',
-        'glpi_databaseinstances'   => 'manufacturers_id',
-        'glpi_devicebatteries'     => 'manufacturers_id',
-        'glpi_devicecameras'       => 'manufacturers_id',
-        'glpi_devicecases'         => 'manufacturers_id',
-        'glpi_devicecontrols'      => 'manufacturers_id',
-        'glpi_devicedrives'        => 'manufacturers_id',
-        'glpi_devicefirmwares'     => 'manufacturers_id',
-        'glpi_devicegenerics'      => 'manufacturers_id',
-        'glpi_devicegraphiccards'  => 'manufacturers_id',
-        'glpi_deviceharddrives'    => 'manufacturers_id',
-        'glpi_devicememories'      => 'manufacturers_id',
-        'glpi_devicemotherboards'  => 'manufacturers_id',
-        'glpi_devicenetworkcards'  => 'manufacturers_id',
-        'glpi_devicepcis'          => 'manufacturers_id',
-        'glpi_devicepowersupplies' => 'manufacturers_id',
-        'glpi_deviceprocessors'    => 'manufacturers_id',
-        'glpi_devicesensors'       => 'manufacturers_id',
-        'glpi_devicesimcards'      => 'manufacturers_id',
-        'glpi_devicesoundcards'    => 'manufacturers_id',
-        'glpi_enclosures'          => 'manufacturers_id',
-        'glpi_monitors'            => 'manufacturers_id',
-        'glpi_networkequipments'   => 'manufacturers_id',
-        'glpi_passivedcequipments' => 'manufacturers_id',
-        'glpi_pdus'                => 'manufacturers_id',
-        'glpi_peripherals'         => 'manufacturers_id',
-        'glpi_phones'              => 'manufacturers_id',
-        'glpi_printers'            => 'manufacturers_id',
-        'glpi_racks'               => 'manufacturers_id',
-        'glpi_softwarelicenses'    => 'manufacturers_id',
-        'glpi_softwares'           => 'manufacturers_id',
-        'glpi_unmanageds'          => 'manufacturers_id',
+    'zentra_manufacturers' => [
+        'zentra_appliances'          => 'manufacturers_id',
+        'zentra_assets_assets'       => 'manufacturers_id',
+        'zentra_cartridgeitems'      => 'manufacturers_id',
+        'zentra_certificates'        => 'manufacturers_id',
+        'zentra_itemantiviruses'    => 'manufacturers_id',
+        'zentra_computers'           => 'manufacturers_id',
+        'zentra_consumableitems'     => 'manufacturers_id',
+        'zentra_databaseinstances'   => 'manufacturers_id',
+        'zentra_devicebatteries'     => 'manufacturers_id',
+        'zentra_devicecameras'       => 'manufacturers_id',
+        'zentra_devicecases'         => 'manufacturers_id',
+        'zentra_devicecontrols'      => 'manufacturers_id',
+        'zentra_devicedrives'        => 'manufacturers_id',
+        'zentra_devicefirmwares'     => 'manufacturers_id',
+        'zentra_devicegenerics'      => 'manufacturers_id',
+        'zentra_devicegraphiccards'  => 'manufacturers_id',
+        'zentra_deviceharddrives'    => 'manufacturers_id',
+        'zentra_devicememories'      => 'manufacturers_id',
+        'zentra_devicemotherboards'  => 'manufacturers_id',
+        'zentra_devicenetworkcards'  => 'manufacturers_id',
+        'zentra_devicepcis'          => 'manufacturers_id',
+        'zentra_devicepowersupplies' => 'manufacturers_id',
+        'zentra_deviceprocessors'    => 'manufacturers_id',
+        'zentra_devicesensors'       => 'manufacturers_id',
+        'zentra_devicesimcards'      => 'manufacturers_id',
+        'zentra_devicesoundcards'    => 'manufacturers_id',
+        'zentra_enclosures'          => 'manufacturers_id',
+        'zentra_monitors'            => 'manufacturers_id',
+        'zentra_networkequipments'   => 'manufacturers_id',
+        'zentra_passivedcequipments' => 'manufacturers_id',
+        'zentra_pdus'                => 'manufacturers_id',
+        'zentra_peripherals'         => 'manufacturers_id',
+        'zentra_phones'              => 'manufacturers_id',
+        'zentra_printers'            => 'manufacturers_id',
+        'zentra_racks'               => 'manufacturers_id',
+        'zentra_softwarelicenses'    => 'manufacturers_id',
+        'zentra_softwares'           => 'manufacturers_id',
+        'zentra_unmanageds'          => 'manufacturers_id',
     ],
 
-    'glpi_monitormodels' => [
-        'glpi_monitors' => 'monitormodels_id',
+    'zentra_monitormodels' => [
+        'zentra_monitors' => 'monitormodels_id',
     ],
 
-    'glpi_monitortypes' => [
-        'glpi_monitors' => 'monitortypes_id',
+    'zentra_monitortypes' => [
+        'zentra_monitors' => 'monitortypes_id',
     ],
 
-    'glpi_networkequipmentmodels' => [
-        'glpi_networkequipments' => 'networkequipmentmodels_id',
+    'zentra_networkequipmentmodels' => [
+        'zentra_networkequipments' => 'networkequipmentmodels_id',
     ],
 
-    'glpi_networkequipmenttypes' => [
-        'glpi_networkequipments' => 'networkequipmenttypes_id',
+    'zentra_networkequipmenttypes' => [
+        'zentra_networkequipments' => 'networkequipmenttypes_id',
     ],
 
-    'glpi_networknames' => [
-        '_glpi_networkaliases' => 'networknames_id',
+    'zentra_networknames' => [
+        '_zentra_networkaliases' => 'networknames_id',
     ],
 
-    'glpi_networkportfiberchanneltypes' => [
-        'glpi_networkportfiberchannels' => 'networkportfiberchanneltypes_id',
+    'zentra_networkportfiberchanneltypes' => [
+        'zentra_networkportfiberchannels' => 'networkportfiberchanneltypes_id',
     ],
 
-    'glpi_networkports' => [
-        '_glpi_networkportaggregates'     => 'networkports_id',
-        '_glpi_networkportaliases'        => 'networkports_id',
-        'glpi_networkportaliases'         => 'networkports_id_alias',
-        '_glpi_networkportconnectionlogs'  => [
+    'zentra_networkports' => [
+        '_zentra_networkportaggregates'     => 'networkports_id',
+        '_zentra_networkportaliases'        => 'networkports_id',
+        'zentra_networkportaliases'         => 'networkports_id_alias',
+        '_zentra_networkportconnectionlogs'  => [
             'networkports_id_destination',
             'networkports_id_source',
         ],
-        '_glpi_networkportdialups'        => 'networkports_id',
-        '_glpi_networkportethernets'      => 'networkports_id',
-        '_glpi_networkportfiberchannels'  => 'networkports_id',
-        '_glpi_networkportlocals'         => 'networkports_id',
-        '_glpi_networkportmetrics'        => 'networkports_id',
-        '_glpi_networkports_networkports' => [
+        '_zentra_networkportdialups'        => 'networkports_id',
+        '_zentra_networkportethernets'      => 'networkports_id',
+        '_zentra_networkportfiberchannels'  => 'networkports_id',
+        '_zentra_networkportlocals'         => 'networkports_id',
+        '_zentra_networkportmetrics'        => 'networkports_id',
+        '_zentra_networkports_networkports' => [
             'networkports_id_1',
             'networkports_id_2',
         ],
-        '_glpi_networkports_vlans'        => 'networkports_id',
-        '_glpi_networkportwifis'          => 'networkports_id',
-        'glpi_sockets'                    => 'networkports_id',
+        '_zentra_networkports_vlans'        => 'networkports_id',
+        '_zentra_networkportwifis'          => 'networkports_id',
+        'zentra_sockets'                    => 'networkports_id',
     ],
 
-    'glpi_networkportwifis' => [
-        'glpi_networkportwifis' => 'networkportwifis_id',
+    'zentra_networkportwifis' => [
+        'zentra_networkportwifis' => 'networkportwifis_id',
     ],
 
-    'glpi_networks' => [
-        'glpi_computers'         => 'networks_id',
-        'glpi_networkequipments' => 'networks_id',
-        'glpi_printers'          => 'networks_id',
-        'glpi_unmanageds'        => 'networks_id',
+    'zentra_networks' => [
+        'zentra_computers'         => 'networks_id',
+        'zentra_networkequipments' => 'networks_id',
+        'zentra_printers'          => 'networks_id',
+        'zentra_unmanageds'        => 'networks_id',
     ],
 
-    'glpi_notifications' => [
-        '_glpi_notifications_notificationtemplates' => 'notifications_id',
-        '_glpi_notificationtargets'                 => 'notifications_id',
+    'zentra_notifications' => [
+        '_zentra_notifications_notificationtemplates' => 'notifications_id',
+        '_zentra_notificationtargets'                 => 'notifications_id',
     ],
 
-    'glpi_notificationtemplates' => [
-        '_glpi_notifications_notificationtemplates' => 'notificationtemplates_id',
-        '_glpi_notificationtemplatetranslations'    => 'notificationtemplates_id',
-        '_glpi_queuednotifications'                 => 'notificationtemplates_id',
+    'zentra_notificationtemplates' => [
+        '_zentra_notifications_notificationtemplates' => 'notificationtemplates_id',
+        '_zentra_notificationtemplatetranslations'    => 'notificationtemplates_id',
+        '_zentra_queuednotifications'                 => 'notificationtemplates_id',
     ],
 
-    'glpi_olalevels' => [
-        '_glpi_olalevelactions'   => 'olalevels_id',
-        '_glpi_olalevelcriterias' => 'olalevels_id',
-        '_glpi_olalevels_tickets' => 'olalevels_id',
-        'glpi_tickets'            => 'olalevels_id_ttr',
+    'zentra_olalevels' => [
+        '_zentra_olalevelactions'   => 'olalevels_id',
+        '_zentra_olalevelcriterias' => 'olalevels_id',
+        '_zentra_olalevels_tickets' => 'olalevels_id',
+        'zentra_tickets'            => 'olalevels_id_ttr',
     ],
 
-    'glpi_olas' => [
-        'glpi_olalevels' => 'olas_id',
-        'glpi_tickets'   => [
+    'zentra_olas' => [
+        'zentra_olalevels' => 'olas_id',
+        'zentra_tickets'   => [
             'olas_id_ttr',
             'olas_id_tto',
         ],
     ],
 
-    'glpi_operatingsystemarchitectures' => [
-        'glpi_items_operatingsystems' => 'operatingsystemarchitectures_id',
+    'zentra_operatingsystemarchitectures' => [
+        'zentra_items_operatingsystems' => 'operatingsystemarchitectures_id',
     ],
 
-    'glpi_operatingsystemeditions' => [
-        'glpi_items_operatingsystems' => 'operatingsystemeditions_id',
+    'zentra_operatingsystemeditions' => [
+        'zentra_items_operatingsystems' => 'operatingsystemeditions_id',
     ],
 
-    'glpi_operatingsystemkernels' => [
-        'glpi_operatingsystemkernelversions' => 'operatingsystemkernels_id',
+    'zentra_operatingsystemkernels' => [
+        'zentra_operatingsystemkernelversions' => 'operatingsystemkernels_id',
     ],
 
-    'glpi_operatingsystemkernelversions' => [
-        'glpi_items_operatingsystems' => 'operatingsystemkernelversions_id',
+    'zentra_operatingsystemkernelversions' => [
+        'zentra_items_operatingsystems' => 'operatingsystemkernelversions_id',
     ],
 
-    'glpi_operatingsystems' => [
-        'glpi_items_operatingsystems' => 'operatingsystems_id',
-        'glpi_softwareversions'        => 'operatingsystems_id',
+    'zentra_operatingsystems' => [
+        'zentra_items_operatingsystems' => 'operatingsystems_id',
+        'zentra_softwareversions'        => 'operatingsystems_id',
     ],
 
-    'glpi_operatingsystemservicepacks' => [
-        'glpi_items_operatingsystems' => 'operatingsystemservicepacks_id',
+    'zentra_operatingsystemservicepacks' => [
+        'zentra_items_operatingsystems' => 'operatingsystemservicepacks_id',
     ],
 
-    'glpi_operatingsystemversions' => [
-        'glpi_items_operatingsystems' => 'operatingsystemversions_id',
+    'zentra_operatingsystemversions' => [
+        'zentra_items_operatingsystems' => 'operatingsystemversions_id',
     ],
 
-    'glpi_passivedcequipmentmodels' => [
-        'glpi_passivedcequipments' => 'passivedcequipmentmodels_id',
+    'zentra_passivedcequipmentmodels' => [
+        'zentra_passivedcequipments' => 'passivedcequipmentmodels_id',
     ],
 
-    'glpi_passivedcequipmenttypes' => [
-        'glpi_passivedcequipments' => 'passivedcequipmenttypes_id',
+    'zentra_passivedcequipmenttypes' => [
+        'zentra_passivedcequipments' => 'passivedcequipmenttypes_id',
     ],
 
-    'glpi_pendingreasons' => [
-        '_glpi_pendingreasons_items' => 'pendingreasons_id',
-        'glpi_itilreminders' => 'pendingreasons_id',
-        'glpi_itilfollowuptemplates' => 'pendingreasons_id',
-        'glpi_tasktemplates' => 'pendingreasons_id',
+    'zentra_pendingreasons' => [
+        '_zentra_pendingreasons_items' => 'pendingreasons_id',
+        'zentra_itilreminders' => 'pendingreasons_id',
+        'zentra_itilfollowuptemplates' => 'pendingreasons_id',
+        'zentra_tasktemplates' => 'pendingreasons_id',
     ],
 
-    'glpi_pdumodels' => [
-        'glpi_pdus' => 'pdumodels_id',
+    'zentra_pdumodels' => [
+        'zentra_pdus' => 'pdumodels_id',
     ],
 
-    'glpi_pdus' => [
-        '_glpi_pdus_racks' => 'pdus_id',
+    'zentra_pdus' => [
+        '_zentra_pdus_racks' => 'pdus_id',
     ],
 
-    'glpi_pdutypes' => [
-        'glpi_pdus' => 'pdutypes_id',
+    'zentra_pdutypes' => [
+        'zentra_pdus' => 'pdutypes_id',
     ],
 
-    'glpi_peripheralmodels' => [
-        'glpi_peripherals' => 'peripheralmodels_id',
+    'zentra_peripheralmodels' => [
+        'zentra_peripherals' => 'peripheralmodels_id',
     ],
 
-    'glpi_peripheraltypes' => [
-        'glpi_peripherals' => 'peripheraltypes_id',
+    'zentra_peripheraltypes' => [
+        'zentra_peripherals' => 'peripheraltypes_id',
     ],
 
-    'glpi_phonemodels' => [
-        'glpi_phones' => 'phonemodels_id',
+    'zentra_phonemodels' => [
+        'zentra_phones' => 'phonemodels_id',
     ],
 
-    'glpi_phonepowersupplies' => [
-        'glpi_phones' => 'phonepowersupplies_id',
+    'zentra_phonepowersupplies' => [
+        'zentra_phones' => 'phonepowersupplies_id',
     ],
 
-    'glpi_phonetypes' => [
-        'glpi_phones' => 'phonetypes_id',
+    'zentra_phonetypes' => [
+        'zentra_phones' => 'phonetypes_id',
     ],
 
-    'glpi_planningeventcategories' => [
-        'glpi_planningexternalevents' => 'planningeventcategories_id',
-        'glpi_planningexternaleventtemplates' => 'planningeventcategories_id',
+    'zentra_planningeventcategories' => [
+        'zentra_planningexternalevents' => 'planningeventcategories_id',
+        'zentra_planningexternaleventtemplates' => 'planningeventcategories_id',
     ],
 
-    'glpi_planningexternaleventtemplates' => [
-        'glpi_planningexternalevents' => 'planningexternaleventtemplates_id',
+    'zentra_planningexternaleventtemplates' => [
+        'zentra_planningexternalevents' => 'planningexternaleventtemplates_id',
     ],
 
-    'glpi_plugs' => [
-        '_glpi_items_plugs' => 'plugs_id',
+    'zentra_plugs' => [
+        '_zentra_items_plugs' => 'plugs_id',
     ],
 
-    'glpi_printermodels' => [
-        '_glpi_cartridgeitems_printermodels' => 'printermodels_id',
-        'glpi_printers'                      => 'printermodels_id',
+    'zentra_printermodels' => [
+        '_zentra_cartridgeitems_printermodels' => 'printermodels_id',
+        'zentra_printers'                      => 'printermodels_id',
     ],
 
-    'glpi_printers' => [
-        '_glpi_cartridges'              => 'printers_id',
-        '_glpi_printerlogs'             => ['items_id', 'itemtype'],
-        '_glpi_printers_cartridgeinfos' => 'printers_id',
+    'zentra_printers' => [
+        '_zentra_cartridges'              => 'printers_id',
+        '_zentra_printerlogs'             => ['items_id', 'itemtype'],
+        '_zentra_printers_cartridgeinfos' => 'printers_id',
     ],
 
-    'glpi_printertypes' => [
-        'glpi_printers' => 'printertypes_id',
+    'zentra_printertypes' => [
+        'zentra_printers' => 'printertypes_id',
     ],
 
-    'glpi_problems' => [
-        '_glpi_changes_problems'   => 'problems_id',
-        '_glpi_groups_problems'    => 'problems_id',
-        '_glpi_items_problems'     => 'problems_id',
-        '_glpi_itils_projects'     => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'      => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'      => [['items_id', 'itemtype']],
-        '_glpi_problemcosts'       => 'problems_id',
-        '_glpi_problems_problems'  => [
+    'zentra_problems' => [
+        '_zentra_changes_problems'   => 'problems_id',
+        '_zentra_groups_problems'    => 'problems_id',
+        '_zentra_items_problems'     => 'problems_id',
+        '_zentra_itils_projects'     => [['items_id', 'itemtype']],
+        '_zentra_itilfollowups'      => [['items_id', 'itemtype']],
+        '_zentra_itilsolutions'      => [['items_id', 'itemtype']],
+        '_zentra_problemcosts'       => 'problems_id',
+        '_zentra_problems_problems'  => [
             'problems_id_1',
             'problems_id_2',
         ],
-        '_glpi_problems_suppliers' => 'problems_id',
-        '_glpi_problems_tickets'   => 'problems_id',
-        '_glpi_problems_users'     => 'problems_id',
-        '_glpi_problemtasks'       => 'problems_id',
+        '_zentra_problems_suppliers' => 'problems_id',
+        '_zentra_problems_tickets'   => 'problems_id',
+        '_zentra_problems_users'     => 'problems_id',
+        '_zentra_problemtasks'       => 'problems_id',
     ],
 
-    'glpi_problemtemplates' => [
-        'glpi_entities'                         => 'problemtemplates_id',
-        'glpi_itilcategories'                   => [
+    'zentra_problemtemplates' => [
+        'zentra_entities'                         => 'problemtemplates_id',
+        'zentra_itilcategories'                   => [
             'problemtemplates_id',
         ],
-        'glpi_problems'                         => 'problemtemplates_id',
-        '_glpi_problemtemplatehiddenfields'     => 'problemtemplates_id',
-        '_glpi_problemtemplatemandatoryfields'  => 'problemtemplates_id',
-        '_glpi_problemtemplatepredefinedfields' => 'problemtemplates_id',
-        '_glpi_problemtemplatereadonlyfields'   => 'problemtemplates_id',
-        'glpi_profiles'                         => 'problemtemplates_id',
+        'zentra_problems'                         => 'problemtemplates_id',
+        '_zentra_problemtemplatehiddenfields'     => 'problemtemplates_id',
+        '_zentra_problemtemplatemandatoryfields'  => 'problemtemplates_id',
+        '_zentra_problemtemplatepredefinedfields' => 'problemtemplates_id',
+        '_zentra_problemtemplatereadonlyfields'   => 'problemtemplates_id',
+        'zentra_profiles'                         => 'problemtemplates_id',
     ],
 
-    'glpi_profiles' => [
-        '_glpi_knowbaseitems_profiles'         => 'profiles_id',
-        '_glpi_profilerights'                  => 'profiles_id',
-        '_glpi_profiles_reminders'             => 'profiles_id',
-        '_glpi_profiles_rssfeeds'              => 'profiles_id',
-        '_glpi_profiles_users'                 => 'profiles_id',
-        'glpi_users'                           => 'profiles_id',
+    'zentra_profiles' => [
+        '_zentra_knowbaseitems_profiles'         => 'profiles_id',
+        '_zentra_profilerights'                  => 'profiles_id',
+        '_zentra_profiles_reminders'             => 'profiles_id',
+        '_zentra_profiles_rssfeeds'              => 'profiles_id',
+        '_zentra_profiles_users'                 => 'profiles_id',
+        'zentra_users'                           => 'profiles_id',
     ],
 
-    'glpi_projects' => [
-        '_glpi_itils_projects'      => 'projects_id',
-        '_glpi_items_projects'      => 'projects_id',
-        '_glpi_projectcosts'        => 'projects_id',
-        'glpi_projects'             => 'projects_id',
-        '_glpi_projecttasks'        => 'projects_id',
-        'glpi_projecttasktemplates' => 'projects_id',
-        '_glpi_projectteams'        => 'projects_id',
+    'zentra_projects' => [
+        '_zentra_itils_projects'      => 'projects_id',
+        '_zentra_items_projects'      => 'projects_id',
+        '_zentra_projectcosts'        => 'projects_id',
+        'zentra_projects'             => 'projects_id',
+        '_zentra_projecttasks'        => 'projects_id',
+        'zentra_projecttasktemplates' => 'projects_id',
+        '_zentra_projectteams'        => 'projects_id',
     ],
 
-    'glpi_projectstates' => [
-        'glpi_projects'             => 'projectstates_id',
-        'glpi_projecttasks'         => 'projectstates_id',
-        'glpi_projecttasktemplates' => 'projectstates_id',
+    'zentra_projectstates' => [
+        'zentra_projects'             => 'projectstates_id',
+        'zentra_projecttasks'         => 'projectstates_id',
+        'zentra_projecttasktemplates' => 'projectstates_id',
     ],
 
-    'glpi_projecttasks' => [
-        '_glpi_projecttasklinks'     => [
+    'zentra_projecttasks' => [
+        '_zentra_projecttasklinks'     => [
             'projecttasks_id_source',
             'projecttasks_id_target',
         ],
-        'glpi_projecttasks'          => 'projecttasks_id',
-        '_glpi_projecttasks_tickets' => 'projecttasks_id',
-        '_glpi_projecttaskteams'     => 'projecttasks_id',
-        'glpi_projecttasktemplates'  => 'projecttasks_id',
+        'zentra_projecttasks'          => 'projecttasks_id',
+        '_zentra_projecttasks_tickets' => 'projecttasks_id',
+        '_zentra_projecttaskteams'     => 'projecttasks_id',
+        'zentra_projecttasktemplates'  => 'projecttasks_id',
     ],
 
-    'glpi_projecttasktemplates' => [
-        'glpi_projecttasks' => 'projecttasktemplates_id',
+    'zentra_projecttasktemplates' => [
+        'zentra_projecttasks' => 'projecttasktemplates_id',
     ],
 
-    'glpi_projecttasktypes' => [
-        'glpi_projecttasks'         => 'projecttasktypes_id',
-        'glpi_projecttasktemplates' => 'projecttasktypes_id',
+    'zentra_projecttasktypes' => [
+        'zentra_projecttasks'         => 'projecttasktypes_id',
+        'zentra_projecttasktemplates' => 'projecttasktypes_id',
     ],
 
-    'glpi_projecttypes' => [
-        'glpi_projects' => 'projecttypes_id',
+    'zentra_projecttypes' => [
+        'zentra_projects' => 'projecttypes_id',
     ],
 
-    'glpi_rackmodels' => [
-        'glpi_racks' => 'rackmodels_id',
+    'zentra_rackmodels' => [
+        'zentra_racks' => 'rackmodels_id',
     ],
 
-    'glpi_racks' => [
-        '_glpi_items_racks' => 'racks_id',
-        '_glpi_pdus_racks'  => 'racks_id',
+    'zentra_racks' => [
+        '_zentra_items_racks' => 'racks_id',
+        '_zentra_pdus_racks'  => 'racks_id',
     ],
 
-    'glpi_racktypes' => [
-        'glpi_racks' => 'racktypes_id',
+    'zentra_racktypes' => [
+        'zentra_racks' => 'racktypes_id',
     ],
 
-    'glpi_reminders' => [
-        '_glpi_entities_reminders'   => 'reminders_id',
-        '_glpi_groups_reminders'     => 'reminders_id',
-        '_glpi_profiles_reminders'   => 'reminders_id',
-        '_glpi_remindertranslations' => 'reminders_id',
-        '_glpi_reminders_users'      => 'reminders_id',
+    'zentra_reminders' => [
+        '_zentra_entities_reminders'   => 'reminders_id',
+        '_zentra_groups_reminders'     => 'reminders_id',
+        '_zentra_profiles_reminders'   => 'reminders_id',
+        '_zentra_remindertranslations' => 'reminders_id',
+        '_zentra_reminders_users'      => 'reminders_id',
     ],
 
-    'glpi_requesttypes' => [
-        'glpi_itilfollowups'         => 'requesttypes_id',
-        'glpi_itilfollowuptemplates' => 'requesttypes_id',
-        'glpi_tickets'               => 'requesttypes_id',
-        'glpi_users'                 => 'default_requesttypes_id',
+    'zentra_requesttypes' => [
+        'zentra_itilfollowups'         => 'requesttypes_id',
+        'zentra_itilfollowuptemplates' => 'requesttypes_id',
+        'zentra_tickets'               => 'requesttypes_id',
+        'zentra_users'                 => 'default_requesttypes_id',
     ],
 
-    'glpi_reservationitems' => [
-        '_glpi_reservations' => 'reservationitems_id',
+    'zentra_reservationitems' => [
+        '_zentra_reservations' => 'reservationitems_id',
     ],
 
-    'glpi_rssfeeds' => [
-        '_glpi_entities_rssfeeds' => 'rssfeeds_id',
-        '_glpi_groups_rssfeeds'   => 'rssfeeds_id',
-        '_glpi_profiles_rssfeeds' => 'rssfeeds_id',
-        '_glpi_rssfeeds_users'    => 'rssfeeds_id',
+    'zentra_rssfeeds' => [
+        '_zentra_entities_rssfeeds' => 'rssfeeds_id',
+        '_zentra_groups_rssfeeds'   => 'rssfeeds_id',
+        '_zentra_profiles_rssfeeds' => 'rssfeeds_id',
+        '_zentra_rssfeeds_users'    => 'rssfeeds_id',
     ],
 
-    'glpi_rules' => [
-        'glpi_refusedequipments' => 'rules_id',
-        '_glpi_ruleactions'      => 'rules_id',
-        '_glpi_rulecriterias'    => 'rules_id',
-        'glpi_rulematchedlogs'   => 'rules_id',
+    'zentra_rules' => [
+        'zentra_refusedequipments' => 'rules_id',
+        '_zentra_ruleactions'      => 'rules_id',
+        '_zentra_rulecriterias'    => 'rules_id',
+        'zentra_rulematchedlogs'   => 'rules_id',
     ],
 
-    'glpi_savedsearches' => [
-        '_glpi_savedsearches_alerts' => 'savedsearches_id',
-        '_glpi_savedsearches_users'  => 'savedsearches_id',
+    'zentra_savedsearches' => [
+        '_zentra_savedsearches_alerts' => 'savedsearches_id',
+        '_zentra_savedsearches_users'  => 'savedsearches_id',
     ],
 
-    'glpi_slalevels' => [
-        '_glpi_slalevelactions'   => 'slalevels_id',
-        '_glpi_slalevelcriterias' => 'slalevels_id',
-        '_glpi_slalevels_tickets' => 'slalevels_id',
-        'glpi_tickets'            => 'slalevels_id_ttr',
+    'zentra_slalevels' => [
+        '_zentra_slalevelactions'   => 'slalevels_id',
+        '_zentra_slalevelcriterias' => 'slalevels_id',
+        '_zentra_slalevels_tickets' => 'slalevels_id',
+        'zentra_tickets'            => 'slalevels_id_ttr',
     ],
 
-    'glpi_slas' => [
-        'glpi_slalevels' => 'slas_id',
-        'glpi_tickets'   => [
+    'zentra_slas' => [
+        'zentra_slalevels' => 'slas_id',
+        'zentra_tickets'   => [
             'slas_id_ttr',
             'slas_id_tto',
         ],
     ],
 
-    'glpi_slms' => [
-        '_glpi_olas' => 'slms_id',
-        '_glpi_slas' => 'slms_id',
+    'zentra_slms' => [
+        '_zentra_olas' => 'slms_id',
+        '_zentra_slas' => 'slms_id',
     ],
 
-    'glpi_snmpcredentials' => [
-        'glpi_networkequipments' => 'snmpcredentials_id',
-        'glpi_printers'          => 'snmpcredentials_id',
-        'glpi_unmanageds'        => 'snmpcredentials_id',
+    'zentra_snmpcredentials' => [
+        'zentra_networkequipments' => 'snmpcredentials_id',
+        'zentra_printers'          => 'snmpcredentials_id',
+        'zentra_unmanageds'        => 'snmpcredentials_id',
     ],
 
-    'glpi_socketmodels' => [
-        'glpi_cables' => [
+    'zentra_socketmodels' => [
+        'zentra_cables' => [
             'socketmodels_id_endpoint_a',
             'socketmodels_id_endpoint_b',
         ],
-        'glpi_sockets' => 'socketmodels_id',
+        'zentra_sockets' => 'socketmodels_id',
     ],
 
-    'glpi_sockets' => [
-        'glpi_cables' => [
+    'zentra_sockets' => [
+        'zentra_cables' => [
             'sockets_id_endpoint_a',
             'sockets_id_endpoint_b',
         ],
     ],
 
-    'glpi_softwarecategories' => [
-        '_glpi_softwarecategories' => 'softwarecategories_id',
-        'glpi_softwares'           => 'softwarecategories_id',
+    'zentra_softwarecategories' => [
+        '_zentra_softwarecategories' => 'softwarecategories_id',
+        'zentra_softwares'           => 'softwarecategories_id',
     ],
 
-    'glpi_softwarelicenses' => [
-        '_glpi_items_softwarelicenses'     => 'softwarelicenses_id',
-        '_glpi_softwarelicenses'           => 'softwarelicenses_id',
-        '_glpi_softwarelicenses_users'             => 'softwarelicenses_id',
+    'zentra_softwarelicenses' => [
+        '_zentra_items_softwarelicenses'     => 'softwarelicenses_id',
+        '_zentra_softwarelicenses'           => 'softwarelicenses_id',
+        '_zentra_softwarelicenses_users'             => 'softwarelicenses_id',
     ],
 
-    'glpi_softwarelicensetypes' => [
-        'glpi_softwarelicenses'      => 'softwarelicensetypes_id',
-        '_glpi_softwarelicensetypes' => 'softwarelicensetypes_id',
+    'zentra_softwarelicensetypes' => [
+        'zentra_softwarelicenses'      => 'softwarelicensetypes_id',
+        '_zentra_softwarelicensetypes' => 'softwarelicensetypes_id',
     ],
 
-    'glpi_softwares' => [
-        '_glpi_softwarelicenses' => 'softwares_id',
-        'glpi_softwares'         => 'softwares_id',
-        '_glpi_softwareversions' => 'softwares_id',
+    'zentra_softwares' => [
+        '_zentra_softwarelicenses' => 'softwares_id',
+        'zentra_softwares'         => 'softwares_id',
+        '_zentra_softwareversions' => 'softwares_id',
     ],
 
-    'glpi_softwareversions' => [
-        '_glpi_items_softwareversions'     => 'softwareversions_id',
-        'glpi_softwarelicenses'            => [
+    'zentra_softwareversions' => [
+        '_zentra_items_softwareversions'     => 'softwareversions_id',
+        'zentra_softwarelicenses'            => [
             'softwareversions_id_buy',
             'softwareversions_id_use',
         ],
     ],
 
-    'glpi_solutiontemplates' => [
-        'glpi_pendingreasons' => 'solutiontemplates_id',
+    'zentra_solutiontemplates' => [
+        'zentra_pendingreasons' => 'solutiontemplates_id',
     ],
 
-    'glpi_solutiontypes' => [
-        'glpi_itilsolutions'     => 'solutiontypes_id',
-        'glpi_solutiontemplates' => 'solutiontypes_id',
+    'zentra_solutiontypes' => [
+        'zentra_itilsolutions'     => 'solutiontypes_id',
+        'zentra_solutiontemplates' => 'solutiontypes_id',
     ],
 
-    'glpi_states' => [
-        'glpi_appliances'                => 'states_id',
-        'glpi_assets_assets'             => 'states_id',
-        'glpi_cables'                    => 'states_id',
-        'glpi_certificates'              => 'states_id',
-        'glpi_clusters'                  => 'states_id',
-        'glpi_computers'                 => 'states_id',
-        'glpi_contracts'                 => 'states_id',
-        'glpi_databaseinstances'         => 'states_id',
-        'glpi_enclosures'                => 'states_id',
-        'glpi_items_devicebatteries'     => 'states_id',
-        'glpi_items_devicecameras'       => 'states_id',
-        'glpi_items_devicecases'         => 'states_id',
-        'glpi_items_devicecontrols'      => 'states_id',
-        'glpi_items_devicedrives'        => 'states_id',
-        'glpi_items_devicefirmwares'     => 'states_id',
-        'glpi_items_devicegenerics'      => 'states_id',
-        'glpi_items_devicegraphiccards'  => 'states_id',
-        'glpi_items_deviceharddrives'    => 'states_id',
-        'glpi_items_devicememories'      => 'states_id',
-        'glpi_items_devicemotherboards'  => 'states_id',
-        'glpi_items_devicenetworkcards'  => 'states_id',
-        'glpi_items_devicepcis'          => 'states_id',
-        'glpi_items_devicepowersupplies' => 'states_id',
-        'glpi_items_deviceprocessors'    => 'states_id',
-        'glpi_items_devicesensors'       => 'states_id',
-        'glpi_items_devicesimcards'      => 'states_id',
-        'glpi_items_devicesoundcards'    => 'states_id',
-        'glpi_lines'                     => 'states_id',
-        'glpi_monitors'                  => 'states_id',
-        'glpi_networkequipments'         => 'states_id',
-        'glpi_passivedcequipments'       => 'states_id',
-        'glpi_pdus'                      => 'states_id',
-        'glpi_peripherals'               => 'states_id',
-        'glpi_phones'                    => 'states_id',
-        'glpi_printers'                  => 'states_id',
-        'glpi_racks'                     => 'states_id',
-        'glpi_softwarelicenses'          => 'states_id',
-        'glpi_softwareversions'          => 'states_id',
-        'glpi_states'                    => 'states_id',
-        'glpi_unmanageds'                => 'states_id',
+    'zentra_states' => [
+        'zentra_appliances'                => 'states_id',
+        'zentra_assets_assets'             => 'states_id',
+        'zentra_cables'                    => 'states_id',
+        'zentra_certificates'              => 'states_id',
+        'zentra_clusters'                  => 'states_id',
+        'zentra_computers'                 => 'states_id',
+        'zentra_contracts'                 => 'states_id',
+        'zentra_databaseinstances'         => 'states_id',
+        'zentra_enclosures'                => 'states_id',
+        'zentra_items_devicebatteries'     => 'states_id',
+        'zentra_items_devicecameras'       => 'states_id',
+        'zentra_items_devicecases'         => 'states_id',
+        'zentra_items_devicecontrols'      => 'states_id',
+        'zentra_items_devicedrives'        => 'states_id',
+        'zentra_items_devicefirmwares'     => 'states_id',
+        'zentra_items_devicegenerics'      => 'states_id',
+        'zentra_items_devicegraphiccards'  => 'states_id',
+        'zentra_items_deviceharddrives'    => 'states_id',
+        'zentra_items_devicememories'      => 'states_id',
+        'zentra_items_devicemotherboards'  => 'states_id',
+        'zentra_items_devicenetworkcards'  => 'states_id',
+        'zentra_items_devicepcis'          => 'states_id',
+        'zentra_items_devicepowersupplies' => 'states_id',
+        'zentra_items_deviceprocessors'    => 'states_id',
+        'zentra_items_devicesensors'       => 'states_id',
+        'zentra_items_devicesimcards'      => 'states_id',
+        'zentra_items_devicesoundcards'    => 'states_id',
+        'zentra_lines'                     => 'states_id',
+        'zentra_monitors'                  => 'states_id',
+        'zentra_networkequipments'         => 'states_id',
+        'zentra_passivedcequipments'       => 'states_id',
+        'zentra_pdus'                      => 'states_id',
+        'zentra_peripherals'               => 'states_id',
+        'zentra_phones'                    => 'states_id',
+        'zentra_printers'                  => 'states_id',
+        'zentra_racks'                     => 'states_id',
+        'zentra_softwarelicenses'          => 'states_id',
+        'zentra_softwareversions'          => 'states_id',
+        'zentra_states'                    => 'states_id',
+        'zentra_unmanageds'                => 'states_id',
     ],
 
-    'glpi_suppliers' => [
-        '_glpi_changes_suppliers'   => 'suppliers_id',
-        '_glpi_contacts_suppliers'  => 'suppliers_id',
-        '_glpi_contracts_suppliers' => 'suppliers_id',
-        'glpi_infocoms'             => 'suppliers_id',
-        '_glpi_problems_suppliers'  => 'suppliers_id',
-        '_glpi_suppliers_tickets'   => 'suppliers_id',
+    'zentra_suppliers' => [
+        '_zentra_changes_suppliers'   => 'suppliers_id',
+        '_zentra_contacts_suppliers'  => 'suppliers_id',
+        '_zentra_contracts_suppliers' => 'suppliers_id',
+        'zentra_infocoms'             => 'suppliers_id',
+        '_zentra_problems_suppliers'  => 'suppliers_id',
+        '_zentra_suppliers_tickets'   => 'suppliers_id',
     ],
 
-    'glpi_suppliertypes' => [
-        'glpi_suppliers' => 'suppliertypes_id',
+    'zentra_suppliertypes' => [
+        'zentra_suppliers' => 'suppliertypes_id',
     ],
 
-    'glpi_taskcategories' => [
-        'glpi_changetasks'    => 'taskcategories_id',
-        'glpi_problemtasks'   => 'taskcategories_id',
-        'glpi_taskcategories' => 'taskcategories_id',
-        'glpi_tasktemplates'  => 'taskcategories_id',
-        'glpi_tickettasks'    => 'taskcategories_id',
+    'zentra_taskcategories' => [
+        'zentra_changetasks'    => 'taskcategories_id',
+        'zentra_problemtasks'   => 'taskcategories_id',
+        'zentra_taskcategories' => 'taskcategories_id',
+        'zentra_tasktemplates'  => 'taskcategories_id',
+        'zentra_tickettasks'    => 'taskcategories_id',
     ],
 
-    'glpi_tasktemplates' => [
-        'glpi_changetasks'  => 'tasktemplates_id',
-        'glpi_problemtasks' => 'tasktemplates_id',
-        'glpi_tickettasks'  => 'tasktemplates_id',
+    'zentra_tasktemplates' => [
+        'zentra_changetasks'  => 'tasktemplates_id',
+        'zentra_problemtasks' => 'tasktemplates_id',
+        'zentra_tickettasks'  => 'tasktemplates_id',
     ],
 
-    'glpi_ticketrecurrents' => [
-        '_glpi_items_ticketrecurrents' => 'ticketrecurrents_id',
+    'zentra_ticketrecurrents' => [
+        '_zentra_items_ticketrecurrents' => 'ticketrecurrents_id',
     ],
 
-    'glpi_tickets' => [
-        '_glpi_changes_tickets'       => 'tickets_id',
-        'glpi_documents'              => 'tickets_id',
-        '_glpi_groups_tickets'        => 'tickets_id',
-        '_glpi_items_tickets'         => 'tickets_id',
-        '_glpi_itils_projects'        => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'         => [['items_id', 'itemtype']],
-        '_glpi_itils_validationsteps' => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'         => [['items_id', 'itemtype']],
-        '_glpi_olalevels_tickets'     => 'tickets_id',
-        '_glpi_problems_tickets'      => 'tickets_id',
-        '_glpi_projecttasks_tickets'  => 'tickets_id',
-        '_glpi_slalevels_tickets'     => 'tickets_id',
-        '_glpi_suppliers_tickets'     => 'tickets_id',
-        '_glpi_ticketcosts'           => 'tickets_id',
-        '_glpi_tickets_contracts'     => 'tickets_id',
-        '_glpi_tickets_tickets'       => [
+    'zentra_tickets' => [
+        '_zentra_changes_tickets'       => 'tickets_id',
+        'zentra_documents'              => 'tickets_id',
+        '_zentra_groups_tickets'        => 'tickets_id',
+        '_zentra_items_tickets'         => 'tickets_id',
+        '_zentra_itils_projects'        => [['items_id', 'itemtype']],
+        '_zentra_itilfollowups'         => [['items_id', 'itemtype']],
+        '_zentra_itils_validationsteps' => [['items_id', 'itemtype']],
+        '_zentra_itilsolutions'         => [['items_id', 'itemtype']],
+        '_zentra_olalevels_tickets'     => 'tickets_id',
+        '_zentra_problems_tickets'      => 'tickets_id',
+        '_zentra_projecttasks_tickets'  => 'tickets_id',
+        '_zentra_slalevels_tickets'     => 'tickets_id',
+        '_zentra_suppliers_tickets'     => 'tickets_id',
+        '_zentra_ticketcosts'           => 'tickets_id',
+        '_zentra_tickets_contracts'     => 'tickets_id',
+        '_zentra_tickets_tickets'       => [
             'tickets_id_1',
             'tickets_id_2',
         ],
-        '_glpi_tickets_users'         => 'tickets_id',
-        '_glpi_ticketsatisfactions'   => 'tickets_id',
-        '_glpi_tickettasks'           => 'tickets_id',
-        '_glpi_ticketvalidations'     => 'tickets_id',
+        '_zentra_tickets_users'         => 'tickets_id',
+        '_zentra_ticketsatisfactions'   => 'tickets_id',
+        '_zentra_tickettasks'           => 'tickets_id',
+        '_zentra_ticketvalidations'     => 'tickets_id',
     ],
 
-    'glpi_tickettemplates' => [
-        'glpi_entities'                        => 'tickettemplates_id',
-        'glpi_itilcategories'                  => [
+    'zentra_tickettemplates' => [
+        'zentra_entities'                        => 'tickettemplates_id',
+        'zentra_itilcategories'                  => [
             'tickettemplates_id_incident',
             'tickettemplates_id_demand',
         ],
-        'glpi_profiles'                        => 'tickettemplates_id',
-        'glpi_tickets'                         => 'tickettemplates_id',
-        'glpi_ticketrecurrents'                => 'tickettemplates_id',
-        '_glpi_tickettemplatehiddenfields'     => 'tickettemplates_id',
-        '_glpi_tickettemplatemandatoryfields'  => 'tickettemplates_id',
-        '_glpi_tickettemplatepredefinedfields' => 'tickettemplates_id',
-        '_glpi_tickettemplatereadonlyfields'   => 'tickettemplates_id',
+        'zentra_profiles'                        => 'tickettemplates_id',
+        'zentra_tickets'                         => 'tickettemplates_id',
+        'zentra_ticketrecurrents'                => 'tickettemplates_id',
+        '_zentra_tickettemplatehiddenfields'     => 'tickettemplates_id',
+        '_zentra_tickettemplatemandatoryfields'  => 'tickettemplates_id',
+        '_zentra_tickettemplatepredefinedfields' => 'tickettemplates_id',
+        '_zentra_tickettemplatereadonlyfields'   => 'tickettemplates_id',
     ],
 
-    'glpi_transfers' => [
-        'glpi_entities' => 'transfers_id',
+    'zentra_transfers' => [
+        'zentra_entities' => 'transfers_id',
     ],
 
-    'glpi_usercategories' => [
-        'glpi_users' => 'usercategories_id',
+    'zentra_usercategories' => [
+        'zentra_users' => 'usercategories_id',
     ],
 
-    'glpi_users' => [
-        'glpi_appliances'             => [
+    'zentra_users' => [
+        'zentra_appliances'             => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_assets_assets'            => [
+        'zentra_assets_assets'            => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_cables'                   => [
+        'zentra_cables'                   => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_cartridgeitems'           => [
+        'zentra_cartridgeitems'           => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_certificates'             => [
+        'zentra_certificates'             => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_changes'                  => [
+        'zentra_changes'                  => [
             'users_id_recipient',
             'users_id_lastupdater',
         ],
-        '_glpi_changes_users'           => 'users_id',
-        'glpi_changetasks'              => [
+        '_zentra_changes_users'           => 'users_id',
+        'zentra_changetasks'              => [
             'users_id',
             'users_id_editor',
             'users_id_tech',
         ],
-        'glpi_changevalidations'        => [
+        'zentra_changevalidations'        => [
             'users_id',
             'users_id_validate',
         ],
-        'glpi_clusters'                 => [
+        'zentra_clusters'                 => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_computers'                => [
+        'zentra_computers'                => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_consumableitems'          => [
+        'zentra_consumableitems'          => [
             'users_id_tech',
             'users_id',
         ],
-        '_glpi_dashboards_dashboards'   => 'users_id',
-        'glpi_dashboards_filters'       => 'users_id',
-        'glpi_databaseinstances'        => [
+        '_zentra_dashboards_dashboards'   => 'users_id',
+        'zentra_dashboards_filters'       => 'users_id',
+        'zentra_databaseinstances'        => [
             'users_id_tech',
             'users_id',
         ],
-        '_glpi_displaypreferences'      => 'users_id',
-        'glpi_domains'                  => [
+        '_zentra_displaypreferences'      => 'users_id',
+        'zentra_domains'                  => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_domainrecords'            => [
+        'zentra_domainrecords'            => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_documents'                => 'users_id',
-        'glpi_documents_items'          => 'users_id',
-        'glpi_enclosures'               => [
+        'zentra_documents'                => 'users_id',
+        'zentra_documents_items'          => 'users_id',
+        'zentra_enclosures'               => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_forms_answerssets'        => 'users_id',
-        '_glpi_groups_users'            => 'users_id',
-        'glpi_items_devicesimcards'     => [
+        'zentra_forms_answerssets'        => 'users_id',
+        '_zentra_groups_users'            => 'users_id',
+        'zentra_items_devicesimcards'     => [
             'users_id_tech',
             'users_id',
         ],
-        '_glpi_items_kanbans'           => 'users_id',
-        'glpi_itilcategories'           => 'users_id',
-        'glpi_itilfollowups'            => [
+        '_zentra_items_kanbans'           => 'users_id',
+        'zentra_itilcategories'           => 'users_id',
+        'zentra_itilfollowups'            => [
             'users_id',
             'users_id_editor',
         ],
-        'glpi_itilsolutions'            => [
+        'zentra_itilsolutions'            => [
             'users_id_approval',
             'users_id_editor',
             'users_id',
         ],
-        'glpi_knowbaseitems'            => 'users_id',
-        'glpi_knowbaseitems_comments'   => 'users_id',
-        'glpi_knowbaseitems_revisions'  => 'users_id',
-        '_glpi_knowbaseitems_users'     => 'users_id',
-        'glpi_knowbaseitemtranslations' => 'users_id',
-        'glpi_lines'                    => [
+        'zentra_knowbaseitems'            => 'users_id',
+        'zentra_knowbaseitems_comments'   => 'users_id',
+        'zentra_knowbaseitems_revisions'  => 'users_id',
+        '_zentra_knowbaseitems_users'     => 'users_id',
+        'zentra_knowbaseitemtranslations' => 'users_id',
+        'zentra_lines'                    => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_monitors'                 => [
+        'zentra_monitors'                 => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_networkequipments'        => [
+        'zentra_networkequipments'        => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_notepads'                 => [
+        'zentra_notepads'                 => [
             'users_id',
             'users_id_lastupdater',
         ],
-        'glpi_notimportedemails'        => 'users_id',
-        '_glpi_objectlocks'             => 'users_id',
-        'glpi_passivedcequipments'      => [
+        'zentra_notimportedemails'        => 'users_id',
+        '_zentra_objectlocks'             => 'users_id',
+        'zentra_passivedcequipments'      => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_pdus'                     => [
+        'zentra_pdus'                     => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_peripherals'              => [
+        'zentra_peripherals'              => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_phones'                   => [
+        'zentra_phones'                   => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_planningexternalevents'   => 'users_id',
-        'glpi_planningrecalls'          => 'users_id',
-        'glpi_printers'                 => [
+        'zentra_planningexternalevents'   => 'users_id',
+        'zentra_planningrecalls'          => 'users_id',
+        'zentra_printers'                 => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_problems'                 => [
+        'zentra_problems'                 => [
             'users_id_recipient',
             'users_id_lastupdater',
         ],
-        '_glpi_problems_users'          => 'users_id',
-        'glpi_problemtasks'             => [
+        '_zentra_problems_users'          => 'users_id',
+        'zentra_problemtasks'             => [
             'users_id',
             'users_id_editor',
             'users_id_tech',
         ],
-        '_glpi_profiles_users'          => 'users_id',
-        'glpi_projects'                 => 'users_id',
-        'glpi_projecttasks'             => 'users_id',
-        'glpi_projecttasktemplates'     => 'users_id',
-        'glpi_racks'                    => [
+        '_zentra_profiles_users'          => 'users_id',
+        'zentra_projects'                 => 'users_id',
+        'zentra_projecttasks'             => 'users_id',
+        'zentra_projecttasktemplates'     => 'users_id',
+        'zentra_racks'                    => [
             'users_id_tech',
             'users_id',
         ],
-        '_glpi_reminders'               => 'users_id',
-        '_glpi_reminders_users'         => 'users_id',
-        '_glpi_remindertranslations'    => 'users_id',
-        'glpi_reservations'             => 'users_id',
-        'glpi_rssfeeds'                 => 'users_id',
-        '_glpi_rssfeeds_users'          => 'users_id',
-        '_glpi_savedsearches'           => 'users_id',
-        '_glpi_savedsearches_users'     => 'users_id',
-        'glpi_softwarelicenses'         => [
+        '_zentra_reminders'               => 'users_id',
+        '_zentra_reminders_users'         => 'users_id',
+        '_zentra_remindertranslations'    => 'users_id',
+        'zentra_reservations'             => 'users_id',
+        'zentra_rssfeeds'                 => 'users_id',
+        '_zentra_rssfeeds_users'          => 'users_id',
+        '_zentra_savedsearches'           => 'users_id',
+        '_zentra_savedsearches_users'     => 'users_id',
+        'zentra_softwarelicenses'         => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_softwares'                => [
+        'zentra_softwares'                => [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_tasktemplates'            => 'users_id_tech',
-        'glpi_tickets'                  => [
+        'zentra_tasktemplates'            => 'users_id_tech',
+        'zentra_tickets'                  => [
             'users_id_recipient',
             'users_id_lastupdater',
         ],
-        '_glpi_tickets_users'           => 'users_id',
-        'glpi_tickettasks'              => [
+        '_zentra_tickets_users'           => 'users_id',
+        'zentra_tickettasks'              => [
             'users_id',
             'users_id_editor',
             'users_id_tech',
         ],
-        'glpi_ticketvalidations'        => [
+        'zentra_ticketvalidations'        => [
             'users_id',
             'users_id_validate',
         ],
-        'glpi_unmanageds'               => [
+        'zentra_unmanageds'               => [
             'users_id_tech',
             'users_id',
         ],
-        '_glpi_useremails'              => 'users_id',
-        'glpi_users'                    => 'users_id_supervisor',
-        '_glpi_validatorsubstitutes'     => [
+        '_zentra_useremails'              => 'users_id',
+        'zentra_users'                    => 'users_id_supervisor',
+        '_zentra_validatorsubstitutes'     => [
             'users_id',
             'users_id_substitute',
         ],
-        '_glpi_softwarelicenses_users'          => 'users_id',
-        '_glpi_contracts_users'         => 'users_id',
+        '_zentra_softwarelicenses_users'          => 'users_id',
+        '_zentra_contracts_users'         => 'users_id',
     ],
 
-    'glpi_usertitles' => [
-        'glpi_contacts' => 'usertitles_id',
-        'glpi_users'    => 'usertitles_id',
+    'zentra_usertitles' => [
+        'zentra_contacts' => 'usertitles_id',
+        'zentra_users'    => 'usertitles_id',
     ],
 
-    'glpi_validationsteps' => [
-        'glpi_itilvalidationtemplates' => 'validationsteps_id',
-        'glpi_itils_validationsteps' => 'validationsteps_id',
+    'zentra_validationsteps' => [
+        'zentra_itilvalidationtemplates' => 'validationsteps_id',
+        'zentra_itils_validationsteps' => 'validationsteps_id',
     ],
 
-    'glpi_virtualmachinestates' => [
-        'glpi_itemvirtualmachines' => 'virtualmachinestates_id',
+    'zentra_virtualmachinestates' => [
+        'zentra_itemvirtualmachines' => 'virtualmachinestates_id',
     ],
 
-    'glpi_virtualmachinesystems' => [
-        'glpi_itemvirtualmachines' => 'virtualmachinesystems_id',
+    'zentra_virtualmachinesystems' => [
+        'zentra_itemvirtualmachines' => 'virtualmachinesystems_id',
     ],
 
-    'glpi_virtualmachinetypes' => [
-        'glpi_itemvirtualmachines' => 'virtualmachinetypes_id',
+    'zentra_virtualmachinetypes' => [
+        'zentra_itemvirtualmachines' => 'virtualmachinetypes_id',
     ],
 
-    'glpi_vlans' => [
-        '_glpi_ipnetworks_vlans'   => 'vlans_id',
-        '_glpi_networkports_vlans' => 'vlans_id',
+    'zentra_vlans' => [
+        '_zentra_ipnetworks_vlans'   => 'vlans_id',
+        '_zentra_networkports_vlans' => 'vlans_id',
     ],
 
-    'glpi_wifinetworks' => [
-        'glpi_networkportwifis' => 'wifinetworks_id',
+    'zentra_wifinetworks' => [
+        'zentra_networkportwifis' => 'wifinetworks_id',
     ],
-    'glpi_webhooks' => [
-        '_glpi_queuedwebhooks' => 'webhooks_id',
+    'zentra_webhooks' => [
+        '_zentra_queuedwebhooks' => 'webhooks_id',
     ],
 
-    'glpi_webhookcategories' => [
-        'glpi_webhookcategories'    => 'webhookcategories_id',
-        'glpi_webhooks'             => 'webhookcategories_id',
+    'zentra_webhookcategories' => [
+        'zentra_webhookcategories'    => 'webhookcategories_id',
+        'zentra_webhooks'             => 'webhookcategories_id',
     ],
 
 ];
@@ -1734,7 +1734,7 @@ $add_mapping_entry = static function (string $source_table, string $target_table
 };
 
 // Add polymorphic relations based on configuration.
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 $specifically_managed_types = [
     Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
     Consumable::class, // Consumables are handled manually to redefine `date_out` to `null`
@@ -1744,46 +1744,46 @@ $specifically_managed_types = [
     Item_Rack::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
 ];
 $polymorphic_types_mapping = [
-    Agent::class                   => $CFG_GLPI['agent_types'],
-    Appliance_Item::class          => $CFG_GLPI['appliance_types'],
-    Appliance_Item_Relation::class => $CFG_GLPI['appliance_relation_types'],
-    Certificate_Item::class        => $CFG_GLPI['certificate_types'],
-    Change_Item::class             => $CFG_GLPI['ticket_types'],
-    Consumable::class              => $CFG_GLPI['consumables_types'],
-    Contract_Item::class           => $CFG_GLPI['contract_types'],
-    DatabaseInstance::class        => $CFG_GLPI['databaseinstance_types'],
+    Agent::class                   => $CFG_ZENTRA['agent_types'],
+    Appliance_Item::class          => $CFG_ZENTRA['appliance_types'],
+    Appliance_Item_Relation::class => $CFG_ZENTRA['appliance_relation_types'],
+    Certificate_Item::class        => $CFG_ZENTRA['certificate_types'],
+    Change_Item::class             => $CFG_ZENTRA['ticket_types'],
+    Consumable::class              => $CFG_ZENTRA['consumables_types'],
+    Contract_Item::class           => $CFG_ZENTRA['contract_types'],
+    DatabaseInstance::class        => $CFG_ZENTRA['databaseinstance_types'],
     Document_Item::class           => Document::getItemtypesThatCanHave(),
-    Domain_Item::class             => $CFG_GLPI['domain_types'],
+    Domain_Item::class             => $CFG_ZENTRA['domain_types'],
     Infocom::class                 => Infocom::getItemtypesThatCanHave(),
-    Item_Cluster::class            => $CFG_GLPI['cluster_types'],
-    Item_Disk::class               => $CFG_GLPI['disk_types'],
-    Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
-    Item_Kanban::class             => $CFG_GLPI['kanban_types'],
-    Item_OperatingSystem::class    => $CFG_GLPI['operatingsystem_types'],
-    Item_Problem::class            => $CFG_GLPI['ticket_types'],
-    Item_Project::class            => $CFG_GLPI['project_asset_types'],
-    Item_Rack::class               => $CFG_GLPI['rackable_types'],
-    Item_SoftwareLicense::class    => $CFG_GLPI['software_types'],
-    Item_SoftwareVersion::class    => $CFG_GLPI['software_types'],
-    Item_Ticket::class             => $CFG_GLPI['ticket_types'],
-    ItemAntivirus::class           => $CFG_GLPI['itemantivirus_types'],
-    ItemVirtualMachine::class      => $CFG_GLPI['itemvirtualmachines_types'],
-    KnowbaseItem_Item::class       => $CFG_GLPI['kb_types'],
-    NetworkPort::class             => $CFG_GLPI['networkport_types'],
-    ReservationItem::class         => $CFG_GLPI['reservation_types'],
-    Socket::class                  => $CFG_GLPI['socket_types'],
-    Item_Plug::class               => $CFG_GLPI['plug_types'],
+    Item_Cluster::class            => $CFG_ZENTRA['cluster_types'],
+    Item_Disk::class               => $CFG_ZENTRA['disk_types'],
+    Item_Enclosure::class          => $CFG_ZENTRA['rackable_types'],
+    Item_Kanban::class             => $CFG_ZENTRA['kanban_types'],
+    Item_OperatingSystem::class    => $CFG_ZENTRA['operatingsystem_types'],
+    Item_Problem::class            => $CFG_ZENTRA['ticket_types'],
+    Item_Project::class            => $CFG_ZENTRA['project_asset_types'],
+    Item_Rack::class               => $CFG_ZENTRA['rackable_types'],
+    Item_SoftwareLicense::class    => $CFG_ZENTRA['software_types'],
+    Item_SoftwareVersion::class    => $CFG_ZENTRA['software_types'],
+    Item_Ticket::class             => $CFG_ZENTRA['ticket_types'],
+    ItemAntivirus::class           => $CFG_ZENTRA['itemantivirus_types'],
+    ItemVirtualMachine::class      => $CFG_ZENTRA['itemvirtualmachines_types'],
+    KnowbaseItem_Item::class       => $CFG_ZENTRA['kb_types'],
+    NetworkPort::class             => $CFG_ZENTRA['networkport_types'],
+    ReservationItem::class         => $CFG_ZENTRA['reservation_types'],
+    Socket::class                  => $CFG_ZENTRA['socket_types'],
+    Item_Plug::class               => $CFG_ZENTRA['plug_types'],
 ];
 foreach (Item_Devices::getDeviceTypes() as $itemdevice_itemtype) {
     $source_itemtypes = $itemdevice_itemtype::itemAffinity();
     if (in_array('*', $source_itemtypes)) {
-        $source_itemtypes = $CFG_GLPI['itemdevices_types'];
+        $source_itemtypes = $CFG_ZENTRA['itemdevices_types'];
     }
     $polymorphic_types_mapping[$itemdevice_itemtype] = $source_itemtypes;
     $specifically_managed_types[] = $itemdevice_itemtype; // Item_Devices is handled manually to take care of `keep_devices` option
 }
 $polymorphic_types_mapping[VObject::class] = [];
-foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
+foreach ($CFG_ZENTRA['planning_types'] as $planning_itemtype) {
     if (is_a($planning_itemtype, CalDAVCompatibleItemInterface::class, true)) {
         $polymorphic_types_mapping[VObject::class][] = $planning_itemtype;
     }
@@ -1831,7 +1831,7 @@ foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
 
 // IPAddress specific case
 // mainitems_id/mainitemtype are mainly a copy of item related to source NetworkPort
-foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
+foreach ($CFG_ZENTRA['networkport_types'] as $source_itemtype) {
     $target_table_key = IPAddress::getTable();
     $source_table     = $source_itemtype::getTable();
 
@@ -1839,7 +1839,7 @@ foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
 }
 
 // Asset_PeripheralAsset specific case
-foreach ($CFG_GLPI['directconnect_types'] as $directconnect_itemtype) {
+foreach ($CFG_ZENTRA['directconnect_types'] as $directconnect_itemtype) {
     $target_table_key = Asset_PeripheralAsset::getTable();
     $source_table     = $directconnect_itemtype::getTable();
 
@@ -1853,9 +1853,9 @@ foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_
 }
 
 // Multiple groups assignments
-$assignable_itemtypes = $CFG_GLPI['assignable_types'];
+$assignable_itemtypes = $CFG_ZENTRA['assignable_types'];
 foreach ($assignable_itemtypes as $assignable_itemtype) {
     $source_table_key = $assignable_itemtype::getTable();
 
-    $add_mapping_entry($source_table_key, '_glpi_groups_items', ['itemtype', 'items_id']);
+    $add_mapping_entry($source_table_key, '_zentra_groups_items', ['itemtype', 'items_id']);
 }

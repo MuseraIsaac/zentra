@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_User;
@@ -62,7 +62,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->addComments($kb1, 'fr_FR');
 
         $nb = countElementsInTable(
-            'glpi_knowbaseitems_comments'
+            'zentra_knowbaseitems_comments'
         );
         $this->assertSame(12, $nb);
 
@@ -109,7 +109,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         //this one is from another user.
         $input['comment'] = 'Comment 1 - 1 for KB1';
         $input['parent_comment_id'] = $kbcom1;
-        $input['users_id'] = getItemByTypeName('User', 'glpi', true);
+        $input['users_id'] = getItemByTypeName('User', 'zentra', true);
         $kbcom11 = $kbcom->add($input);
         $this->assertTrue($kbcom11 > $kbcom2);
 
@@ -153,21 +153,21 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $name = $kbcom->getTabNameForItem($kb1, true);
         $this->assertSame("Comments 6", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
         $this->assertSame("Comments 6", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
         $this->assertSame("Comments", strip_tags($name));
 
         // Change knowbase rights to be empty
-        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+        $_SESSION['zentraactiveprofile']['knowbase'] = 0;
         // Tab name should be empty
         $this->assertEmpty($kbcom->getTabNameForItem($kb1));
 
         // Add comment and read right
-        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::COMMENTS;
+        $_SESSION['zentraactiveprofile']['knowbase'] = READ | KnowbaseItem::COMMENTS;
         // Tab name should be filled
         $this->assertSame("Comments", strip_tags($name));
     }
@@ -196,7 +196,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
 
         //same tests, from another user
         $auth = new \Auth();
-        $result = $auth->login('glpi', 'glpi', true);
+        $result = $auth->login('zentra', 'zentra', true);
         $this->assertTrue($result);
 
         ob_start();
@@ -239,7 +239,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($comment->can($comment->getID(), READ));
         $this->assertTrue($comment->can($comment->getID(), UPDATE));
         $this->assertTrue($comment->can($comment->getID(), PURGE));
-        $_SESSION['glpiactiveprofile']['knowbase'] = $all_knowbase_rights & ~KnowbaseItem::COMMENTS;
+        $_SESSION['zentraactiveprofile']['knowbase'] = $all_knowbase_rights & ~KnowbaseItem::COMMENTS;
         $this->assertFalse($comment::canCreate());
         $this->assertFalse($comment::canUpdate());
         $this->assertFalse($comment::canView());

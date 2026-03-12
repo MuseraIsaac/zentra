@@ -10,7 +10,7 @@
             "uuid": "test-uuid-locked-states-001",
             "vmsystem": "Physical"
         },
-        "versionclient": "GLPI-Agent_v1.9"
+        "versionclient": "ZENTRA-Agent_v1.9"
     },
     "deviceid": "test-locked-states-2025-10-28",
     "itemtype": "Computer",

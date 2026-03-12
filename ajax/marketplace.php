@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ if (($_GET["action"] ?? null) === "get_dl_progress") {
 
 Session::checkRight("config", UPDATE);
 
-use Glpi\Marketplace\Controller as MarketplaceController;
-use Glpi\Marketplace\View as MarketplaceView;
+use Zentra\Marketplace\Controller as MarketplaceController;
+use Zentra\Marketplace\View as MarketplaceView;
 
 if (isset($_POST['key']) && isset($_POST["action"])) {
     $marketplace_ctrl = new MarketplaceController($_POST['key']);

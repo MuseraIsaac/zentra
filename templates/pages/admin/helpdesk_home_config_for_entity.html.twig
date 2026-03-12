@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -104,8 +104,8 @@
                     {# Default value preview #}
                     <section
                         class="{{ side.config == "default" ? '' : 'd-none' }}"
-                        data-glpi-parent-dropdown="{{ side.field }}"
-                        data-glpi-parent-dropdown-condition="default"
+                        data-zentra-parent-dropdown="{{ side.field }}"
+                        data-zentra-parent-dropdown-condition="default"
                         aria-label="{{ __("Default illustration preview") }}"
                     >
                         {{ render_scene(side.default, 400) }}
@@ -114,14 +114,14 @@
                     {# Custom value preview #}
                     <section
                         class="{{ side.config == "custom" ? '' : 'd-none' }}"
-                        data-glpi-parent-dropdown="{{ side.field }}"
-                        data-glpi-parent-dropdown-condition="custom"
+                        data-zentra-parent-dropdown="{{ side.field }}"
+                        data-zentra-parent-dropdown-condition="custom"
                         aria-label="{{ __("Custom illustration preview and selection") }}"
                     >
                         {% if side.config == "custom" and not entity.fields[side.field] is empty %}
                             {{ render_scene(
                                 constant(
-                                    'Glpi\\UI\\IllustrationManager::CUSTOM_SCENE_PREFIX'
+                                    'Zentra\\UI\\IllustrationManager::CUSTOM_SCENE_PREFIX'
                                 ) ~ entity.fields[side.field],
                                 400
                             ) }}
@@ -142,8 +142,8 @@
                         {# Inherited value preview #}
                         <section
                             class="{{ side.config == "inherit" ? '' : 'd-none' }}"
-                            data-glpi-parent-dropdown="{{ side.field }}"
-                            data-glpi-parent-dropdown-condition="inherit"
+                            data-zentra-parent-dropdown="{{ side.field }}"
+                            data-zentra-parent-dropdown-condition="inherit"
                             aria-label="{{ __("Inherited illustration preview") }}"
                         >
                             <div class="d-flex flex-column text-muted mb-2">
@@ -220,8 +220,8 @@
                 {# Default value preview #}
                 <section
                     class="{{ title_config == constant("Entity::HELPDESK_TITLE_DEFAULT") ? '' : 'd-none' }}"
-                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_DEFAULT") }}"
+                    data-zentra-parent-dropdown="custom_helpdesk_home_title"
+                    data-zentra-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_DEFAULT") }}"
                     aria-label="{{ __("Default title preview") }}"
                 >
                     {{ inputs.text(
@@ -234,8 +234,8 @@
                 {# Custom value preview #}
                 <section
                     class="{{ title_config == constant("Entity::HELPDESK_TITLE_CUSTOM") ? '' : 'd-none' }}"
-                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_CUSTOM") }}"
+                    data-zentra-parent-dropdown="custom_helpdesk_home_title"
+                    data-zentra-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_CUSTOM") }}"
                     aria-label="{{ __("Custom title value") }}"
                 >
                     {{ inputs.text(
@@ -252,8 +252,8 @@
                 {# Inherited value preview #}
                 <section
                     class="{{ title_config == constant("Entity::HELPDESK_TITLE_INHERIT") ? '' : 'd-none' }}"
-                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_INHERIT") }}"
+                    data-zentra-parent-dropdown="custom_helpdesk_home_title"
+                    data-zentra-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_INHERIT") }}"
                     aria-label="{{ __("Inherited title preview") }}"
                 >
                     {{ inputs.text(

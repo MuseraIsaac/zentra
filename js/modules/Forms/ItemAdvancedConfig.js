@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiFormItemAdvancedConfig {
+export class ZentraFormItemAdvancedConfig {
     // Static instance for singleton pattern
     static instance = null;
 
@@ -43,15 +43,15 @@ export class GlpiFormItemAdvancedConfig {
      */
     constructor(common_tree_dropdown_itemtypes = []) {
         // Prevent multiple initializations
-        if (GlpiFormItemAdvancedConfig.instance !== null) {
-            return GlpiFormItemAdvancedConfig.instance;
+        if (ZentraFormItemAdvancedConfig.instance !== null) {
+            return ZentraFormItemAdvancedConfig.instance;
         }
 
         // Register event listener for question sub-type changes
         this.registerEventListeners();
 
         // Store instance
-        GlpiFormItemAdvancedConfig.instance = this;
+        ZentraFormItemAdvancedConfig.instance = this;
 
         // Store the itemtypes that are CommonTreeDropdown
         this.#common_tree_dropdown_itemtypes = common_tree_dropdown_itemtypes;
@@ -65,7 +65,7 @@ export class GlpiFormItemAdvancedConfig {
      */
     findContainer(question) {
         const container = question.find(
-            `[data-glpi-form-editor-item-dropdown-advanced-configuration]`
+            `[data-zentra-form-editor-item-dropdown-advanced-configuration]`
         );
 
         return container.length > 0 ? container : null;
@@ -75,12 +75,12 @@ export class GlpiFormItemAdvancedConfig {
      * Register all necessary event listeners
      */
     registerEventListeners() {
-        $(document).on('glpi-form-editor-question-sub-type-changed',
+        $(document).on('zentra-form-editor-question-sub-type-changed',
             (event, question, sub_type) => {
                 // Ensure the event is for an Item question
                 if (
-                    question.find('[data-glpi-form-editor-original-name="type"], [name="type"]').length === 0
-                    || question.find('[data-glpi-form-editor-original-name="type"], [name="type"]').val() !== 'Glpi\\Form\\QuestionType\\QuestionTypeItem'
+                    question.find('[data-zentra-form-editor-original-name="type"], [name="type"]').length === 0
+                    || question.find('[data-zentra-form-editor-original-name="type"], [name="type"]').val() !== 'Zentra\\Form\\QuestionType\\QuestionTypeItem'
                 ) {
                     return;
                 }
@@ -96,16 +96,16 @@ export class GlpiFormItemAdvancedConfig {
     }
 
     updateAdvancedConfigVisibility(container, new_sub_type) {
-        const dropdown_container = container.closest('[data-glpi-form-editor-advanced-question-configuration]')
-            .parents('[data-glpi-form-editor-question-extra-details]');
+        const dropdown_container = container.closest('[data-zentra-form-editor-advanced-question-configuration]')
+            .parents('[data-zentra-form-editor-question-extra-details]');
 
         // Show button only for sub-type that are CommonTreeDropdown
         if (this.#common_tree_dropdown_itemtypes.includes(new_sub_type)) {
             dropdown_container.show();
-            dropdown_container.attr('data-glpi-form-editor-advanced-question-configuration-visible', 'true');
+            dropdown_container.attr('data-zentra-form-editor-advanced-question-configuration-visible', 'true');
         } else {
             dropdown_container.hide();
-            dropdown_container.removeAttr('data-glpi-form-editor-advanced-question-configuration-visible');
+            dropdown_container.removeAttr('data-zentra-form-editor-advanced-question-configuration-visible');
         }
     }
 }

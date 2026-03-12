@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\RichText\RichText;
 
 /**
  * ReservationItem Class
@@ -210,7 +210,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -220,7 +220,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -238,7 +238,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -247,7 +247,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -258,7 +258,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -351,7 +351,7 @@ class ReservationItem extends CommonDBChild
                     <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
                     {{ toggle_reservable_label }}
                 </button>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
             </form>
             </div>
 TWIG, $twig_params);
@@ -391,7 +391,7 @@ TWIG, $twig_params);
      */
     public static function showListSimple()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
             return;
@@ -401,8 +401,8 @@ TWIG, $twig_params);
         $showentity = Session::isMultiEntitiesMode();
         $reservation_types     = [];
 
-        if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
-            $_POST = $_SESSION['glpi_saved']['ReservationItem'];
+        if (isset($_SESSION['zentra_saved']['ReservationItem'])) {
+            $_POST = $_SESSION['zentra_saved']['ReservationItem'];
         }
 
         $reserve = isset($_POST['reserve']);
@@ -439,10 +439,10 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'          => 'itemtype',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_reservationitems',
+            'FROM'            => 'zentra_reservationitems',
             'WHERE'           => [
                 'is_active' => 1,
-            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria('zentra_reservationitems', 'entities_id', $_SESSION['zentraactiveentities'], true),
         ]);
 
         foreach ($iterator as $data) {
@@ -454,21 +454,21 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_peripheraltypes.name',
-                'glpi_peripheraltypes.id',
+                'zentra_peripheraltypes.name',
+                'zentra_peripheraltypes.id',
             ],
-            'FROM'      => 'glpi_peripheraltypes',
+            'FROM'      => 'zentra_peripheraltypes',
             'LEFT JOIN' => [
-                'glpi_peripherals'      => [
+                'zentra_peripherals'      => [
                     'ON' => [
-                        'glpi_peripheraltypes'  => 'id',
-                        'glpi_peripherals'      => 'peripheraltypes_id',
+                        'zentra_peripheraltypes'  => 'id',
+                        'zentra_peripherals'      => 'peripheraltypes_id',
                     ],
                 ],
-                'glpi_reservationitems' => [
+                'zentra_reservationitems' => [
                     'ON' => [
-                        'glpi_reservationitems' => 'items_id',
-                        'glpi_peripherals'      => 'id',
+                        'zentra_reservationitems' => 'items_id',
+                        'zentra_peripherals'      => 'id',
                     ],
                 ],
             ],
@@ -476,8 +476,8 @@ TWIG, $twig_params);
                 'itemtype'           => Peripheral::class,
                 'is_active'          => 1,
                 'peripheraltypes_id' => ['>', 0],
-            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
-            'ORDERBY'   => 'glpi_peripheraltypes.name',
+            ] + getEntitiesRestrictCriteria('zentra_reservationitems', 'entities_id', $_SESSION['zentraactiveentities'], true),
+            'ORDERBY'   => 'zentra_peripheraltypes.name',
         ]);
 
         foreach ($iterator as $ptype) {
@@ -498,7 +498,7 @@ TWIG, $twig_params);
         $entries = [];
         $location_cache = [];
         $entity_cache = [];
-        foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["reservation_types"] as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
@@ -511,39 +511,39 @@ TWIG, $twig_params);
             }
             $criteria = [
                 'SELECT' => [
-                    'glpi_reservationitems.id',
-                    'glpi_reservationitems.comment',
+                    'zentra_reservationitems.id',
+                    'zentra_reservationitems.comment',
                     "$itemtable.$itemname AS name",
                     "$itemtable.entities_id AS entities_id",
                     $otherserial,
-                    'glpi_locations.id AS location',
-                    'glpi_reservationitems.items_id AS items_id',
+                    'zentra_locations.id AS location',
+                    'zentra_reservationitems.items_id AS items_id',
                 ],
                 'FROM'   => self::getTable(),
                 'INNER JOIN'   => [
                     $itemtable  => [
                         'ON'  => [
-                            'glpi_reservationitems' => 'items_id',
+                            'zentra_reservationitems' => 'items_id',
                             $itemtable              => 'id', [
                                 'AND' => [
-                                    'glpi_reservationitems.itemtype' => $itemtype,
+                                    'zentra_reservationitems.itemtype' => $itemtype,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'LEFT JOIN'    =>  [
-                    'glpi_locations'  => [
+                    'zentra_locations'  => [
                         'ON'  => [
                             $itemtable        => 'locations_id',
-                            'glpi_locations'  => 'id',
+                            'zentra_locations'  => 'id',
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_reservationitems.is_active'   => 1,
+                    'zentra_reservationitems.is_active'   => 1,
                     "$itemtable.is_deleted"             => 0,
-                ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['glpiactiveentities'], $item->maybeRecursive()),
+                ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['zentraactiveentities'], $item->maybeRecursive()),
                 'ORDERBY'      => [
                     "$itemtable.entities_id",
                     "$itemtable.$itemname",
@@ -553,30 +553,30 @@ TWIG, $twig_params);
             $begin = $_POST['reserve']["begin"];
             $end   = $_POST['reserve']["end"];
             if (isset($_POST['submit'], $begin, $end)) {
-                $criteria['LEFT JOIN']['glpi_reservations'] = [
+                $criteria['LEFT JOIN']['zentra_reservations'] = [
                     'ON'  => [
-                        'glpi_reservationitems' => 'id',
-                        'glpi_reservations'     => 'reservationitems_id', [
+                        'zentra_reservationitems' => 'id',
+                        'zentra_reservations'     => 'reservationitems_id', [
                             'AND' => [
-                                'glpi_reservations.end'    => ['>', $begin],
-                                'glpi_reservations.begin'  => ['<', $end],
+                                'zentra_reservations.end'    => ['>', $begin],
+                                'zentra_reservations.begin'  => ['<', $end],
                             ],
                         ],
                     ],
                 ];
-                $criteria['WHERE'][] = ['glpi_reservations.id' => null];
+                $criteria['WHERE'][] = ['zentra_reservations.id' => null];
             }
             if (!empty($_POST["reservation_types"])) {
                 $tmp = explode('#', $_POST["reservation_types"]);
-                $criteria['WHERE'][] = ['glpi_reservationitems.itemtype' => $tmp[0]];
+                $criteria['WHERE'][] = ['zentra_reservationitems.itemtype' => $tmp[0]];
                 if (
                     isset($tmp[1]) && ($tmp[0] === Peripheral::class)
                     && ($itemtype === Peripheral::class)
                 ) {
-                    $criteria['LEFT JOIN']['glpi_peripheraltypes'] = [
+                    $criteria['LEFT JOIN']['zentra_peripheraltypes'] = [
                         'ON' => [
-                            'glpi_peripherals'      => 'peripheraltypes_id',
-                            'glpi_peripheraltypes'  => 'id',
+                            'zentra_peripherals'      => 'peripheraltypes_id',
+                            'zentra_peripheraltypes'  => 'id',
                         ],
                     ];
                     $criteria['WHERE'][] = ["$itemtable.peripheraltypes_id" => $tmp[1]];
@@ -586,7 +586,7 @@ TWIG, $twig_params);
             // Filter locations if location was provided/submitted
             if ((int) ($_POST['locations_id'] ?? 0) > 0) {
                 $criteria['WHERE'][] = [
-                    'glpi_locations.id' => getSonsOf('glpi_locations', (int) $_POST['locations_id']),
+                    'zentra_locations.id' => getSonsOf('zentra_locations', (int) $_POST['locations_id']),
                 ];
             }
 
@@ -611,7 +611,7 @@ TWIG, $twig_params);
                          && ((int) $item->fields["peripheraltypes_id"] !== 0)
                     ) {
                         $typename = Dropdown::getDropdownName(
-                            "glpi_peripheraltypes",
+                            "zentra_peripheraltypes",
                             $item->fields["peripheraltypes_id"]
                         );
                     }
@@ -625,7 +625,7 @@ TWIG, $twig_params);
                 $entry['item'] = $item_link;
 
                 if (!isset($location_cache[$row["location"]])) {
-                    $location_cache[$row["location"]] = Dropdown::getDropdownName("glpi_locations", $row["location"]);
+                    $location_cache[$row["location"]] = Dropdown::getDropdownName("zentra_locations", $row["location"]);
                 }
                 $entry['location'] = $location_cache[$row["location"]];
 
@@ -633,7 +633,7 @@ TWIG, $twig_params);
 
                 if ($showentity) {
                     if (!isset($entity_cache[$row["entities_id"]])) {
-                        $entity_cache[$row["entities_id"]] = Dropdown::getDropdownName("glpi_entities", $row["entities_id"]);
+                        $entity_cache[$row["entities_id"]] = Dropdown::getDropdownName("zentra_entities", $row["entities_id"]);
                     }
                     $entry['entity'] = $entity_cache[$row["entities_id"]];
                 }
@@ -715,9 +715,9 @@ TWIG, $twig_params);
      **/
     public static function cronReservation($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
 
@@ -731,38 +731,38 @@ TWIG, $twig_params);
             // Reservation already begin and reservation ended in $value hours
             $criteria = [
                 'SELECT' => [
-                    'glpi_reservationitems.*',
-                    'glpi_reservations.end AS end',
-                    'glpi_reservations.id AS resaid',
+                    'zentra_reservationitems.*',
+                    'zentra_reservations.end AS end',
+                    'zentra_reservations.id AS resaid',
                 ],
-                'FROM'   => 'glpi_reservations',
+                'FROM'   => 'zentra_reservations',
                 'LEFT JOIN' => [
-                    'glpi_alerts'  => [
+                    'zentra_alerts'  => [
                         'ON'  => [
-                            'glpi_reservations'  => 'id',
-                            'glpi_alerts'        => 'items_id', [
+                            'zentra_reservations'  => 'id',
+                            'zentra_alerts'        => 'items_id', [
                                 'AND' => [
-                                    'glpi_alerts.itemtype'  => 'Reservation',
-                                    'glpi_alerts.type'      => Alert::END,
+                                    'zentra_alerts.itemtype'  => 'Reservation',
+                                    'zentra_alerts.type'      => Alert::END,
                                 ],
                             ],
                         ],
                     ],
-                    'glpi_reservationitems' => [
+                    'zentra_reservationitems' => [
                         'ON'  => [
-                            'glpi_reservations'     => 'reservationitems_id',
-                            'glpi_reservationitems' => 'id',
+                            'zentra_reservations'     => 'reservationitems_id',
+                            'zentra_reservationitems' => 'id',
                         ],
                     ],
                 ],
                 'WHERE'     => [
-                    'glpi_reservationitems.entities_id' => $entity,
+                    'zentra_reservationitems.entities_id' => $entity,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs
+                        QueryFunction::unixTimestamp('zentra_reservations.end') . ' - ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
-                    'glpi_reservations.begin'  => ['<', QueryFunction::now()],
-                    'glpi_alerts.date'         => null,
+                    'zentra_reservations.begin'  => ['<', QueryFunction::now()],
+                    'zentra_alerts.date'         => null,
                 ],
             ];
             $iterator = $DB->request($criteria);
@@ -804,14 +804,14 @@ TWIG, $twig_params);
                     $task->addVolume(1);
                     $task->log(sprintf(
                         __('%1$s: %2$s') . "\n",
-                        Dropdown::getDropdownName("glpi_entities", $entity),
+                        Dropdown::getDropdownName("zentra_entities", $entity),
                         implode("\n", $messages)
                     ));
                 } else {
                     //TRANS: %1$s is a name, %2$s is text of message
                     Session::addMessageAfterRedirect(sprintf(
                         __s('%1$s: %2$s'),
-                        htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)),
+                        htmlescape(Dropdown::getDropdownName("zentra_entities", $entity)),
                         implode('<br>', array_map('htmlescape', $messages))
                     ));
                 }
@@ -825,7 +825,7 @@ TWIG, $twig_params);
                     unset($alert->fields['id']);
                 }
             } else {
-                $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+                $entityname = Dropdown::getDropdownName('zentra_entities', $entity);
                 //TRANS: %s is entity name
                 $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send reservation alert failed'));
                 if ($task) {
@@ -858,7 +858,7 @@ TWIG, $twig_params);
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs = [];
@@ -876,7 +876,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {

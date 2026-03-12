@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ export class CsrfFetcher
         this.cache = cache;
 
         // Refresh the token every 50 tests.
-        // This is needed because GLPI only save 500 tokens per session
+        // This is needed because ZENTRA only save 500 tokens per session
         // so our cached token might end up being invalidated by the new tokens
         // generated on each pages.
         this.cache.incrementCsrfTokenTestCount();

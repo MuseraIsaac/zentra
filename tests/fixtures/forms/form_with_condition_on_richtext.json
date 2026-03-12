@@ -38,7 +38,7 @@
                     "id": 1,
                     "uuid": "33333333-3333-3333-3333-333333333333",
                     "name": "Description",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeLongText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeLongText",
                     "description": "",
                     "default_value": "",
                     "is_mandatory": false,

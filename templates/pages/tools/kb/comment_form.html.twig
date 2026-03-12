@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
     {% if comment_style %}
         <a href="" class="me-3 mt-n2 ms-n2">
             {{ include('components/user/picture.html.twig', {
-                'users_id': session('glpiID'),
+                'users_id': session('zentraID'),
                 'with_link': false,
             }, with_context = false) }}
         </a>
@@ -52,7 +52,7 @@
     <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column pt-3" : "w-100" }}">
         <form name="kbcomment_form{{ rand }}" id="kbcomment_form{{ rand }}" class="comment_form" method="post"
             action="{{ 'KnowbaseItem_Comment'|itemtype_form_path }}" data-submit-once data-track-changes="true">
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
             {{ inputs.hidden('knowbaseitems_id', kbitem_id) }}
             {% if lang is not null %}
                 {{ inputs.hidden('language', lang) }}

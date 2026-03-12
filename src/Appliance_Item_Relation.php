@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 class Appliance_Item_Relation extends CommonDBRelation
 {
@@ -59,9 +59,9 @@ class Appliance_Item_Relation extends CommonDBRelation
      */
     public static function getTypes($all = false): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $types = $CFG_GLPI['appliance_relation_types'];
+        $types = $CFG_ZENTRA['appliance_relation_types'];
 
         foreach ($types as $key => $type) {
             if (!class_exists($type)) {
@@ -254,7 +254,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                     'items_id_name'   => 'items_id',
                     'itemtypes'       => Appliance_Item_Relation::getTypes(true),
                     'entity_restrict' => ($item->fields['is_recursive'] ?? false)
-                                       ? getSonsOf('glpi_entities', $item->fields['entities_id'])
+                                       ? getSonsOf('zentra_entities', $item->fields['entities_id'])
                                        : $item->fields['entities_id'],
                     'checkright'     => true,
                     'display'        => false,
@@ -271,7 +271,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                     $(document).on('click', '.add_relation', function() {
                         var appliances_items_id = $(this).data('appliances-items-id');
 
-                        glpi_html_dialog({
+                        zentra_html_dialog({
                             title: '" . jsescape(_x('button', "Add an item")) . "',
                             body: '" . jsescape($modal_html) . "',
                             id: 'add_relation_dialog',
@@ -286,7 +286,7 @@ class Appliance_Item_Relation extends CommonDBRelation
 
                         $.post('" . jsescape($form_url) . "', {
                             'id': relations_id,
-                            '_glpi_csrf_token': '" . jsescape($crsf_token) . "',
+                            '_zentra_csrf_token': '" . jsescape($crsf_token) . "',
                             'purge': 1,
                         }, function() {
                             location.reload();

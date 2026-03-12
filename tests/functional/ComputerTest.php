@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use Entity;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/computer.class.php */
@@ -393,7 +393,7 @@ class ComputerTest extends DbTestCase
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'id',
-            'FROM'   => 'glpi_computers',
+            'FROM'   => 'zentra_computers',
         ]);
         foreach (\Computer::getFromIter($iter) as $comp) {
             $this->assertInstanceOf(\Computer::class, $comp);
@@ -409,7 +409,7 @@ class ComputerTest extends DbTestCase
 
 
         $this->expectExceptionMessage(
-            '`Computer::getFromDBByCrit()` expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".'
+            '`Computer::getFromDBByCrit()` expects to get one result, 9 found in query "SELECT `id` FROM `zentra_computers` WHERE `name` LIKE \'_test%\'".'
         );
         $comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]);
     }
@@ -420,7 +420,7 @@ class ComputerTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Test item cloning
         $computer = $this->getNewComputer();
@@ -566,13 +566,13 @@ class ComputerTest extends DbTestCase
 
     public function testCloneWithAutoCreateInfocom()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Test item cloning
         $computer = $this->getNewComputer();
@@ -594,10 +594,10 @@ class ComputerTest extends DbTestCase
         // clone!
         $computer = new \Computer(); //$computer->fields contents is already escaped!
         $this->assertTrue($computer->getFromDB($id));
-        $auto_create_infocoms_original = $CFG_GLPI["auto_create_infocoms"] ?? 0;
-        $CFG_GLPI["auto_create_infocoms"] = 1;
+        $auto_create_infocoms_original = $CFG_ZENTRA["auto_create_infocoms"] ?? 0;
+        $CFG_ZENTRA["auto_create_infocoms"] = 1;
         $added = $computer->clone();
-        $CFG_GLPI["auto_create_infocoms"] = $auto_create_infocoms_original;
+        $CFG_ZENTRA["auto_create_infocoms"] = $auto_create_infocoms_original;
         $this->assertGreaterThan(0, (int) $added);
         $this->assertNotEquals($computer->fields['id'], $added);
 
@@ -758,7 +758,7 @@ class ComputerTest extends DbTestCase
 
         $soft = new \Software();
         $softwares_id = $soft->add([
-            'name'         => 'GLPI',
+            'name'         => 'ZENTRA',
             'entities_id'  => $computer->fields['entities_id'],
         ]);
         $this->assertGreaterThan(0, $softwares_id);
@@ -795,7 +795,7 @@ class ComputerTest extends DbTestCase
             [$cid]
         );
         $transfer->moveItems(['Computer' => [$cid]], $entities_id, [$cid, 'keep_software' => 1]);
-        unset($_SESSION['glpitransfer_list']);
+        unset($_SESSION['zentratransfer_list']);
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertSame($entities_id, (int) $computer->fields['entities_id']);

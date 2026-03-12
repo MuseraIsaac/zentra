@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
         left: 0;
         right: 0;
         bottom: 8px;
-        z-index: var(--glpi-zindex-fixed);
+        z-index: var(--zentra-zindex-fixed);
     }
 
     .answer-action {
@@ -50,27 +50,27 @@
     }
 
     .action-task {
-        background-color: var(--glpi-timeline-task-bg);
-        color: var(--glpi-timeline-task-fg);
+        background-color: var(--zentra-timeline-task-bg);
+        color: var(--zentra-timeline-task-fg);
     }
 
     .action-solution {
-        background-color: var(--glpi-timeline-solution-bg);
-        color: var(--glpi-timeline-solution-fg);
+        background-color: var(--zentra-timeline-solution-bg);
+        color: var(--zentra-timeline-solution-fg);
     }
 
     .action-validation {
-        background-color: var(--glpi-timeline-itil-content-bg);
-        color: var(--glpi-timeline-itil-content-fg);
+        background-color: var(--zentra-timeline-itil-content-bg);
+        color: var(--zentra-timeline-itil-content-fg);
     }
 
     .action-document {
-        background-color: var(--glpi-timeline-document-bg);
-        color: var(--glpi-timeline-document-fg);
+        background-color: var(--zentra-timeline-document-bg);
+        color: var(--zentra-timeline-document-fg);
     }
 
     .buttons-bar {
-        background-color: var(--glpi-itil-secondary-bg);
+        background-color: var(--zentra-itil-secondary-bg);
 
         .form-buttons {
             background-color: inherit;

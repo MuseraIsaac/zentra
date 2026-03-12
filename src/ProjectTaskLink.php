@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,8 @@ class ProjectTaskLink extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => ['glpi_projecttasklinks.*'],
-            'FROM' => 'glpi_projecttasklinks',
+            'SELECT' => ['zentra_projecttasklinks.*'],
+            'FROM' => 'zentra_projecttasklinks',
             'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")",
         ]);
 

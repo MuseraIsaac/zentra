@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
- * Rule class store all information about a GLPI rule :
+ * Rule class store all information about a ZENTRA rule :
  *   - description
  *   - criterias
  *   - actions
@@ -64,15 +64,15 @@ class RuleDictionnarySoftware extends Rule
 
         $criterias['name']['field']         = 'name';
         $criterias['name']['name']          = _n('Software', 'Software', 1);
-        $criterias['name']['table']         = 'glpi_softwares';
+        $criterias['name']['table']         = 'zentra_softwares';
 
         $criterias['manufacturer']['field'] = 'name';
         $criterias['manufacturer']['name']  = __('Publisher');
-        $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+        $criterias['manufacturer']['table'] = 'zentra_manufacturers';
 
         $criterias['entities_id']['field']  = 'completename';
         $criterias['entities_id']['name']   = Entity::getTypeName(1);
-        $criterias['entities_id']['table']  = 'glpi_entities';
+        $criterias['entities_id']['table']  = 'zentra_entities';
         $criterias['entities_id']['type']   = 'dropdown';
 
         $criterias['_system_category']['field'] = 'name';
@@ -97,20 +97,20 @@ class RuleDictionnarySoftware extends Rule
         ];
 
         $actions['manufacturer']['name']          = __('Publisher');
-        $actions['manufacturer']['table']         = 'glpi_manufacturers';
+        $actions['manufacturer']['table']         = 'zentra_manufacturers';
         $actions['manufacturer']['force_actions'] = ['append_regex_result', 'assign','regex_result'];
 
         $actions['is_helpdesk_visible']['name']   = __('Associable to a ticket');
-        $actions['is_helpdesk_visible']['table']  = 'glpi_softwares';
+        $actions['is_helpdesk_visible']['table']  = 'zentra_softwares';
         $actions['is_helpdesk_visible']['type']   = 'yesno';
 
         $actions['new_entities_id']['name']       = Entity::getTypeName(1);
-        $actions['new_entities_id']['table']      = 'glpi_entities';
+        $actions['new_entities_id']['table']      = 'zentra_entities';
         $actions['new_entities_id']['type']       = 'dropdown';
 
         $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
         $actions['softwarecategories_id']['type']  = 'dropdown';
-        $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
+        $actions['softwarecategories_id']['table'] = 'zentra_softwarecategories';
         $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];
 
         return $actions;

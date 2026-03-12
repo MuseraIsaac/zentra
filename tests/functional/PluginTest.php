@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ namespace tests\units {
     use AppendIterator;
     use DirectoryIterator;
     use Error;
-    use Glpi\Tests\DbTestCase;
-    use Glpi\Toolbox\VersionParser;
+    use Zentra\Tests\DbTestCase;
+    use Zentra\Toolbox\VersionParser;
     use org\bovigo\vfs\vfsStream;
     use PHPUnit\Framework\Attributes\DataProvider;
     use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -57,7 +57,7 @@ namespace tests\units {
             self::$plugin_test_check_config = true;
             self::$plugin_test_check_prerequisites = true;
 
-            vfsStream::setup('glpi', null, [
+            vfsStream::setup('zentra', null, [
                 'plugins' => [],
             ]);
         }
@@ -89,24 +89,24 @@ namespace tests\units {
          */
         private function getTestPluginPath($directory)
         {
-            return vfsStream::url('glpi/plugins/' . $directory);
+            return vfsStream::url('zentra/plugins/' . $directory);
         }
 
         public function testGetWebDir(): void
         {
-            global $CFG_GLPI;
+            global $CFG_ZENTRA;
 
             $this->assertEquals('plugins/tester', @Plugin::getWebDir('tester', false, false));
             $this->assertEquals('marketplace/myplugin', @Plugin::getWebDir('myplugin', false, false));
 
-            foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
-                $CFG_GLPI['root_doc'] = $root_doc;
+            foreach (['', '/zentra', '/path/to/app'] as $root_doc) {
+                $CFG_ZENTRA['root_doc'] = $root_doc;
                 $this->assertEquals($root_doc . '/plugins/tester', @Plugin::getWebDir('tester', true, false));
                 $this->assertEquals($root_doc . '/marketplace/myplugin', @Plugin::getWebDir('myplugin', true, false));
             }
 
-            foreach (['http://localhost', 'https://www.example.org/glpi'] as $url_base) {
-                $CFG_GLPI['url_base'] = $url_base;
+            foreach (['http://localhost', 'https://www.example.org/zentra'] as $url_base) {
+                $CFG_ZENTRA['url_base'] = $url_base;
                 $this->assertEquals($url_base . '/plugins/tester', @Plugin::getWebDir('tester', true, true));
                 $this->assertEquals($url_base . '/marketplace/myplugin', @Plugin::getWebDir('myplugin', true, true));
             }
@@ -114,37 +114,37 @@ namespace tests\units {
             $this->assertFalse(@Plugin::getWebDir('notaplugin', true, true));
         }
 
-        public function testGetGlpiVersion()
+        public function testGetZentraVersion()
         {
             $plugin = new Plugin();
-            $this->assertEquals(VersionParser::getNormalizedVersion(GLPI_VERSION, false), $plugin->getGlpiVersion());
+            $this->assertEquals(VersionParser::getNormalizedVersion(ZENTRA_VERSION, false), $plugin->getZentraVersion());
         }
 
-        public function testCheckGlpiVersion()
+        public function testCheckZentraVersion()
         {
             // Test min compatibility
             $infos = ['min' => '0.90'];
-            $this->assertTrue($this->getPluginMock(['_mock_getGlpiVersion' => '9.2.0'])->checkGlpiVersion($infos));
+            $this->assertTrue($this->getPluginMock(['_mock_getZentraVersion' => '9.2.0'])->checkZentraVersion($infos));
             ob_start();
-            $this->assertFalse($this->getPluginMock(['_mock_getGlpiVersion' => '0.89.0'])->checkGlpiVersion($infos));
-            $this->assertEquals('This plugin requires GLPI >= 0.90.', trim(ob_get_clean()));
+            $this->assertFalse($this->getPluginMock(['_mock_getZentraVersion' => '0.89.0'])->checkZentraVersion($infos));
+            $this->assertEquals('This plugin requires ZENTRA >= 0.90.', trim(ob_get_clean()));
 
             // Test max compatibility
             $infos = ['max' => '9.3'];
-            $this->assertTrue($this->getPluginMock(['_mock_getGlpiVersion' => '9.2.0'])->checkGlpiVersion($infos));
+            $this->assertTrue($this->getPluginMock(['_mock_getZentraVersion' => '9.2.0'])->checkZentraVersion($infos));
             ob_start();
-            $this->assertFalse($this->getPluginMock(['_mock_getGlpiVersion' => '9.3.0'])->checkGlpiVersion($infos));
-            $this->assertEquals('This plugin requires GLPI < 9.3.', trim(ob_get_clean()));
+            $this->assertFalse($this->getPluginMock(['_mock_getZentraVersion' => '9.3.0'])->checkZentraVersion($infos));
+            $this->assertEquals('This plugin requires ZENTRA < 9.3.', trim(ob_get_clean()));
 
             // Test min and max compatibility
             $infos = ['min' => '0.90', 'max' => '9.3'];
-            $this->assertTrue($this->getPluginMock(['_mock_getGlpiVersion' => '9.2.0'])->checkGlpiVersion($infos));
+            $this->assertTrue($this->getPluginMock(['_mock_getZentraVersion' => '9.2.0'])->checkZentraVersion($infos));
             ob_start();
-            $this->assertFalse($this->getPluginMock(['_mock_getGlpiVersion' => '0.89.0'])->checkGlpiVersion($infos));
-            $this->assertEquals('This plugin requires GLPI >= 0.90 and < 9.3.', trim(ob_get_clean()));
+            $this->assertFalse($this->getPluginMock(['_mock_getZentraVersion' => '0.89.0'])->checkZentraVersion($infos));
+            $this->assertEquals('This plugin requires ZENTRA >= 0.90 and < 9.3.', trim(ob_get_clean()));
             ob_start();
-            $this->assertFalse($this->getPluginMock(['_mock_getGlpiVersion' => '9.3.0'])->checkGlpiVersion($infos));
-            $this->assertEquals('This plugin requires GLPI >= 0.90 and < 9.3.', trim(ob_get_clean()));
+            $this->assertFalse($this->getPluginMock(['_mock_getZentraVersion' => '9.3.0'])->checkZentraVersion($infos));
+            $this->assertEquals('This plugin requires ZENTRA >= 0.90 and < 9.3.', trim(ob_get_clean()));
         }
 
         public function testcheckPhpVersion()
@@ -179,42 +179,42 @@ namespace tests\units {
             $this->assertEquals('This plugin requires PHP extension myext', trim(ob_get_clean()));
         }
 
-        public function testCheckGlpiParameters()
+        public function testCheckZentraParameters()
         {
-            global $CFG_GLPI;
+            global $CFG_ZENTRA;
 
             $params = ['my_param'];
 
             $plugin = new Plugin();
 
             ob_start();
-            $this->assertFalse($plugin->checkGlpiParameters($params));
-            $this->assertEquals('This plugin requires GLPI parameter my_param', trim(ob_get_clean()));
+            $this->assertFalse($plugin->checkZentraParameters($params));
+            $this->assertEquals('This plugin requires ZENTRA parameter my_param', trim(ob_get_clean()));
 
-            $CFG_GLPI['my_param'] = '';
+            $CFG_ZENTRA['my_param'] = '';
             ob_start();
-            $this->assertFalse($plugin->checkGlpiParameters($params));
-            $this->assertEquals('This plugin requires GLPI parameter my_param', trim(ob_get_clean()));
+            $this->assertFalse($plugin->checkZentraParameters($params));
+            $this->assertEquals('This plugin requires ZENTRA parameter my_param', trim(ob_get_clean()));
 
-            $CFG_GLPI['my_param'] = '0';
+            $CFG_ZENTRA['my_param'] = '0';
             ob_start();
-            $this->assertFalse($plugin->checkGlpiParameters($params));
-            $this->assertEquals('This plugin requires GLPI parameter my_param', trim(ob_get_clean()));
+            $this->assertFalse($plugin->checkZentraParameters($params));
+            $this->assertEquals('This plugin requires ZENTRA parameter my_param', trim(ob_get_clean()));
 
-            $CFG_GLPI['my_param'] = 'abc';
+            $CFG_ZENTRA['my_param'] = 'abc';
             ob_start();
-            $this->assertTrue($plugin->checkGlpiParameters($params));
+            $this->assertTrue($plugin->checkZentraParameters($params));
             $this->assertEmpty(ob_get_clean());
         }
 
-        public function testCheckGlpiPlugins()
+        public function testCheckZentraPlugins()
         {
             $plugin = $this->getPluginMock([
                 '_mock_isInstalled' => false,
                 '_mock_isActivated' => false,
             ]);
             ob_start();
-            $this->assertFalse($plugin->checkGlpiPlugins(['myplugin']));
+            $this->assertFalse($plugin->checkZentraPlugins(['myplugin']));
             $this->assertEquals('This plugin requires myplugin plugin', trim(ob_get_clean()));
 
             $plugin = $this->getPluginMock([
@@ -222,7 +222,7 @@ namespace tests\units {
                 '_mock_isActivated' => false,
             ]);
             ob_start();
-            $this->assertFalse($plugin->checkGlpiPlugins(['myplugin']));
+            $this->assertFalse($plugin->checkZentraPlugins(['myplugin']));
             $this->assertEquals('This plugin requires myplugin plugin', trim(ob_get_clean()));
 
             $plugin = $this->getPluginMock([
@@ -230,7 +230,7 @@ namespace tests\units {
                 '_mock_isActivated' => true,
             ]);
             ob_start();
-            $this->assertTrue($plugin->checkGlpiPlugins(['myplugin']));
+            $this->assertTrue($plugin->checkZentraPlugins(['myplugin']));
             $this->assertEmpty(ob_get_clean());
         }
 
@@ -626,7 +626,7 @@ namespace tests\units {
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'requirements' => [
-                    'glpi' => [
+                    'zentra' => [
                         'min' => '15.0',
                     ],
                 ],
@@ -1116,9 +1116,9 @@ PHP
             $plugin = new class extends Plugin {
                 public array $_mock_options;
 
-                public function getGlpiVersion()
+                public function getZentraVersion()
                 {
-                    return $this->_mock_options['_mock_getGlpiVersion'] ?? parent::getGlpiVersion();
+                    return $this->_mock_options['_mock_getZentraVersion'] ?? parent::getZentraVersion();
                 }
 
                 public function getPhpVersion()
@@ -1138,7 +1138,7 @@ PHP
 
                 protected static function getPluginDirectories(): array
                 {
-                    return [vfsStream::url('glpi/plugins')];
+                    return [vfsStream::url('zentra/plugins')];
                 }
 
                 /**

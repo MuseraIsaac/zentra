@@ -1,9 +1,9 @@
 --
 -- ---------------------------------------------------------------------
 --
--- GLPI - Gestionnaire Libre de Parc Informatique
+-- ZENTRA - Gestionnaire Libre de Parc Informatique
 --
--- http://glpi-project.org
+-- http://zentra-project.org
 --
 -- @copyright 2015-2026 Teclib' and contributors.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
 --
 -- LICENSE
 --
--- This file is part of GLPI.
+-- This file is part of ZENTRA.
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 -- ---------------------------------------------------------------------
 --
 
-CREATE TABLE `glpi_plugin_genericobject_typefamilies` (
+CREATE TABLE `zentra_plugin_genericobject_typefamilies` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `glpi_plugin_genericobject_typefamilies` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-CREATE TABLE `glpi_plugin_genericobject_types` (
+CREATE TABLE `zentra_plugin_genericobject_types` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `entities_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `itemtype` VARCHAR(255) NULL,
@@ -78,12 +78,12 @@ CREATE TABLE `glpi_plugin_genericobject_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-INSERT INTO `glpi_plugin_genericobject_types` (`id`, `entities_id`, `itemtype`, `is_active`, `name`, `comment`, `date_mod`, `date_creation`, `use_global_search`, `use_unicity`, `use_history`, `use_infocoms`, `use_contracts`, `use_documents`, `use_tickets`, `use_links`, `use_loans`, `use_network_ports`, `use_direct_connections`, `use_plugin_datainjection`, `use_plugin_pdf`, `use_plugin_order`, `use_plugin_uninstall`, `use_plugin_geninventorynumber`, `use_menu_entry`, `use_projects`, `linked_itemtypes`, `plugin_genericobject_typefamilies_id`, `use_itemdevices`, `impact_icon`, `use_notepad`, `use_plugin_simcard`, `use_plugin_treeview`) VALUES
+INSERT INTO `zentra_plugin_genericobject_types` (`id`, `entities_id`, `itemtype`, `is_active`, `name`, `comment`, `date_mod`, `date_creation`, `use_global_search`, `use_unicity`, `use_history`, `use_infocoms`, `use_contracts`, `use_documents`, `use_tickets`, `use_links`, `use_loans`, `use_network_ports`, `use_direct_connections`, `use_plugin_datainjection`, `use_plugin_pdf`, `use_plugin_order`, `use_plugin_uninstall`, `use_plugin_geninventorynumber`, `use_menu_entry`, `use_projects`, `linked_itemtypes`, `plugin_genericobject_typefamilies_id`, `use_itemdevices`, `impact_icon`, `use_notepad`, `use_plugin_simcard`, `use_plugin_treeview`) VALUES
 (1, 0, 'PluginGenericobjectSmartphone', 1, 'smartphone', 'Main object with all the fields and capacities.', '2025-03-05 16:30:17', '2025-03-05 16:28:56', 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, NULL, 0, 1, NULL, 1, 0, 0),
 (2, 0, 'PluginGenericobjectTablet', 1, 'tablet', 'Main object with only than the mandatory fields.', '2025-03-06 09:58:55', '2025-03-05 16:32:43', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 0, 0, NULL, 0, 0, 0),
 (3, 0, 'PluginGenericobjectInactive', 0, 'inactive', 'Inactive main object.', '2025-03-06 14:32:48', '2025-03-06 14:30:12', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 0, 0, NULL, 0, 0, 0);
 
-CREATE TABLE `glpi_plugin_genericobject_bars` (
+CREATE TABLE `zentra_plugin_genericobject_bars` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE `glpi_plugin_genericobject_bars` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_bars` (`id`, `name`, `comment`, `date_mod`, `date_creation`, `entities_id`, `is_recursive`) VALUES
+INSERT INTO `zentra_plugin_genericobject_bars` (`id`, `name`, `comment`, `date_mod`, `date_creation`, `entities_id`, `is_recursive`) VALUES
 (1, 'Bar 1', '', '2025-03-06 10:06:47', '2025-03-06 10:06:47', 0, 0),
 (2, 'Bar 2', '', '2025-03-06 10:06:49', '2025-03-06 10:06:49', 1, 1),
 (3, 'Bar 3', 'A comment about bar 3', '2025-03-06 10:07:13', '2025-03-06 10:06:52', 0, 1),
@@ -108,7 +108,7 @@ INSERT INTO `glpi_plugin_genericobject_bars` (`id`, `name`, `comment`, `date_mod
 (9, 'Bar 9', '', '2025-03-06 10:07:05', '2025-03-06 10:07:05', 0, 0),
 (10, 'Bar 10', '', '2025-03-06 10:07:08', '2025-03-06 10:07:08', 0, 0);
 
-CREATE TABLE `glpi_plugin_genericobject_foos` (
+CREATE TABLE `zentra_plugin_genericobject_foos` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE `glpi_plugin_genericobject_foos` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_foos` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_foos` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Foo 1', '', '2025-03-06 10:26:47', '2025-03-06 10:26:47'),
 (2, 'Foo 2', '', '2025-03-06 10:26:49', '2025-03-06 10:26:49'),
 (3, 'Foo 3', '', '2025-03-06 10:26:52', '2025-03-06 10:26:52'),
@@ -131,7 +131,7 @@ INSERT INTO `glpi_plugin_genericobject_foos` (`id`, `name`, `comment`, `date_mod
 (9, 'Foo 9', '', '2025-03-06 10:27:05', '2025-03-06 10:27:05'),
 (10, 'Foo 10', '', '2025-03-06 10:27:08', '2025-03-06 10:27:08');
 
-CREATE TABLE `glpi_plugin_genericobject_uaus` (
+CREATE TABLE `zentra_plugin_genericobject_uaus` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -142,11 +142,11 @@ CREATE TABLE `glpi_plugin_genericobject_uaus` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_uaus` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_uaus` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Uau 1', '', '2025-01-13 08:47:23', '2025-01-13 08:47:23'),
 (2, 'Uau 2', '', '2025-02-24 17:43:01', '2025-02-26 14:12:17');
 
-CREATE TABLE `glpi_plugin_genericobject_items_states` (
+CREATE TABLE `zentra_plugin_genericobject_items_states` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -157,12 +157,12 @@ CREATE TABLE `glpi_plugin_genericobject_items_states` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_items_states` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_items_states` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'State 1', '', '2025-03-06 10:26:47', '2025-03-06 10:26:47'),
 (2, 'State 2', '', '2025-03-06 10:26:49', '2025-03-06 10:26:49'),
 (3, 'State 3', '', '2025-03-06 10:26:52', '2025-03-06 10:26:52');
 
-CREATE TABLE `glpi_plugin_genericobject_test_abcs` (
+CREATE TABLE `zentra_plugin_genericobject_test_abcs` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -173,12 +173,12 @@ CREATE TABLE `glpi_plugin_genericobject_test_abcs` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_test_abcs` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_test_abcs` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Test 1', '', '2025-03-06 10:26:47', '2025-03-06 10:26:47'),
 (2, 'Test 2', '', '2025-03-06 10:26:49', '2025-03-06 10:26:49'),
 (3, 'Test 3', '', '2025-03-06 10:26:52', '2025-03-06 10:26:52');
 
-CREATE TABLE `glpi_plugin_genericobject_inactives` (
+CREATE TABLE `zentra_plugin_genericobject_inactives` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `entities_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `name` VARCHAR(255) NOT NULL DEFAULT '' ,
@@ -191,7 +191,7 @@ CREATE TABLE `glpi_plugin_genericobject_inactives` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-CREATE TABLE `glpi_plugin_genericobject_smartphones` (
+CREATE TABLE `zentra_plugin_genericobject_smartphones` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `is_template` TINYINT NOT NULL DEFAULT 0 ,
   `template_name` VARCHAR(255) NOT NULL DEFAULT '' ,
@@ -237,12 +237,12 @@ CREATE TABLE `glpi_plugin_genericobject_smartphones` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_smartphones` (`id`, `is_template`, `template_name`, `is_deleted`, `entities_id`, `is_recursive`, `name`, `serial`, `otherserial`, `locations_id`, `states_id`, `users_id`, `groups_id`, `manufacturers_id`, `users_id_tech`, `comment`, `is_helpdesk_visible`, `notepad`, `date_mod`, `date_creation`, `computers_id_host`, `config_str`, `contact`, `contact_num`, `creationdate`, `count`, `domains_id`, `expirationdate`, `groups_id_tech`, `is_global`, `other`, `plugin_genericobject_smartphonecategories_id`, `plugin_genericobject_smartphonemodels_id`, `plugin_genericobject_smartphonetypes_id`, `url`, `plugin_genericobject_tablets_id`, `plugin_genericobject_bars_id`, `plugin_genericobject_foos_id`, `plugin_genericobject_uaus_id`, `plugin_genericobject_items_states_id`, `plugin_genericobject_test_abcs_id`) VALUES
+INSERT INTO `zentra_plugin_genericobject_smartphones` (`id`, `is_template`, `template_name`, `is_deleted`, `entities_id`, `is_recursive`, `name`, `serial`, `otherserial`, `locations_id`, `states_id`, `users_id`, `groups_id`, `manufacturers_id`, `users_id_tech`, `comment`, `is_helpdesk_visible`, `notepad`, `date_mod`, `date_creation`, `computers_id_host`, `config_str`, `contact`, `contact_num`, `creationdate`, `count`, `domains_id`, `expirationdate`, `groups_id_tech`, `is_global`, `other`, `plugin_genericobject_smartphonecategories_id`, `plugin_genericobject_smartphonemodels_id`, `plugin_genericobject_smartphonetypes_id`, `url`, `plugin_genericobject_tablets_id`, `plugin_genericobject_bars_id`, `plugin_genericobject_foos_id`, `plugin_genericobject_uaus_id`, `plugin_genericobject_items_states_id`, `plugin_genericobject_test_abcs_id`) VALUES
 (1, 0, '', 0, 0, 0, 'Smartphone 1', 'SER0123', '', 1, 1, 3, 2, 3, 4, '', 1, NULL, '2025-03-06 10:08:51', '2025-03-06 10:08:51', 1, '# is_foo=0\nis_foo=1\nbar="adbizq"', '', '', '2025-02-01', 19, 4, '2025-12-31', 0, 0, 'some random value', 5, 2, 5, 'https://example.org/?id=9783', 1, 3, 2, 0, 0, 1),
 (2, 0, '', 0, 0, 1, 'Smartphone 2', 'SER0198', '', 2, 2, 5, 1, 2, 0, '', 1, NULL, '2025-03-06 10:11:46', '2025-03-06 10:11:46', 2, '# no config', '', '', NULL, 0, 0, NULL, 4, 0, '', 4, 2, 0, '', 0, 4, 0, 1, 3, 0),
 (3, 0, '', 0, 0, 0, 'Smartphone 3', '', 'INV123456', 0, 0, 0, 0, 0, 4, 'Some comments...', 1, NULL, '2025-03-06 10:12:59', '2025-03-06 10:12:59', 0, '', '', '', NULL, 0, 3, NULL, 0, 1, '', 0, 0, 4, '', 3, 0, 0, 2, 1, 2);
 
-CREATE TABLE `glpi_plugin_genericobject_smartphonecategories` (
+CREATE TABLE `zentra_plugin_genericobject_smartphonecategories` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -253,7 +253,7 @@ CREATE TABLE `glpi_plugin_genericobject_smartphonecategories` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_smartphonecategories` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_smartphonecategories` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Cat 1', '', '2025-03-06 10:07:16', '2025-03-06 10:07:16'),
 (2, 'Cat 2', '', '2025-03-06 10:07:18', '2025-03-06 10:07:18'),
 (3, 'Cat 3', '', '2025-03-06 10:07:20', '2025-03-06 10:07:20'),
@@ -263,7 +263,7 @@ INSERT INTO `glpi_plugin_genericobject_smartphonecategories` (`id`, `name`, `com
 (7, 'Cat 7', '', '2025-03-06 10:07:36', '2025-03-06 10:07:36'),
 (8, 'Cat 8', '', '2025-03-06 10:07:38', '2025-03-06 10:07:38');
 
-CREATE TABLE `glpi_plugin_genericobject_smartphonemodels` (
+CREATE TABLE `zentra_plugin_genericobject_smartphonemodels` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -274,14 +274,14 @@ CREATE TABLE `glpi_plugin_genericobject_smartphonemodels` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_smartphonemodels` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_smartphonemodels` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Model 1', '', '2025-03-06 10:07:47', '2025-03-06 10:07:47'),
 (2, 'Model 2', '', '2025-03-06 10:07:50', '2025-03-06 10:07:50'),
 (3, 'Model 3', '', '2025-03-06 10:07:52', '2025-03-06 10:07:52'),
 (4, 'Model 4', '', '2025-03-06 10:07:54', '2025-03-06 10:07:54'),
 (5, 'Model 5', '', '2025-03-06 10:07:57', '2025-03-06 10:07:57');
 
-CREATE TABLE `glpi_plugin_genericobject_smartphonetypes` (
+CREATE TABLE `zentra_plugin_genericobject_smartphonetypes` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
   `comment` TEXT NULL,
@@ -292,14 +292,14 @@ CREATE TABLE `glpi_plugin_genericobject_smartphonetypes` (
   KEY `date_creation` (`date_creation`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_smartphonetypes` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_smartphonetypes` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 'Type 1', '', '2025-03-06 10:08:05', '2025-03-06 10:08:05'),
 (2, 'Type 2', '', '2025-03-06 10:08:07', '2025-03-06 10:08:07'),
 (3, 'Type 3', '', '2025-03-06 10:08:09', '2025-03-06 10:08:09'),
 (4, 'Type 4', '', '2025-03-06 10:08:11', '2025-03-06 10:08:11'),
 (5, 'Type 5', '', '2025-03-06 10:08:18', '2025-03-06 10:08:13');
 
-CREATE TABLE `glpi_plugin_genericobject_tablets` (
+CREATE TABLE `zentra_plugin_genericobject_tablets` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `entities_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `name` VARCHAR(255) NOT NULL DEFAULT '' ,
@@ -310,7 +310,7 @@ CREATE TABLE `glpi_plugin_genericobject_tablets` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_tablets` (`id`, `entities_id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+INSERT INTO `zentra_plugin_genericobject_tablets` (`id`, `entities_id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
 (1, 0, 'Tablet 1', '', '2025-03-06 10:01:07', '2025-03-06 09:59:28'),
 (2, 0, 'Tablet 2', '', '2025-03-06 10:09:15', '2025-03-06 10:09:15'),
 (3, 0, 'Tablet 3', '', '2025-03-06 10:09:19', '2025-03-06 10:09:19'),

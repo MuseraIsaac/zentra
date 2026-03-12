@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
-use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\ParentStatus;
-use Glpi\Features\PlanningEvent;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Zentra\CalDAV\Traits\VobjectConverterTrait;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\ParentStatus;
+use Zentra\Features\PlanningEvent;
+use Zentra\RichText\RichText;
 use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Safe\DateTime;
@@ -164,8 +164,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (
             $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
-            && isset($_SESSION["glpigroups"])
-            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+            && isset($_SESSION["zentragroups"])
+            && in_array($this->fields["groups_id_tech"], $_SESSION["zentragroups"])
         ) {
             return true;
         }
@@ -357,7 +357,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (
@@ -365,7 +365,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             && static::canView()
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $restrict = [$item->getForeignKeyField() => $item->getID()];
 
                 if (
@@ -386,7 +386,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function post_deleteFromDB()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $item = static::getItilObjectItemInstance();
         $fk = $item::getForeignKeyField();
@@ -408,7 +408,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             Log::HISTORY_DELETE_SUBITEM
         );
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             $options = ['task_id'             => $this->fields["id"],
                 // Force is_private with data / not available
                 'is_private'          => $this->isPrivate(),
@@ -578,7 +578,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -631,7 +631,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
                 $this->updateParentStatus($this->input['_job'], $this->input);
 
-                if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+                if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
                     $options = ['task_id'    => $this->fields["id"],
                         'is_private' => $this->isPrivate(),
                     ];
@@ -758,7 +758,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         if (!isset($input["date"]) || empty($input["date"])) {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = $_SESSION["zentra_currenttime"];
         }
         if (!isset($input["is_private"])) {
             $input['is_private'] = 0;
@@ -774,7 +774,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -784,7 +784,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             PlanningRecall::manageDatas($this->input['_planningrecall']);
         }
 
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"];
 
         $skip_check = $this->input['_do_not_check_already_planned'] ?? false;
         if (!$skip_check && isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
@@ -883,14 +883,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (
             $this->maybePrivate()
-            && isset($_SESSION['glpitask_private']) && $_SESSION['glpitask_private']
+            && isset($_SESSION['zentratask_private']) && $_SESSION['zentratask_private']
         ) {
             $this->fields['is_private'] = 1;
         }
         // Default is todo
         $this->fields['state'] = Planning::TODO;
-        if (isset($_SESSION['glpitask_state'])) {
-            $this->fields['state'] = $_SESSION['glpitask_state'];
+        if (isset($_SESSION['zentratask_state'])) {
+            $this->fields['state'] = $_SESSION['zentratask_state'];
         }
     }
 
@@ -916,7 +916,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (isset($this->fields['taskcategories_id'])) {
             if ($this->fields['taskcategories_id']) {
                 return Dropdown::getDropdownName(
-                    'glpi_taskcategories',
+                    'zentra_taskcategories',
                     $this->fields['taskcategories_id']
                 );
             }
@@ -954,7 +954,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_taskcategories',
+            'table'              => 'zentra_taskcategories',
             'field'              => 'name',
             'name'               => _n('Task category', 'Task categories', 1),
             'forcegroupby'       => true,
@@ -981,7 +981,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Technician'),
             'datatype'           => 'dropdown',
@@ -1067,7 +1067,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => 'glpi_taskcategories',
+            'table'              => 'zentra_taskcategories',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => _n('Category', 'Categories', 1),
@@ -1104,7 +1104,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '94',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Writer'),
             'datatype'           => 'itemlink',
@@ -1124,7 +1124,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '95',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -1145,7 +1145,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $tab[] = [
             'id'                 => '112',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge'),
@@ -1312,7 +1312,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function genericPopulatePlanning($itemtype, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $interv = [];
 
@@ -1411,8 +1411,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $ADDWHERE = [];
 
         if ($whogroup === "mine") {
-            if (isset($_SESSION['glpigroups'])) {
-                $whogroup = $_SESSION['glpigroups'];
+            if (isset($_SESSION['zentragroups'])) {
+                $whogroup = $_SESSION['zentragroups'];
             } elseif ($who > 0) {
                 $whogroup = array_column(Group_User::getUserGroups($who), 'id');
             }
@@ -1430,20 +1430,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (!count($ADDWHERE)) {
             $ADDWHERE = [
                 $item->getTable() . '.users_id_tech' => new QuerySubQuery([
-                    'SELECT'          => 'glpi_profiles_users.users_id',
+                    'SELECT'          => 'zentra_profiles_users.users_id',
                     'DISTINCT'        => true,
-                    'FROM'            => 'glpi_profiles',
+                    'FROM'            => 'zentra_profiles',
                     'LEFT JOIN'       => [
-                        'glpi_profiles_users'   => [
+                        'zentra_profiles_users'   => [
                             'ON' => [
-                                'glpi_profiles_users' => 'profiles_id',
-                                'glpi_profiles'       => 'id',
+                                'zentra_profiles_users' => 'profiles_id',
+                                'zentra_profiles'       => 'id',
                             ],
                         ],
                     ],
                     'WHERE'           => [
-                        'glpi_profiles.interface'  => 'central',
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], true),
+                        'zentra_profiles.interface'  => 'central',
+                    ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $_SESSION['zentraactive_entity'], true),
                 ]),
             ];
         }
@@ -1501,10 +1501,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         if (!$options['genical']) {
                             $interv[$key]["url"] = $parentitemtype::getFormURLWithID($url_id);
                         } else {
-                            $interv[$key]["url"] = $CFG_GLPI["url_base"]
+                            $interv[$key]["url"] = $CFG_ZENTRA["url_base"]
                                             . $parentitemtype::getFormURLWithID($url_id, false);
                         }
-                        $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                        $interv[$key]["ajaxurl"] = $CFG_ZENTRA["root_doc"] . "/ajax/planning.php"
                                              . "?action=edit_event_form"
                                              . "&itemtype=" . $itemtype
                                              . "&parentitemtype=" . $parentitemtype
@@ -1594,7 +1594,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $html = "";
         $rand      = mt_rand();
@@ -1617,7 +1617,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/rdv_interv.png' alt='' title=\""
+        $html .= "<img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/rdv_interv.png' alt='' title=\""
              . htmlescape($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
         $html .= $parent->getStatusIcon($val['status']);
         $html .= "&nbsp;<a id='content_tracking_" . htmlescape($val["id"] . $rand) . "'
@@ -1753,14 +1753,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 break;
         }
         if ($showgrouptickets) {
-            if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
-                $prep_req['WHERE'][self::getTable() . '.groups_id_tech'] = $_SESSION['glpigroups'];
+            if (isset($_SESSION['zentragroups']) && count($_SESSION['zentragroups'])) {
+                $prep_req['WHERE'][self::getTable() . '.groups_id_tech'] = $_SESSION['zentragroups'];
             } else {
                 // Return empty iterator result
                 $prep_req['WHERE'][] = new QueryExpression('false');
             }
         } else {
-            $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['glpiID'];
+            $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['zentraID'];
         }
 
         $prep_req['WHERE'] += getEntitiesRestrictCriteria($fk_table);
@@ -1795,7 +1795,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $iterator = self::getTaskList($status, $showgrouptickets);
 
         $total_row_count = count($iterator);
-        $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
+        $displayed_row_count = min((int) $_SESSION['zentradisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
             $itemtype = static::class;
@@ -1823,7 +1823,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $options['criteria'][] = [
                             'field'      => 95, // tech in charge of task
                             'searchtype' => 'equals',
-                            'value'      => $_SESSION['glpiID'],
+                            'value'      => $_SESSION['zentraID'],
                             'link'       => 'AND',
                         ];
                     }
@@ -1903,7 +1903,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     }
 
                     // Parent item id with priority hint
-                    $bgcolor = htmlescape($_SESSION["glpipriority_" . $parent_item->fields["priority"]]);
+                    $bgcolor = htmlescape($_SESSION["zentrapriority_" . $parent_item->fields["priority"]]);
                     $name = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $parent_item->fields["id"]));
                     $row['values'][] = [
                         'content' => "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>",
@@ -1966,7 +1966,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 throw new RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
             }
 
-            $bgcolor = htmlescape($_SESSION["glpipriority_" . $item_link->fields["priority"]]);
+            $bgcolor = htmlescape($_SESSION["zentrapriority_" . $item_link->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -2065,7 +2065,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function getAsVCalendar()
     {
 
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$this->canViewItem()) {
             return null;
@@ -2096,7 +2096,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $vcomp->SUMMARY           = $parent_fields['name'];
         $vcomp->DTSTAMP           = (new DateTime($parent_fields['date_mod']))->setTimeZone($utc_tz);
         $vcomp->{'LAST-MODIFIED'} = (new DateTime($parent_fields['date_mod']))->setTimeZone($utc_tz);
-        $vcomp->URL               = $CFG_GLPI['url_base'] . $parent_item->getFormURLWithID($parent_id, false);
+        $vcomp->URL               = $CFG_ZENTRA['url_base'] . $parent_item->getFormURLWithID($parent_id, false);
 
         return $vcalendar;
     }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Debug\Profile;
-use Glpi\Exception\Database\StatementException;
-use Glpi\System\Requirement\DbTimezones;
-use Glpi\Toolbox\SanitizedStringsDecoder;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Debug\Profile;
+use Zentra\Exception\Database\StatementException;
+use Zentra\System\Requirement\DbTimezones;
+use Zentra\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
 
 use function Safe\filesize;
@@ -185,7 +185,7 @@ class DBmysql
 
     /** Is it a first connection ?
      * Indicates if the first connection attempt is successful or not
-     * if first attempt fail -> display a warning which indicates that glpi is in readonly
+     * if first attempt fail -> display a warning which indicates that zentra is in readonly
      *
      * @var bool
      */
@@ -237,9 +237,9 @@ class DBmysql
     public function __construct($choice = null)
     {
         // Handle separate DB instances per worker for unit tests (when enabled)
-        // First runner will use the existing `glpi` database
-        // Second runner will use `glpi_2`
-        // Third runner will use `glpi_3`
+        // First runner will use the existing `zentra` database
+        // Second runner will use `zentra_2`
+        // Third runner will use `zentra_3`
         // And so on...
         $test_token = getenv('TEST_TOKEN');
         if ($test_token !== false && $test_token !== '' && $test_token > 1) {
@@ -324,13 +324,13 @@ class DBmysql
      *
      * @since 9.5.0
      *
-     * @TODO Remove this method in GLPI 12.0
+     * @TODO Remove this method in ZENTRA 12.0
      */
     public function guessTimezone()
     {
         if ($this->use_timezones) {
-            if (isset($_SESSION['glpitimezone'])) {
-                $zone = $_SESSION['glpitimezone'];
+            if (isset($_SESSION['zentratimezone'])) {
+                $zone = $_SESSION['zentratimezone'];
                 if ($zone === '0') {
                     // '0' is for 'Use server configuration'
                     $zone = date_default_timezone_get();
@@ -451,7 +451,7 @@ class DBmysql
             );
         }
 
-        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+        if (isset($_SESSION['zentra_use_mode']) && ($_SESSION['zentra_use_mode'] == Session::DEBUG_MODE)) {
             Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $debug_data['time'],
@@ -673,12 +673,12 @@ class DBmysql
     /**
      * List tables in database
      *
-     * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
+     * @param string $table Table name condition (zentra_% as default to retrieve only zentra tables)
      * @param array  $where Where clause to append
      *
      * @return DBmysqlIterator
      */
-    public function listTables($table = 'glpi\_%', array $where = [])
+    public function listTables($table = 'zentra\_%', array $where = [])
     {
         $iterator = $this->request([
             'SELECT' => 'table_name as TABLE_NAME',
@@ -705,10 +705,10 @@ class DBmysql
             'engine' => 'MyIsam',
         ];
         if ($exclude_plugins) {
-            $criteria[] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+            $criteria[] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'zentra\_plugin\_%']]];
         }
 
-        $iterator = $this->listTables('glpi\_%', $criteria);
+        $iterator = $this->listTables('zentra\_%', $criteria);
 
         return $iterator;
     }
@@ -730,7 +730,7 @@ class DBmysql
             'FROM'       => 'information_schema.tables',
             'WHERE'     => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
-                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_name'   => ['LIKE', 'zentra\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.tables.table_collation' => ['LIKE', 'utf8mb4\_%']]],
             ],
@@ -758,7 +758,7 @@ class DBmysql
             ],
             'WHERE'     => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
-                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_name'   => ['LIKE', 'zentra\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
                 ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]],
@@ -766,8 +766,8 @@ class DBmysql
         ];
 
         if ($exclude_plugins) {
-            $tables_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
-            $columns_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+            $tables_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'zentra\_plugin\_%']]];
+            $columns_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'zentra\_plugin\_%']]];
         }
 
         $iterator = $this->request([
@@ -813,7 +813,7 @@ class DBmysql
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
-                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_name'   => ['LIKE', 'zentra\_%'],
                 'information_schema.tables.table_type'   => 'BASE TABLE',
                 'information_schema.columns.data_type'   => 'datetime',
             ],
@@ -821,7 +821,7 @@ class DBmysql
         ];
 
         if ($exclude_plugins) {
-            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'zentra\_plugin\_%']]];
         }
 
         $iterator = $this->request($query);
@@ -868,7 +868,7 @@ class DBmysql
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema'  => $this->dbdefault,
-                'information_schema.tables.table_name'    => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_name'    => ['LIKE', 'zentra\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 [
                     'OR' => [
@@ -884,7 +884,7 @@ class DBmysql
         ];
 
         if ($exclude_plugins) {
-            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'zentra\_plugin\_%']]];
         }
 
         $iterator = $this->request($query);
@@ -914,7 +914,7 @@ class DBmysql
             'FROM'   => 'information_schema.key_column_usage',
             'WHERE'  => [
                 'referenced_table_schema' => $this->dbdefault,
-                'referenced_table_name'   => ['LIKE', 'glpi\_%'],
+                'referenced_table_name'   => ['LIKE', 'zentra\_%'],
             ],
             'ORDER'  => ['TABLE_NAME'],
         ];
@@ -1188,7 +1188,7 @@ class DBmysql
         // with all known tables
         $retrieve_all = !$this->cache_disabled && $this->table_cache === [];
 
-        $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
+        $result = $this->listTables($retrieve_all ? 'zentra\_%' : $tablename);
         $found_tables = [];
         foreach ($result as $data) {
             $found_tables[] = $data['TABLE_NAME'];
@@ -1894,7 +1894,7 @@ class DBmysql
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
             $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
-            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+            $_SESSION['zentra_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;
     }

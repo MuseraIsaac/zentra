@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -34,15 +34,15 @@
 {% set icon_ids = searchIcons(filter, page, page_size) %}
 
 <div
-    data-glpi-icon-picker-body
+    data-zentra-icon-picker-body
     {# Keep track of our page size as we will need to request the same size
     when querying the server for others pages #}
-    data-glpi-icon-picker-page-size="{{ page_size }}"
+    data-zentra-icon-picker-page-size="{{ page_size }}"
 >
     {% if icon_ids|length %}
         <div class="row g-3 mb-4 align-items-start">
             {% for icon_id in icon_ids %}
-                <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
+                <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-zentra-icon-picker-value="{{ icon_id }}">
                     <div class="card border-secondary-hover cursor-pointer rounded">
                         <div class="card-body h-100 aspect-ratio-1">
                             {{ render_illustration(icon_id) }}
@@ -69,9 +69,9 @@
                             class="btn me-1 {{ i == page ? 'active' : '' }}"
                             type="button"
                             aria-label="{{ __('Go to page %s')|format(i) }}"
-                            data-glpi-icon-picker-go-to-page="{{ i }}"
+                            data-zentra-icon-picker-go-to-page="{{ i }}"
                         >
-                            <span class="btn-text" data-glpi-icon-picker-pagination-text>{{ i }}</span>
+                            <span class="btn-text" data-zentra-icon-picker-pagination-text>{{ i }}</span>
                         </button>
                     {% endif %}
                 {% endfor %}

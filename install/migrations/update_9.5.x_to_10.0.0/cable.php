@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Socket;
+use Zentra\Socket;
 
 /**
  * @var DBmysql $DB
@@ -42,8 +42,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_cabletypes')) {
-    $query = "CREATE TABLE `glpi_cabletypes` (
+if (!$DB->tableExists('zentra_cabletypes')) {
+    $query = "CREATE TABLE `zentra_cabletypes` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -57,8 +57,8 @@ if (!$DB->tableExists('glpi_cabletypes')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_cablestrands')) {
-    $query = "CREATE TABLE `glpi_cablestrands` (
+if (!$DB->tableExists('zentra_cablestrands')) {
+    $query = "CREATE TABLE `zentra_cablestrands` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -72,8 +72,8 @@ if (!$DB->tableExists('glpi_cablestrands')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_socketmodels')) {
-    $query = "CREATE TABLE `glpi_socketmodels` (
+if (!$DB->tableExists('zentra_socketmodels')) {
+    $query = "CREATE TABLE `zentra_socketmodels` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -87,8 +87,8 @@ if (!$DB->tableExists('glpi_socketmodels')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_cables')) {
-    $query = "CREATE TABLE `glpi_cables` (
+if (!$DB->tableExists('zentra_cables')) {
+    $query = "CREATE TABLE `zentra_cables` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -131,15 +131,15 @@ if (!$DB->tableExists('glpi_cables')) {
     ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->doQuery($query);
 }
-$migration->addField('glpi_states', 'is_visible_cable', 'bool', [
+$migration->addField('zentra_states', 'is_visible_cable', 'bool', [
     'value' => 1,
     'after' => 'is_visible_appliance',
 ]);
-$migration->addKey('glpi_states', 'is_visible_cable');
+$migration->addKey('zentra_states', 'is_visible_cable');
 
-if (!$DB->tableExists('glpi_sockets')) {
+if (!$DB->tableExists('zentra_sockets')) {
     //create socket table
-    $query = "CREATE TABLE `glpi_sockets` (
+    $query = "CREATE TABLE `zentra_sockets` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `position` int NOT NULL DEFAULT '0',
       `locations_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -165,38 +165,38 @@ if (!$DB->tableExists('glpi_sockets')) {
     $DB->doQuery($query);
 }
 
-if ($DB->tableExists('glpi_netpoints')) {
+if ($DB->tableExists('zentra_netpoints')) {
     //migrate link between NetworkPort and Socket
     // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
     // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
-    $tables_to_migrate = ['glpi_networkportethernets', 'glpi_networkportfiberchannels'];
+    $tables_to_migrate = ['zentra_networkportethernets', 'zentra_networkportfiberchannels'];
     foreach ($tables_to_migrate as $table) {
         if (!$DB->fieldExists($table, 'netpoints_id')) {
             continue;
         }
         $criteria = [
             'SELECT' => [
-                "glpi_networkports.id AS networkports_id",
-                "glpi_networkports.logical_number",
-                "glpi_networkports.itemtype",
-                "glpi_networkports.items_id",
-                "glpi_netpoints.locations_id",
-                "glpi_netpoints.name",
-                "glpi_netpoints.entities_id",
-                "glpi_netpoints.date_creation",
-                "glpi_netpoints.date_mod",
+                "zentra_networkports.id AS networkports_id",
+                "zentra_networkports.logical_number",
+                "zentra_networkports.itemtype",
+                "zentra_networkports.items_id",
+                "zentra_netpoints.locations_id",
+                "zentra_netpoints.name",
+                "zentra_netpoints.entities_id",
+                "zentra_netpoints.date_creation",
+                "zentra_netpoints.date_mod",
             ],
             'FROM'      => $table,
             'INNER JOIN' => [
-                'glpi_networkports' => [
+                'zentra_networkports' => [
                     'FKEY' => [
-                        'glpi_networkports'     => 'id',
+                        'zentra_networkports'     => 'id',
                         $table   => 'networkports_id',
                     ],
                 ],
-                'glpi_netpoints' => [
+                'zentra_netpoints' => [
                     'FKEY' => [
-                        'glpi_netpoints'        => 'id',
+                        'zentra_netpoints'        => 'id',
                         $table   => 'netpoints_id',
                     ],
                 ],
@@ -222,15 +222,15 @@ if ($DB->tableExists('glpi_netpoints')) {
         }
     }
     //remove "useless "netpoints_id" field
-    $migration->dropField('glpi_networkportethernets', 'netpoints_id');
-    $migration->dropField('glpi_networkportfiberchannels', 'netpoints_id');
+    $migration->dropField('zentra_networkportethernets', 'netpoints_id');
+    $migration->dropField('zentra_networkportfiberchannels', 'netpoints_id');
 }
 
-//drop table glpi_netpoints
-$migration->dropTable('glpi_netpoints');
+//drop table zentra_netpoints
+$migration->dropTable('zentra_netpoints');
 
-if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
-    $query = "CREATE TABLE `glpi_networkportfiberchanneltypes` (
+if (!$DB->tableExists('zentra_networkportfiberchanneltypes')) {
+    $query = "CREATE TABLE `zentra_networkportfiberchanneltypes` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -244,17 +244,17 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
     $DB->doQuery($query);
 }
 
-$migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'items_devicenetworkcards_id']);
-$migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
+$migration->addField('zentra_networkportfiberchannels', 'networkportfiberchanneltypes_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'items_devicenetworkcards_id']);
+$migration->addKey('zentra_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
-$DELFROMDISPLAYPREF['Socket'] = [5, 6, 9, 8, 7]; // Remove display prefs generated in GLPI 10.0.0-beta1
+$DELFROMDISPLAYPREF['Socket'] = [5, 6, 9, 8, 7]; // Remove display prefs generated in ZENTRA 10.0.0-beta1
 $ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 //rename profilerights values ('netpoint' to 'cable_management')
 $migration->addPostQuery(
     $DB->buildUpdate(
-        'glpi_profilerights',
+        'zentra_profilerights',
         ['name' => 'cable_management'],
         ['name' => 'netpoint']
     )

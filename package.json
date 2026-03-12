@@ -1,8 +1,8 @@
 {
-    "name": "@glpi/glpi",
+    "name": "@zentra/zentra",
     "version": "",
     "private": true,
-    "description": "GLPI dependencies",
+    "description": "ZENTRA dependencies",
     "license": "GPL-3.0-or-later",
     "engines": {
         "node": ">= 20.9"
@@ -20,7 +20,7 @@
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
-        "@glpi-project/illustrations": "^0.9.1",
+        "@zentra-project/illustrations": "^0.9.1",
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.34.1",
         "altcha": "^2.3.0",

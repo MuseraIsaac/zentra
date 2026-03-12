@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
  *
  * @return string|''
  *      field name used for a foreign key to the parameter table,
- *      or an empty string if the table name does match the GLPI table name pattern
+ *      or an empty string if the table name does match the ZENTRA table name pattern
  */
 function getForeignKeyFieldForTable($table)
 {
@@ -85,7 +85,7 @@ function getForeignKeyFieldForItemType($itemtype)
  *
  * @return string|''
  *      table name corresponding to a foreign key name
- *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
+ *      or an empty string if the foreign key name does match the ZENTRA foreign key name pattern
  */
 function getTableNameForForeignKeyField($fkname)
 {
@@ -237,7 +237,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  *
  * @return int Number of elements in table
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function countElementsInTableForMyEntities($table, $condition = [])
 {
@@ -340,7 +340,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  *
  * @return array{0: string, 1:int}
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
@@ -404,7 +404,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function getTreeForItem($table, $IDf)
 {
@@ -421,7 +421,7 @@ function getTreeForItem($table, $IDf)
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function contructTreeFromList($list, $root)
 {
@@ -438,7 +438,7 @@ function contructTreeFromList($list, $root)
  *
  * @return array<int, int> list of items in the tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function contructListFromTree($tree, $parent = 0)
 {
@@ -630,7 +630,7 @@ function importArrayFromDB($DATA)
  *
  * @return string
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in ZENTRA 11.1.
  */
 function get_hour_from_sql($time)
 {
@@ -658,7 +658,7 @@ function getDbRelations()
  * @param string        $separator        separator in the begin of the request (default AND)
  * @param string        $table            table where apply the limit (if needed, multiple tables queries)
  * @param string        $field            field where apply the limit (id != entities_id)
- * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
+ * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['zentraactiveentities_string'])
  * @param bool          $is_recursive     need to use recursive process to find item
  *                                        (field need to be named recursive)
  * @param bool          $complete_request need to use a complete request and not a simple one
@@ -666,7 +666,7 @@ function getDbRelations()
  *
  * @return string the WHERE clause to restrict
  *
- * @TODO Deprecate this method in GLPI 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
+ * @TODO Deprecate this method in ZENTRA 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
  */
 function getEntitiesRestrictRequest(
     $separator = "AND",
@@ -695,7 +695,7 @@ function getEntitiesRestrictRequest(
  *
  * @param string        $table            table where apply the limit (if needed, multiple tables queries)
  * @param string        $field            field where apply the limit (id != entities_id)
- * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
+ * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['zentraactiveentities'])
  * @param bool|'auto'   $is_recursive     need to use recursive process to find item
  *                                        (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
  * @param bool          $complete_request need to use a complete request and not a simple one

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@
  * @var Migration $migration
  */
 
-/** Replace -1 values for glpi_events.items_id field */
+/** Replace -1 values for zentra_events.items_id field */
 // Migration may have been missed if user installed 10.x version before 9.5.7 release date.
 $migration->addPostQuery(
     $DB->buildUpdate(
-        'glpi_events',
+        'zentra_events',
         ['items_id' => '0'],
         ['items_id' => '-1', 'type' => 'system']
     )
 );
-/** /Replace -1 values for glpi_events.items_id field */
+/** /Replace -1 values for zentra_events.items_id field */

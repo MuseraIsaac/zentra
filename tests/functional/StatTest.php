@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class StatTest extends DbTestCase
@@ -158,10 +158,10 @@ class StatTest extends DbTestCase
     #[DataProvider('constructEntryValuesProvider')]
     public function testConstructEntryValues($type, $param, $expected)
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $date = "2023-06-15 15:00:00";
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         $itemtype = \Ticket::class;
         $begin = '2023-01-01';
@@ -199,7 +199,7 @@ class StatTest extends DbTestCase
                 // Create a location
                 $location = $this->createItem(\Location::class, [
                     'name' => 'Test Location ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
+                    'entities_id' => $_SESSION['zentraactive_entity'] ?? 0,
                 ]);
                 $value = $location->getID(); // Use the location ID
                 break;
@@ -209,7 +209,7 @@ class StatTest extends DbTestCase
                 // Create a group
                 $group = $this->createItem(\Group::class, [
                     'name' => 'Test Group ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
+                    'entities_id' => $_SESSION['zentraactive_entity'] ?? 0,
                 ]);
                 $value = $group->getID(); // Use the group ID
                 break;
@@ -218,7 +218,7 @@ class StatTest extends DbTestCase
                 // Create a supplier
                 $supplier = $this->createItem(\Supplier::class, [
                     'name' => 'Test Supplier ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
+                    'entities_id' => $_SESSION['zentraactive_entity'] ?? 0,
                 ]);
                 $value = $supplier->getID(); // Use the supplier ID
                 break;
@@ -265,26 +265,26 @@ class StatTest extends DbTestCase
             case 'inter_avgtakeaccount':
             case 'inter_solved_late':
             case 'inter_avgactiontime':
-                $_SESSION['glpi_currenttime'] = date(
+                $_SESSION['zentra_currenttime'] = date(
                     "Y-m-d H:i:s",
                     strtotime($date . " +5 hours")
                 );
                 // For average time calculations, we need solved tickets with specific time differences
                 $this->updateItem(\Ticket::class, $ticket->getID(), [
                     'status' => \CommonITILObject::SOLVED,
-                    'solvedate' => $_SESSION['glpi_currenttime'],
+                    'solvedate' => $_SESSION['zentra_currenttime'],
                 ]);
                 break;
 
             case 'inter_avgclosedtime':
-                $_SESSION['glpi_currenttime'] = date(
+                $_SESSION['zentra_currenttime'] = date(
                     "Y-m-d H:i:s",
                     strtotime($date . " +5 hours")
                 );
                 // For average closed time, we need closed tickets with closedate
                 $this->updateItem(\Ticket::class, $ticket->getID(), [
                     'status' => \CommonITILObject::CLOSED,
-                    'closedate' => $_SESSION['glpi_currenttime'],
+                    'closedate' => $_SESSION['zentra_currenttime'],
                 ]);
                 break;
 
@@ -292,7 +292,7 @@ class StatTest extends DbTestCase
                 // Mark ticket as closed
                 $this->updateItem(\Ticket::class, $ticket->getID(), [
                     'status' => \CommonITILObject::CLOSED,
-                    'closedate' => $_SESSION['glpi_currenttime'],
+                    'closedate' => $_SESSION['zentra_currenttime'],
                 ]);
                 break;
 
@@ -438,14 +438,14 @@ class StatTest extends DbTestCase
         $ticketData = [
             'name' => "Test ticket",
             'content' => 'Test content for statistics',
-            'entities_id' => $_SESSION['glpiactive_entity'],
-            'date' => $_SESSION['glpi_currenttime'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
+            'date' => $_SESSION['zentra_currenttime'],
             'actiontime' => 18000, // 5 hours actiontime
             'priority' => 3,
             'urgency' => 3,
             'impact' => 3,
             'takeintoaccount_delay_stat' => 18000, // 5 hours delay
-            'time_to_resolve' => date("Y-m-d H:i:s", strtotime($_SESSION['glpi_currenttime'] . " +1 hour")),
+            'time_to_resolve' => date("Y-m-d H:i:s", strtotime($_SESSION['zentra_currenttime'] . " +1 hour")),
         ];
 
         // Set specific data based on parameter type
@@ -496,7 +496,7 @@ class StatTest extends DbTestCase
                 $titled_user = $this->createItem(\User::class, [
                     'name' => 'test_titled_user',
                     'usertitles_id' => $value, // $value is the title ID
-                    'entities_id' => $_SESSION['glpiactive_entity'],
+                    'entities_id' => $_SESSION['zentraactive_entity'],
                 ]);
                 $this->assignExistingUserToTicket($tickets_id, 'user', $titled_user->getID());
                 break;
@@ -506,7 +506,7 @@ class StatTest extends DbTestCase
                 $cat_user = $this->createItem(\User::class, [
                     'name' => 'test_cat_user',
                     'usercategories_id' => $value, // $value is the category ID
-                    'entities_id' => $_SESSION['glpiactive_entity'],
+                    'entities_id' => $_SESSION['zentraactive_entity'],
                 ]);
                 $this->assignExistingUserToTicket($tickets_id, 'user', $cat_user->getID());
                 break;
@@ -616,7 +616,7 @@ class StatTest extends DbTestCase
     {
         $group = $this->createItem(\Group::class, [
             'name' => 'testgroup_' . $param,
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
         ]);
 
         if (!$group || !$group->getID()) {
@@ -648,7 +648,7 @@ class StatTest extends DbTestCase
     {
         $supplier = $this->createItem(\Supplier::class, [
             'name' => 'testsupplier',
-            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
+            'entities_id' => $_SESSION['zentraactive_entity'] ?? 0,
         ]);
 
         if (!$supplier || !$supplier->getID()) {
@@ -674,7 +674,7 @@ class StatTest extends DbTestCase
     {
         $category = $this->createItem(\ITILCategory::class, [
             'name' => 'Test category',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
         ]);
 
         if (!$category || !$category->getID()) {
@@ -698,7 +698,7 @@ class StatTest extends DbTestCase
     {
         $location = $this->createItem(\Location::class, [
             'name' => 'Test location',
-            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
+            'entities_id' => $_SESSION['zentraactive_entity'] ?? 0,
         ]);
 
         if (!$location || !$location->getID()) {

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         // Complex mode
         if (!$simple) {
             $restrict = ['problems_id' => $item->getField('id')];
-            $tickets  = getAllDataFromTable('glpi_problems_tickets', $restrict);
+            $tickets  = getAllDataFromTable('zentra_problems_tickets', $restrict);
 
             $data['tickets'] = [];
             if (count($tickets)) {
@@ -99,7 +99,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
 
             $data['##problem.numberoftickets##'] = count($data['tickets']);
 
-            $changes  = getAllDataFromTable('glpi_changes_problems', $restrict);
+            $changes  = getAllDataFromTable('zentra_changes_problems', $restrict);
 
             $data['changes'] = [];
             if (count($changes)) {
@@ -128,7 +128,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
 
             $data['##problem.numberofchanges##'] = count($data['changes']);
 
-            $items    = getAllDataFromTable('glpi_items_problems', $restrict);
+            $items    = getAllDataFromTable('zentra_items_problems', $restrict);
 
             $data['items'] = [];
             if (count($items)) {
@@ -149,7 +149,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
 
                             //Object location
                             if ($item2->isField('locations_id') && $item_loc_id = $item2->getField('locations_id')) {
-                                $tmp['##item.location##'] = Dropdown::getDropdownName('glpi_locations', $item_loc_id);
+                                $tmp['##item.location##'] = Dropdown::getDropdownName('zentra_locations', $item_loc_id);
                             }
 
                             //Object user
@@ -164,7 +164,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
                             if ($item2->getField('groups_id')) {
                                 $tmp['##item.group##']
                                       = Dropdown::getDropdownName(
-                                          'glpi_groups',
+                                          'zentra_groups',
                                           $item2->getField('groups_id')
                                       );
                             }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
  */
 
 /**
- * Rule class store all information about a GLPI rule :
+ * Rule class store all information about a ZENTRA rule :
  *   - description
  *   - criterias
  *   - actions
@@ -61,15 +61,15 @@ class RuleSoftwareCategory extends Rule
 
         $criterias['name']['field']         = 'name';
         $criterias['name']['name']          = Software::getTypeName(1);
-        $criterias['name']['table']         = 'glpi_softwares';
+        $criterias['name']['table']         = 'zentra_softwares';
 
         $criterias['manufacturer']['field'] = 'name';
         $criterias['manufacturer']['name']  = __('Publisher');
-        $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+        $criterias['manufacturer']['table'] = 'zentra_manufacturers';
 
         $criterias['comment']['field']      = 'comment';
         $criterias['comment']['name']       = _n('Comment', 'Comments', Session::getPluralNumber());
-        $criterias['comment']['table']      = 'glpi_softwares';
+        $criterias['comment']['table']      = 'zentra_softwares';
 
         $criterias['_system_category']['field'] = 'name';
         $criterias['_system_category']['name']  = __('Category from inventory tool');
@@ -83,7 +83,7 @@ class RuleSoftwareCategory extends Rule
 
         $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
         $actions['softwarecategories_id']['type']  = 'dropdown';
-        $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
+        $actions['softwarecategories_id']['table'] = 'zentra_softwarecategories';
         $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];
 
         $actions['_import_category']['name'] = __('Import category from inventory tool');

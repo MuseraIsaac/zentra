@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 /**
  * Controller to handle destination visibility badges update
  */
-export class GlpiFormDestinationConditionController {
+export class ZentraFormDestinationConditionController {
     /**
      * Initialize the controller and event listeners
      */
@@ -64,11 +64,11 @@ export class GlpiFormDestinationConditionController {
             );
         });
 
-        // [data-glpi-destination-click-on-space] should be a button but we can't
+        // [data-zentra-destination-click-on-space] should be a button but we can't
         // because it contains an input.
         // It is thus a div instead but we want to keep the behavior of pressing
         // space while focusing this div as a way to toggle the accordion.
-        const divs = document.querySelectorAll('[data-glpi-destination-click-on-space]');
+        const divs = document.querySelectorAll('[data-zentra-destination-click-on-space]');
         for (const div of divs) {
             div.addEventListener('keyup', (e) => {
                 // Dispatch click event if space is pressed outside of an input
@@ -87,11 +87,11 @@ export class GlpiFormDestinationConditionController {
      */
     #updateConditionBadge(container, value) {
         // Show/hide badges in the container
-        container.find('[data-glpi-editor-condition-badge]')
+        container.find('[data-zentra-editor-condition-badge]')
             .removeClass('d-flex')
             .addClass('d-none')
         ;
-        container.find(`[data-glpi-editor-condition-badge="${CSS.escape(value)}"]`)
+        container.find(`[data-zentra-editor-condition-badge="${CSS.escape(value)}"]`)
             .removeClass('d-none')
             .addClass('d-flex')
         ;
@@ -104,7 +104,7 @@ export class GlpiFormDestinationConditionController {
      * @param {int} value
      */
     #updateConditionsCount(container, value) {
-        container.find('[data-glpi-editor-conditions-count-badge]')
+        container.find('[data-zentra-editor-conditions-count-badge]')
             .html(value);
     }
 }

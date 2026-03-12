@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ use function Safe\preg_replace;
 
 $links = $DB->request([
     'SELECT' => ['id', 'link', 'data'],
-    'FROM'   => 'glpi_links',
+    'FROM'   => 'zentra_links',
 ]);
 
 // Replace custom tags format with twig variable format
@@ -52,7 +52,7 @@ foreach ($links as $link) {
     $new_link = preg_replace($field_tag_pattern, '{{ item.$1 }}', $new_link);
     $new_data = preg_replace($simple_tag_pattern, '{{ $1 }}', $link['data']);
     $new_data = preg_replace($field_tag_pattern, '{{ item.$1 }}', $new_data);
-    $DB->update('glpi_links', [
+    $DB->update('zentra_links', [
         'id'   => $link['id'],
         'link' => $new_link,
         'data' => $new_data,

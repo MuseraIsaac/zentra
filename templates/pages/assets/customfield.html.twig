@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    <input type="hidden" name="{{ 'Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key }}" value="{{ assetdefinitions_id }}">
+    <input type="hidden" name="{{ 'Zentra\\Asset\\AssetDefinition'|itemtype_foreign_key }}" value="{{ assetdefinitions_id }}">
 
     {{ fields.textField('label', item.fields['label'], __('Label')) }}
     {% set helper %}
@@ -46,7 +46,7 @@
         required: true,
         helper: helper
     }) }}
-    {{ fields.dropdownArrayField('type', item.fields['type']|default('Glpi\\Asset\\CustomFieldType\\StringType'), field_types, _n('Type', 'Types', 1), {
+    {{ fields.dropdownArrayField('type', item.fields['type']|default('Zentra\\Asset\\CustomFieldType\\StringType'), field_types, _n('Type', 'Types', 1), {
         readonly: not item.isNewItem()
     }) }}
     {{ fields.nullField() }}
@@ -169,7 +169,7 @@
                             .data('last-value', undefined);
                         autoUpdateNameField();
                     }
-                    $('#customfield_form_container select[name="itemtype"]').closest('.form-field').toggleClass('d-none', selected_type !== 'Glpi\\Asset\\CustomFieldType\\DropdownType');
+                    $('#customfield_form_container select[name="itemtype"]').closest('.form-field').toggleClass('d-none', selected_type !== 'Zentra\\Asset\\CustomFieldType\\DropdownType');
                 }).trigger('change');
             }
             $('#customfield_form_container').on('change', '.field-type-options input, .field-type-options select', () => {

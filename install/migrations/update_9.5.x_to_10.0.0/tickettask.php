@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-/* Add `sourceof_items_id` to some glpi_tickettasks */
-if (!$DB->fieldExists('glpi_tickettasks', 'sourceof_items_id')) {
-    $migration->addField('glpi_tickettasks', 'sourceof_items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['value' => 0]);
-    $migration->addKey('glpi_tickettasks', 'sourceof_items_id');
+/* Add `sourceof_items_id` to some zentra_tickettasks */
+if (!$DB->fieldExists('zentra_tickettasks', 'sourceof_items_id')) {
+    $migration->addField('zentra_tickettasks', 'sourceof_items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", ['value' => 0]);
+    $migration->addKey('zentra_tickettasks', 'sourceof_items_id');
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Event;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Event;
+use Zentra\RichText\RichText;
 
 /**
  * KnowbaseItemTranslation Class
@@ -80,7 +80,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -95,7 +95,7 @@ class KnowbaseItemTranslation extends CommonDBChild
 
         if ($item instanceof KnowbaseItem) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -104,7 +104,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {
@@ -277,7 +277,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'knowbaseitems_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage'],
+            'language'           => $_SESSION['zentralanguage'],
         ]);
 
         if (
@@ -365,7 +365,7 @@ TWIG, $twig_params);
                 5,
                 "tools",
                 //TRANS: %1$s is the user login, %2$s the revision number
-                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision->fields['revision'])
+                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["zentraname"], $revision->fields['revision'])
             );
             return true;
         }

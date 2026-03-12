@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use Contract;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Location;
 use MassiveAction;
 use Notepad;
@@ -220,12 +220,12 @@ class MassiveActionTest extends DbTestCase
     ) {
         $base_comment = "test comment";
         $amendment = "test amendment";
-        $old_session = $_SESSION['glpiactiveentities'] ?? [];
+        $old_session = $_SESSION['zentraactiveentities'] ?? [];
 
         // Set rights if needed
         if ($has_right) {
             $this->login();
-            $_SESSION['glpiactiveentities'] = [
+            $_SESSION['zentraactiveentities'] = [
                 $item->getEntityID(),
             ];
         }
@@ -275,7 +275,7 @@ class MassiveActionTest extends DbTestCase
             );
         }
 
-        $_SESSION['glpiactiveentities'] = $old_session;
+        $_SESSION['zentraactiveentities'] = $old_session;
     }
 
     public static function addNoteProvider()
@@ -301,7 +301,7 @@ class MassiveActionTest extends DbTestCase
 
         // Init vars
         $new_note_content = "Test add note";
-        $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
+        $old_session = $_SESSION['zentraactiveprofile'][$item::$rightname] ?? 0;
         $note_search = [
             'items_id' => $item->fields['id'],
             'itemtype' => $item->getType(),
@@ -309,7 +309,7 @@ class MassiveActionTest extends DbTestCase
         ];
 
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+            $_SESSION['zentraactiveprofile'][$item::$rightname] = UPDATENOTE;
         }
 
         // Check expected rights
@@ -346,7 +346,7 @@ class MassiveActionTest extends DbTestCase
             $this->assertSame($count_notes + 1, $new_count);
         }
 
-        $_SESSION['glpiactiveprofile'][$item::$rightname] = $old_session;
+        $_SESSION['zentraactiveprofile'][$item::$rightname] = $old_session;
     }
 
     public static function linkToProblemProvider()
@@ -392,9 +392,9 @@ class MassiveActionTest extends DbTestCase
         bool $has_right
     ) {
         // Set up session rights
-        $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
+        $old_session = $_SESSION['zentraactiveprofile'][Problem::$rightname] ?? 0;
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+            $_SESSION['zentraactiveprofile'][Problem::$rightname] = UPDATE;
         }
 
         // Default expectation: can't run
@@ -433,7 +433,7 @@ class MassiveActionTest extends DbTestCase
         );
 
         // Reset rights
-        $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_session;
+        $_SESSION['zentraactiveprofile'][Problem::$rightname] = $old_session;
     }
 
     protected function resolveTicketsProvider()
@@ -493,11 +493,11 @@ class MassiveActionTest extends DbTestCase
 
 
             // Set up session rights
-            $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+            $old_session = $_SESSION['zentraactiveprofile'][Ticket::$rightname] ?? 0;
             if ($has_right) {
-                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+                $_SESSION['zentraactiveprofile'][Ticket::$rightname] = UPDATE;
             } else {
-                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+                $_SESSION['zentraactiveprofile'][Ticket::$rightname] = 0;
             }
 
             // Default expectation: can't run
@@ -527,7 +527,7 @@ class MassiveActionTest extends DbTestCase
             );
 
             // Reset rights
-            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
+            $_SESSION['zentraactiveprofile'][Ticket::$rightname] = $old_session;
         }
     }
 
@@ -637,7 +637,7 @@ class MassiveActionTest extends DbTestCase
     {
         // Users used for our tests
         $user1 = getItemByTypeName("User", "post-only", true);
-        $user2 = getItemByTypeName("User", "glpi", true);
+        $user2 = getItemByTypeName("User", "zentra", true);
         $user3 = getItemByTypeName("User", "tech", true);
         $users_ids = [$user1, $user2, $user3];
 
@@ -674,7 +674,7 @@ class MassiveActionTest extends DbTestCase
         yield [$users_ids, 0, 3]; // All failed
 
         // Now login to someone that can run this action
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $current_right = Session::haveRight(User::$rightname, UPDATE);
         $this->assertTrue(boolval($current_right));
         yield [$users_ids, 3, 0]; // Success
@@ -716,7 +716,7 @@ class MassiveActionTest extends DbTestCase
 
     public function testProcessMassiveActionsForOneItemtype_AddDomain()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $domain_item = new \Domain_Item();
 
@@ -930,11 +930,11 @@ class MassiveActionTest extends DbTestCase
             $should_work = $row['should_work'];
 
 
-            $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+            $old_session = $_SESSION['zentraactiveprofile'][Ticket::$rightname] ?? 0;
             if ($has_right) {
-                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+                $_SESSION['zentraactiveprofile'][Ticket::$rightname] = UPDATE;
             } else {
-                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+                $_SESSION['zentraactiveprofile'][Ticket::$rightname] = 0;
             }
 
 
@@ -968,7 +968,7 @@ class MassiveActionTest extends DbTestCase
             );
 
             // Reset rights
-            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
+            $_SESSION['zentraactiveprofile'][Ticket::$rightname] = $old_session;
         }
     }
 
@@ -1115,7 +1115,7 @@ class MassiveActionTest extends DbTestCase
         }
 
         // Count events before action
-        $events_before = countElementsInTable('glpi_events', [
+        $events_before = countElementsInTable('zentra_events', [
             'type' => strtolower($item->getType()),
             'service' => 'massiveaction',
         ]);
@@ -1135,7 +1135,7 @@ class MassiveActionTest extends DbTestCase
         MassiveAction::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
         // Count events after action
-        $events_after = countElementsInTable('glpi_events', [
+        $events_after = countElementsInTable('zentra_events', [
             'type' => strtolower($item->getType()),
             'service' => 'massiveaction',
         ]);
@@ -1151,7 +1151,7 @@ class MassiveActionTest extends DbTestCase
         global $DB;
         $iterator = $DB->request([
             'SELECT' => ['message'],
-            'FROM' => 'glpi_events',
+            'FROM' => 'zentra_events',
             'WHERE' => [
                 'type' => strtolower($item->getType()),
                 'service' => 'massiveaction',
@@ -1188,7 +1188,7 @@ class MassiveActionTest extends DbTestCase
         $this->login();
 
         // Count events before action
-        $events_before = countElementsInTable('glpi_events', [
+        $events_before = countElementsInTable('zentra_events', [
             'type' => 'computer',
             'service' => 'massiveaction',
         ]);
@@ -1212,7 +1212,7 @@ class MassiveActionTest extends DbTestCase
         );
 
         // Count events after action
-        $events_after = countElementsInTable('glpi_events', [
+        $events_after = countElementsInTable('zentra_events', [
             'type' => 'computer',
             'service' => 'massiveaction',
         ]);
@@ -1228,7 +1228,7 @@ class MassiveActionTest extends DbTestCase
 
     public function testMergeSonOf()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         // Create 3 tickets
         $ticket = $this->createItem(Ticket::class, [

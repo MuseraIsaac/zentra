@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 class Group_UserTest extends DbTestCase
 {
@@ -119,7 +119,7 @@ class Group_UserTest extends DbTestCase
         $group_users = \Group_User::getUserGroups($uid);
         $this->assertCount(2, $group_users);
 
-        $group_users = \Group_User::getUserGroups($uid, ['glpi_groups_users.is_manager' => 1]);
+        $group_users = \Group_User::getUserGroups($uid, ['zentra_groups_users.is_manager' => 1]);
         $this->assertCount(1, $group_users);
         $this->assertSame($gid2, (int) $group_users[0]['id']);
 
@@ -212,7 +212,7 @@ class Group_UserTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $group_users_id);
         $this->assertTrue($group_user->getFromDB($group_users_id));
         $this->assertTrue(\Group_User::isUserInGroup(getItemByTypeName('User', 'tech', true), $groups_id));
-        $this->assertFalse(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id));
+        $this->assertFalse(\Group_User::isUserInGroup(getItemByTypeName('User', 'zentra', true), $groups_id));
     }
 
     public function testDeleteUserDefaultGroup()

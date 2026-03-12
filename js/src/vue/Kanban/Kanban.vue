@@ -1,6 +1,6 @@
 <script setup>
     /* global sortable */
-    /* global glpi_toast_error, glpi_confirm */
+    /* global zentra_toast_error, zentra_confirm */
     /* global _ */
 
     import { Rights } from "./Rights.js";
@@ -102,7 +102,7 @@
         if (new_value !== props.item.items_id && !(new_value <= 0 && props.item.items_id <= 0)) {
             $.ajax({
                 type: "GET",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
                 data: {
                     action: "get_url",
                     itemtype: props.item.itemtype,
@@ -323,7 +323,7 @@
         emit('kanban:pre_save_state');
         return $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "save_column_state",
                 itemtype: props.item.itemtype,
@@ -344,7 +344,7 @@
         emit('kanban:pre_load_state');
         return $.ajax({
             type: "GET",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "load_column_state",
                 itemtype: props.item.itemtype,
@@ -392,7 +392,7 @@
         const _clearState = () => {
             $.ajax({
                 type: "POST",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
                 data: {
                     action: "clear_column_state",
                     itemtype: props.item.itemtype,
@@ -402,11 +402,11 @@
                 // Reload page
                 window.location.reload();
             }).fail(() => {
-                glpi_toast_error(__('Failed to reset Kanban view'));
+                zentra_toast_error(__('Failed to reset Kanban view'));
             });
         };
         if (ask_confirmation) {
-            glpi_confirm({
+            zentra_confirm({
                 title: __('Reset view'),
                 message: __('Resetting the view will reset the shown columns and remove custom card ordering'),
                 confirm_callback: () => {
@@ -443,7 +443,7 @@
         try {
             return $.ajax({
                 method: 'GET',
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
                 data: {
                     action: "get_column",
                     itemtype: props.item.itemtype,
@@ -484,7 +484,7 @@
         const _refresh = async () => {
             const promise = $.ajax({
                 method: 'GET',
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
                 data: {
                     action: "refresh",
                     itemtype: props.item.itemtype,
@@ -549,7 +549,7 @@
         }
         $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: e.folded ? 'collapse_column' : 'expand_column',
                 column: e.column_id,
@@ -566,7 +566,7 @@
     function updateColumnPosition(column, position) {
         $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "move_column",
                 column: column,
@@ -593,7 +593,7 @@
         if (el_params.length === 2 && source !== null && !(!rights.canOrderCard() && source.length === 0)) {
             $.ajax({
                 type: "POST",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
                 data: {
                     action: "update",
                     itemtype: el_params[0],
@@ -635,7 +635,7 @@
         }
         return $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "move_item",
                 card: card,
@@ -654,7 +654,7 @@
         closeCardDetailsPanel();
         $.ajax({
             method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 itemtype: itemtype,
                 items_id: items_id,
@@ -742,7 +742,7 @@
             });
         $.ajax({
             method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 itemtype: card_itemtype,
                 items_id: card_items_id,
@@ -768,7 +768,7 @@
     async function hideColumn(column_id) {
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "hide_column",
                 column: column_id,
@@ -793,7 +793,7 @@
     async function showColumn(column_id) {
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "show_column",
                 column: column_id,
@@ -813,7 +813,7 @@
     async function addTeamMember(itemtype, items_id, member_type, members_id, role) {
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "add_teammember",
                 itemtype: itemtype,
@@ -827,7 +827,7 @@
                 delayRefresh(props.bg_refresh_interval * 60 * 1000);
             });
         }, () => {
-            glpi_toast_error(__('Failed to add team member'));
+            zentra_toast_error(__('Failed to add team member'));
         });
     }
 
@@ -848,7 +848,7 @@
                 return ((!target.trim().match(filter_data.term)) === filter_data.exclusion);
             } catch (e) {
                 // Invalid regex
-                glpi_toast_error(
+                zentra_toast_error(
                     __('The regular expression you entered is invalid. Please check it and try again.'),
                     __('Invalid regular expression')
                 );
@@ -1018,7 +1018,7 @@
     async function removeTeamMember(itemtype, items_id, member_type, members_id, role) {
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "delete_teammember",
                 itemtype: itemtype,
@@ -1032,7 +1032,7 @@
                 delayRefresh(props.bg_refresh_interval * 60 * 1000);
             });
         }, () => {
-            glpi_toast_error(__('Failed to remove team member'));
+            zentra_toast_error(__('Failed to remove team member'));
         });
     }
 
@@ -1061,7 +1061,7 @@
         const force = card._metadata.is_deleted;
         return $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "delete_item",
                 itemtype: itemtype,
@@ -1112,7 +1112,7 @@
         }
         return $.ajax({
             type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "restore_item",
                 itemtype: itemtype,
@@ -1137,7 +1137,7 @@
     async function updateAllColumnsList() {
         return $.ajax({
             method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "list_columns",
                 itemtype: props.item.itemtype,
@@ -1181,7 +1181,7 @@
         delete values['name'];
         return $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
             data: {
                 action: "create_column",
                 itemtype: props.item.itemtype,
@@ -1286,7 +1286,7 @@
     await loadState();
     await $.ajax({
         type: 'GET',
-        url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+        url: CFG_ZENTRA.root_doc + '/ajax/kanban.php',
         data: {
             action: 'get_kanbans',
             itemtype: props.item.itemtype,
@@ -1479,7 +1479,7 @@
         .kanban-container {
             overflow-x: auto;
             overflow-y: hidden;
-            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin) - (var(--toolbar-margin) + var(--toolbar-padding) + (0.5625rem * 2) + 1.2rem + 2px));
+            height: calc(100vh - var(--zentra-contextbar-height) - var(--zentra-content-margin) - (var(--toolbar-margin) + var(--toolbar-padding) + (0.5625rem * 2) + 1.2rem + 2px));
 
             .kanban-dropdown {
                 position: fixed;

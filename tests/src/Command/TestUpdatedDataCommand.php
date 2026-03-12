@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Command;
+namespace Zentra\Tests\Command;
 
 use DBmysql;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -156,13 +156,13 @@ class TestUpdatedDataCommand extends Command
     {
         $fresh_config_entries = \array_map(
             fn(array $row) => $row['context'] . ':' . $row['name'],
-            \iterator_to_array($fresh_db->request(['FROM' => 'glpi_configs']))
+            \iterator_to_array($fresh_db->request(['FROM' => 'zentra_configs']))
         );
         \sort($fresh_config_entries);
 
         $updated_config_entries = \array_map(
             fn(array $row) => $row['context'] . ':' . $row['name'],
-            \iterator_to_array($updated_db->request(['FROM' => 'glpi_configs']))
+            \iterator_to_array($updated_db->request(['FROM' => 'zentra_configs']))
         );
         \sort($updated_config_entries);
 
@@ -190,9 +190,9 @@ class TestUpdatedDataCommand extends Command
         $missing = false;
 
         $table_iterator = $fresh_db->listTables(
-            'glpi\_%',
+            'zentra\_%',
             [
-                ['NOT' => ['table_name' => ['LIKE', 'glpi\_plugin\_%']]],
+                ['NOT' => ['table_name' => ['LIKE', 'zentra\_plugin\_%']]],
                 ['NOT' => ['table_name' => $this->getExcludedTables()]],
             ]
         );
@@ -210,17 +210,17 @@ class TestUpdatedDataCommand extends Command
                 $criteria = [];
 
                 // Ignore e2e_tests user
-                if ($table_name === 'glpi_users' && $row_data['name'] === 'e2e_tests') {
+                if ($table_name === 'zentra_users' && $row_data['name'] === 'e2e_tests') {
                     continue;
                 }
 
                 // Ignore e2e oauth client
-                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
+                if ($table_name === 'zentra_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
                     continue;
                 }
 
                 // Ignore e2e LDAP
-                if ($table_name === 'glpi_authldaps' && $row_data['name'] === '_e2e_ldap') {
+                if ($table_name === 'zentra_authldaps' && $row_data['name'] === '_e2e_ldap') {
                     continue;
                 }
 
@@ -235,7 +235,7 @@ class TestUpdatedDataCommand extends Command
                             $empty_value = 0;
                         }
 
-                        // some fields were not nullable in previous GLPI versions
+                        // some fields were not nullable in previous ZENTRA versions
                         $criteria[] = [
                             'OR' => [
                                 [$key => $empty_value],
@@ -280,38 +280,38 @@ class TestUpdatedDataCommand extends Command
     {
         return [
             // Config entries are tested separately (see `self::hasSameConfigurationEntries()`)
-            'glpi_configs',
+            'zentra_configs',
 
             // Root entity configuration is never updated during migration
-            'glpi_entities',
+            'zentra_entities',
 
             // Migration may produce logs
-            'glpi_logs',
+            'zentra_logs',
 
             // Notifications update is complex and following cases can result in differences between updated data and fresh install:
             // - existing templates are never updated;
             // - existing templates are rarely reused, as they can have been modified/deleted;
             // - new notifications events/targets defaults are not always applied during update, to let administrator decide how to configure them;
             // - ...
-            'glpi_notifications',
-            'glpi_notifications_notificationtemplates',
-            'glpi_notificationtargets',
-            'glpi_notificationtemplates',
-            'glpi_notificationtemplatetranslations',
+            'zentra_notifications',
+            'zentra_notifications_notificationtemplates',
+            'zentra_notificationtargets',
+            'zentra_notificationtemplates',
+            'zentra_notificationtemplatetranslations',
 
             // Profiles are not automatically updated
-            'glpi_profilerights',
-            'glpi_profiles',
-            'glpi_profiles_users',
+            'zentra_profilerights',
+            'zentra_profiles',
+            'zentra_profiles_users',
 
             // Rules are not automatically updated
-            'glpi_rules',
-            'glpi_rulecriterias',
-            'glpi_ruleactions',
+            'zentra_rules',
+            'zentra_rulecriterias',
+            'zentra_ruleactions',
 
             // Dashbords may have placeholders which are only present on new installs
-            'glpi_dashboards_dashboards',
-            'glpi_dashboards_items',
+            'zentra_dashboards_dashboards',
+            'zentra_dashboards_items',
         ];
     }
 
@@ -326,31 +326,31 @@ class TestUpdatedDataCommand extends Command
     {
         $excluded_fields = [
             '*' => [
-                'comment', // Some items contains comments like 'Automatically generated by GLPI X.X.X'
+                'comment', // Some items contains comments like 'Automatically generated by ZENTRA X.X.X'
                 'date_creation',
                 'date_mod',
                 // By definition, any uuid fields should always be unique
                 'uuid',
                 'forms_sections_uuid',
             ],
-            'glpi_crontasks' => [
+            'zentra_crontasks' => [
                 'frequency', // Field default value may have changed
                 'hourmin', // Field default value may have changed
                 'hourmax', // Field default value may have changed
                 'lastrun',
             ],
-            'glpi_displaypreferences' => [
+            'zentra_displaypreferences' => [
                 'rank', // New display preferences are added with next available rank by migrations
             ],
-            'glpi_requesttypes' => [
+            'zentra_requesttypes' => [
                 'is_followup_default', // Field value was not forced by migration (0.90.x to 9.1.0)
                 'is_mailfollowup_default', // Field value was not forced by migration (0.90.x to 9.1.0)
             ],
-            'glpi_softwarecategories' => [
+            'zentra_softwarecategories' => [
                 'name', // 'FUSION' has not been automatically renamed to 'Inventoried' by migration (9.5.x to 10.0.0)
                 'completename', // 'FUSION' has not been automatically renamed to 'Inventoried' by migration (9.5.x to 10.0.0)
             ],
-            'glpi_users' => [
+            'zentra_users' => [
                 'password',
             ],
         ];
@@ -386,7 +386,7 @@ class TestUpdatedDataCommand extends Command
                     'FROM'     => 'information_schema.columns',
                     'WHERE'    => [
                         'table_schema' => $db->dbdefault,
-                        'table_name'   => ['LIKE', 'glpi\_%'],
+                        'table_name'   => ['LIKE', 'zentra\_%'],
                     ],
                 ]
             );

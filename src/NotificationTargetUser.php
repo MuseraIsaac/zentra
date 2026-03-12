@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,8 +105,8 @@ class NotificationTargetUser extends NotificationTarget
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
                     case Notification::USER:
-                        $usertype = self::GLPI_USER;
-                        if ($this->obj->fields['authtype'] != Auth::DB_GLPI) {
+                        $usertype = self::ZENTRA_USER;
+                        if ($this->obj->fields['authtype'] != Auth::DB_ZENTRA) {
                             $usertype = self::EXTERNAL_USER;
                         }
                         // Send to user without any check on profile / entity
@@ -123,7 +123,7 @@ class NotificationTargetUser extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $events = $this->getEvents();
 
@@ -140,7 +140,7 @@ class NotificationTargetUser extends NotificationTarget
                 );
 
                 $this->data['##user.account.lock.date##']  = null;
-                $lock_delay = (int) $CFG_GLPI['password_expiration_lock_delay'];
+                $lock_delay = (int) $CFG_ZENTRA['password_expiration_lock_delay'];
                 if (-1 !== $lock_delay) {
                     $this->data['##user.account.lock.date##'] = Html::convDateTime(
                         date(
@@ -157,13 +157,13 @@ class NotificationTargetUser extends NotificationTarget
                 }
                 $this->data['##user.password.has_expired##'] = $this->obj->hasPasswordExpired() ? '1' : '0';
                 $this->data['##user.password.update.url##'] = urldecode(
-                    $CFG_GLPI["url_base"] . "/front/updatepassword.php"
+                    $CFG_ZENTRA["url_base"] . "/front/updatepassword.php"
                 );
                 break;
             case 'passwordforget':
             case 'passwordinit':
                 $encrypted_token = $this->obj->fields['password_forget_token'];
-                $token = (new GLPIKey())->decrypt($encrypted_token);
+                $token = (new ZENTRAKey())->decrypt($encrypted_token);
 
                 $this->data['##user.token##'] = $token;
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ class ProjectTaskTemplate extends CommonDropdown
             'id'       => '4',
             'name'     => _x('item', 'State'),
             'field'    => 'name',
-            'table'    => 'glpi_projectstates',
+            'table'    => 'zentra_projectstates',
             'datatype' => 'dropdown',
         ];
 
@@ -133,7 +133,7 @@ class ProjectTaskTemplate extends CommonDropdown
             'id'       => '5',
             'name'     => _n('Type', 'Types', 1),
             'field'    => 'name',
-            'table'    => 'glpi_projecttasktypes',
+            'table'    => 'zentra_projecttasktypes',
             'datatype' => 'dropdown',
         ];
 
@@ -141,7 +141,7 @@ class ProjectTaskTemplate extends CommonDropdown
             'id'       => '6',
             'name'     => __('As child of'),
             'field'    => 'name',
-            'table'    => 'glpi_projecttasks',
+            'table'    => 'zentra_projecttasks',
             'datatype' => 'itemlink',
         ];
 

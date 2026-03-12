@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Change_Ticket Class
@@ -55,24 +55,24 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         return _n('Link Ticket/Change', 'Links Ticket/Change', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (static::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case Change::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_changes_tickets',
+                            'zentra_changes_tickets',
                             ['changes_id' => $item->getID()]
                         );
                     }
                     return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case Ticket::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_changes_tickets',
+                            'zentra_changes_tickets',
                             ['tickets_id' => $item->getID()]
                         );
                     }
@@ -82,7 +82,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case Change::class:
@@ -222,24 +222,24 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_changes_tickets.id AS linkid',
-                'glpi_tickets.*',
+                'zentra_changes_tickets.id AS linkid',
+                'zentra_tickets.*',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_changes_tickets',
+            'FROM'            => 'zentra_changes_tickets',
             'LEFT JOIN'       => [
-                'glpi_tickets' => [
+                'zentra_tickets' => [
                     'ON' => [
-                        'glpi_changes_tickets'  => 'tickets_id',
-                        'glpi_tickets'          => 'id',
+                        'zentra_changes_tickets'  => 'tickets_id',
+                        'zentra_tickets'          => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_changes_tickets.changes_id'   => $ID,
+                'zentra_changes_tickets.changes_id'   => $ID,
             ],
             'ORDERBY'          => [
-                'glpi_tickets.name',
+                'zentra_tickets.name',
             ],
         ]);
 
@@ -324,24 +324,24 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         $iterator = $DB->request([
             'SELECT'          => [
-                'glpi_changes_tickets.id AS linkid',
-                'glpi_changes.*',
+                'zentra_changes_tickets.id AS linkid',
+                'zentra_changes.*',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_changes_tickets',
+            'FROM'            => 'zentra_changes_tickets',
             'LEFT JOIN'       => [
-                'glpi_changes' => [
+                'zentra_changes' => [
                     'ON' => [
-                        'glpi_changes_tickets'  => 'changes_id',
-                        'glpi_changes'          => 'id',
+                        'zentra_changes_tickets'  => 'changes_id',
+                        'zentra_changes'          => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_changes_tickets.tickets_id'   => $ID,
+                'zentra_changes_tickets.tickets_id'   => $ID,
             ],
             'ORDERBY'          => [
-                'glpi_changes.name',
+                'zentra_changes.name',
             ],
         ]);
 

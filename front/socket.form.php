@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Socket;
+use Zentra\Event;
+use Zentra\Socket;
 
 Session::checkCentralAccess();
 
@@ -62,9 +62,9 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
                 4,
                 "socket",
                 //TRANS: %s is the user login
-                sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
+                sprintf(__('%s adds a socket'), $_SESSION["zentraname"])
             );
-            if ($_SESSION['glpibackcreated']) {
+            if ($_SESSION['zentrabackcreated']) {
                 Html::redirect($socket->getLinkURL());
             }
         }
@@ -100,7 +100,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
             "socket",
             5,
             "setup",
-            sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
+            sprintf(__('%1$s adds several sockets'), $_SESSION["zentraname"])
         );
     }
     Html::back();
@@ -114,7 +114,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
             4,
             "socket",
             //TRANS: %s is the user login
-            sprintf(__('%s purges a socket'), $_SESSION["glpiname"])
+            sprintf(__('%s purges a socket'), $_SESSION["zentraname"])
         );
     }
     $socket->redirectToList();
@@ -128,7 +128,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
             4,
             "socket",
             //TRANS: %s is the user login
-            sprintf(__('%s updates a socket'), $_SESSION["glpiname"])
+            sprintf(__('%s updates a socket'), $_SESSION["zentraname"])
         );
     }
     Html::back();

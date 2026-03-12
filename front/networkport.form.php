@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@ require_once(__DIR__ . '/_check_webserver_config.php');
  * @since 0.84
  */
 
-use Glpi\Event;
+use Zentra\Event;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 Session::checkRightsOr("networking", [READ, CREATE, UPDATE]);
 
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
             5,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s adds an item'), $_SESSION["glpiname"])
+            sprintf(__('%s adds an item'), $_SESSION["zentraname"])
         );
         Html::back();
     } else {
@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
             5,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s adds several network ports'), $_SESSION["glpiname"])
+            sprintf(__('%s adds several network ports'), $_SESSION["zentraname"])
         );
         Html::back();
     }
@@ -122,13 +122,13 @@ if (isset($_POST["add"])) {
         5,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
 
     if ($item = getItemForItemtype($np->fields['itemtype'])) {
         Html::redirect($item->getFormURLWithID($np->fields['items_id']));
     }
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+    Html::redirect($CFG_ZENTRA["root_doc"] . "/front/central.php");
 } elseif (isset($_POST["delete"])) {
     $np->check($_POST['id'], DELETE);
     $np->delete($_POST);
@@ -138,13 +138,13 @@ if (isset($_POST["add"])) {
         5,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        sprintf(__('%s deletes an item'), $_SESSION["zentraname"])
     );
 
     if ($item = getItemForItemtype($np->fields['itemtype'])) {
         Html::redirect($item->getFormURLWithID($np->fields['items_id']));
     }
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+    Html::redirect($CFG_ZENTRA["root_doc"] . "/front/central.php");
 } elseif (isset($_POST["update"])) {
     $np->check($_POST['id'], UPDATE);
 
@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } elseif (isset($_POST["disconnect"])) {
@@ -175,7 +175,7 @@ if (isset($_POST["add"])) {
             4,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+            sprintf(__('%s restores an item'), $_SESSION["zentraname"])
         );
     }
     Html::back();

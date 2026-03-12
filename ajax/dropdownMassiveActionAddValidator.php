@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @since 0.85
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -57,7 +57,7 @@ if (isset($_POST["validatortype"])) {
         case 'user':
             User::dropdown([
                 'name'   => $items_id_name,
-                'entity' => $_SESSION["glpiactive_entity"],
+                'entity' => $_SESSION["zentraactive_entity"],
                 'right'  => $_POST['right'],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
@@ -86,7 +86,7 @@ if (isset($_POST["validatortype"])) {
         case $types_mapping['group_user']:
             $rand = Group::dropdown([
                 'name'      => $groups_id_name,
-                'entity'    => $_SESSION["glpiactive_entity"],
+                'entity'    => $_SESSION["zentraactive_entity"],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
@@ -102,7 +102,7 @@ if (isset($_POST["validatortype"])) {
             Ajax::updateItemOnSelectEvent(
                 "dropdown_{$groups_id_name}{$rand}",
                 "show_groups_users",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveActionAddValidator.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownMassiveActionAddValidator.php",
                 $param
             );
 
@@ -113,7 +113,7 @@ if (isset($_POST["validatortype"])) {
             $opt = [
                 'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_SESSION["glpiactive_entity"],
+                'entity'    => $_SESSION["zentraactive_entity"],
             ];
 
             $groups_users = $validation_class::getGroupUserHaveRights($opt);

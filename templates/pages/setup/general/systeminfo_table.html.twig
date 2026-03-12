@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -58,22 +58,22 @@
 {% endmacro %}
 
 {% set status_mapping = {
-    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ALTERED')): 'M',
-    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_MISSING')): 'D',
-    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ADDED')): 'A',
+    (constant('Zentra\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ALTERED')): 'M',
+    (constant('Zentra\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_MISSING')): 'D',
+    (constant('Zentra\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ADDED')): 'A',
 } %}
 
-{% set glpi_info_precontent %}
-    {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+{% set zentra_info_precontent %}
+    {% if not call('\\Zentra\\Toolbox\\VersionParser::isStableRelease', [constant('ZENTRA_VERSION')]) %}
         <div class='alert alert-important alert-warning d-flex'>
             <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
         </div>
     {% endif %}
 {% endset %}
 
-{% set glpi_info %}
-GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
-Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
+{% set zentra_info %}
+ZENTRA: {{ ver }} ({{ config('root_doc') }} => {{ constant('ZENTRA_ROOT') }})
+Installation mode: {{ constant('ZENTRA_INSTALL_MODE') }}
 Current language: {{ language }}
 Source Integrity: {% if code_integrity is null %}N/A{% elseif code_integrity is empty %}OK{% else %}{{ code_integrity|length }} files changed{% endif %}
 {%- if code_integrity is not empty -%}
@@ -125,7 +125,7 @@ Requirements:
 {% endset %}
 
 {% set constants_info %}
-   {%- for name, value in call('get_defined_constants')|filter((v, k) => k|u.startsWith('GLPI_')) -%}
+   {%- for name, value in call('get_defined_constants')|filter((v, k) => k|u.startsWith('ZENTRA_')) -%}
       {{ "\n" ~ name }}: {{ value|json_encode(constant('JSON_UNESCAPED_SLASHES')) }}
    {%- endfor -%}
 {% endset %}
@@ -137,9 +137,9 @@ Requirements:
 {% endset %}
 
 <div class="accordion" id="sysinfo_accordion">
-   {{ _self.sysinfo_section('GLPI information', glpi_info, false, glpi_info_precontent) }}
+   {{ _self.sysinfo_section('ZENTRA information', zentra_info, false, zentra_info_precontent) }}
    {{ _self.sysinfo_section('Server', server_info, true) }}
-   {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
+   {{ _self.sysinfo_section('ZENTRA constants', constants_info, true) }}
    {% for info_obj in system_info_objs %}
       {% set info = call([info_obj, 'getSystemInformation']) %}
       {% if info['label'] is not empty and info['content'] is not empty %}

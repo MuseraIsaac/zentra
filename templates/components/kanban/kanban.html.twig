@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -61,10 +61,10 @@
           rights: {{ rights|json_encode|raw }},
           supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},
           column_field: {{ column_field|json_encode|raw }},
-          background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},
+          background_refresh_interval: {{ background_refresh_interval|default(session('zentrarefresh_views')) }},
           item: {{ item|json_encode|raw }},
           supported_filters: {{ supported_filters|json_encode|raw }},
-          display_initials: {{ entity_config('display_users_initials', session('glpiactive_entity')) ? 'true' : 'false' }},
+          display_initials: {{ entity_config('display_users_initials', session('zentraactive_entity')) ? 'true' : 'false' }},
       }).mount('#kanban-app');
    });
 </script>

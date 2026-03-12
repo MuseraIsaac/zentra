@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,22 +37,22 @@
  * @var Migration $migration
  */
 // see #18814
-$migration->changeField('glpi_entities', 'inquest_URL', 'inquest_URL', 'text');
-$migration->changeField('glpi_entities', 'inquest_URL_change', 'inquest_URL_change', 'text');
+$migration->changeField('zentra_entities', 'inquest_URL', 'inquest_URL', 'text');
+$migration->changeField('zentra_entities', 'inquest_URL_change', 'inquest_URL_change', 'text');
 
-// Fix glpi_entities.id column to use AUTO_INCREMENT instead of DEFAULT 0
+// Fix zentra_entities.id column to use AUTO_INCREMENT instead of DEFAULT 0
 // This is required for concurrent entity creation to work properly
 // see #22625
 // Add NO_AUTO_VALUE_ON_ZERO to allow operations on entities with id=0 (root entity)
 $DB->doQuery("SET SESSION sql_mode = CONCAT(@@sql_mode, ',NO_AUTO_VALUE_ON_ZERO')");
 $DB->doQuery(
-    "ALTER TABLE `glpi_entities`
+    "ALTER TABLE `zentra_entities`
      MODIFY `id` INT unsigned NOT NULL AUTO_INCREMENT"
 );
 
 // Reset AUTO_INCREMENT to continue from the highest existing ID
 $max_id = $DB->request([
     'SELECT' => ['MAX' => 'id AS max_id'],
-    'FROM'   => 'glpi_entities',
+    'FROM'   => 'zentra_entities',
 ])->current()['max_id'] ?? 0;
-$DB->doQuery("ALTER TABLE `glpi_entities` AUTO_INCREMENT = " . ($max_id + 1));
+$DB->doQuery("ALTER TABLE `zentra_entities` AUTO_INCREMENT = " . ($max_id + 1));

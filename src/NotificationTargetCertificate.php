@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,14 +83,14 @@ class NotificationTargetCertificate extends NotificationTarget
 
         $this->data['##certificate.action##'] = $events[$event];
         $this->data['##certificate.entity##'] = Dropdown::getDropdownName(
-            'glpi_entities',
+            'zentra_entities',
             $options['entities_id']
         );
 
         $this->data['##certificate.name##']           = $certificate->fields['name'];
         $this->data['##certificate.serial##']         = $certificate->fields['serial'];
         $this->data['##certificate.type##'] = Dropdown::getDropdownName(
-            'glpi_certificatetypes',
+            'zentra_certificatetypes',
             $certificate->fields['certificatetypes_id']
         );
         $this->data['##certificate.expirationdate##'] = Html::convDate($certificate->fields["date_expiration"]);

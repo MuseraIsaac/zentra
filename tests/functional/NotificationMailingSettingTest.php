@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/notificationmailingsetting.class.php .class.php */
 
@@ -42,7 +42,7 @@ class NotificationMailingSettingTest extends DbTestCase
 {
     public function testGetTable()
     {
-        $this->assertSame('glpi_configs', \NotificationMailingSetting::getTable());
+        $this->assertSame('zentra_configs', \NotificationMailingSetting::getTable());
     }
 
     public function testGetTypeName()
@@ -95,9 +95,9 @@ class NotificationMailingSettingTest extends DbTestCase
 
     public function testShowFormConfig()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $this->assertEquals(0, $CFG_GLPI['notifications_mailing']);
+        $this->assertEquals(0, $CFG_ZENTRA['notifications_mailing']);
 
         ob_start();
         $instance = new \NotificationMailingSetting();
@@ -105,7 +105,7 @@ class NotificationMailingSettingTest extends DbTestCase
         $content = ob_get_clean();
         $this->assertStringContainsString('Notifications are disabled.', $content);
 
-        $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_ZENTRA['notifications_mailing'] = 1;
 
         ob_start();
         $instance = new \NotificationMailingSetting();
@@ -114,6 +114,6 @@ class NotificationMailingSettingTest extends DbTestCase
         $this->assertStringNotContainsString('Notifications are disabled.', $content);
 
         //reset to defaults
-        $CFG_GLPI['notifications_mailing'] = 0;
+        $CFG_ZENTRA['notifications_mailing'] = 0;
     }
 }

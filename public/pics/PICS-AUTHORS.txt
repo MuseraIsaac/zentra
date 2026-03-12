@@ -3,9 +3,9 @@
                                 Pics Authors                                                *
 *********************************************************************************************
                                                                                             *
-- GLPI logo and interface icons by Jean-Mathieu Doleans (jmd at indepnet.net)               *
+- ZENTRA logo and interface icons by Jean-Mathieu Doleans (jmd at indepnet.net)               *
                                                                                             *
-- Except some GLPI interface icons that come or are inspired  from Gnome Desktop by         *
+- Except some ZENTRA interface icons that come or are inspired  from Gnome Desktop by         *
  Jakub 'jimmac' Steiner                                                                     *
                                                                                             *
                                                                                             *

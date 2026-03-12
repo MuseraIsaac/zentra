@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Socket;
-use Glpi\Tests\DbTestCase;
+use Zentra\Socket;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/location.class.php */
@@ -408,9 +408,9 @@ class LocationTest extends DbTestCase
 
     public function testMaybeLocated()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        foreach ($CFG_GLPI['location_types'] as $type) {
+        foreach ($CFG_ZENTRA['location_types'] as $type) {
             $item = new $type();
             $this->assertTrue($item->maybeLocated(), $type . ' cannot be located!');
         }

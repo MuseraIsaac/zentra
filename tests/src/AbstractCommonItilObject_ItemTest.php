@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use CommonITILObject;
 use CommonItilObject_Item;
 use Computer;
-use Glpi\Form\Form;
+use Zentra\Form\Form;
 use User;
 
 abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
@@ -70,7 +70,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge">1</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge zentra-badge">1</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 
@@ -80,7 +80,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc02', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge">2</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge zentra-badge">2</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 
@@ -96,7 +96,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             strip_tags($link->getTabNameForItem($itil_item)),
         );
 
-        $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = [];
+        $_SESSION['zentraactiveprofile']['helpdesk_item_type'] = [];
         $this->assertEquals(
             'Items',
             strip_tags($link->getTabNameForItem($itil_item)),
@@ -120,7 +120,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         );
         // Extract count from the inside the .badge element in the label
         $original_tab_count = (int) preg_replace(
-            '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+            '/.*<span class="badge zentra-badge">(\d+)<\/span>.*/',
             '$1',
             $tab_label,
         );
@@ -134,7 +134,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         $this->assertEquals(
             $original_tab_count + 1,
             (int) preg_replace(
-                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '/.*<span class="badge zentra-badge">(\d+)<\/span>.*/',
                 '$1',
                 $link->getTabNameForItem($user),
             ),
@@ -150,7 +150,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         $this->assertEquals(
             $original_tab_count + 2,
             (int) preg_replace(
-                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '/.*<span class="badge zentra-badge">(\d+)<\/span>.*/',
                 '$1',
                 $link->getTabNameForItem($user),
             ),
@@ -180,7 +180,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         $this->assertEquals(
             1,
             (int) preg_replace(
-                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '/.*<span class="badge zentra-badge">(\d+)<\/span>.*/',
                 '$1',
                 $link->getTabNameForItem($computer),
             ),

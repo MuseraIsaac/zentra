@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,26 +37,26 @@
  */
 
 $assets_tables_with_templates_and_trashbin = [
-    'glpi_budgets',
-    'glpi_certificates',
-    'glpi_computers',
-    'glpi_contracts',
-    'glpi_domains',
-    'glpi_cables',
-    'glpi_monitors',
-    'glpi_networkequipments',
-    'glpi_passivedcequipments',
-    'glpi_peripherals',
-    'glpi_phones',
-    'glpi_printers',
-    'glpi_projects',
-    'glpi_projecttasks',
-    'glpi_softwarelicenses',
-    'glpi_softwares',
-    'glpi_racks',
-    'glpi_enclosures',
-    'glpi_pdus',
-    'glpi_assets_assets',
+    'zentra_budgets',
+    'zentra_certificates',
+    'zentra_computers',
+    'zentra_contracts',
+    'zentra_domains',
+    'zentra_cables',
+    'zentra_monitors',
+    'zentra_networkequipments',
+    'zentra_passivedcequipments',
+    'zentra_peripherals',
+    'zentra_phones',
+    'zentra_printers',
+    'zentra_projects',
+    'zentra_projecttasks',
+    'zentra_softwarelicenses',
+    'zentra_softwares',
+    'zentra_racks',
+    'zentra_enclosures',
+    'zentra_pdus',
+    'zentra_assets_assets',
 ];
 
 foreach ($assets_tables_with_templates_and_trashbin as $table) {

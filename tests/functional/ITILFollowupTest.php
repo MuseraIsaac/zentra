@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
-use Glpi\Search\Provider\SQLProvider;
-use Glpi\Search\SearchEngine;
-use Glpi\Tests\DbTestCase;
+use Zentra\Search\Provider\SQLProvider;
+use Zentra\Search\SearchEngine;
+use Zentra\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
@@ -233,12 +233,12 @@ class ITILFollowupTest extends DbTestCase
 
         $ticket = new Ticket();
         $oldConf = [
-            'glpiset_default_tech'      => $_SESSION['glpiset_default_tech'],
-            'glpiset_default_requester' => $_SESSION['glpiset_default_requester'],
+            'zentraset_default_tech'      => $_SESSION['zentraset_default_tech'],
+            'zentraset_default_requester' => $_SESSION['zentraset_default_requester'],
         ];
 
-        $_SESSION['glpiset_default_tech'] = 0;
-        $_SESSION['glpiset_default_requester'] = 0;
+        $_SESSION['zentraset_default_tech'] = 0;
+        $_SESSION['zentraset_default_requester'] = 0;
 
         // Normal behavior, no flag specified
         $ticketID = $this->getNewITILObject('Ticket');
@@ -248,7 +248,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ITILFollowUp->add([
-                'date'                            => $_SESSION['glpi_currenttime'],
+                'date'                            => $_SESSION['zentra_currenttime'],
                 'users_id'                        => \Session::getLoginUserID(),
                 'content'                         => "Functional test",
                 'items_id'                        => $ticketID,
@@ -258,7 +258,7 @@ class ITILFollowupTest extends DbTestCase
 
         $this->assertTrue($ticket->getFromDB($ticketID));
         $this->assertGreaterThan(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
-        $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
+        $this->assertEquals($_SESSION['zentra_currenttime'], $ticket->fields['takeintoaccountdate']);
 
         // Now using the _do_not_compute_takeintoaccount flag
         $ticketID = $this->getNewITILObject('Ticket');
@@ -268,7 +268,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ITILFollowUp->add([
-                'date'                            => $_SESSION['glpi_currenttime'],
+                'date'                            => $_SESSION['zentra_currenttime'],
                 'users_id'                        => \Session::getLoginUserID(),
                 'content'                         => "Functional test",
                 '_do_not_compute_takeintoaccount' => true,
@@ -282,8 +282,8 @@ class ITILFollowupTest extends DbTestCase
         $this->assertNull($ticket->fields['takeintoaccountdate']);
 
         // Reset conf
-        $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];
-        $_SESSION['glpiset_default_requester'] = $oldConf['glpiset_default_requester'];
+        $_SESSION['zentraset_default_tech']      = $oldConf['zentraset_default_tech'];
+        $_SESSION['zentraset_default_requester'] = $oldConf['zentraset_default_requester'];
     }
 
     public static function isFromSupportAgentProvider()
@@ -337,11 +337,11 @@ class ITILFollowupTest extends DbTestCase
         string $profile,
         bool $expected
     ) {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Disable notifications
-        $old_conf = $CFG_GLPI['use_notifications'];
-        $CFG_GLPI['use_notifications'] = false;
+        $old_conf = $CFG_ZENTRA['use_notifications'];
+        $CFG_ZENTRA['use_notifications'] = false;
 
         $this->login();
 
@@ -398,7 +398,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertEquals($expected, $result);
 
         // Reset conf
-        $CFG_GLPI['use_notifications'] = $old_conf;
+        $CFG_ZENTRA['use_notifications'] = $old_conf;
     }
 
     public function testScreenshotConvertedIntoDocument()
@@ -437,7 +437,7 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename);
 
         $this->assertGreaterThan(0, $instance->add($input));
         $this->assertFalse($instance->isNewItem());
@@ -448,7 +448,7 @@ HTML,
         // Test uploads for item update
         $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/bar.png'));
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', ZENTRA_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => <<<HTML
@@ -504,7 +504,7 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->assertFalse($instance->isNewItem());
         $this->assertStringContainsString('testUploadDocuments', $instance->fields['content']);
@@ -516,7 +516,7 @@ HTML,
 
         // Test uploads for item update (adds a 2nd document)
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
-        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', ZENTRA_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => 'update testUploadDocuments',

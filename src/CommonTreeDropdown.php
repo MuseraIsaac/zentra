@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * CommonTreeDropdown Class
@@ -93,7 +93,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (
@@ -101,7 +101,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             && ($item instanceof static)
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     $this->getTable(),
                     [$this->getForeignKeyField() => $item->getID()]
@@ -113,7 +113,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof CommonTreeDropdown) {
@@ -216,7 +216,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function prepareInputForUpdate($input)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         if (isset($input[$this->getForeignKeyField()])) {
             // Can't move a parent under a child
@@ -232,7 +232,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
                 $input["ancestors_cache"] = '';
                 $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
-                $GLPI_CACHE->delete($ckey);
+                $ZENTRA_CACHE->delete($ckey);
                 return $this->adaptTreeFieldsFromUpdateOrAdd($input);
             }
         }
@@ -254,12 +254,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     public function regenerateTreeUnderID($ID, $updateName, $changeParent)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         //drop from sons cache when needed
         if ($changeParent) {
             $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $ID;
-            $GLPI_CACHE->delete($ckey);
+            $ZENTRA_CACHE->delete($ckey);
         }
 
         if (($updateName) || ($changeParent)) {
@@ -327,7 +327,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     protected function cleanParentsSons($id = null, $cache = true)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         if ($id === null) {
             $id = $this->getID();
@@ -349,7 +349,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         // drop from sons cache when needed
         if ($cache) {
             foreach ($ancestors as $ancestor) {
-                $GLPI_CACHE->delete('sons_cache_' . $this->getTable() . '_' . $ancestor);
+                $ZENTRA_CACHE->delete('sons_cache_' . $this->getTable() . '_' . $ancestor);
             }
         }
     }
@@ -362,16 +362,16 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     protected function addSonInParents()
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         //add sons cache when needed
         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
         foreach ($ancestors as $ancestor) {
             $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-            $sons = $GLPI_CACHE->get($ckey);
+            $sons = $ZENTRA_CACHE->get($ckey);
             if ($sons !== null && !isset($sons[$this->getID()])) {
                 $sons[$this->getID()] = $this->getID();
-                $GLPI_CACHE->set($ckey, $sons);
+                $ZENTRA_CACHE->set($ckey, $sons);
             }
         }
     }
@@ -535,7 +535,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $twig_params = [
                 'header' => sprintf(__('New child %s'), static::getTypeName(1)),
                 'form_url' => static::getFormURL(),
-                'entity' => ($entity_assign && static::getForeignKeyField() !== 'entities_id') ? $_SESSION['glpiactive_entity'] : null,
+                'entity' => ($entity_assign && static::getForeignKeyField() !== 'entities_id') ? $_SESSION['zentraactive_entity'] : null,
                 'is_recursive' => $entity_assign && $this->isRecursive() ? 1 : 0,
                 'name_label' => __('Name'),
                 'btn_label' => _x('button', 'Add'),
@@ -549,7 +549,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     <form action="{{ form_url }}" method="post">
                         {{ fields.largeTitle(header) }}
                         <input type="hidden" name="{{ fk }}" value="{{ id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                         <div>
                             <div>
                                 {{ fields.textField('name', '', name_label, {
@@ -589,9 +589,9 @@ TWIG, $twig_params);
             ];
             $name = htmlescape($data['name']);
             if (
-                (($fk === 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities'], true))
+                (($fk === 'entities_id') && in_array($data['id'], $_SESSION['zentraactiveentities'], true))
                 || !$entity_assign
-                || (($fk !== 'entities_id') && in_array($data['entities_id'], $_SESSION['glpiactiveentities'], true))
+                || (($fk !== 'entities_id') && in_array($data['entities_id'], $_SESSION['zentraactiveentities'], true))
             ) {
                 $entry['name'] = sprintf(
                     '<a href="%s">%s</a>',
@@ -605,7 +605,7 @@ TWIG, $twig_params);
             if ($entity_assign) {
                 if (!isset($values_cache['entity'][$data['entities_id']])) {
                     $values_cache['entity'][$data['entities_id']] = Dropdown::getDropdownName(
-                        'glpi_entities',
+                        'zentra_entities',
                         $data['entities_id']
                     );
                 }
@@ -702,8 +702,8 @@ TWIG, $twig_params);
                 echo __s('As child of');
                 Dropdown::show($itemtype, ['name'     => 'parent',
                     'comments' => 0,
-                    'entity'   => $_SESSION['glpiactive_entity'],
-                    'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+                    'entity'   => $_SESSION['zentraactive_entity'],
+                    'entity_sons' => $_SESSION['zentraactive_entity_recursive'],
                 ]);
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
                            . _sx('button', 'Move') . "'>\n";
@@ -826,7 +826,7 @@ TWIG, $twig_params);
         if ($this->isEntityAssign()) {
             $tab[] = [
                 'id'             => '80',
-                'table'          => 'glpi_entities',
+                'table'          => 'zentra_entities',
                 'field'          => 'completename',
                 'name'           => Entity::getTypeName(1),
                 'massiveaction'  => false,

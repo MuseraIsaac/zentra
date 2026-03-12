@@ -3,9 +3,9 @@
 #
 # ---------------------------------------------------------------------
 #
-# GLPI - Gestionnaire Libre de Parc Informatique
+# ZENTRA - Gestionnaire Libre de Parc Informatique
 #
-# http://glpi-project.org
+# http://zentra-project.org
 #
 # @copyright 2015-2026 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
 #
 # LICENSE
 #
-# This file is part of GLPI.
+# This file is part of ZENTRA.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 cat <<HEADER
 ---
 layout: default
-title: GLPI Nightly Builds
+title: ZENTRA Nightly Builds
 ---
 
 Version|Archive|Build date|Size
@@ -45,7 +45,7 @@ HEADER
 
 for file in $*
 do
-    NAME="${file#glpi/}"
+    NAME="${file#zentra/}"
     VERSION="${NAME%-*.tar.gz}"
     SIZE=$( stat -c %s "$file" )
     read DATE TIME TZ <<<$(git log -n1 --pretty=%ci -- $file)

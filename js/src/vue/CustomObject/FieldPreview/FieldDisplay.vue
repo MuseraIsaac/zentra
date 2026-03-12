@@ -87,7 +87,7 @@
      * Refresh the data in the all_fields object
      */
     function refreshAllFields() {
-        const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=${props.items_id}`;
+        const url = `${CFG_ZENTRA.root_doc}/ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=${props.items_id}`;
         $.get(url, (data) => {
             const new_fields = {};
             $.each(data['results'], (key, field) => {
@@ -161,8 +161,8 @@
                         url_params.append(`field_options[${name}]`, value);
                     }
                 }
-                const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
-                window.glpi_ajax_dialog({
+                const url = `${CFG_ZENTRA.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
+                window.zentra_ajax_dialog({
                     id: 'core_field_options_editor',
                     modalclass: 'modal-xl',
                     appendTo: `#${CSS.escape($(sortable_fields_container.value).attr('id'))}`,
@@ -195,7 +195,7 @@
 
             // Submit a form via AJAX to delete the field
             $.ajax({
-                url: `${CFG_GLPI.root_doc}/ajax/asset/customfield.php`,
+                url: `${CFG_ZENTRA.root_doc}/ajax/asset/customfield.php`,
                 type: 'POST',
                 data: {
                     customfielddefinitions_id: custom_fields_id,
@@ -241,7 +241,7 @@
         });
 
         const create_edit_field_modal = $('#customfield_form_container_modal');
-        create_edit_field_modal.on('glpi:submit:success', 'form', (e, data) => {
+        create_edit_field_modal.on('zentra:submit:success', 'form', (e, data) => {
             const btn_submit = data.submitter;
             const form_data = new FormData(e.target);
             const field_key = `custom_${form_data.get('system_name')}`;

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 /* global bootstrap, _, getAjaxCsrfToken */
 
-export class GlpiIllustrationPickerController
+export class ZentraIllustrationPickerController
 {
     /**
      * @type {HTMLElement}
@@ -70,7 +70,7 @@ export class GlpiIllustrationPickerController
 
         // Watch for icon selection
         this.#container.addEventListener("click", (e) => {
-            const illustration = e.target.closest('[data-glpi-icon-picker-value]');
+            const illustration = e.target.closest('[data-zentra-icon-picker-value]');
 
             // Click must be on an illustration.
             if (illustration === null) {
@@ -82,14 +82,14 @@ export class GlpiIllustrationPickerController
 
         // Watch for page change
         this.#container.addEventListener("click", (e) => {
-            const go_to_button = e.target.closest('[data-glpi-icon-picker-go-to-page]');
+            const go_to_button = e.target.closest('[data-zentra-icon-picker-go-to-page]');
 
             // Click must be on a "go to page..." button.
             if (go_to_button === null) {
                 return;
             }
 
-            const page = go_to_button.dataset['glpiIconPickerGoToPage'];
+            const page = go_to_button.dataset['zentraIconPickerGoToPage'];
             this.#goToPage(page);
         });
 
@@ -99,7 +99,7 @@ export class GlpiIllustrationPickerController
             200,
         );
         this.#container.addEventListener("input", (e) => {
-            const filter_input = e.target.closest('[data-glpi-icon-picker-filter]');
+            const filter_input = e.target.closest('[data-zentra-icon-picker-filter]');
 
             // Input event must come from the filter input.
             if (filter_input === null) {
@@ -111,7 +111,7 @@ export class GlpiIllustrationPickerController
 
         // Watch for custom file selection
         this.#container
-            .querySelector('[data-glpi-icon-picker-use-custom-file]')
+            .querySelector('[data-zentra-icon-picker-use-custom-file]')
             .addEventListener("click", async () => {
                 const file_id = await this.#uploadIcon();
                 if (file_id !== null) {
@@ -133,14 +133,14 @@ export class GlpiIllustrationPickerController
 
         // Autofocus search input when the modal is opened
         this.#modal_node.addEventListener('shown.bs.modal', () => {
-            this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
+            this.#container.querySelector("[data-zentra-icon-picker-filter]").focus();
         });
     }
 
     #setNativeIllustration(illustration)
     {
         // Gets details of the newly selected item.
-        const illustration_id = illustration.dataset['glpiIconPickerValue'];
+        const illustration_id = illustration.dataset['zentraIconPickerValue'];
         const illustration_title = illustration
             .querySelector('svg')
             .querySelector('title')
@@ -151,7 +151,7 @@ export class GlpiIllustrationPickerController
 
         // Update the preview of the selected item.
         const selected_svg = this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview]')
+            .querySelector('[data-zentra-icon-picker-value-preview]')
             .querySelector('svg')
         ;
         const title = selected_svg.querySelector('title');
@@ -165,12 +165,12 @@ export class GlpiIllustrationPickerController
         title.innerHTML = illustration_title.innerHTML;
 
         this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
+            .querySelector('[data-zentra-icon-picker-value-preview-native]')
             .classList
             .remove('d-none')
         ;
         this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .querySelector('[data-zentra-icon-picker-value-preview-custom]')
             .classList
             .add('d-none')
         ;
@@ -183,17 +183,17 @@ export class GlpiIllustrationPickerController
 
         // Update preview
         this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .querySelector('[data-zentra-icon-picker-value-preview-custom]')
             .querySelector('img')
-            .src = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
+            .src = `${CFG_ZENTRA.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
         ;
         this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .querySelector('[data-zentra-icon-picker-value-preview-custom]')
             .classList
             .remove('d-none')
         ;
         this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
+            .querySelector('[data-zentra-icon-picker-value-preview-native]')
             .classList
             .add('d-none')
         ;
@@ -233,13 +233,13 @@ export class GlpiIllustrationPickerController
     {
         // Remove active button
         this.#container
-            .querySelectorAll('[data-glpi-icon-picker-go-to-page]')
+            .querySelectorAll('[data-zentra-icon-picker-go-to-page]')
             .forEach((button) => button.classList.remove('active'))
         ;
 
         // Apply loading indicator to the new active button
         const button = this.#container
-            .querySelector(`[data-glpi-icon-picker-go-to-page="${CSS.escape(page)}"]`)
+            .querySelector(`[data-zentra-icon-picker-go-to-page="${CSS.escape(page)}"]`)
         ;
 
         button.classList.add('active');
@@ -262,7 +262,7 @@ export class GlpiIllustrationPickerController
 
     async #fetchIcons(filter = "", page = 1)
     {
-        const url = `${CFG_GLPI.root_doc}/UI/Illustration/Search`;
+        const url = `${CFG_ZENTRA.root_doc}/UI/Illustration/Search`;
         const url_params = new URLSearchParams({
             filter   : filter,
             page     : page,
@@ -296,13 +296,13 @@ export class GlpiIllustrationPickerController
         // Save the icon on the server and get its path.
         const form_data = new FormData();
         form_data.append('filename', input.value);
-        const url = `${CFG_GLPI.root_doc}/UI/Illustration/Upload`;
+        const url = `${CFG_ZENTRA.root_doc}/UI/Illustration/Upload`;
         const response = await fetch(url, {
             method: 'POST',
             body: form_data,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
             }
         });
 
@@ -312,34 +312,34 @@ export class GlpiIllustrationPickerController
 
     #getFilterInput()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-filter]');
+        return this.#container.querySelector('[data-zentra-icon-picker-filter]');
     }
 
     #getPageSizeValue()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-page-size]')
-            .dataset['glpiIconPickerPageSize']
+        return this.#container.querySelector('[data-zentra-icon-picker-page-size]')
+            .dataset['zentraIconPickerPageSize']
         ;
     }
 
     #getSelectedIllustrationsInput()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-value]');
+        return this.#container.querySelector('[data-zentra-icon-picker-value]');
     }
 
     #getSearchDefaultIcon()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-filter-default-icon]')
+        return this.#container.querySelector('[data-zentra-icon-picker-filter-default-icon]')
         ;
     }
 
     #getSearchLoadingIcon()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-filter-loading-icon]');
+        return this.#container.querySelector('[data-zentra-icon-picker-filter-loading-icon]');
     }
 
     #getSearchResultsDiv()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-body]');
+        return this.#container.querySelector('[data-zentra-icon-picker-body]');
     }
 }

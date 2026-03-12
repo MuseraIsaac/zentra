@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ class NotificationTargetObjectLock extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $events = $this->getEvents();
 
@@ -116,10 +116,10 @@ class NotificationTargetObjectLock extends NotificationTarget
         $this->data['##objectlock.lockedby.firstname##']
                                               = $user->fields['firstname'];
         $this->data['##objectlock.requester.lastname##']
-                                              = $_SESSION['glpirealname'];
+                                              = $_SESSION['zentrarealname'];
         $this->data['##objectlock.requester.firstname##']
-                                              = $_SESSION['glpifirstname'];
-        $this->data['##objectlock.url##']      = $CFG_GLPI['url_base'] . "/?redirect="
+                                              = $_SESSION['zentrafirstname'];
+        $this->data['##objectlock.url##']      = $CFG_ZENTRA['url_base'] . "/?redirect="
                                                    . $options['item']->fields['itemtype'] . "_"
                                                    . $options['item']->fields['items_id'];
 
@@ -137,20 +137,20 @@ class NotificationTargetObjectLock extends NotificationTarget
 
         $mails = new UserEmail();
         if (
-            isset($_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
-            && isset($_SESSION['glpilock_directunlock_notification'])
-            && ($_SESSION['glpilock_directunlock_notification'] > 0)
+            isset($_SESSION['zentraID']) && ($_SESSION['zentraID'] > 0)
+            && isset($_SESSION['zentralock_directunlock_notification'])
+            && ($_SESSION['zentralock_directunlock_notification'] > 0)
             && $mails->getFromDBByCrit([
-                'users_id'    => $_SESSION['glpiID'],
+                'users_id'    => $_SESSION['zentraID'],
                 'is_default'  => 1,
             ])
         ) {
             $ret = ['email' => $mails->fields['email'],
                 'name'  => formatUserName(
                     0,
-                    $_SESSION["glpiname"],
-                    $_SESSION["glpirealname"],
-                    $_SESSION["glpifirstname"]
+                    $_SESSION["zentraname"],
+                    $_SESSION["zentrarealname"],
+                    $_SESSION["zentrafirstname"]
                 ),
             ];
         } else {

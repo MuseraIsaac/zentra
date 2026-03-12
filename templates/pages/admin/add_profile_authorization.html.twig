@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -44,12 +44,12 @@
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                     <div class="row flex-row align-items-start flex-grow-1">
                         <div class="row flex-row">
-                            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                            {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                             {{ inputs.hidden(source_itemtype|itemtype_foreign_key, source_items_id) }}
                             {{ fields.largeTitle(__('Add an authorization to a user')) }}
                             {% if source_itemtype != 'Entity' %}
-                                {{ fields.dropdownField('Entity', 'entities_id', session('glpiactive_entity'), 'Entity'|itemtype_name, {
-                                    'entity': session('glpiactiveentities')
+                                {{ fields.dropdownField('Entity', 'entities_id', session('zentraactive_entity'), 'Entity'|itemtype_name, {
+                                    'entity': session('zentraactiveentities')
                                 }|merge(field_options)) }}
                             {% endif %}
                             {% if source_itemtype != 'Profile' %}
@@ -63,7 +63,7 @@
                             {% if source_itemtype != 'User' %}
                                 {{ fields.dropdownField('User', 'users_id', null, 'User'|itemtype_name, {
                                     'display_emptychoice': false,
-                                    'entity': session('glpiactiveentities'),
+                                    'entity': session('zentraactiveentities'),
                                     'right': 'all',
                                     'used': used_users
                                 }|merge(field_options)) }}

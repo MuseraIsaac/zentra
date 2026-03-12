@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_validatorsubstitutes')) {
-    $query = "CREATE TABLE `glpi_validatorsubstitutes` (
+if (!$DB->tableExists('zentra_validatorsubstitutes')) {
+    $query = "CREATE TABLE `zentra_validatorsubstitutes` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `users_id` int {$default_key_sign}  NOT NULL DEFAULT '0' COMMENT 'Delegator user',
         `users_id_substitute` int {$default_key_sign}  NOT NULL DEFAULT '0' COMMENT 'Substitute user',
@@ -52,7 +52,7 @@ if (!$DB->tableExists('glpi_validatorsubstitutes')) {
     $DB->doQuery($query);
 }
 
-$table = 'glpi_users';
+$table = 'zentra_users';
 $migration->addField($table, 'substitution_start_date', 'timestamp', ['after' => 'nickname']);
 $migration->addField($table, 'substitution_end_date', 'timestamp', ['after' => 'substitution_start_date']);
 $migration->addKey($table, 'substitution_end_date');

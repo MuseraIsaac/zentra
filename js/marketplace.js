@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ var ajax_url;
 var ajax_done = false;
 
 $(document).ready(function() {
-    ajax_url = `${CFG_GLPI.root_doc}/ajax/marketplace.php`;
+    ajax_url = `${CFG_ZENTRA.root_doc}/ajax/marketplace.php`;
 
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {
@@ -177,7 +177,7 @@ var filterPluginList = function(page, force) {
             return; // 'installed' tab is not paginated
         }
 
-        var nb_plugins = jqxhr.getResponseHeader('X-GLPI-Marketplace-Total');
+        var nb_plugins = jqxhr.getResponseHeader('X-ZENTRA-Marketplace-Total');
         $.get(ajax_url, {
             'action': 'getPagination',
             'page':  page,

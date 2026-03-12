@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace test\units;
 
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasKnowbaseCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasKnowbaseCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use KnowbaseItem_Item;
 use Toolbox;
 
@@ -45,13 +45,13 @@ class KnowbaseItem_ItemTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['kb_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['kb_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -64,11 +64,11 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
-        foreach ($CFG_GLPI['kb_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['kb_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -196,31 +196,31 @@ class KnowbaseItem_ItemTest extends DbTestCase
         }
 
         //test with entitiesrestriction
-        $_SESSION['glpishowallentities'] = 0;
+        $_SESSION['zentrashowallentities'] = 0;
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_root_entity');
-        $_SESSION['glpiactiveentities'] = [$entity->getID()];
+        $_SESSION['zentraactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(0, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_1');
-        $_SESSION['glpiactiveentities'] = [$entity->getID()];
+        $_SESSION['zentraactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(2, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_2');
-        $_SESSION['glpiactiveentities'] = [$entity->getID()];
+        $_SESSION['zentraactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(0, $kbs);
 
-        $_SESSION['glpishowallentities'] = 1;
-        unset($_SESSION['glpiactiveentities']);
+        $_SESSION['zentrashowallentities'] = 1;
+        unset($_SESSION['zentraactiveentities']);
     }
 
     public function testGetTabNameForItem()
@@ -229,24 +229,24 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $kb_item = new KnowbaseItem_Item();
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
         $this->assertSame("Associated elements 3", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($kb1);
         $this->assertSame("Associated elements", strip_tags($name));
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($ticket3, true);
         $this->assertSame("Knowledge base 2", strip_tags($name));
 
         $name = $kb_item->getTabNameForItem($ticket3);
         $this->assertSame("Knowledge base 2", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
         $this->assertSame("Knowledge base", strip_tags($name));
     }

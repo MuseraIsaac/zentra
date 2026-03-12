@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Asset\AssetDefinition;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\AssetDefinition;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/profile.class.php */
@@ -68,8 +68,8 @@ class ProfileTest extends DbTestCase
             ],
             [
                 'user'     => [
-                    'login'    => 'glpi',
-                    'password' => 'glpi',
+                    'login'    => 'zentra',
+                    'password' => 'zentra',
                 ],
                 'rightset' => [
                     ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
@@ -399,9 +399,9 @@ class ProfileTest extends DbTestCase
                 $lower_profile_id = getItemByTypeName('Profile', $lower_profile_name, true);
                 // Not using `Profile::currentUserHaveMoreRightThan` as it has some conditions that are not suitable here
                 $criteria = [
-                    'FROM' => 'glpi_profilerights AS pa',
+                    'FROM' => 'zentra_profilerights AS pa',
                     'LEFT JOIN' => [
-                        'glpi_profilerights AS pb' => [
+                        'zentra_profilerights AS pb' => [
                             'ON' => [
                                 'pa' => 'name',
                                 'pb' => 'name',

@@ -125,7 +125,7 @@
             main_widget: true, // This widget shows directly in the toolbar
             component_registered_name: 'widget-theme-switcher',
             refreshButton: (button) => {
-                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${_.escape(document.documentElement.attributes['data-glpi-theme'].value)}`);
+                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${_.escape(document.documentElement.attributes['data-zentra-theme'].value)}`);
             }
         },
         {
@@ -152,13 +152,13 @@
         }
         const ajax_id = Math.random().toString(16).slice(2);
         // Tag the request with an id to identify it on the server side
-        xhr.setRequestHeader('X-Glpi-Ajax-ID', ajax_id);
+        xhr.setRequestHeader('X-Zentra-Ajax-ID', ajax_id);
         // Need to set the header here too so it is accessible in the ajaxComplete event
         xhr.headers = xhr.headers || {};
-        xhr.headers['X-Glpi-Ajax-ID'] = ajax_id;
-        const parent_id = $('html').attr('data-glpi-request-id');
+        xhr.headers['X-Zentra-Ajax-ID'] = ajax_id;
+        const parent_id = $('html').attr('data-zentra-request-id');
         if (parent_id !== undefined) {
-            xhr.setRequestHeader('X-Glpi-Ajax-Parent-ID', parent_id);
+            xhr.setRequestHeader('X-Zentra-Ajax-Parent-ID', parent_id);
         }
 
         let data = settings.data;
@@ -208,7 +208,7 @@
         if (xhr.headers === undefined) {
             return;
         }
-        const ajax_id = xhr.headers['X-Glpi-Ajax-ID'];
+        const ajax_id = xhr.headers['X-Zentra-Ajax-ID'];
         if (ajax_id !== undefined) {
             const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
             if (ajax_request !== undefined) {
@@ -283,7 +283,7 @@
 
     function refreshWidgetButtons() {
         $.each(getMainWidgets(), (i, /** @type MainWidget */ widget) => {
-            widget.refreshButton($(`#debug-toolbar .debug-toolbar-widgets li[data-glpi-debug-widget-id="${CSS.escape(widget.id)}"]`));
+            widget.refreshButton($(`#debug-toolbar .debug-toolbar-widgets li[data-zentra-debug-widget-id="${CSS.escape(widget.id)}"]`));
         });
         initial_load.value = false;
     }
@@ -306,7 +306,7 @@
     function requestAjaxDebugData(ajax_id, reload_widget = false) {
         const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
         $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
+            url: CFG_ZENTRA.root_doc + '/ajax/debug.php',
             data: {
                 'ajax_id': ajax_id,
             }

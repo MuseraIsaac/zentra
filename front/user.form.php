@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,15 +35,15 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Security\TOTPManager;
+use Zentra\Event;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Security\TOTPManager;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 if (isset($_POST['language']) && !Session::getLoginUserID()) {
     // Offline lang change, keep it before session validity check
-    $_SESSION["glpilanguage"] = $_POST['language'];
+    $_SESSION["zentralanguage"] = $_POST['language'];
     Session::addMessageAfterRedirect(__s('Lang has been changed!'));
     Html::back();
 }
@@ -70,7 +70,7 @@ if (empty($_GET["name"])) {
 
 if (isset($_GET['getvcard'])) {
     if (empty($_GET["id"])) {
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/user.php");
+        Html::redirect($CFG_ZENTRA["root_doc"] . "/front/user.php");
     }
     $user->check($_GET['id'], READ);
     $user->generateVcard();
@@ -83,9 +83,9 @@ if (isset($_GET['getvcard'])) {
             "users",
             4,
             "setup",
-            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["zentraname"], $_POST["name"])
         );
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($user->getLinkURL());
         }
     }
@@ -99,7 +99,7 @@ if (isset($_GET['getvcard'])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        sprintf(__('%s deletes an item'), $_SESSION["zentraname"])
     );
     $user->redirectToList();
 } elseif (isset($_POST["restore"])) {
@@ -111,7 +111,7 @@ if (isset($_GET['getvcard'])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        sprintf(__('%s restores an item'), $_SESSION["zentraname"])
     );
     $user->redirectToList();
 } elseif (isset($_POST["purge"])) {
@@ -122,7 +122,7 @@ if (isset($_GET['getvcard'])) {
         "users",
         4,
         "setup",
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
     $user->redirectToList();
 } elseif (isset($_POST["force_ldap_resynch"])) {
@@ -146,7 +146,7 @@ if (isset($_GET['getvcard'])) {
         5,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } elseif (isset($_POST["change_auth_method"])) {
@@ -171,7 +171,7 @@ if (isset($_GET['getvcard'])) {
         Html::back();
     }
 
-    Html::redirect($CFG_GLPI['root_doc'] . '/');
+    Html::redirect($CFG_ZENTRA['root_doc'] . '/');
 } elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
     $impersonated_user_id = Session::getLoginUserID();
 
@@ -213,7 +213,7 @@ if (isset($_GET['getvcard'])) {
                 "setup",
                 sprintf(
                     __('%1$s adds the item %2$s'),
-                    $_SESSION["glpiname"],
+                    $_SESSION["zentraname"],
                     $_POST["login"]
                 )
             );

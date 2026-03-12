@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_confirm, glpi_alert, getAjaxCsrfToken */
+/* global zentra_confirm, zentra_alert, getAjaxCsrfToken */
 /* global _ */
 
 /**
@@ -57,7 +57,7 @@ class ObjectLock {
             if (checked) {
                 this.lockStatusTimer = setInterval(() => {
                     $.get({
-                        url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
+                        url: `${CFG_ZENTRA.root_doc}/ajax/unlockobject.php`,
                         cache: false,
                         data: {
                             lockstatus: 1,
@@ -66,7 +66,7 @@ class ObjectLock {
                     }).then((data) => {
                         if (data === 0) {
                             clearInterval(this.lockStatusTimer);
-                            glpi_confirm({
+                            zentra_confirm({
                                 title: __('Item unlocked!'),
                                 message: __('Reload page?'),
                                 confirm_callback: () => {
@@ -82,12 +82,12 @@ class ObjectLock {
         });
 
         $('button.ask-unlock-item').on('click', () => {
-            glpi_confirm({
+            zentra_confirm({
                 title: `${_.escape(this.lock.itemtype_name)} #${_.escape(this.lock.items_id)}`,
                 message: __('Ask for unlock this item?'),
                 confirm_callback: () => {
                     $.post({
-                        url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
+                        url: `${CFG_ZENTRA.root_doc}/ajax/unlockobject.php`,
                         cache: false,
                         data: {
                             requestunlock: 1,
@@ -95,12 +95,12 @@ class ObjectLock {
                         },
                         dataType: 'json'
                     }).then(() => {
-                        glpi_alert({
+                        zentra_alert({
                             title: __('Unlock request sent!'),
                             message: __('Request sent to %s').replace('%s', _.escape(this.user_data['name'])),
                         });
                     }, () => {
-                        glpi_alert({
+                        zentra_alert({
                             title: _n('Error', 'Errors', 1),
                             message: __('An error occurred while sending the unlock request'),
                         });
@@ -110,12 +110,12 @@ class ObjectLock {
         });
 
         $('button.force-unlock-item').on('click', () => {
-            glpi_confirm({
+            zentra_confirm({
                 title: `${this.lock.itemtype_name} #${this.lock.items_id}`,
                 message: __('Force unlock this item?'),
                 confirm_callback: () => {
                     $.post({
-                        url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
+                        url: `${CFG_ZENTRA.root_doc}/ajax/unlockobject.php`,
                         cache: false,
                         data: {
                             unlock: 1,
@@ -124,7 +124,7 @@ class ObjectLock {
                         },
                         dataType: 'json'
                     }).then(() => {
-                        glpi_confirm({
+                        zentra_confirm({
                             title: __('Item unlocked!'),
                             message: __('Reload page?'),
                             confirm_callback: () => {
@@ -132,9 +132,9 @@ class ObjectLock {
                             }
                         });
                     }, () => {
-                        glpi_alert({
+                        zentra_alert({
                             title: __('Item NOT unlocked!'),
-                            message: __('Contact your GLPI admin!'),
+                            message: __('Contact your ZENTRA admin!'),
                         });
                     });
                 }
@@ -145,7 +145,7 @@ class ObjectLock {
             $(window).on('beforeunload', () => {
                 const fallback_request = () => {
                     $.post({
-                        url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
+                        url: `${CFG_ZENTRA.root_doc}/ajax/unlockobject.php`,
                         async: false,
                         cache: false,
                         data: {
@@ -157,14 +157,14 @@ class ObjectLock {
                 };
 
                 if (typeof window.fetch !== 'undefined') {
-                    fetch(`${CFG_GLPI.root_doc}/ajax/unlockobject.php`, {
+                    fetch(`${CFG_ZENTRA.root_doc}/ajax/unlockobject.php`, {
                         method: 'POST',
                         cache: 'no-cache',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/x-www-form-urlencoded;',
                             'X-Requested-With': 'XMLHttpRequest',
-                            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                            'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
                         },
                         body: `unlock=1&id=${this.lock.id}`
                     }).catch(() => {

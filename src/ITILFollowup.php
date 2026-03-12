@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\ParentStatus;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\ParentStatus;
 
 /**
  * @since 9.4.0
@@ -112,12 +112,12 @@ class ITILFollowup extends CommonDBChild
 
     public static function canView(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])) {
             return false;
         }
-        $itil_types = $CFG_GLPI['itil_types'];
+        $itil_types = $CFG_ZENTRA['itil_types'];
         /** @var class-string<CommonITILObject> $type */
         foreach ($itil_types as $type) {
             if ($type::canView()) {
@@ -262,19 +262,19 @@ class ITILFollowup extends CommonDBChild
         // Only the technician
         return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $itilobject->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $itilobject->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
+              || (isset($_SESSION["zentragroups"])
+                  && $itilobject->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['zentragroups'])));
     }
 
 
     public function post_getEmpty()
     {
 
-        if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
+        if (isset($_SESSION['zentrafollowup_private']) && $_SESSION['zentrafollowup_private']) {
             $this->fields['is_private'] = 1;
         }
 
-        if (isset($_SESSION["glpiname"])) {
+        if (isset($_SESSION["zentraname"])) {
             $this->fields['requesttypes_id'] = RequestType::getDefault('followup');
         }
     }
@@ -283,7 +283,7 @@ class ITILFollowup extends CommonDBChild
     public function post_addItem()
     {
 
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [
@@ -320,7 +320,7 @@ class ITILFollowup extends CommonDBChild
         $this->updateParentStatus($this->input['_job'], $this->input);
         PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"];
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
@@ -348,9 +348,9 @@ class ITILFollowup extends CommonDBChild
 
     public function post_deleteFromDB()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $donotif = $CFG_GLPI["use_notifications"];
+        $donotif = $CFG_ZENTRA["use_notifications"];
         if (isset($this->input['_disablenotif'])) {
             $donotif = false;
         }
@@ -492,7 +492,7 @@ class ITILFollowup extends CommonDBChild
 
         $itemtype = $input['itemtype'];
 
-        if ($itemtype == Ticket::class && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
+        if ($itemtype == Ticket::class && $_SESSION['zentraset_followup_tech'] && !$input['is_private']) {
             Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
         }
 
@@ -502,7 +502,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         if (!isset($input['date'])) {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = $_SESSION["zentra_currenttime"];
         }
         return $input;
     }
@@ -532,7 +532,7 @@ class ITILFollowup extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $job      = getItemForItemtype($this->fields['itemtype']);
 
@@ -563,7 +563,7 @@ class ITILFollowup extends CommonDBChild
         if (count($this->updates)) {
             if (
                 !isset($this->input['_disablenotif'])
-                && $CFG_GLPI["use_notifications"]
+                && $CFG_ZENTRA["use_notifications"]
                 && (in_array("content", $this->updates)
                  || isset($this->input['_need_send_mail']))
             ) {
@@ -659,7 +659,7 @@ class ITILFollowup extends CommonDBChild
 
         if (isset($this->fields['requesttypes_id'])) {
             if ($this->fields['requesttypes_id']) {
-                return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
+                return Dropdown::getDropdownName('zentra_requesttypes', $this->fields['requesttypes_id']);
             }
             return static::getTypeName();
         }
@@ -697,7 +697,7 @@ class ITILFollowup extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_requesttypes',
+            'table'              => 'zentra_requesttypes',
             'field'              => 'name',
             'name'               => RequestType::getTypeName(1),
             'forcegroupby'       => true,
@@ -722,7 +722,7 @@ class ITILFollowup extends CommonDBChild
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -833,7 +833,7 @@ class ITILFollowup extends CommonDBChild
 
         $tab[] = [
             'id'                 => '29',
-            'table'              => 'glpi_requesttypes',
+            'table'              => 'zentra_requesttypes',
             'field'              => 'name',
             'name'               => RequestType::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -867,7 +867,7 @@ class ITILFollowup extends CommonDBChild
 
         $tab[] = [
             'id'                 => '93',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Writer'),
             'datatype'           => 'itemlink',
@@ -977,7 +977,7 @@ class ITILFollowup extends CommonDBChild
 
         echo "<tr class='tab_bg_2'>";
         echo "<td class='center' colspan='2'>";
-        echo "<input type='hidden' name='is_private' value='" . htmlescape($_SESSION['glpifollowup_private']) . "'>";
+        echo "<input type='hidden' name='is_private' value='" . htmlescape($_SESSION['zentrafollowup_private']) . "'>";
         echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
         echo "</td>";
         echo "</tr>";
@@ -1077,7 +1077,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         $user   = Session::getLoginUserID();
-        $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+        $groups = "'" . implode("','", $_SESSION['zentragroups']) . "'";
         $table = getTableNameForForeignKeyField(
             getForeignKeyFieldForItemType($itemtype)
         );
@@ -1156,7 +1156,7 @@ class ITILFollowup extends CommonDBChild
             return true;
         } elseif (in_array(CommonITILActor::OBSERVER, $roles)) {
             // The author is an observer or a requester -> can be support agent OR
-            // requester depending on how GLPI is used so we must check the user's
+            // requester depending on how ZENTRA is used so we must check the user's
             // profiles
             $central_profiles = $DB->request([
                 'COUNT' => 'total',

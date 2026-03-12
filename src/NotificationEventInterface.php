@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,11 @@ interface NotificationEventInterface
      * Raise a notification event
      *
      * @param string                                    $event              Event
-     * @param CommonGLPI                                $item               Notification data
+     * @param CommonZENTRA                                $item               Notification data
      * @param array                                     $options            Options
      * @param string                                    $label              Label
      * @param array                                     $data               Notification data
-     * @param NotificationTarget<covariant CommonGLPI>  $notificationtarget Target
+     * @param NotificationTarget<covariant CommonZENTRA>  $notificationtarget Target
      * @param NotificationTemplate                      $template           Template
      * @param bool                                   $notify_me          Whether to notify current user
      * @param mixed                                     $emitter            If this action is executed by the cron, we can
@@ -59,7 +59,7 @@ interface NotificationEventInterface
      */
     public static function raise(
         $event,
-        CommonGLPI $item,
+        CommonZENTRA $item,
         array $options,
         $label,
         array $data,

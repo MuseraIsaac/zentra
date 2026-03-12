@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/authldapreplicate.class.php */
 
@@ -45,10 +45,10 @@ class AuthLdapReplicateTest extends DbTestCase
         $this->login();
         $this->assertTrue((bool) \AuthLdapReplicate::canCreate());
 
-        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $_SESSION['zentraactiveprofile']['config'] = READ;
         $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
 
-        $_SESSION['glpiactiveprofile']['config'] = 0;
+        $_SESSION['zentraactiveprofile']['config'] = 0;
         $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
     }
 
@@ -57,10 +57,10 @@ class AuthLdapReplicateTest extends DbTestCase
         $this->login();
         $this->assertTrue((bool) \AuthLdapReplicate::canPurge());
 
-        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $_SESSION['zentraactiveprofile']['config'] = READ;
         $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
 
-        $_SESSION['glpiactiveprofile']['config'] = 0;
+        $_SESSION['zentraactiveprofile']['config'] = 0;
         $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
     }
 

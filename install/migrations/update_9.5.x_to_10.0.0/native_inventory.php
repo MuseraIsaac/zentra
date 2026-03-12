@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,9 +37,9 @@
  * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\Inventory\Conf;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\Inventory\Conf;
 
 $migration->addConfig(Conf::getDefaults(), 'inventory');
 
@@ -47,8 +47,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_agenttypes')) {
-    $query = "CREATE TABLE `glpi_agenttypes` (
+if (!$DB->tableExists('zentra_agenttypes')) {
+    $query = "CREATE TABLE `zentra_agenttypes` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
@@ -57,7 +57,7 @@ if (!$DB->tableExists('glpi_agenttypes')) {
     $DB->doQuery($query);
     $migration->addPostQuery(
         $DB->buildInsert(
-            "glpi_agenttypes",
+            "zentra_agenttypes",
             [
                 'id'           => 1,
                 'name'         => 'Core',
@@ -65,8 +65,8 @@ if (!$DB->tableExists('glpi_agenttypes')) {
         )
     );
 }
-if (!$DB->tableExists('glpi_agents')) {
-    $query = "CREATE TABLE `glpi_agents` (
+if (!$DB->tableExists('zentra_agents')) {
+    $query = "CREATE TABLE `zentra_agents` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `deviceid` VARCHAR(255) NOT NULL,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -95,16 +95,16 @@ if (!$DB->tableExists('glpi_agents')) {
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->dropKey('glpi_agents', 'items_id');
-    $migration->dropKey('glpi_agents', 'itemtype');
-    $migration->dropForeignKeyContraint('glpi_agents', 'agenttypes_id');
-    $migration->migrationOneTable('glpi_agents');
-    $migration->addKey('glpi_agents', 'agenttypes_id');
-    $migration->addKey('glpi_agents', 'entities_id');
-    $migration->addKey('glpi_agents', 'is_recursive');
-    $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
+    $migration->dropKey('zentra_agents', 'items_id');
+    $migration->dropKey('zentra_agents', 'itemtype');
+    $migration->dropForeignKeyContraint('zentra_agents', 'agenttypes_id');
+    $migration->migrationOneTable('zentra_agents');
+    $migration->addKey('zentra_agents', 'agenttypes_id');
+    $migration->addKey('zentra_agents', 'entities_id');
+    $migration->addKey('zentra_agents', 'is_recursive');
+    $migration->addKey('zentra_agents', ['itemtype', 'items_id'], 'item');
     $migration->addField(
-        'glpi_agents',
+        'zentra_agents',
         'threads_networkdiscovery',
         'int NOT NULL DEFAULT 1',
         [
@@ -112,7 +112,7 @@ if (!$DB->tableExists('glpi_agents')) {
         ]
     );
     $migration->addField(
-        'glpi_agents',
+        'zentra_agents',
         'threads_networkinventory',
         "int NOT NULL DEFAULT '1'",
         [
@@ -120,7 +120,7 @@ if (!$DB->tableExists('glpi_agents')) {
         ]
     );
     $migration->addField(
-        'glpi_agents',
+        'zentra_agents',
         'timeout_networkdiscovery',
         "int NOT NULL DEFAULT '0'",
         [
@@ -128,7 +128,7 @@ if (!$DB->tableExists('glpi_agents')) {
         ]
     );
     $migration->addField(
-        'glpi_agents',
+        'zentra_agents',
         'timeout_networkinventory',
         "int NOT NULL DEFAULT '0'",
         [
@@ -138,8 +138,8 @@ if (!$DB->tableExists('glpi_agents')) {
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
-if (!$DB->tableExists('glpi_rulematchedlogs')) {
-    $query = "CREATE TABLE `glpi_rulematchedlogs` (
+if (!$DB->tableExists('zentra_rulematchedlogs')) {
+    $query = "CREATE TABLE `zentra_rulematchedlogs` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -154,13 +154,13 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_rulematchedlogs', 'agents_id');
-    $migration->addKey('glpi_rulematchedlogs', 'rules_id');
+    $migration->addKey('zentra_rulematchedlogs', 'agents_id');
+    $migration->addKey('zentra_rulematchedlogs', 'rules_id');
 }
 
 //locked fields
-if (!$DB->tableExists('glpi_lockedfields')) {
-    $query = "CREATE TABLE `glpi_lockedfields` (
+if (!$DB->tableExists('zentra_lockedfields')) {
+    $query = "CREATE TABLE `zentra_lockedfields` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
          `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -173,18 +173,18 @@ if (!$DB->tableExists('glpi_lockedfields')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->dropKey('glpi_lockedfields', 'item');
-    $migration->migrationOneTable('glpi_lockedfields');
-    $migration->addField('glpi_lockedfields', 'value', 'string');
-    $migration->addKey('glpi_lockedfields', 'date_creation');
+    $migration->dropKey('zentra_lockedfields', 'item');
+    $migration->migrationOneTable('zentra_lockedfields');
+    $migration->addField('zentra_lockedfields', 'value', 'string');
+    $migration->addKey('zentra_lockedfields', 'date_creation');
 }
 $ADDTODISPLAYPREF['Lockedfield'] = [3, 13, 5];
 
 
 //transfer configuration per entity
-if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
+if (!$DB->fieldExists('zentra_entities', 'transfers_id')) {
     $migration->addField(
-        'glpi_entities',
+        'zentra_entities',
         'transfers_id',
         "int {$default_key_sign} NOT NULL DEFAULT 0",
         [
@@ -194,34 +194,34 @@ if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
             'condition' => 'WHERE `id` = 0',
         ]
     );
-    $migration->addKey('glpi_entities', 'transfers_id');
+    $migration->addKey('zentra_entities', 'transfers_id');
 }
 
 //agent URL configuration per entity
-if (!$DB->fieldExists('glpi_entities', 'agent_base_url')) {
+if (!$DB->fieldExists('zentra_entities', 'agent_base_url')) {
     $migration->addField(
-        'glpi_entities',
+        'zentra_entities',
         'agent_base_url',
         'string'
     );
 }
 
 //missing fields in network related tables
-if (!$DB->fieldExists('glpi_networkequipments', 'autoupdatesystems_id')) {
+if (!$DB->fieldExists('zentra_networkequipments', 'autoupdatesystems_id')) {
     $migration->addField(
-        'glpi_networkequipments',
+        'zentra_networkequipments',
         'autoupdatesystems_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
             'after' => 'date_creation',
         ]
     );
-    $migration->addKey('glpi_networkequipments', 'autoupdatesystems_id');
+    $migration->addKey('zentra_networkequipments', 'autoupdatesystems_id');
 }
 
-if (!$DB->fieldExists('glpi_networkequipments', 'sysdescr')) {
+if (!$DB->fieldExists('zentra_networkequipments', 'sysdescr')) {
     $migration->addField(
-        'glpi_networkequipments',
+        'zentra_networkequipments',
         'sysdescr',
         'text',
         [
@@ -230,9 +230,9 @@ if (!$DB->fieldExists('glpi_networkequipments', 'sysdescr')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_networkequipments', 'cpu')) {
+if (!$DB->fieldExists('zentra_networkequipments', 'cpu')) {
     $migration->addField(
-        'glpi_networkequipments',
+        'zentra_networkequipments',
         'cpu',
         'integer',
         [
@@ -241,9 +241,9 @@ if (!$DB->fieldExists('glpi_networkequipments', 'cpu')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
+if (!$DB->fieldExists('zentra_networkequipments', 'uptime')) {
     $migration->addField(
-        'glpi_networkequipments',
+        'zentra_networkequipments',
         'uptime',
         'string',
         [
@@ -254,9 +254,9 @@ if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_networkequipments', 'last_inventory_update')) {
+if (!$DB->fieldExists('zentra_networkequipments', 'last_inventory_update')) {
     $migration->addField(
-        'glpi_networkequipments',
+        'zentra_networkequipments',
         'last_inventory_update',
         'timestamp',
         [
@@ -265,9 +265,9 @@ if (!$DB->fieldExists('glpi_networkequipments', 'last_inventory_update')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
+if (!$DB->fieldExists('zentra_printers', 'sysdescr')) {
     $migration->addField(
-        'glpi_printers',
+        'zentra_printers',
         'sysdescr',
         'text',
         [
@@ -276,9 +276,9 @@ if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
+if (!$DB->fieldExists('zentra_printers', 'last_inventory_update')) {
     $migration->addField(
-        'glpi_printers',
+        'zentra_printers',
         'last_inventory_update',
         'timestamp',
         [
@@ -287,9 +287,9 @@ if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_computers', 'last_inventory_update')) {
+if (!$DB->fieldExists('zentra_computers', 'last_inventory_update')) {
     $migration->addField(
-        'glpi_computers',
+        'zentra_computers',
         'last_inventory_update',
         'timestamp',
         [
@@ -298,9 +298,9 @@ if (!$DB->fieldExists('glpi_computers', 'last_inventory_update')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_phones', 'last_inventory_update')) {
+if (!$DB->fieldExists('zentra_phones', 'last_inventory_update')) {
     $migration->addField(
-        'glpi_phones',
+        'zentra_phones',
         'last_inventory_update',
         'timestamp',
         [
@@ -328,13 +328,13 @@ $netport_fields = [
     'lastup'             => "timestamp NULL DEFAULT NULL",
 ];
 foreach ($netport_fields as $netport_field => $definition) {
-    if (!$DB->fieldExists('glpi_networkports', $netport_field)) {
-        $migration->addField('glpi_networkports', $netport_field, $definition);
+    if (!$DB->fieldExists('zentra_networkports', $netport_field)) {
+        $migration->addField('zentra_networkports', $netport_field, $definition);
     }
 }
 
-if (!$DB->tableExists('glpi_unmanageds')) {
-    $query = "CREATE TABLE `glpi_unmanageds` (
+if (!$DB->tableExists('zentra_unmanageds')) {
+    $query = "CREATE TABLE `zentra_unmanageds` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -386,12 +386,12 @@ if (!$DB->tableExists('glpi_unmanageds')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_unmanageds', 'is_recursive');
+    $migration->addKey('zentra_unmanageds', 'is_recursive');
 }
 $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 
-if (!$DB->tableExists('glpi_networkporttypes')) {
-    $query = "CREATE TABLE `glpi_networkporttypes` (
+if (!$DB->tableExists('zentra_networkporttypes')) {
+    $query = "CREATE TABLE `zentra_networkporttypes` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -413,13 +413,13 @@ if (!$DB->tableExists('glpi_networkporttypes')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_networkporttypes', 'is_recursive');
+    $migration->addKey('zentra_networkporttypes', 'is_recursive');
 }
 
 $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
 
-if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPortType::getTable()) === 0) {
-    if (!$DB->tableExists('glpi_networkporttypes')) {
+if (!$DB->tableExists('zentra_networkporttypes') || countElementsInTable(NetworkPortType::getTable()) === 0) {
+    if (!$DB->tableExists('zentra_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
     $default_types = NetworkPortType::getDefaults();
@@ -452,8 +452,8 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
 
 $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 
-if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
-    $query = "CREATE TABLE `glpi_printers_cartridgeinfos` (
+if (!$DB->tableExists('zentra_printers_cartridgeinfos')) {
+    $query = "CREATE TABLE `zentra_printers_cartridgeinfos` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `printers_id` int {$default_key_sign} NOT NULL,
          `property` varchar(255)  NOT NULL,
@@ -468,8 +468,8 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_printerlogs')) {
-    $query = "CREATE TABLE `glpi_printerlogs` (
+if (!$DB->tableExists('zentra_printerlogs')) {
+    $query = "CREATE TABLE `zentra_printerlogs` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `printers_id` int {$default_key_sign} NOT NULL,
          `total_pages` int NOT NULL DEFAULT '0',
@@ -496,31 +496,31 @@ if (!$DB->tableExists('glpi_printerlogs')) {
     $DB->doQuery($query);
 } else {
     foreach (['date_creation', 'date_mod'] as $date_field) {
-        if (!$DB->fieldExists('glpi_printerlogs', $date_field)) {
+        if (!$DB->fieldExists('zentra_printerlogs', $date_field)) {
             $migration->addField(
-                'glpi_printerlogs',
+                'zentra_printerlogs',
                 $date_field,
                 'timestamp',
                 [
                     'update' => $DB->quoteName('date'),
                 ]
             );
-            $migration->addKey('glpi_printerlogs', $date_field);
+            $migration->addKey('zentra_printerlogs', $date_field);
         }
     }
-    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
-    $migration->changeField('glpi_printerlogs', 'date', 'date', 'date');
+    // In ZENTRA 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('zentra_printerlogs', 'date', 'date', 'date');
 
-    $migration->dropKey('glpi_printerlogs', 'printers_id');
+    $migration->dropKey('zentra_printerlogs', 'printers_id');
 
-    if (!isIndex('glpi_printerlogs', 'unicity')) {
+    if (!isIndex('zentra_printerlogs', 'unicity')) {
         // Preserve only last insert for a given date.
         $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),
                 $DB->quoteName('id'),
-                $DB->quoteName('glpi_printerlogs'),
+                $DB->quoteName('zentra_printerlogs'),
                 $DB->quoteName('printers_id'),
                 $DB->quoteName('date')
             )
@@ -530,18 +530,18 @@ if (!$DB->tableExists('glpi_printerlogs')) {
         $to_preserve_result = $request->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
-                'glpi_printerlogs',
+                'zentra_printerlogs',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')],
                 ]
             );
         }
-        $migration->addKey('glpi_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
+        $migration->addKey('zentra_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
     }
 }
 
-if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
-    $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
+if (!$DB->tableExists('zentra_networkportconnectionlogs')) {
+    $query = "CREATE TABLE `zentra_networkportconnectionlogs` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `connected` tinyint NOT NULL DEFAULT '0',
@@ -554,12 +554,12 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
-    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
+    $migration->addKey('zentra_networkportconnectionlogs', 'networkports_id_destination');
+    $migration->addKey('zentra_networkportconnectionlogs', 'networkports_id_source');
 }
 
-if (!$DB->tableExists('glpi_networkportmetrics')) {
-    $query = "CREATE TABLE `glpi_networkportmetrics` (
+if (!$DB->tableExists('zentra_networkportmetrics')) {
+    $query = "CREATE TABLE `zentra_networkportmetrics` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` date DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
@@ -578,31 +578,31 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
     $DB->doQuery($query);
 } else {
     foreach (['date_creation', 'date_mod'] as $date_field) {
-        if (!$DB->fieldExists('glpi_networkportmetrics', $date_field)) {
+        if (!$DB->fieldExists('zentra_networkportmetrics', $date_field)) {
             $migration->addField(
-                'glpi_networkportmetrics',
+                'zentra_networkportmetrics',
                 $date_field,
                 'timestamp',
                 [
                     'update' => $DB->quoteName('date'),
                 ]
             );
-            $migration->addKey('glpi_networkportmetrics', $date_field);
+            $migration->addKey('zentra_networkportmetrics', $date_field);
         }
     }
-    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
-    $migration->changeField('glpi_networkportmetrics', 'date', 'date', 'date');
+    // In ZENTRA 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('zentra_networkportmetrics', 'date', 'date', 'date');
 
-    $migration->dropKey('glpi_networkportmetrics', 'networkports_id');
+    $migration->dropKey('zentra_networkportmetrics', 'networkports_id');
 
-    if (!isIndex('glpi_networkportmetrics', 'unicity')) {
+    if (!isIndex('zentra_networkportmetrics', 'unicity')) {
         // Preserve only last insert for a given date.
         $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),
                 $DB->quoteName('id'),
-                $DB->quoteName('glpi_networkportmetrics'),
+                $DB->quoteName('zentra_networkportmetrics'),
                 $DB->quoteName('networkports_id'),
                 $DB->quoteName('date')
             )
@@ -612,18 +612,18 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
         $to_preserve_result = $request->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
-                'glpi_networkportmetrics',
+                'zentra_networkportmetrics',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')],
                 ]
             );
         }
-        $migration->addKey('glpi_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
+        $migration->addKey('zentra_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
     }
 }
 
-if (!$DB->tableExists('glpi_refusedequipments')) {
-    $query = "CREATE TABLE `glpi_refusedequipments` (
+if (!$DB->tableExists('zentra_refusedequipments')) {
+    $query = "CREATE TABLE `zentra_refusedequipments` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `itemtype` varchar(100) DEFAULT NULL,
@@ -648,28 +648,28 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_refusedequipments', 'entities_id');
-    $migration->addKey('glpi_refusedequipments', 'agents_id');
-    $migration->addKey('glpi_refusedequipments', 'rules_id');
-    $migration->addKey('glpi_refusedequipments', 'date_creation');
-    $migration->addKey('glpi_refusedequipments', 'date_mod');
-    if (!$DB->fieldExists('glpi_refusedequipments', 'autoupdatesystems_id')) {
+    $migration->addKey('zentra_refusedequipments', 'entities_id');
+    $migration->addKey('zentra_refusedequipments', 'agents_id');
+    $migration->addKey('zentra_refusedequipments', 'rules_id');
+    $migration->addKey('zentra_refusedequipments', 'date_creation');
+    $migration->addKey('zentra_refusedequipments', 'date_mod');
+    if (!$DB->fieldExists('zentra_refusedequipments', 'autoupdatesystems_id')) {
         $migration->addField(
-            'glpi_networkequipments',
+            'zentra_networkequipments',
             'autoupdatesystems_id',
             "int {$default_key_sign} NOT NULL DEFAULT '0'",
             [
                 'after' => 'agents_id',
             ]
         );
-        $migration->addKey('glpi_refusedequipments', 'autoupdatesystems_id');
+        $migration->addKey('zentra_refusedequipments', 'autoupdatesystems_id');
     }
 }
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
 
 $migration->addCrontask(
-    'Glpi\Inventory\Inventory',
+    'Zentra\Inventory\Inventory',
     'cleantemp',
     DAY_TIMESTAMP,
     options: [
@@ -678,13 +678,13 @@ $migration->addCrontask(
 );
 
 $migration->addCrontask(
-    'Glpi\Inventory\Inventory',
+    'Zentra\Inventory\Inventory',
     'cleanorphans',
     WEEK_TIMESTAMP,
 );
 
-if (!$DB->tableExists('glpi_usbvendors')) {
-    $query = "CREATE TABLE `glpi_usbvendors` (
+if (!$DB->tableExists('zentra_usbvendors')) {
+    $query = "CREATE TABLE `zentra_usbvendors` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -705,14 +705,14 @@ if (!$DB->tableExists('glpi_usbvendors')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->dropKey('glpi_usbvendors', 'vendorid');
-    $migration->migrationOneTable('glpi_usbvendors');
-    $migration->addKey('glpi_usbvendors', 'is_recursive');
+    $migration->dropKey('zentra_usbvendors', 'vendorid');
+    $migration->migrationOneTable('zentra_usbvendors');
+    $migration->addKey('zentra_usbvendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 
-if (!$DB->tableExists('glpi_pcivendors')) {
-    $query = "CREATE TABLE `glpi_pcivendors` (
+if (!$DB->tableExists('zentra_pcivendors')) {
+    $query = "CREATE TABLE `zentra_pcivendors` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -733,14 +733,14 @@ if (!$DB->tableExists('glpi_pcivendors')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->dropKey('glpi_pcivendors', 'vendorid');
-    $migration->migrationOneTable('glpi_pcivendors');
-    $migration->addKey('glpi_pcivendors', 'is_recursive');
+    $migration->dropKey('zentra_pcivendors', 'vendorid');
+    $migration->migrationOneTable('zentra_pcivendors');
+    $migration->addKey('zentra_pcivendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
 
-if (!$DB->tableExists('glpi_snmpcredentials')) {
-    $query = "CREATE TABLE `glpi_snmpcredentials` (
+if (!$DB->tableExists('zentra_snmpcredentials')) {
+    $query = "CREATE TABLE `zentra_snmpcredentials` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(64) DEFAULT NULL,
          `snmpversion` varchar(8) NOT NULL DEFAULT '1',
@@ -758,10 +758,10 @@ if (!$DB->tableExists('glpi_snmpcredentials')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 }
-if (countElementsInTable('glpi_snmpcredentials') === 0) {
+if (countElementsInTable('zentra_snmpcredentials') === 0) {
     $migration->addPostQuery(
         $DB->buildInsert(
-            'glpi_snmpcredentials',
+            'zentra_snmpcredentials',
             [
                 'name'          => 'Public community v1',
                 'snmpversion'   => 1,
@@ -771,7 +771,7 @@ if (countElementsInTable('glpi_snmpcredentials') === 0) {
     );
     $migration->addPostQuery(
         $DB->buildInsert(
-            'glpi_snmpcredentials',
+            'zentra_snmpcredentials',
             [
                 'name'          => 'Public community v2c',
                 'snmpversion'   => 2,
@@ -781,7 +781,7 @@ if (countElementsInTable('glpi_snmpcredentials') === 0) {
     );
 }
 
-$cred_tables = ['glpi_printers', 'glpi_networkequipments', 'glpi_unmanageds'];
+$cred_tables = ['zentra_printers', 'zentra_networkequipments', 'zentra_unmanageds'];
 foreach ($cred_tables as $cred_table) {
     if (!$DB->fieldExists($cred_table, 'snmpcredentials_id')) {
         $migration->addField(
@@ -793,20 +793,20 @@ foreach ($cred_tables as $cred_table) {
     }
 }
 
-if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
+if (!$DB->fieldExists('zentra_printers', 'autoupdatesystems_id')) {
     $migration->addField(
-        'glpi_printers',
+        'zentra_printers',
         'autoupdatesystems_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
             'after' => 'snmpcredentials_id',
         ]
     );
-    $migration->addKey('glpi_printers', 'autoupdatesystems_id');
+    $migration->addKey('zentra_printers', 'autoupdatesystems_id');
 }
 
 // Other autoupdatesystems_id additions
-$autoupdatesystems_tables = ['glpi_databaseinstances', 'glpi_monitors', 'glpi_peripherals', 'glpi_phones'];
+$autoupdatesystems_tables = ['zentra_databaseinstances', 'zentra_monitors', 'zentra_peripherals', 'zentra_phones'];
 foreach ($autoupdatesystems_tables as $autoupdatesystems_table) {
     if (!$DB->fieldExists($autoupdatesystems_table, 'autoupdatesystems_id')) {
         $migration->addField(

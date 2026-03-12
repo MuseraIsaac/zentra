@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * @since 9.1
@@ -242,11 +242,11 @@ class APIClient extends CommonDBTM
 
         if (isset($input['_reset_app_token']) && $input['_reset_app_token']) {
             $input['app_token']      = self::getUniqueAppToken();
-            $input['app_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['app_token_date'] = $_SESSION['zentra_currenttime'];
         }
 
         if (isset($input['app_token'])) {
-            $input['app_token'] = (new GLPIKey())->encrypt($input['app_token']);
+            $input['app_token'] = (new ZENTRAKey())->encrypt($input['app_token']);
         }
 
         return $input;

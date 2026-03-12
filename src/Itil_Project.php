@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryUnion;
 
 /**
  * Relation between Itil items and Projects
@@ -61,7 +61,7 @@ class Itil_Project extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $label = '';
 
@@ -72,7 +72,7 @@ class Itil_Project extends CommonDBRelation
                 case Problem::class:
                 case Ticket::class:
                     /** @var Change|Problem|Ticket $item */
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
                             [
@@ -86,7 +86,7 @@ class Itil_Project extends CommonDBRelation
 
                 case Project::class:
                     /** @var Project $item */
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(self::getTable(), ['projects_id' => $item->getID()]);
                     }
                     $label = self::createTabEntry(
@@ -102,7 +102,7 @@ class Itil_Project extends CommonDBRelation
         return $label;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case Change::class:
@@ -126,7 +126,7 @@ class Itil_Project extends CommonDBRelation
      **/
     public static function showForProject(Project $project, int $withtemplate = 0): bool
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $ID = $project->getField('id');
         if (!$project->can($ID, READ)) {
@@ -137,7 +137,7 @@ class Itil_Project extends CommonDBRelation
 
         $queries = [];
         /** @var class-string<CommonITILObject> $itemtype */
-        foreach ($CFG_GLPI['itil_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['itil_types'] as $itemtype) {
             $link_table = self::getTable();
             $itil_table = $itemtype::getTable();
             $queries[] = [
@@ -192,7 +192,7 @@ class Itil_Project extends CommonDBRelation
                     <div class="mb-3">
                         <form method="post" action="{{ 'Itil_Project'|itemtype_form_path }}">
                             <input type="hidden" name="projects_id" value="{{ ID }}"/>
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
                             <div class="d-flex">
                                 {{ fields.dropdownItemsFromItemtypes('items_id', null, {
                                     add_field_class: 'd-inline',
@@ -310,10 +310,10 @@ TWIG, $twig_params);
 
         if ($canedit && !$itil->isSolved(true)) {
             $project_conditions = [
-                'glpi_projects.is_template' => 0,
+                'zentra_projects.is_template' => 0,
             ];
             if (count($finished_states_ids)) {
-                $project_conditions['glpi_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
+                $project_conditions['zentra_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
             }
 
             $twig_params = [
@@ -332,7 +332,7 @@ TWIG, $twig_params);
                             <div class="d-flex">
                                 <input type="hidden" name="itemtype" value="{{ itemtype }}"/>
                                 <input type="hidden" name="items_id" value="{{ items_id }}"/>
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
                                 <div class="col-auto">
                                     {{ fields.dropdownField('Project', 'projects_id', '', null, {
                                         add_field_class: 'd-inline',

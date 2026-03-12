@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 /// Class IPNetwork : Represent an IPv4 or an IPv6 network.
 /// It fully use IPAddress and IPNetmask to check validity and change representation from binary
@@ -673,7 +673,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         if ($entityID < 0) {
-            $entityID = $_SESSION['glpiactive_entity'];
+            $entityID = $_SESSION['zentraactive_entity'];
         }
         $entitiesID = [];
         $ORDER_ORIENTATION = '';
@@ -681,20 +681,20 @@ class IPNetwork extends CommonImplicitTreeDropdown
             case "is contained by":
                 $ORDER_ORIENTATION = 'ASC';
                 if ($recursive) {
-                    $entitiesID = getSonsOf('glpi_entities', $entityID);
+                    $entitiesID = getSonsOf('zentra_entities', $entityID);
                 }
                 break;
 
             case "contains":
                 $ORDER_ORIENTATION = 'DESC';
                 if ($recursive) {
-                    $entitiesID = getAncestorsOf('glpi_entities', $entityID);
+                    $entitiesID = getAncestorsOf('zentra_entities', $entityID);
                 }
                 break;
 
             case "equals":
                 if ($recursive) {
-                    $entitiesID = getSonsAndAncestorsOf('glpi_entities', $entityID);
+                    $entitiesID = getSonsAndAncestorsOf('zentra_entities', $entityID);
                 }
                 break;
         }
@@ -769,9 +769,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @since 9.5.0
      *
      * @param string $tableName         name of the table containing the element
-     *                                  (for instance : glpi_ipaddresses)
+     *                                  (for instance : zentra_ipaddresses)
      * @param string $binaryFieldPrefix prefix of the binary version of IP address
-     *                                  (binary for glpi ipaddresses)
+     *                                  (binary for zentra ipaddresses)
      * @param string $versionField      the name of the field containing the version inside the database
      *
      * @return array
@@ -1124,7 +1124,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      */
     public static function showIPNetworkProperties($entities_id = -1, $value = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $rand = mt_rand();
         self::dropdown(['entity' => $entities_id,
@@ -1137,7 +1137,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         Ajax::updateItemOnSelectEvent(
             "dropdown_ipnetworks_id$rand",
             "show_ipnetwork_$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
             $params
         );
 
@@ -1147,7 +1147,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $params = ["ipnetworks_id" => $value];
             Ajax::updateItem(
                 "show_ipnetwork_$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
                 $params
             );
         }

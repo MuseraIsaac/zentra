@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,19 +34,19 @@
 
 namespace tests\functional\Tools\Command;
 
-use Glpi\Tests\GLPITestCase;
-use Glpi\Tools\Command\LicenceHeadersCheckCommand;
+use Zentra\Tests\ZENTRATestCase;
+use Zentra\Tools\Command\LicenceHeadersCheckCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class LicenceHeadersCheckCommandTest extends GLPITestCase
+class LicenceHeadersCheckCommandTest extends ZENTRATestCase
 {
     private string $test_dir;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->test_dir = sys_get_temp_dir() . '/glpi_test_header_' . uniqid();
+        $this->test_dir = sys_get_temp_dir() . '/zentra_test_header_' . uniqid();
         if (!mkdir($this->test_dir) && !is_dir($this->test_dir)) {
             $this->markTestSkipped('Could not create temp directory');
         }
@@ -80,7 +80,7 @@ class LicenceHeadersCheckCommandTest extends GLPITestCase
 <?php
 /**
  * ---------------------------------------------------------------------
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  * @copyright 2015-2020 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  * ---------------------------------------------------------------------
@@ -106,7 +106,7 @@ PHP;
 <?php
 /**
  * ---------------------------------------------------------------------
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  * @copyright 2015-2020 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  * ---------------------------------------------------------------------

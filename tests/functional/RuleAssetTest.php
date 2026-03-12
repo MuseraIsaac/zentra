@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace tests\units;
 
 use Computer;
 use Generator;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Rule;
 use RuleAction;
 use RuleCriteria;
@@ -81,7 +81,7 @@ class RuleAssetTest extends DbTestCase
             'itemtype' => Computer::getType(),
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
-                'last_inventory_update' => $_SESSION["glpi_currenttime"],
+                'last_inventory_update' => $_SESSION["zentra_currenttime"],
                 'entities_id'           => 0,
             ],
             'criteria_field' => 'last_inventory_update',
@@ -126,7 +126,7 @@ class RuleAssetTest extends DbTestCase
             'itemtype' => Computer::getType(),
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
-                'last_inventory_update' => $_SESSION["glpi_currenttime"],
+                'last_inventory_update' => $_SESSION["zentra_currenttime"],
                 'entities_id'           => 0,
             ],
             'criteria_field' => 'last_inventory_update',
@@ -340,7 +340,7 @@ class RuleAssetTest extends DbTestCase
 
         $computers_id = $computer->add([
             'name'        => "computer4",
-            'contact'     => 'tech,glpi',
+            'contact'     => 'tech,zentra',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
             '_auto'       => 1,
@@ -368,7 +368,7 @@ class RuleAssetTest extends DbTestCase
 
     public function testTriggerUpdate()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
         $this->setEntity('_test_root_entity', true);
@@ -379,7 +379,7 @@ class RuleAssetTest extends DbTestCase
         $this->createRuleComment(\RuleAsset::ONUPDATE);
         $this->createRuleLocation(\RuleAsset::ONUPDATE);
 
-        foreach ($CFG_GLPI['asset_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['asset_types'] as $itemtype) {
             $item     = new $itemtype();
             $item_input = [
                 'name'        => "$itemtype 1",
@@ -413,7 +413,7 @@ class RuleAssetTest extends DbTestCase
 
     public function testTriggerUpdateCommentRegex()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
         $this->setEntity('_test_root_entity', true);
@@ -424,7 +424,7 @@ class RuleAssetTest extends DbTestCase
         $this->createRuleCommentRegex(\RuleAsset::ONUPDATE);
         $this->createRuleLocation(\RuleAsset::ONUPDATE);
 
-        foreach ($CFG_GLPI['asset_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['asset_types'] as $itemtype) {
             $item     = new $itemtype();
             $item_input = [
                 'name'        => "$itemtype 3",

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
 
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
@@ -115,7 +115,7 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => $_SESSION['zentra_currenttime'],
             ]);
         }
     }
@@ -128,7 +128,7 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => $_SESSION['zentra_currenttime'],
             ]);
         }
     }
@@ -648,8 +648,8 @@ class RuleAction extends CommonDBChild
                             $param['name']      = 'value';
                             $param['condition'] = [new QuerySubQuery([
                                 'SELECT' => ['COUNT' => ['users_id']],
-                                'FROM'   => 'glpi_groups_users',
-                                'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')],
+                                'FROM'   => 'zentra_groups_users',
+                                'WHERE'  => ['groups_id' => new QueryExpression('zentra_groups.id')],
                             ]),
                             ];
                             $param['right']     = ['validate_incident', 'validate_request'];

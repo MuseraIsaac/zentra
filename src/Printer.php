@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\StateInterface;
-use Glpi\Socket;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\Inventoriable;
+use Zentra\Features\StateInterface;
+use Zentra\Socket;
 
 /**
  * Printer Class
@@ -52,7 +52,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
@@ -180,7 +180,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
             return false;
         }
 
-        $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+        $entities = getAncestorsOf("zentra_entities", $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
 
         // RELATION : printers -> _port -> _wire -> _port -> device
@@ -199,19 +199,19 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
                         alias: 'ids'
                     ),
                 ],
-                'FROM'         => 'glpi_networkports_networkports',
+                'FROM'         => 'zentra_networkports_networkports',
                 'INNER JOIN'   => [
-                    'glpi_networkports'  => [
+                    'zentra_networkports'  => [
                         'ON'  => [
-                            'glpi_networkports_networkports' => $endb,
-                            'glpi_networkports'              => 'id',
+                            'zentra_networkports_networkports' => $endb,
+                            'zentra_networkports'              => 'id',
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_networkports_networkports.' . $enda   => new QuerySubQuery([
+                    'zentra_networkports_networkports.' . $enda   => new QuerySubQuery([
                         'SELECT' => 'id',
-                        'FROM'   => 'glpi_networkports',
+                        'FROM'   => 'zentra_networkports',
                         'WHERE'  => [
                             'itemtype'  => $this->getType(),
                             'items_id'  => $ID,
@@ -285,7 +285,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         global $DB;
 
         $DB->update(
-            'glpi_cartridges',
+            'zentra_cartridges',
             [
                 'printers_id' => 'NULL',
             ],
@@ -385,7 +385,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_printertypes',
+            'table'              => 'zentra_printertypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -393,7 +393,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '40',
-            'table'              => 'glpi_printermodels',
+            'table'              => 'zentra_printermodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -442,7 +442,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -451,13 +451,13 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -471,7 +471,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '72',
-            'table'              => 'glpi_autoupdatesystems',
+            'table'              => 'zentra_autoupdatesystems',
             'field'              => 'name',
             'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -479,7 +479,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '73',
-            'table'              => 'glpi_snmpcredentials',
+            'table'              => 'zentra_snmpcredentials',
             'field'              => 'name',
             'name'               => SNMPCredential::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -590,7 +590,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_cartridges',
+            'table'              => 'zentra_cartridges',
             'field'              => 'id',
             'name'               => __('Number of used cartridges'),
             'datatype'           => 'count',
@@ -607,7 +607,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_cartridges',
+            'table'              => 'zentra_cartridges',
             'field'              => 'id',
             'name'               => __('Number of worn cartridges'),
             'datatype'           => 'count',
@@ -622,7 +622,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_networks',
+            'table'              => 'zentra_networks',
             'field'              => 'name',
             'name'               => _n('Network', 'Networks', 1),
             'datatype'           => 'dropdown',
@@ -630,7 +630,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -638,7 +638,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -648,14 +648,14 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -680,7 +680,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -774,7 +774,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     {
         global $DB;
 
-        //Look for the software by his name in GLPI for a specific entity
+        //Look for the software by his name in ZENTRA for a specific entity
         $iterator = $DB->request([
             'SELECT' => ['id', 'is_deleted'],
             'FROM'   => self::getTable(),

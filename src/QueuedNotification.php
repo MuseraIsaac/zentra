@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\RichText\RichText;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -76,7 +76,7 @@ class QueuedNotification extends CommonDBTM
         if (
             !array_key_exists('event', $fields)
             || !array_key_exists('itemtype', $fields)
-            || !is_a((string) $fields['itemtype'], CommonGLPI::class, true)
+            || !is_a((string) $fields['itemtype'], CommonZENTRA::class, true)
         ) {
             return;
         }
@@ -168,7 +168,7 @@ class QueuedNotification extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         if (empty($input['create_time'])) {
-            $input['create_time'] = $_SESSION["glpi_currenttime"];
+            $input['create_time'] = $_SESSION["zentra_currenttime"];
         }
         if (empty($input['send_time'])) {
             $toadd = 0;
@@ -178,11 +178,11 @@ class QueuedNotification extends CommonDBTM
             if ($toadd > 0) {
                 $input['send_time'] = date(
                     "Y-m-d H:i:s",
-                    strtotime($_SESSION["glpi_currenttime"])
+                    strtotime($_SESSION["zentra_currenttime"])
                     + $toadd * MINUTE_TIMESTAMP
                 );
             } else {
-                $input['send_time'] = $_SESSION["glpi_currenttime"];
+                $input['send_time'] = $_SESSION["zentra_currenttime"];
             }
         }
         $input['sent_try'] = 0;
@@ -384,7 +384,7 @@ class QueuedNotification extends CommonDBTM
 
         $tab[] = [
             'id'                 => '22',
-            'table'              => 'glpi_notificationtemplates',
+            'table'              => 'zentra_notificationtemplates',
             'field'              => 'name',
             'name'               => _n('Notification template', 'Notification templates', 1),
             'massiveaction'      => false,
@@ -393,7 +393,7 @@ class QueuedNotification extends CommonDBTM
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_queuednotifications',
+            'table'              => 'zentra_queuednotifications',
             'field'              => 'mode',
             'name'               => __('Mode'),
             'massiveaction'      => false,
@@ -406,7 +406,7 @@ class QueuedNotification extends CommonDBTM
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -419,7 +419,7 @@ class QueuedNotification extends CommonDBTM
     #[Override]
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -430,7 +430,7 @@ class QueuedNotification extends CommonDBTM
                 if (
                     array_key_exists('event', $values)
                     && array_key_exists('itemtype', $values)
-                    && is_a((string) $values['itemtype'], CommonGLPI::class, true)
+                    && is_a((string) $values['itemtype'], CommonZENTRA::class, true)
                 ) {
                     $target = NotificationTarget::getInstanceByType((string) $values['itemtype']);
                     if (
@@ -450,7 +450,7 @@ class QueuedNotification extends CommonDBTM
                     $plaintext = $value;
                 }
 
-                if (Toolbox::strlen($plaintext) > $CFG_GLPI['cut']) {
+                if (Toolbox::strlen($plaintext) > $CFG_ZENTRA['cut']) {
                     $rand = mt_rand();
                     $popup_params = [
                         'display'       => false,
@@ -460,7 +460,7 @@ class QueuedNotification extends CommonDBTM
                     ];
                     $out = sprintf(
                         __s('%1$s %2$s'),
-                        "<span id='text$rand'>" . Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
+                        "<span id='text$rand'>" . Html::resume_text($plaintext, $CFG_ZENTRA['cut']) . '</span>',
                         Html::showToolTip(
                             '<div class="fup-popup">' . RichText::getEnhancedHtml($value) . '</div>',
                             $popup_params
@@ -566,7 +566,7 @@ class QueuedNotification extends CommonDBTM
      */
     public static function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if ($send_time === null) {
             $send_time = date('Y-m-d H:i:s');
@@ -594,7 +594,7 @@ class QueuedNotification extends CommonDBTM
 
             if (
                 ($limit_modes !== null && !in_array($mode, $limit_modes, true))
-                || !$CFG_GLPI['notifications_' . $mode]
+                || !$CFG_ZENTRA['notifications_' . $mode]
                 || !$eventclass::canCron()
             ) {
                 //mode is not in limits, is disabled, or cannot be called from cron, passing
@@ -705,13 +705,13 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $vol = 0;
 
         // Stale ajax notifications in queue
-        if ($CFG_GLPI["notifications_ajax_expiration_delay"] > 0) {
-            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
+        if ($CFG_ZENTRA["notifications_ajax_expiration_delay"] > 0) {
+            $secs = $CFG_ZENTRA["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
             $DB->update(
                 self::getTable(),
                 [

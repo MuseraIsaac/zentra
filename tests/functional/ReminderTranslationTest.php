@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 class ReminderTranslationTest extends DbTestCase
 {
@@ -45,7 +45,7 @@ class ReminderTranslationTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         $data = [
             'name'         => '_test_reminder01',
@@ -65,15 +65,15 @@ class ReminderTranslationTest extends DbTestCase
         $this->addTranslation($reminder1, $text_fr, 'fr_FR');
 
         $nb = countElementsInTable(
-            'glpi_remindertranslations'
+            'zentra_remindertranslations'
         );
         $this->assertSame(2, $nb);
 
         // second, test what we retrieve
-        $current_lang = $_SESSION['glpilanguage'];
-        $_SESSION['glpilanguage'] = 'fr_FR';
+        $current_lang = $_SESSION['zentralanguage'];
+        $_SESSION['zentralanguage'] = 'fr_FR';
         $text = \ReminderTranslation::getTranslatedValue($reminder1, "text");
-        $_SESSION['glpilanguage'] = $current_lang;
+        $_SESSION['zentralanguage'] = $current_lang;
         $this->assertSame($text_fr, $text);
     }
 

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -37,14 +37,14 @@
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
 {% if meta and not from_meta %}
-   {{ call("Glpi\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{
+   {{ call("Zentra\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{
       from_meta: from_meta ?? false,
       itemtype: itemtype,
       p: p,
       num: num,
    }]) }}
 {% elseif criteria['criteria'] is defined and criteria['criteria'] is iterable %}
-   {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteriaGroup", [{
+   {{ call("Zentra\\Search\\Input\\QueryBuilder::displayCriteriaGroup", [{
       itemtype: itemtype,
       p: p,
       num: num,
@@ -64,7 +64,7 @@
          {% if not from_meta %}
             <div class="col-auto">
                {% set value = criteria['link'] is defined ? criteria['link'] : '' %}
-               {% set operators = call('Glpi\\Search\\SearchEngine::getLogicalOperators', [num == 0]) %}
+               {% set operators = call('Zentra\\Search\\SearchEngine::getLogicalOperators', [num == 0]) %}
                {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", value, operators, '', {
                   full_width: true,
                   input_class: 'col-12',
@@ -103,7 +103,7 @@
                   p: p,
                   mb: 'mb-0',
                } %}
-               {{ call("Glpi\\Search\\Input\\QueryBuilder::displaySearchoption", [params]) }}
+               {{ call("Zentra\\Search\\Input\\QueryBuilder::displaySearchoption", [params]) }}
             </div>
 
             {% do call('Ajax::updateItemOnSelectEvent', [

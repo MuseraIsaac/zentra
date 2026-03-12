@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\Environment;
-use Glpi\Application\ResourcesChecker;
-use Glpi\Cache\CacheManager;
-use Glpi\Cache\SimpleCache;
-use Glpi\Kernel\Kernel;
+use Zentra\Application\Environment;
+use Zentra\Application\ResourcesChecker;
+use Zentra\Cache\CacheManager;
+use Zentra\Cache\SimpleCache;
+use Zentra\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost');
+define('ZENTRA_URI', getenv('ZENTRA_URI') ?: 'http://localhost');
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
@@ -47,33 +47,33 @@ define('TU_PASS', 'PhpUnit_4');
 define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 
 // Check the resources state before trying to be sure that the tests are executed with up-to-date dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+require_once dirname(__DIR__) . '/src/Zentra/Application/ResourcesChecker.php';
 (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-global $GLPI_CACHE;
+global $ZENTRA_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
-if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+if (!file_exists(ZENTRA_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
     exit(1);
 }
 if (Update::isUpdateMandatory()) {
-    echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
+    echo 'The ZENTRA codebase has been updated. The update of the ZENTRA database is necessary.' . PHP_EOL;
     exit(1);
 }
 
 //init cache
-if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
+if (file_exists(ZENTRA_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
     // Use configured cache for cache tests
     $cache_manager = new CacheManager();
-    $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+    $ZENTRA_CACHE = $cache_manager->getCoreCacheInstance();
 } else {
     // Use "in-memory" cache for other tests
-    $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
+    $ZENTRA_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
 loadDataset();

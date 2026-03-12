@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryUnion;
 
 /**
  * Manage link between items and software licenses.
@@ -84,7 +84,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_softwarelicenses',
+            'table'              => 'zentra_softwarelicenses',
             'field'              => 'name',
             'name'               => _n('License', 'Licenses', 1),
             'datatype'           => 'dropdown',
@@ -146,7 +146,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                     if (isset($input['options']['move'])) {
                         SoftwareLicense::dropdown([
                             'condition' => [
-                                'glpi_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id'],
+                                'zentra_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id'],
                             ],
                             'used'      => $input['options']['move']['used'],
                         ]);
@@ -159,13 +159,13 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add':
                 Software::dropdownLicenseToInstall(
                     'peer_softwarelicenses_id',
-                    $_SESSION["glpiactive_entity"]
+                    $_SESSION["zentraactive_entity"]
                 );
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']) . "</span>";
                 return true;
 
             case 'add_item':
-                global $CFG_GLPI;
+                global $CFG_ZENTRA;
 
                 $additionaltypes = [User::class];
                 $can_add_user = true;
@@ -200,7 +200,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<td>";
                 $rand = Dropdown::showItemTypes(
                     'itemtype',
-                    array_merge($CFG_GLPI['software_types'], $additionaltypes),
+                    array_merge($CFG_ZENTRA['software_types'], $additionaltypes),
                     [
                         'width'                 => 'unset',
                     ]
@@ -215,7 +215,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_itemtype$rand",
                     "results_itemtype$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/dropdownAllItems.php",
                     $p
                 );
 
@@ -395,23 +395,23 @@ class Item_SoftwareLicense extends CommonDBRelation
             }
             $itemtable = $taget_itemtype::getTable();
             $request = [
-                'FROM'         => 'glpi_items_softwarelicenses',
+                'FROM'         => 'zentra_items_softwarelicenses',
                 'COUNT'        => 'cpt',
                 'INNER JOIN'   => [
                     $itemtable  => [
                         'FKEY'   => [
                             $itemtable                    => 'id',
-                            'glpi_items_softwarelicenses' => 'items_id', [
+                            'zentra_items_softwarelicenses' => 'items_id', [
                                 'AND' => [
-                                    'glpi_items_softwarelicenses.itemtype' => $taget_itemtype,
+                                    'zentra_items_softwarelicenses.itemtype' => $taget_itemtype,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_items_softwarelicenses.softwarelicenses_id'     => $softwarelicenses_id,
-                    'glpi_items_softwarelicenses.is_deleted'              => 0,
+                    'zentra_items_softwarelicenses.softwarelicenses_id'     => $softwarelicenses_id,
+                    'zentra_items_softwarelicenses.is_deleted'              => 0,
                 ],
             ];
             if ($entity !== -1) {
@@ -471,29 +471,29 @@ class Item_SoftwareLicense extends CommonDBRelation
         foreach ($target_types as $itemtype) {
             $itemtable = $itemtype::getTable();
             $request = [
-                'FROM'         => 'glpi_softwarelicenses',
+                'FROM'         => 'zentra_softwarelicenses',
                 'COUNT'        => 'cpt',
                 'INNER JOIN'   => [
-                    'glpi_items_softwarelicenses' => [
+                    'zentra_items_softwarelicenses' => [
                         'FKEY'   => [
-                            'glpi_softwarelicenses'          => 'id',
-                            'glpi_items_softwarelicenses'    => 'softwarelicenses_id',
+                            'zentra_softwarelicenses'          => 'id',
+                            'zentra_items_softwarelicenses'    => 'softwarelicenses_id',
                         ],
                     ],
                     $itemtable  => [
                         'FKEY'   => [
                             $itemtable                    => 'id',
-                            'glpi_items_softwarelicenses' => 'items_id', [
+                            'zentra_items_softwarelicenses' => 'items_id', [
                                 'AND' => [
-                                    'glpi_items_softwarelicenses.itemtype' => $itemtype,
+                                    'zentra_items_softwarelicenses.itemtype' => $itemtype,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_softwarelicenses.softwares_id'      => $softwares_id,
-                    'glpi_items_softwarelicenses.is_deleted'  => 0,
+                    'zentra_softwarelicenses.softwares_id'      => $softwares_id,
+                    'zentra_items_softwarelicenses.is_deleted'  => 0,
                 ] + getEntitiesRestrictCriteria($itemtable),
             ];
             $item = new $itemtype();
@@ -537,8 +537,8 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'completename'],
-            'FROM'   => 'glpi_entities',
-            'WHERE'  => getEntitiesRestrictCriteria('glpi_entities'),
+            'FROM'   => 'zentra_entities',
+            'WHERE'  => getEntitiesRestrictCriteria('zentra_entities'),
             'ORDER'  => ['completename'],
         ]);
 
@@ -599,7 +599,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      **/
     public static function showForLicense(SoftwareLicense $license): bool
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $searchID = $license->getID();
 
@@ -645,12 +645,12 @@ class Item_SoftwareLicense extends CommonDBRelation
             $rand = mt_rand();
 
             $entity_restrict = $license->fields['is_recursive']
-                    ? getSonsOf('glpi_entities', $license->fields['entities_id'])
+                    ? getSonsOf('zentra_entities', $license->fields['entities_id'])
                     : $license->fields['entities_id'];
 
             Dropdown::showItemTypes(
                 'itemtype',
-                array_merge($CFG_GLPI['software_types'], [User::class]),
+                array_merge($CFG_ZENTRA['software_types'], [User::class]),
                 [
                     'value'                 => 'Computer',
                     'rand'                  => $rand,
@@ -669,7 +669,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
                 "results_itemtype$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownAllItems.php",
                 $p
             );
 
@@ -694,7 +694,7 @@ JAVASCRIPT;
 function updateItemDropdown(itemtype_el) {
    $.ajax({
       method: "POST",
-      url: CFG_GLPI.root_doc + '/ajax/dropdownAllItems.php',
+      url: CFG_ZENTRA.root_doc + '/ajax/dropdownAllItems.php',
       data: {
          name: 'items_id',
          idtable: itemtype_el.value
@@ -719,25 +719,25 @@ JAVASCRIPT;
         Html::printAjaxPager(__('Affected items'), $start, $number);
 
         $queries = [];
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['software_types'] as $itemtype) {
             $canshowitems[$itemtype] = $itemtype::canView();
             $itemtable = $itemtype::getTable();
             $query = [
                 'SELECT' => [
                     $item_license_table . '.*',
-                    'glpi_softwarelicenses.name AS license',
-                    'glpi_softwarelicenses.id AS vID',
-                    'glpi_softwarelicenses.softwares_id AS softid',
+                    'zentra_softwarelicenses.name AS license',
+                    'zentra_softwarelicenses.id AS vID',
+                    'zentra_softwarelicenses.softwares_id AS softid',
                     "{$itemtable}.name AS itemname",
                     "{$itemtable}.id AS iID",
                     new QueryExpression($DB::quoteValue($itemtype), 'item_type'),
                 ],
                 'FROM'   => $item_license_table,
                 'INNER JOIN' => [
-                    'glpi_softwarelicenses' => [
+                    'zentra_softwarelicenses' => [
                         'FKEY'   => [
                             $item_license_table     => 'softwarelicenses_id',
-                            'glpi_softwarelicenses' => 'id',
+                            'zentra_softwarelicenses' => 'id',
                         ],
                     ],
                 ],
@@ -753,8 +753,8 @@ JAVASCRIPT;
                     ],
                 ],
                 'WHERE'     => [
-                    'glpi_softwarelicenses.id'                   => $searchID,
-                    'glpi_items_softwarelicenses.is_deleted'     => 0,
+                    'zentra_softwarelicenses.id'                   => $searchID,
+                    'zentra_items_softwarelicenses.is_deleted'     => 0,
                 ],
             ];
             if ($DB->fieldExists($itemtable, 'serial')) {
@@ -768,14 +768,14 @@ JAVASCRIPT;
                 $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".otherserial");
             }
             if ($DB->fieldExists($itemtable, 'users_id')) {
-                $query['SELECT'][] = 'glpi_users.name AS username';
-                $query['SELECT'][] = 'glpi_users.id AS userid';
-                $query['SELECT'][] = 'glpi_users.realname AS userrealname';
-                $query['SELECT'][] = 'glpi_users.firstname AS userfirstname';
-                $query['LEFT JOIN']['glpi_users'] = [
+                $query['SELECT'][] = 'zentra_users.name AS username';
+                $query['SELECT'][] = 'zentra_users.id AS userid';
+                $query['SELECT'][] = 'zentra_users.realname AS userrealname';
+                $query['SELECT'][] = 'zentra_users.firstname AS userfirstname';
+                $query['LEFT JOIN']['zentra_users'] = [
                     'FKEY'   => [
                         $itemtable     => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ];
             } else {
@@ -860,9 +860,9 @@ JAVASCRIPT;
                 "$license_users_table.softwarelicenses_id",
                 new QueryExpression($DB::quoteValue(0), 'id_deleted'),
                 new QueryExpression($DB::quoteValue(0), 'is_dynamic'),
-                'glpi_softwarelicenses.name AS license',
-                'glpi_softwarelicenses.id AS vID',
-                'glpi_softwarelicenses.softwares_id AS softid',
+                'zentra_softwarelicenses.name AS license',
+                'zentra_softwarelicenses.id AS vID',
+                'zentra_softwarelicenses.softwares_id AS softid',
                 User::getFriendlyNameFields('itemname'),
                 "$users_table.id AS iID",
                 new QueryExpression($DB::quoteValue(User::class), 'item_type'),
@@ -899,16 +899,16 @@ JAVASCRIPT;
                 ],
             ],
             'INNER JOIN' => [
-                'glpi_softwarelicenses' => [
+                'zentra_softwarelicenses' => [
                     'FKEY' => [
                         $license_users_table     => 'softwarelicenses_id',
-                        'glpi_softwarelicenses' => 'id',
+                        'zentra_softwarelicenses' => 'id',
                     ],
                 ],
             ],
             'WHERE' => [
-                'glpi_softwarelicenses.id' => $searchID,
-                'glpi_users.is_deleted'    => 0,
+                'zentra_softwarelicenses.id' => $searchID,
+                'zentra_users.is_deleted'    => 0,
             ],
             'ORDER' => "$users_table.name",
         ];
@@ -920,7 +920,7 @@ JAVASCRIPT;
             'SELECT' => [],
             'FROM'   => $union,
             'ORDER'  => "$sort $order",
-            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'LIMIT'  => $_SESSION['zentralist_limit'],
             'START'  => $start,
         ];
         $iterator = $DB->request($criteria);
@@ -932,7 +932,7 @@ JAVASCRIPT;
         if ($data = $iterator->current()) {
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . self::class . $rand);
-                $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
+                $massiveactionparams = ['num_displayed'    => min($_SESSION['zentralist_limit'], count($iterator)),
                     'container'        => 'mass' . self::class . $rand,
                     'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 ];
@@ -1016,7 +1016,7 @@ JAVASCRIPT;
 
                 echo "<td>" . htmlescape($data['item_type']) . "</td>";
                 $itemname = $data['itemname'];
-                if (empty($itemname) || $_SESSION['glpiis_ids_visible']) {
+                if (empty($itemname) || $_SESSION['zentrais_ids_visible']) {
                     $itemname = sprintf(__('%1$s (%2$s)'), $itemname, $data['iID']);
                 }
 
@@ -1106,23 +1106,23 @@ JAVASCRIPT;
 
         $iterator = $DB->request([
             'SELECT'       => [
-                'glpi_softwarelicenses.*',
-                'glpi_softwarelicensetypes.name AS type',
+                'zentra_softwarelicenses.*',
+                'zentra_softwarelicensetypes.name AS type',
             ],
-            'FROM'         => 'glpi_softwarelicenses',
+            'FROM'         => 'zentra_softwarelicenses',
             'INNER JOIN'   => [
                 $item_license_table  => [
                     'FKEY'   => [
                         $item_license_table     => 'softwarelicenses_id',
-                        'glpi_softwarelicenses' => 'id',
+                        'zentra_softwarelicenses' => 'id',
                     ],
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_softwarelicensetypes'   => [
+                'zentra_softwarelicensetypes'   => [
                     'FKEY'   => [
-                        'glpi_softwarelicenses'       => 'softwarelicensetypes_id',
-                        'glpi_softwarelicensetypes'   => 'id',
+                        'zentra_softwarelicenses'       => 'softwarelicensetypes_id',
+                        'zentra_softwarelicensetypes'   => 'id',
                     ],
                 ],
             ],
@@ -1130,8 +1130,8 @@ JAVASCRIPT;
                 $item_license_table . '.itemtype'  => $itemtype,
                 $item_license_table . '.items_id'  => $items_id,
                 'OR'                                => [
-                    'glpi_softwarelicenses.softwareversions_id_use' => $softwareversions_id,
-                    'glpi_softwarelicenses.softwareversions_id_buy' => $softwareversions_id,
+                    'zentra_softwarelicenses.softwareversions_id_use' => $softwareversions_id,
+                    'zentra_softwarelicenses.softwareversions_id_buy' => $softwareversions_id,
                 ],
             ],
         ]);
@@ -1142,13 +1142,13 @@ JAVASCRIPT;
         return $lic;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $nb = 0;
         switch ($item::class) {
             case SoftwareLicense::class:
                 if (!$withtemplate) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
                         $nb += SoftwareLicense_User::countForLicense($item->getID());
                     }
@@ -1167,7 +1167,7 @@ JAVASCRIPT;
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof SoftwareLicense) {
             switch ($tabnum) {
@@ -1194,11 +1194,11 @@ JAVASCRIPT;
         global $DB;
 
         $result = $DB->request([
-            'FROM'   => 'glpi_softwarelicenses',
+            'FROM'   => 'zentra_softwarelicenses',
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'softwares_id' => $softwares_id,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses'),
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses'),
         ])->current();
         return $result['cpt'];
     }

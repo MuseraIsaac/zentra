@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/printerlog.class.php */
 
@@ -49,7 +49,7 @@ class PrinterLogTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $printers_id);
 
-        $_SESSION['glpi_currenttime'] = '2023-10-10 10:10:10';
+        $_SESSION['zentra_currenttime'] = '2023-10-10 10:10:10';
         $now = new \DateTime(\Session::getCurrentTime());
 
         $log = new \PrinterLog();

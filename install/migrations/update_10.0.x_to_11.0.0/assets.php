@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,9 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
+if (!$DB->tableExists('zentra_assets_assetdefinitions')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_assets_assetdefinitions` (
+        CREATE TABLE `zentra_assets_assetdefinitions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `system_name` varchar(255) DEFAULT NULL,
             `label` varchar(255) NOT NULL,
@@ -72,17 +72,17 @@ SQL;
     $DB->doQuery($query);
 } else {
     foreach (['profiles', 'translations', 'fields_display'] as $field) {
-        $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
+        $migration->addField('zentra_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
     }
-    $migration->addField('glpi_assets_assetdefinitions', 'label', 'string', [
+    $migration->addField('zentra_assets_assetdefinitions', 'label', 'string', [
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
-    $migration->addKey('glpi_assets_assetdefinitions', 'label');
-    $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
+    $migration->addKey('zentra_assets_assetdefinitions', 'label');
+    $migration->addField('zentra_assets_assetdefinitions', 'picture', 'text');
 
     // Convert capacities for a classname list to an object list.
-    $definitions_iterator = $DB->request(['FROM' => 'glpi_assets_assetdefinitions']);
+    $definitions_iterator = $DB->request(['FROM' => 'zentra_assets_assetdefinitions']);
     foreach ($definitions_iterator as $definition_data) {
         $capacities_current = json_decode($definition_data['capacities']);
         if (!is_array($capacities_current)) {
@@ -96,7 +96,7 @@ SQL;
         if ($capacities_normalized !== $capacities_current) {
             $migration->addPostQuery(
                 $DB->buildUpdate(
-                    'glpi_assets_assetdefinitions',
+                    'zentra_assets_assetdefinitions',
                     ['capacities' => json_encode($capacities_normalized)],
                     ['id' => $definition_data['id']]
                 )
@@ -107,18 +107,18 @@ SQL;
     // Add `Asset` suffix to custom asset classes.
     foreach ($definitions_iterator as $definition_data) {
         $migration->renameItemtype(
-            'Glpi\\CustomAsset\\' . $definition_data['system_name'],
-            'Glpi\\CustomAsset\\' . $definition_data['system_name'] . 'Asset',
+            'Zentra\\CustomAsset\\' . $definition_data['system_name'],
+            'Zentra\\CustomAsset\\' . $definition_data['system_name'] . 'Asset',
             false
         );
     }
 }
 
-$ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
+$ADDTODISPLAYPREF['Zentra\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
 
-if (!$DB->tableExists('glpi_assets_assets')) {
+if (!$DB->tableExists('zentra_assets_assets')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_assets_assets` (
+        CREATE TABLE `zentra_assets_assets` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
             `assets_assetmodels_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -169,30 +169,30 @@ if (!$DB->tableExists('glpi_assets_assets')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    $migration->addField('glpi_assets_assets', 'assets_assetmodels_id', 'fkey');
-    $migration->addKey('glpi_assets_assets', 'assets_assetmodels_id');
-    $migration->addField('glpi_assets_assets', 'assets_assettypes_id', 'fkey');
-    $migration->addKey('glpi_assets_assets', 'assets_assettypes_id');
-    $migration->addField('glpi_assets_assets', 'is_template', 'bool');
-    $migration->addKey('glpi_assets_assets', 'is_template');
-    $migration->addField('glpi_assets_assets', 'is_dynamic', 'bool');
-    $migration->addKey('glpi_assets_assets', 'is_dynamic');
-    $migration->addField('glpi_assets_assets', 'template_name', 'string');
-    $migration->dropKey('glpi_assets_assets', 'groups_id');
-    $migration->dropField('glpi_assets_assets', 'groups_id');
-    $migration->dropKey('glpi_assets_assets', 'groups_id_tech');
-    $migration->dropField('glpi_assets_assets', 'groups_id_tech');
-    $migration->addField('glpi_assets_assets', 'uuid', 'string');
-    $migration->addKey('glpi_assets_assets', 'uuid');
-    $migration->addField('glpi_assets_assets', 'autoupdatesystems_id', 'fkey');
-    $migration->addKey('glpi_assets_assets', 'autoupdatesystems_id');
-    $migration->addField('glpi_assets_assets', 'last_inventory_update', 'timestamp');
-    $migration->addField('glpi_assets_assets', 'custom_fields', 'json', ['update' => $DB::quoteValue('{}')]);
+    $migration->addField('zentra_assets_assets', 'assets_assetmodels_id', 'fkey');
+    $migration->addKey('zentra_assets_assets', 'assets_assetmodels_id');
+    $migration->addField('zentra_assets_assets', 'assets_assettypes_id', 'fkey');
+    $migration->addKey('zentra_assets_assets', 'assets_assettypes_id');
+    $migration->addField('zentra_assets_assets', 'is_template', 'bool');
+    $migration->addKey('zentra_assets_assets', 'is_template');
+    $migration->addField('zentra_assets_assets', 'is_dynamic', 'bool');
+    $migration->addKey('zentra_assets_assets', 'is_dynamic');
+    $migration->addField('zentra_assets_assets', 'template_name', 'string');
+    $migration->dropKey('zentra_assets_assets', 'groups_id');
+    $migration->dropField('zentra_assets_assets', 'groups_id');
+    $migration->dropKey('zentra_assets_assets', 'groups_id_tech');
+    $migration->dropField('zentra_assets_assets', 'groups_id_tech');
+    $migration->addField('zentra_assets_assets', 'uuid', 'string');
+    $migration->addKey('zentra_assets_assets', 'uuid');
+    $migration->addField('zentra_assets_assets', 'autoupdatesystems_id', 'fkey');
+    $migration->addKey('zentra_assets_assets', 'autoupdatesystems_id');
+    $migration->addField('zentra_assets_assets', 'last_inventory_update', 'timestamp');
+    $migration->addField('zentra_assets_assets', 'custom_fields', 'json', ['update' => $DB::quoteValue('{}')]);
 }
 
-if (!$DB->tableExists('glpi_assets_assetmodels')) {
+if (!$DB->tableExists('zentra_assets_assetmodels')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_assets_assetmodels` (
+        CREATE TABLE `zentra_assets_assetmodels` (
           `id` int unsigned NOT NULL AUTO_INCREMENT,
           `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
           `name` varchar(255) DEFAULT NULL,
@@ -220,9 +220,9 @@ SQL;
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_assets_assettypes')) {
+if (!$DB->tableExists('zentra_assets_assettypes')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_assets_assettypes` (
+        CREATE TABLE `zentra_assets_assettypes` (
           `id` int unsigned NOT NULL AUTO_INCREMENT,
           `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
           `name` varchar(255) DEFAULT NULL,
@@ -239,9 +239,9 @@ SQL;
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
+if (!$DB->tableExists('zentra_assets_customfielddefinitions')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_assets_customfielddefinitions` (
+        CREATE TABLE `zentra_assets_customfielddefinitions` (
           `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
           `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
           `system_name` varchar(255) NOT NULL,
@@ -263,14 +263,14 @@ if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    $migration->addKey('glpi_assets_customfielddefinitions', 'label');
-    $migration->addField('glpi_assets_customfielddefinitions', 'translations', 'JSON NOT NULL', ['update' => "'[]'"]);
-    $migration->changeField('glpi_assets_customfielddefinitions', 'name', 'system_name', 'string');
-    $migration->addField('glpi_assets_customfielddefinitions', 'date_creation', 'timestamp');
-    $migration->addKey('glpi_assets_customfielddefinitions', 'date_creation');
-    $migration->addField('glpi_assets_customfielddefinitions', 'date_mod', 'timestamp');
-    $migration->addKey('glpi_assets_customfielddefinitions', 'date_mod');
+    $migration->addKey('zentra_assets_customfielddefinitions', 'label');
+    $migration->addField('zentra_assets_customfielddefinitions', 'translations', 'JSON NOT NULL', ['update' => "'[]'"]);
+    $migration->changeField('zentra_assets_customfielddefinitions', 'name', 'system_name', 'string');
+    $migration->addField('zentra_assets_customfielddefinitions', 'date_creation', 'timestamp');
+    $migration->addKey('zentra_assets_customfielddefinitions', 'date_creation');
+    $migration->addField('zentra_assets_customfielddefinitions', 'date_mod', 'timestamp');
+    $migration->addKey('zentra_assets_customfielddefinitions', 'date_mod');
 }
 
 // New config values
-$migration->addConfig(['glpi_11_assets_migration' => 0]);
+$migration->addConfig(['zentra_11_assets_migration' => 0]);

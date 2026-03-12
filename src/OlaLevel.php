@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ class OlaLevel extends LevelAgreementLevel
 
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_olalevels',
+            'FROM'   => 'zentra_olalevels',
             'WHERE'  => [
                 'olas_id'   => $olas_id,
                 'is_active' => 1,
@@ -133,7 +133,7 @@ class OlaLevel extends LevelAgreementLevel
 
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
-            'FROM'   => 'glpi_olalevels',
+            'FROM'   => 'zentra_olalevels',
             'WHERE'  => ['id' => $olalevels_id],
         ]);
 
@@ -143,7 +143,7 @@ class OlaLevel extends LevelAgreementLevel
 
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_olalevels',
+                'FROM'   => 'zentra_olalevels',
                 'WHERE'  => [
                     'olas_id'         => $olas_id,
                     'id'              => ['<>', $olalevels_id],

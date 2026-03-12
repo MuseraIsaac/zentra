@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -106,7 +106,7 @@
       {{ fields.dropdownArrayField('show_count_on_tabs', config['show_count_on_tabs'], count_options, __('Display counters'), field_options) }}
    {% endif %}
 
-   {{ fields.dropdownYesNo('is_ids_visible', config['is_ids_visible'], __('Show GLPI ID'), field_options) }}
+   {{ fields.dropdownYesNo('is_ids_visible', config['is_ids_visible'], __('Show ZENTRA ID'), field_options) }}
    {{ fields.dropdownYesNo('keep_devices_when_purging_item', config['keep_devices_when_purging_item'], __('Keep devices when purging an item'), field_options) }}
 
    {{ fields.dropdownYesNo('notification_to_myself', config['notification_to_myself'], __('Notifications for my changes'), field_options) }}
@@ -115,7 +115,7 @@
       max: 30
    })) }}
 
-   {{ fields.dropdownArrayField('pdffont', config['pdffont'], call('GLPIPDF::getFontList'), __('PDF export font'), field_options) }}
+   {{ fields.dropdownArrayField('pdffont', config['pdffont'], call('ZENTRAPDF::getFontList'), __('PDF export font'), field_options) }}
    {{ fields.dropdownArrayField('csv_delimiter', config['csv_delimiter'], {
       ';': ';',
       ',': ','
@@ -131,7 +131,7 @@
                      if (stylesheets[i].href) {
                           const rules = stylesheets[i].cssRules;
                           for (let j = 0; j < rules.length; j++) {
-                            if (rules[j]['selectorText'] !== undefined && rules[j]['selectorText'].includes('data-glpi-theme')) {
+                            if (rules[j]['selectorText'] !== undefined && rules[j]['selectorText'].includes('data-zentra-theme')) {
                                  window._theme_rules.push(rules[j]);
                             }
                           }
@@ -155,11 +155,11 @@
            const palette_colors = {};
 
            for (let j = 0; j < theme_rules.length; j++) {
-               if (theme_rules[j]['selectorText'] !== undefined && theme_rules[j]['selectorText'].includes(`data-glpi-theme="${theme_id}"`)) {
+               if (theme_rules[j]['selectorText'] !== undefined && theme_rules[j]['selectorText'].includes(`data-zentra-theme="${theme_id}"`)) {
                    for (let k = 1; k < 5; k++) {
-                       const color = resolve_color_value(theme_rules[j].style, `--glpi-palette-color-${k}`);
+                       const color = resolve_color_value(theme_rules[j].style, `--zentra-palette-color-${k}`);
                        if (color !== '') {
-                           palette_colors[`--glpi-palette-color-${k}`] = color;
+                           palette_colors[`--zentra-palette-color-${k}`] = color;
                        }
                    }
                }
@@ -171,13 +171,13 @@
                canvas.height = 20;
                const ctx = canvas.getContext('2d');
                // draw the 4 colors as quadrants
-               ctx.fillStyle = palette_colors['--glpi-palette-color-1'] ?? 'white';
+               ctx.fillStyle = palette_colors['--zentra-palette-color-1'] ?? 'white';
                ctx.fillRect(0, 0, 30, 10);
-               ctx.fillStyle = palette_colors['--glpi-palette-color-2'] ?? 'white';
+               ctx.fillStyle = palette_colors['--zentra-palette-color-2'] ?? 'white';
                ctx.fillRect(30, 0, 30, 10);
-               ctx.fillStyle = palette_colors['--glpi-palette-color-3'] ?? 'white';
+               ctx.fillStyle = palette_colors['--zentra-palette-color-3'] ?? 'white';
                ctx.fillRect(0, 10, 30, 10);
-               ctx.fillStyle = palette_colors['--glpi-palette-color-4'] ?? 'white';
+               ctx.fillStyle = palette_colors['--zentra-palette-color-4'] ?? 'white';
                ctx.fillRect(30, 10, 30, 10);
                return canvas.toDataURL();
            }
@@ -197,8 +197,8 @@
            // Hotswap theme on selection so the user can see the result without saving
            const palettes_isdark = {{ palettes_isdark|default({})|json_encode|raw }};
            $('html').attr({
-               'data-glpi-theme': e.target.value,
-               'data-glpi-theme-dark': (palettes_isdark[e.target.value] ?? false) ? "1" : "0"
+               'data-zentra-theme': e.target.value,
+               'data-zentra-theme-dark': (palettes_isdark[e.target.value] ?? false) ? "1" : "0"
            });
        });
        function formatGlobalLayout(layout) {
@@ -387,10 +387,10 @@
       ) }}
    {% endif %}
 
-   {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
-      {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
+   {% if call('\\Zentra\\Dashboard\\Grid::canViewOneDashboard') %}
+      {{ fields.smallTitle(__('Dashboards'), call('Zentra\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
       {% macro dropdownDashboard(name, config, thecontext = "core", disabled_option = false) %}
-         {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
+         {% do call('\\Zentra\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],
             display_emptychoice: true,
             context: thecontext

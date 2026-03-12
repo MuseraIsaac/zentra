@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */
@@ -67,7 +67,7 @@ class NotificationEventMailingTest extends DbTestCase
         $this->assertSame('email', \NotificationEventMailing::getTargetField($data));
         $expected = [
             'users_id'  => $uid,
-            'email'     => TU_USER . '@glpi.com',
+            'email'     => TU_USER . '@zentra.com',
         ];
         $this->assertSame($expected, $data);
     }
@@ -79,18 +79,18 @@ class NotificationEventMailingTest extends DbTestCase
 
     public function testGetAdminData()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->assertSame(
             [
-                'email'     => $CFG_GLPI['admin_email'],
-                'name'      => $CFG_GLPI['admin_email_name'],
-                'language'  => $CFG_GLPI['language'],
+                'email'     => $CFG_ZENTRA['admin_email'],
+                'name'      => $CFG_ZENTRA['admin_email_name'],
+                'language'  => $CFG_ZENTRA['language'],
             ],
             \NotificationEventMailing::getAdminData()
         );
 
-        $CFG_GLPI['admin_email'] = 'adminlocalhost';
+        $CFG_ZENTRA['admin_email'] = 'adminlocalhost';
 
         $this->assertSame([], \NotificationEventMailing::getAdminData());
         $this->hasPhpLogRecordThatContains(

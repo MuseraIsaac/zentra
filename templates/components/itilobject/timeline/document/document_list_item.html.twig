@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@
                 <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
                     <input type="hidden" name="{{ fk }}" value="{{ item.fields['id'] }}">
                     <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
                             title="{{ _x('button', 'Delete permanently') }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">
@@ -90,7 +90,7 @@
                 <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
                     <input type="hidden" name="id" value="{{ entry_i['id'] }}">
                     <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
                             title="{{ blacklisted_title }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">

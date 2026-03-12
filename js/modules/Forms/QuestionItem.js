@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* global getUUID */
 
-export class GlpiFormQuestionTypeItem {
+export class ZentraFormQuestionTypeItem {
     /**
      * The question type.
      *
@@ -42,26 +42,26 @@ export class GlpiFormQuestionTypeItem {
     #question_type;
 
     /**
-     * Create a new GlpiFormQuestionTypeItem instance.
+     * Create a new ZentraFormQuestionTypeItem instance.
      *
      * @param {string} question_type The question type.
      */
     constructor(question_type, empty_label) {
         this.#question_type = question_type;
 
-        $(document).on('glpi-form-editor-question-type-changed', (event, question, type) => {
+        $(document).on('zentra-form-editor-question-type-changed', (event, question, type) => {
             if (this.#question_type === type) {
-                const question_details = question.find('[data-glpi-form-editor-question-type-specific]');
+                const question_details = question.find('[data-zentra-form-editor-question-type-specific]');
                 this.#updateItemsIdDropdownID(question_details);
             }
         });
 
-        $(document).on('glpi-form-editor-question-sub-type-changed', (event, question, sub_type) => {
-            if (question.find('[name="type"], [data-glpi-form-editor-original-name="type"]').val() !== this.#question_type) {
+        $(document).on('zentra-form-editor-question-sub-type-changed', (event, question, sub_type) => {
+            if (question.find('[name="type"], [data-zentra-form-editor-original-name="type"]').val() !== this.#question_type) {
                 return;
             }
 
-            const select = question.find('[data-glpi-form-editor-question-type-specific] select[name="default_value"], [data-glpi-form-editor-question-type-specific] select[data-glpi-form-editor-original-name="default_value"]');
+            const select = question.find('[data-zentra-form-editor-question-type-specific] select[name="default_value"], [data-zentra-form-editor-question-type-specific] select[data-zentra-form-editor-original-name="default_value"]');
             const container = select.parent();
 
             // Add a flag to all children to mark them as to be removed
@@ -69,11 +69,11 @@ export class GlpiFormQuestionTypeItem {
 
             // Load the new dropdown
             container.load(
-                `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
+                `${CFG_ZENTRA.root_doc}/ajax/dropdownAllItems.php`,
                 {
                     'idtable'            : sub_type,
                     'width'              : '100%',
-                    'name'               : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'name'               : select.data('zentra-form-editor-original-name') || select.attr('name'),
                     'aria_label'         : select.attr('aria-label'),
                     'display_emptychoice': 0,
                     'value'              : -1,

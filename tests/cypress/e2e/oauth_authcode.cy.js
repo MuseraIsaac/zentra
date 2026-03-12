@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,21 +35,21 @@ describe('OAuth - Authorization Code Grant', () => {
     const oauthclient_secret = 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1';
 
     function doAuthCodeGrant(expect_already_logged_in = false, remember_me = false) {
-        function doGLPILogin() {
+        function doZENTRALogin() {
             cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
-            cy.findByLabelText("Password").type('glpi');
+            cy.findByLabelText("Password").type('zentra');
             if (remember_me) {
                 cy.findByRole('checkbox', {name: "Remember me"}).check();
             } else {
                 cy.findByRole('checkbox', {name: "Remember me"}).uncheck();
             }
-            cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
+            cy.getDropdownByLabelText("Login source").selectDropdownValue('ZENTRA internal database');
             cy.findByRole('button', {name: "Sign in"}).click();
         }
 
         function doAuthorization() {
             // Should be on a page asking the user to approve or reject the authorization request
-            cy.findByRole('heading', {name: 'Test E2E OAuth Client wants to access your GLPI account'}).should('be.visible');
+            cy.findByRole('heading', {name: 'Test E2E OAuth Client wants to access your ZENTRA account'}).should('be.visible');
             cy.findByText('Access to the API').should('be.visible');
             cy.findByText('Access to the user\'s information').should('be.visible');
             cy.findByRole('button', {name: 'Deny'}).should('be.visible');
@@ -89,7 +89,7 @@ describe('OAuth - Authorization Code Grant', () => {
 
         cy.visit(`/api.php/Authorize?response_type=code&client_id=${oauthclient_id}&scope=api user&redirect_uri=/api.php/oauth2/redirection`);
         if (!expect_already_logged_in) {
-            doGLPILogin();
+            doZENTRALogin();
         }
         doAuthorization();
     }

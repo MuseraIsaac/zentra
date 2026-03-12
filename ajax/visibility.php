@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -73,7 +73,7 @@ if (
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
                 'to_update'  => "subvisibility$rand",
-                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'url'        => $CFG_ZENTRA["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
                     'prefix'   => $_POST['prefix'],
@@ -87,7 +87,7 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'value'       => $_SESSION['glpiactive_entity'],
+                'value'       => $_SESSION['zentraactive_entity'],
                 'name'        => $prefix . 'entities_id' . $suffix,
                 'entity'      => $_POST['entity'] ?? -1,
                 'entity_sons' => $_POST['is_recursive'] ?? false,
@@ -108,14 +108,14 @@ if (
                 'rand'      => $rand,
                 'name'      => $prefix . 'profiles_id' . $suffix,
                 'condition' => [
-                    'glpi_profilerights.name'     => $righttocheck,
-                    'glpi_profilerights.rights'   => ['&', $checkright],
+                    'zentra_profilerights.name'     => $righttocheck,
+                    'zentra_profilerights.rights'   => ['&', $checkright],
                 ],
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
                 'to_update'  => "subvisibility$rand",
-                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'url'        => $CFG_ZENTRA["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
                     'prefix'   => $_POST['prefix'],

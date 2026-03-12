@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use Auth;
 use AuthLDAP;
 use AuthMail;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -76,7 +76,7 @@ class AuthTest extends DbTestCase
         $methods = Auth::getLoginAuthMethods();
         $expected = [
             '_default'  => 'local',
-            'local'     => 'GLPI internal database',
+            'local'     => 'ZENTRA internal database',
         ];
         $this->assertSame($expected, $methods);
     }
@@ -150,7 +150,7 @@ class AuthTest extends DbTestCase
     #[DataProvider('lockStrategyProvider')]
     public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // reset session to prevent session having less rights to create a user
         $this->login();
@@ -166,12 +166,12 @@ class AuthTest extends DbTestCase
         $this->assertGreaterThan(0, $user_id);
         $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_delay'] = $exp_delay;
-        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['password_expiration_delay'] = $exp_delay;
+        $CFG_ZENTRA['password_expiration_lock_delay'] = $lock_delay;
         $auth = new Auth();
         $is_logged = $auth->login($username, 'test', true);
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->assertSame(!$expected_lock, $is_logged);
         $this->assertTrue($user->getFromDB($user->fields['id']));
@@ -205,7 +205,7 @@ class AuthTest extends DbTestCase
         $this->assertSame('CAS', Auth::getMethodName(Auth::CAS, 0));
         $this->assertSame('x509 certificate authentication', Auth::getMethodName(Auth::X509, 0));
         $this->assertSame('Other', Auth::getMethodName(Auth::EXTERNAL, 0));
-        $this->assertSame('GLPI internal database', Auth::getMethodName(Auth::DB_GLPI, 0));
+        $this->assertSame('ZENTRA internal database', Auth::getMethodName(Auth::DB_ZENTRA, 0));
         $this->assertSame('API', Auth::getMethodName(Auth::API, 0));
 
         $this->assertSame('LDAP directory: _local_ldap', Auth::getMethodLink(Auth::LDAP, $local_ldap_id));
@@ -230,7 +230,7 @@ class AuthTest extends DbTestCase
         $this->assertSame('CAS', Auth::getMethodLink(Auth::CAS, 0));
         $this->assertSame('x509 certificate authentication', Auth::getMethodLink(Auth::X509, 0));
         $this->assertSame('Other', Auth::getMethodLink(Auth::EXTERNAL, 0));
-        $this->assertSame('GLPI internal database', Auth::getMethodLink(Auth::DB_GLPI, 0));
+        $this->assertSame('ZENTRA internal database', Auth::getMethodLink(Auth::DB_ZENTRA, 0));
         $this->assertSame('API', Auth::getMethodLink(Auth::API, 0));
 
         $this->assertSame(
@@ -275,7 +275,7 @@ class AuthTest extends DbTestCase
     public function testPasswordCostUpdate(): void
     {
         $auth = new Auth();
-        $_SESSION["glpiextauth"] = false; //required to prevent undefined array index
+        $_SESSION["zentraextauth"] = false; //required to prevent undefined array index
 
         //create a user - with a md5 password
         $user = $this->createItem(User::class, ['name' => 'MD5 Passwd test', 'password' => md5('dapass')]);

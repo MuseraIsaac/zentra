@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,10 +63,10 @@ describe("Debug Bar", () => {
 
     it('Server performance widget', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="server_performance"]')
                 .should('exist')
                 .invoke('text').should('match', /\d+\s+ms\s+using\s+[\d.]+\s+MiB/);
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="server_performance"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 cy.get('.datagrid-title').contains('Initial Execution Time').next().invoke('text').should('match', /\d+\s+ms/);
                 cy.get('.datagrid-title').contains('Total Execution Time').next().invoke('text').should('match', /\d+\s+ms/);
@@ -78,10 +78,10 @@ describe("Debug Bar", () => {
 
     it('SQL requests', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="sql"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="sql"]')
                 .should('exist')
                 .invoke('text').should('match', /\d+\s+requests/);
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="sql"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="sql"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 // 1st column should be alphanumeric
                 cy.get('#debug-sql-request-table tr td:nth-child(1)').each(($el) => {
@@ -105,10 +105,10 @@ describe("Debug Bar", () => {
 
     it('HTTP requests', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="requests"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="requests"]')
                 .should('exist')
                 .invoke('text').should('match', /\d+\s+requests/);
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="requests"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="requests"]').click();
 
             cy.get('#debug-toolbar-expanded-content').within(() => {
                 cy.get('#debug-requests-table tr').should('have.length.gte', 2);
@@ -171,7 +171,7 @@ describe("Debug Bar", () => {
 
     it('Client performance', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="client_performance"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="client_performance"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 cy.get('.datagrid-title').contains('Time to first paint').next().invoke('text').should('match', /\d+\s+ms/);
                 cy.get('.datagrid-title').contains('Time to DOM interactive').next().invoke('text').should('match', /\d+\s+ms/);
@@ -183,16 +183,16 @@ describe("Debug Bar", () => {
                 cy.get('.datagrid-title').contains('JS Heap Limit').next().invoke('text').should('match', /[\d.]+\s+MiB/);
             });
 
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="client_performance"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="client_performance"]')
                 .contains(/[\d.]\sms/);
         });
     });
 
     it('Search options', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="search_options"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="search_options"]')
                 .should('exist');
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="search_options"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="search_options"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 cy.get('.search-opts-table').should('not.exist');
                 cy.intercept({
@@ -217,17 +217,17 @@ describe("Debug Bar", () => {
 
     it('Theme switcher', () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="theme_switcher"]')
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="theme_switcher"]')
                 .should('exist');
-            cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="theme_switcher"]').click();
+            cy.get('.debug-toolbar-widget[data-zentra-debug-widget-id="theme_switcher"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 cy.findByRole('combobox', {name: 'Palette'}).should('be.visible').select('midnight');
-                cy.root().closest('html').invoke('attr', 'data-glpi-theme').should('eq', 'midnight');
-                cy.root().closest('html').invoke('attr', 'data-glpi-theme-dark').should('eq', '1');
+                cy.root().closest('html').invoke('attr', 'data-zentra-theme').should('eq', 'midnight');
+                cy.root().closest('html').invoke('attr', 'data-zentra-theme-dark').should('eq', '1');
 
                 cy.findByRole('combobox', {name: 'Palette'}).should('be.visible').select('auror');
-                cy.root().closest('html').invoke('attr', 'data-glpi-theme').should('eq', 'auror');
-                cy.root().closest('html').invoke('attr', 'data-glpi-theme-dark').should('eq', '0');
+                cy.root().closest('html').invoke('attr', 'data-zentra-theme').should('eq', 'auror');
+                cy.root().closest('html').invoke('attr', 'data-zentra-theme-dark').should('eq', '0');
             });
         });
     });

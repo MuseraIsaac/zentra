@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 describe("Session", () => {
     it('can login', () => {
-        cy.blockGLPIDashboards();
+        cy.blockZENTRADashboards();
 
         // Go to login page
         cy.visit('/', {
@@ -40,13 +40,13 @@ describe("Session", () => {
                 'Accept-Language': 'en-GB,en;q=0.9',
             }
         });
-        cy.title().should('eq', 'Authentication - GLPI');
+        cy.title().should('eq', 'Authentication - ZENTRA');
 
         // Fill form
         cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
-        cy.findByLabelText("Password").type('glpi');
+        cy.findByLabelText("Password").type('zentra');
         cy.findByRole('checkbox', {name: "Remember me"}).check();
-        cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
+        cy.getDropdownByLabelText("Login source").selectDropdownValue('ZENTRA internal database');
 
         // After logging in, the url should contain /front/central.php or /Helpdesk
         cy.findByRole('button', {name: "Sign in"}).click();
@@ -54,9 +54,9 @@ describe("Session", () => {
 
         // Validate cookies
         cy.getCookies().should('have.length.gte', 2).then((cookies) => {
-            // Should be two cookies starting with 'glpi_' and one of them should end with '_rememberme'
-            expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_'))).to.have.length(2);
-            expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_') && cookie.name.endsWith('_rememberme'))).to.have.length(1);
+            // Should be two cookies starting with 'zentra_' and one of them should end with '_rememberme'
+            expect(cookies.filter((cookie) => cookie.name.startsWith('zentra_'))).to.have.length(2);
+            expect(cookies.filter((cookie) => cookie.name.startsWith('zentra_') && cookie.name.endsWith('_rememberme'))).to.have.length(1);
         });
     });
 
@@ -82,7 +82,7 @@ describe("Session", () => {
 
         // Login as e2e_tests
         cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
-        cy.findByLabelText("Password").type('glpi');
+        cy.findByLabelText("Password").type('zentra');
         cy.findByRole('button', {name: "Sign in"}).click();
 
         // Should be redirected to requested page
@@ -95,13 +95,13 @@ describe("Session", () => {
         cy.createWithAPI('User', {
             'name'        : username,
             'login'       : username,
-            'password'    : 'glpi',
-            'password2'   : 'glpi',
+            'password'    : 'zentra',
+            'password2'   : 'zentra',
             '_profiles_id': 2, // Super-Admin
         });
 
         // Login as the new user
-        cy.login(username, 'glpi');
+        cy.login(username, 'zentra');
 
         // Configure 2FA
         cy.visit('/front/preference.php');
@@ -125,7 +125,7 @@ describe("Session", () => {
 
         // Login as the new user
         cy.findByRole('textbox', {'name': "Login"}).type(username);
-        cy.findByLabelText("Password").type('glpi');
+        cy.findByLabelText("Password").type('zentra');
         cy.findByRole('button', {name: "Sign in"}).click();
 
         // Fill 2FA code
@@ -161,8 +161,8 @@ describe("Session", () => {
         cy.createWithAPI('User', {
             'name'        : username,
             'login'       : username,
-            'password'    : 'glpi',
-            'password2'   : 'glpi',
+            'password'    : 'zentra',
+            'password2'   : 'zentra',
             '_entities_id' : 1, // E2E entity
             '_profiles_id': 2, // Super-Admin
         }).then(user => {
@@ -184,10 +184,10 @@ describe("Session", () => {
                 'Accept-Language': 'en-GB,en;q=0.9',
             }
         });
-        cy.title().should('eq', 'Authentication - GLPI');
+        cy.title().should('eq', 'Authentication - ZENTRA');
         cy.findByRole('textbox', {'name': "Login"}).type(username);
-        cy.findByLabelText("Password").type('glpi');
-        cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
+        cy.findByLabelText("Password").type('zentra');
+        cy.getDropdownByLabelText("Login source").selectDropdownValue('ZENTRA internal database');
         cy.findByRole('button', {name: "Sign in"}).click();
 
         // Should be on 2FA setup page
@@ -212,8 +212,8 @@ describe("Session", () => {
         cy.findByRole('link', {name: 'Logout'}).click();
         // Login again
         cy.findByRole('textbox', {'name': "Login"}).type(username);
-        cy.findByLabelText("Password").type('glpi');
-        cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
+        cy.findByLabelText("Password").type('zentra');
+        cy.getDropdownByLabelText("Login source").selectDropdownValue('ZENTRA internal database');
         cy.findByRole('button', {name: "Sign in"}).click();
         // Fill 2FA code
         cy.get('@secret').then((secret) => {

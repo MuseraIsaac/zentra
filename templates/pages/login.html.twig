@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
     <form action="{{ path('front/login.php') }}" method="post" autocomplete="off" data-submit-once>
         <input type="hidden" name="noAUTO" value="{{ noAuto }}"/>
         <input type="hidden" name="redirect" value="{{ redirect }}"/>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
         {% if text_login|length > 0 %}
             <div class="rich_text_container text-center">
                 {{ text_login|safe_html }}
@@ -109,7 +109,7 @@
 
             {% if right_panel %}
                 <div class="col-auto px-2 text-center">
-                    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_LOGIN')) }}
+                    {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::DISPLAY_LOGIN')) }}
                 </div>
             {% endif %}
         </div>

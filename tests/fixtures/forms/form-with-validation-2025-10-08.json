@@ -30,7 +30,7 @@
                     "id": 45,
                     "uuid": "eac2dc6c-20fc-4e50-b459-8c946fda4c18",
                     "name": "Question with validation constraint",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -54,7 +54,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -68,7 +68,7 @@
             "destinations": [
                 {
                     "id": 16,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

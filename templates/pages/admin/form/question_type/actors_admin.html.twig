@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 {% set rand = random() %}
 
-{% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
+{% set actors_dropdown = call('Zentra\\Form\\Dropdown\\FormActorsDropdown::show', [
     'default_value',
     values,
     {
@@ -50,7 +50,7 @@
         } : {}
     }
 ]) %}
-{% set actors_dropdown_multiple = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
+{% set actors_dropdown_multiple = call('Zentra\\Form\\Dropdown\\FormActorsDropdown::show', [
     'default_value',
     values,
     {
@@ -105,7 +105,7 @@
     <i
         id="actors_settings_dropdown_{{ rand }}"
         class="ms-2 ti ti-settings pointer"
-        data-glpi-form-editor-question-extra-details
+        data-zentra-form-editor-question-extra-details
         data-bs-auto-close="outside"
         role="button"
         data-bs-toggle="dropdown"
@@ -125,14 +125,14 @@
                                 type="hidden"
                                 name="{{ enabled_types_field }}[{{ type }}]"
                                 value="0"
-                                data-glpi-form-editor-specific-question-extra-data
+                                data-zentra-form-editor-specific-question-extra-data
                             >
                             <input
                                 class="form-check-input"
                                 type="checkbox"
                                 name="{{ enabled_types_field }}[{{ type }}]"
                                 value="1"
-                                data-glpi-form-editor-specific-question-extra-data
+                                data-zentra-form-editor-specific-question-extra-data
                                 {% if type in enabled_types %}
                                     checked
                                 {% endif %}
@@ -149,11 +149,11 @@
                     <div id="is_multiple_actors_{{ rand }}" class="d-flex gap-2">
                         <label class="form-check form-switch mb-0">
                             <input type="hidden" name="is_multiple_actors" value="0"
-                            data-glpi-form-editor-specific-question-extra-data>
+                            data-zentra-form-editor-specific-question-extra-data>
                             <input class="form-check-input" type="checkbox" name="is_multiple_actors"
                                 value="1" {{ is_multiple_actors ? 'checked' : '' }}
                                 onchange="handleMultipleActorsCheckbox_{{ rand }}(this)"
-                                data-glpi-form-editor-specific-question-extra-data>
+                                data-zentra-form-editor-specific-question-extra-data>
                             <span class="form-check-label">{{ __('Allow multiple actors') }}</span>
                         </label>
                     </div>
@@ -161,7 +161,7 @@
                     <script>
                         function handleMultipleActorsCheckbox_{{ rand }}(input) {
                             const is_checked = $(input).is(':checked');
-                            const selects = $(input).closest('section[data-glpi-form-editor-question]')
+                            const selects = $(input).closest('section[data-zentra-form-editor-question]')
                                 .find('div .actors-dropdown');
 
                             {# Disable all selects and toggle their visibility, then enable the right ones #}

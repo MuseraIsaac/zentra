@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,30 +39,30 @@ require_once(__DIR__ . '/_check_webserver_config.php');
  * @since 0.85
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 if (
-    $CFG_GLPI["ssovariables_id"] > 0
-    && (string) $CFG_GLPI['ssologout_url'] !== ''
+    $CFG_ZENTRA["ssovariables_id"] > 0
+    && (string) $CFG_ZENTRA['ssologout_url'] !== ''
 ) {
     Session::cleanOnLogout();
-    Html::redirect($CFG_GLPI["ssologout_url"]);
+    Html::redirect($CFG_ZENTRA["ssologout_url"]);
 }
 
 if (
     !isset($_SESSION["noAUTO"])
-    && isset($_SESSION["glpiauthtype"])
-    && $_SESSION["glpiauthtype"] == Auth::CAS
+    && isset($_SESSION["zentraauthtype"])
+    && $_SESSION["zentraauthtype"] == Auth::CAS
 ) {
     phpCAS::client(
-        constant($CFG_GLPI["cas_version"]),
-        $CFG_GLPI["cas_host"],
-        intval($CFG_GLPI["cas_port"]),
-        $CFG_GLPI["cas_uri"],
-        $CFG_GLPI["url_base"],
+        constant($CFG_ZENTRA["cas_version"]),
+        $CFG_ZENTRA["cas_host"],
+        intval($CFG_ZENTRA["cas_port"]),
+        $CFG_ZENTRA["cas_uri"],
+        $CFG_ZENTRA["url_base"],
         false
     );
-    phpCAS::setServerLogoutURL(strval($CFG_GLPI["cas_logout"]));
+    phpCAS::setServerLogoutURL(strval($CFG_ZENTRA["cas_logout"]));
     phpCAS::logout();
 }
 
@@ -87,4 +87,4 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
 Session::cleanOnLogout();
 
 // Redirect to the login-page
-Html::redirect($CFG_GLPI["root_doc"] . "/index.php" . $toADD);
+Html::redirect($CFG_ZENTRA["root_doc"] . "/index.php" . $toADD);

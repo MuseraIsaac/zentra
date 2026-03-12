@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ use function Safe\json_encode;
  * @var Migration $migration
  */
 $events = $DB->request([
-    'FROM' => 'glpi_planningexternalevents',
+    'FROM' => 'zentra_planningexternalevents',
     'WHERE' => [
         'NOT' => ['users_id_guests' => '[]'],
     ],
@@ -68,7 +68,7 @@ foreach ($events as $event) {
 
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_planningexternalevents',
+            'zentra_planningexternalevents',
             [
                 'users_id_guests' => json_encode($normalized_guests),
             ],

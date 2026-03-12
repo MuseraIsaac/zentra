@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@
       class="search-form-container"
       method="get"
       action="{{ p['target'] }}"
-      data-glpi-search-form
+      data-zentra-search-form
    >
 
    {% for param_name, param_value in additional_params %}
@@ -85,7 +85,7 @@
             </div>
          {% endif %}
          {% for i in p['criteria']|keys %}
-            {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [{
+            {{ call("Zentra\\Search\\Input\\QueryBuilder::displayCriteria", [{
                itemtype: itemtype,
                num: i,
                p: p

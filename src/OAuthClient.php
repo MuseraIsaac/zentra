@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\OAuth\Server;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\OAuth\Server;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -125,7 +125,7 @@ final class OAuthClient extends CommonDBTM
             );
             return false;
         }
-        $key = new GLPIKey();
+        $key = new ZENTRAKey();
         $input['identifier'] = self::getNewIDOrSecret();
         $input['secret'] = $key->encrypt(self::getNewIDOrSecret());
 
@@ -149,7 +149,7 @@ final class OAuthClient extends CommonDBTM
             );
             return false;
         }
-        $key = new GLPIKey();
+        $key = new ZENTRAKey();
         if (isset($input['secret'])) {
             $input['secret'] = $key->encrypt($input['secret']);
         }
@@ -195,7 +195,7 @@ final class OAuthClient extends CommonDBTM
 
     public function post_getFromDB()
     {
-        $key = new GLPIKey();
+        $key = new ZENTRAKey();
         if (isset($this->fields['secret'])) {
             $this->fields['secret'] = $key->decrypt($this->fields['secret']);
         }

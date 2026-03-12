@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@
                               {{ fields.autoNameField('template_name', item, __('Template name'), 0, specific_field_options) }}
                           {% elseif item.isField('is_active') and field is same as '_template_is_active' and withtemplate >= 1 %}
                               {{ fields.hiddenField('is_active', item.fields['is_active']) }}
-                          {% elseif field is same as 'states_id' and item is usingtrait('Glpi\\Features\\State') %}
+                          {% elseif field is same as 'states_id' and item is usingtrait('Zentra\\Features\\State') %}
                               {{ fields.dropdownField(
                                   'State',
                                   'states_id',
@@ -107,7 +107,7 @@
                           {% elseif field is same as '_dc_breadcrumbs' %}
                               {% set conditions_met = 0 %}
                               {% set dc_breadcrumbs %}
-                                  {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
+                                  {% if item is usingtrait('Zentra\\Features\\DCBreadcrumb') %}
                                       {{ call(item.getType() ~ '::renderDcBreadcrumb', [
                                           item.getID
                                       ])|raw }}
@@ -332,7 +332,7 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_assign': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Zentra\\Features\\AssignableItem') ? true : false
                                   })
                               ) }}
                           {% elseif field is same as item.getModelForeignKeyField() %}
@@ -450,7 +450,7 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_itemgroup': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Zentra\\Features\\AssignableItem') ? true : false
                                   })
                               ) }}
                           {% elseif field is same as 'uuid' %}

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 use function Safe\preg_replace;
 
@@ -56,7 +56,7 @@ function update941to942()
     /* Remove trailing slash from 'url_base' config */
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_configs',
+            'zentra_configs',
             [
                 'value' => new QueryExpression(
                     'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
@@ -86,19 +86,19 @@ function update941to942()
 
     $itil_mappings = [
         'Change' => [
-            'itil_table' => 'glpi_changes',
+            'itil_table' => 'zentra_changes',
             'itil_fkey'  => 'changes_id',
-            'task_table' => 'glpi_changetasks',
+            'task_table' => 'zentra_changetasks',
         ],
         'Problem' => [
-            'itil_table' => 'glpi_problems',
+            'itil_table' => 'zentra_problems',
             'itil_fkey'  => 'problems_id',
-            'task_table' => 'glpi_problemtasks',
+            'task_table' => 'zentra_problemtasks',
         ],
         'Ticket' => [
-            'itil_table' => 'glpi_tickets',
+            'itil_table' => 'zentra_tickets',
             'itil_fkey'  => 'tickets_id',
-            'task_table' => 'glpi_tickettasks',
+            'task_table' => 'zentra_tickettasks',
         ],
     ];
 
@@ -115,7 +115,7 @@ function update941to942()
         $task_table = $itil_specs['task_table'];
 
         // Fix followups and solutions
-        foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
+        foreach (['zentra_itilfollowups', 'zentra_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
                     'SELECT'    => ['id', 'items_id', 'content'],

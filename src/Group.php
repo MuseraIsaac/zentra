@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\Clonable;
-use Glpi\Search\Provider\SQLProvider;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\Clonable;
+use Zentra\Search\Provider\SQLProvider;
 
 /**
  * Group class
@@ -121,14 +121,14 @@ class Group extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_groups_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case self::class:
                     $ong = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
                             ['groups_id' => $item->getID()]
@@ -160,7 +160,7 @@ class Group extends CommonTreeDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case self::class:
@@ -422,7 +422,7 @@ class Group extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => _n('Manager', 'Managers', 1),
             'datatype'           => 'dropdown',
@@ -431,7 +431,7 @@ class Group extends CommonTreeDropdown
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_users',
+                    'table'              => 'zentra_groups_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.is_manager' => 1],
@@ -442,7 +442,7 @@ class Group extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Delegatee'),
             'datatype'           => 'dropdown',
@@ -451,7 +451,7 @@ class Group extends CommonTreeDropdown
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_users',
+                    'table'              => 'zentra_groups_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.is_userdelegate' => 1],
@@ -544,14 +544,14 @@ class Group extends CommonTreeDropdown
      **/
     public function getDataItems(bool $tech, bool $tree, bool $user, int $start, array &$res, array $extra_criteria = []): int
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
-        $types  = $CFG_GLPI['assignable_types'];
+        $types  = $CFG_ZENTRA['assignable_types'];
         $ufield = $tech ? 'users_id_tech' : 'users_id';
 
         // include item of child groups ?
         if ($tree) {
-            $groups_ids = getSonsOf('glpi_groups', $this->getID());
+            $groups_ids = getSonsOf('zentra_groups', $this->getID());
         } else {
             $groups_ids = [$this->getID()];
         }
@@ -570,7 +570,7 @@ class Group extends CommonTreeDropdown
                         $ufield => new QuerySubQuery(
                             [
                                 'SELECT' => 'users_id',
-                                'FROM'   => 'glpi_groups_users',
+                                'FROM'   => 'zentra_groups_users',
                                 'WHERE'  => [
                                     'groups_id'  => $groups_ids,
                                 ],
@@ -627,7 +627,7 @@ class Group extends CommonTreeDropdown
                 'WHERE'     => $restrict[$itemtype],
             ]);
         }
-        $max = $_SESSION['glpilist_limit'];
+        $max = $_SESSION['zentralist_limit'];
         if ($start >= $tot) {
             $start = 0;
         }
@@ -659,10 +659,10 @@ class Group extends CommonTreeDropdown
 
                 if ($itemtype === 'Consumable') {
                     $request['LEFT JOIN'] = [
-                        'glpi_consumableitems' => [
+                        'zentra_consumableitems' => [
                             'FKEY'   => [
-                                'glpi_consumables'     => 'consumableitems_id',
-                                'glpi_consumableitems' => 'id',
+                                'zentra_consumables'     => 'consumableitems_id',
+                                'zentra_consumableitems' => 'id',
                             ],
                         ],
                     ];
@@ -694,7 +694,7 @@ class Group extends CommonTreeDropdown
      */
     public function showItems($tech)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $rand = mt_rand();
 
@@ -736,7 +736,7 @@ class Group extends CommonTreeDropdown
                 $itemtype_names[$data['itemtype']] = $item::getTypeName(1);
             }
             if (!isset($entity_names[$item->getEntityID()])) {
-                $entity_names[$item->getEntityID()] = Dropdown::getDropdownName(table: "glpi_entities", id: $item->getEntityID(), default: '');
+                $entity_names[$item->getEntityID()] = Dropdown::getDropdownName(table: "zentra_entities", id: $item->getEntityID(), default: '');
             }
 
             $entry = [
@@ -792,7 +792,7 @@ class Group extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'items_id' => $ID,
             'filters' => $filters,
             'columns' => $columns,
@@ -839,7 +839,7 @@ class Group extends CommonTreeDropdown
             }
 
             $DB->update(
-                'glpi_consumables',
+                'zentra_consumables',
                 $fields_updates,
                 [
                     'items_id' => $this->fields['id'],
@@ -974,15 +974,15 @@ class Group extends CommonTreeDropdown
 
     /**
      * Mark groups data as "changed"
-     * This will trigger a rebuilding of the 'glpigroups' session data for all
+     * This will trigger a rebuilding of the 'zentragroups' session data for all
      * users
      *
      * @return void
      */
     public static function updateLastGroupChange()
     {
-        global $GLPI_CACHE;
-        $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
+        global $ZENTRA_CACHE;
+        $ZENTRA_CACHE->set('last_group_change', $_SESSION['zentra_currenttime']);
 
         // Reload groups immediatly
         if (Session::getLoginUserID()) {

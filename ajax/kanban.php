@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\HttpException;
-use Glpi\Features\KanbanInterface;
-use Glpi\Features\TeamworkInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\HttpException;
+use Zentra\Features\KanbanInterface;
+use Zentra\Features\TeamworkInterface;
 
 use function Safe\json_encode;
 use function Safe\preg_split;
@@ -260,7 +260,7 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     $response = [
         'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load']),
-        'timestamp' => $_SESSION['glpi_currenttime'],
+        'timestamp' => $_SESSION['zentra_currenttime'],
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
 } elseif ($_REQUEST['action'] === 'clear_column_state') {

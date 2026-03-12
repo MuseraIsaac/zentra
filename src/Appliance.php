@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssetImage;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\StateInterface;
 
 /**
  * Appliances Class
@@ -47,7 +47,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 {
     /** @use Clonable<static> */
     use Clonable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssetImage;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -195,7 +195,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'condition'     => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -225,7 +225,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
         $tab[] = [
             'id'            => '23',
-            'table'         => 'glpi_manufacturers',
+            'table'         => 'zentra_manufacturers',
             'field'         => 'name',
             'name'          => Manufacturer::getTypeName(1),
             'datatype'      => 'dropdown',
@@ -250,7 +250,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'condition'     => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -312,7 +312,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
         $tab[] = [
             'id'            => '80',
-            'table'         => 'glpi_entities',
+            'table'         => 'zentra_entities',
             'field'         => 'completename',
             'name'          => Entity::getTypeName(1),
             'datatype'      => 'dropdown',
@@ -443,7 +443,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -490,9 +490,9 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      */
     public static function getTypes($all = false): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $types = $CFG_GLPI['appliance_types'];
+        $types = $CFG_ZENTRA['appliance_types'];
 
         foreach ($types as $key => $type) {
             if (!class_exists($type)) {

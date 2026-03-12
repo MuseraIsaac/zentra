@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\ITILTrait;
-use Glpi\Tests\Glpi\SLMTrait;
-use Glpi\Tests\RuleBuilder;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\Zentra\ITILTrait;
+use Zentra\Tests\Zentra\SLMTrait;
+use Zentra\Tests\RuleBuilder;
 use MassiveAction;
 use OlaLevel_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -509,7 +509,7 @@ class SLMTest extends DbTestCase
     {
         $this->login();
 
-        $currenttime_bak = $_SESSION['glpi_currenttime'];
+        $currenttime_bak = $_SESSION['zentra_currenttime'];
         $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
         $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
 
@@ -568,9 +568,9 @@ class SLMTest extends DbTestCase
 
         // Assign TTR OLA
         $update_time = strtotime('+10s');
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
+        $_SESSION['zentra_currenttime'] = date('Y-m-d H:i:s', $update_time);
         $updated = $ticket->update(['id' => $ticket_id, 'olas_id_ttr' => $ola_id]);
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $_SESSION['zentra_currenttime'] = $currenttime_bak;
         $this->assertTrue($updated);
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals($ola_id, (int) $ticket->fields['olas_id_ttr']);
@@ -586,9 +586,9 @@ class SLMTest extends DbTestCase
                 ]
             )
         );
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
+        $_SESSION['zentra_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
         $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $_SESSION['zentra_currenttime'] = $currenttime_bak;
         $this->assertTrue($updated);
         $this->assertEquals($tomorrow_2pm, $ticket->fields['internal_time_to_resolve']);
 
@@ -623,9 +623,9 @@ class SLMTest extends DbTestCase
                 ]
             )
         );
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
+        $_SESSION['zentra_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
         $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $_SESSION['zentra_currenttime'] = $currenttime_bak;
         $this->assertTrue($updated);
         $this->assertEquals($tomorrow_2pm, $ticket->fields['internal_time_to_resolve']);
     }
@@ -637,7 +637,7 @@ class SLMTest extends DbTestCase
     {
         $this->login();
 
-        $currenttime_bak = $_SESSION['glpi_currenttime'];
+        $currenttime_bak = $_SESSION['zentra_currenttime'];
 
         // Create SLM with TTR/TTO OLA/SLA
         $slm = new SLM();
@@ -764,7 +764,7 @@ class SLMTest extends DbTestCase
 
         // Assign TTR/TTO OLA/SLA
 
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
+        $_SESSION['zentra_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
         $updated = $ticket->update(
             [
                 'id' => $ticket_id,
@@ -775,7 +775,7 @@ class SLMTest extends DbTestCase
                 'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
             ]
         );
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $_SESSION['zentra_currenttime'] = $currenttime_bak;
 
         $this->assertTrue($updated);
 
@@ -902,7 +902,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create a ticket 1 hour ago without any SLA
-        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($_SESSION['glpi_currenttime'])));
+        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($_SESSION['zentra_currenttime'])));
         $ticket = $this->createItem("Ticket", [
             "name"        => "Test ticket",
             "content"     => "Test ticket",
@@ -911,7 +911,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Add SLA and OLA to the ticket
-        $now = $_SESSION['glpi_currenttime']; // Keep track of when the OLA where set
+        $now = $_SESSION['zentra_currenttime']; // Keep track of when the OLA where set
         $this->updateItem("Ticket", $ticket->getID(), [
             "slas_id_tto" => $sla_tto->getID(),
             "slas_id_ttr" => $sla_ttr->getID(),
@@ -1328,7 +1328,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create a ticket
-        $_SESSION['glpi_currenttime'] = $begin_date;
+        $_SESSION['zentra_currenttime'] = $begin_date;
 
         [$la_date_field, $la_fk_field] = $la->getFieldNames($la->fields['type']);
         $ticket = $this->createItem(
@@ -1342,10 +1342,10 @@ class SLMTest extends DbTestCase
 
         // Apply pauses
         foreach ($pauses as $pause) {
-            $_SESSION['glpi_currenttime'] = $pause['from'];
+            $_SESSION['zentra_currenttime'] = $pause['from'];
             $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::WAITING]);
 
-            $_SESSION['glpi_currenttime'] = $pause['to'];
+            $_SESSION['zentra_currenttime'] = $pause['to'];
             $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::ASSIGNED]);
         }
 
@@ -1379,9 +1379,9 @@ class SLMTest extends DbTestCase
         $test_ticket_name = "Test ticket with multiple LA assignation " . mt_rand();
 
         // OLA change are recomputed from the current date so we need to set
-        // glpi_currenttime to get predictable results
+        // zentra_currenttime to get predictable results
         $calendar = getItemByTypeName('Calendar', 'Default', true);
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
+        $_SESSION['zentra_currenttime'] = '2034-08-16 13:00:00';
 
         // Create test SLM
         $slm = $this->createItem(SLM::class, [
@@ -1952,8 +1952,8 @@ class SLMTest extends DbTestCase
         $test_ticket_name = "Test ticket with multiple LA assignation " . mt_rand();
 
         // OLA change are recomputed from the current date so we need to set
-        // glpi_currenttime to get predictable results
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
+        // zentra_currenttime to get predictable results
+        $_SESSION['zentra_currenttime'] = '2034-08-16 13:00:00';
 
         // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 1']);
@@ -2062,7 +2062,7 @@ class SLMTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::WAITING,
         ]);
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:10:00';
+        $_SESSION['zentra_currenttime'] = '2034-08-16 13:10:00';
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::INCOMING,
         ]);

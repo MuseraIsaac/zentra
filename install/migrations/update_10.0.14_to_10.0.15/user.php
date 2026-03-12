@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 $users_iterator = $DB->request(
     [
         'SELECT' => ['id', 'user_dn'],
-        'FROM'   => 'glpi_users',
+        'FROM'   => 'zentra_users',
         'WHERE'  => [
             // `user_dn` will contains a `&` char if any of its char was sanitized
             'user_dn' => ['LIKE', '%&%'],
@@ -50,7 +50,7 @@ $users_iterator = $DB->request(
 foreach ($users_iterator as $user_data) {
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_users',
+            'zentra_users',
             [
                 'user_dn_hash' => md5($user_data['user_dn']),
             ],

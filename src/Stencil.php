@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\ZonableModelPicture;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\ZonableModelPicture;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -58,7 +58,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
 
     public static function getTable($classname = null): string
     {
-        return 'glpi_stencils';
+        return 'zentra_stencils';
     }
 
     /**
@@ -102,13 +102,13 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_stencils.id',
-                'glpi_stencils.itemtype',
-                'glpi_stencils.items_id',
+                'zentra_stencils.id',
+                'zentra_stencils.itemtype',
+                'zentra_stencils.items_id',
             ],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'glpi_stencils.id' => $id,
+                'zentra_stencils.id' => $id,
             ],
         ]);
 
@@ -275,7 +275,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         echo Html::scss('css/standalone/stencil-editor.scss');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0): string
     {
         if (!($item instanceof CommonDBTM)) {
             return '';

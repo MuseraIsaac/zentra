@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * CronTaskLog class
@@ -69,7 +69,7 @@ class CronTaskLog extends CommonDBChild
         $secs      = $days * DAY_TIMESTAMP;
 
         $result = $DB->delete(
-            'glpi_crontasklogs',
+            'zentra_crontasklogs',
             [
                 'crontasks_id' => $id,
                 new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs"),
@@ -80,7 +80,7 @@ class CronTaskLog extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -88,7 +88,7 @@ class CronTaskLog extends CommonDBChild
             if ($item instanceof CronTask) {
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb =  countElementsInTable(
                         $this->getTable(),
                         ['crontasks_id' => $item->getID(),
@@ -104,7 +104,7 @@ class CronTaskLog extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof  CronTask) {

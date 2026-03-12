@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* global sortable, getUUID */
 
-export class GlpiFormQuestionTypeSelectable {
+export class ZentraFormQuestionTypeSelectable {
 
     /**
      * The selectable input type.
@@ -50,7 +50,7 @@ export class GlpiFormQuestionTypeSelectable {
     _container;
 
     /**
-     * Create a new GlpiFormQuestionTypeSelectable instance.
+     * Create a new ZentraFormQuestionTypeSelectable instance.
      *
      * @param {JQuery<HTMLElement>} container
      */
@@ -65,7 +65,7 @@ export class GlpiFormQuestionTypeSelectable {
 
             // Register listeners for the empty option
             this._container
-                .siblings('div[data-glpi-form-editor-question-extra-details]')
+                .siblings('div[data-zentra-form-editor-question-extra-details]')
                 .each((index, option) => this._registerOptionListeners($(option)));
 
             if (is_from_template) {
@@ -90,7 +90,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     #getFormController() {
-        return this._container.closest('form[data-glpi-form-editor-container]').data('controller');
+        return this._container.closest('form[data-zentra-form-editor-container]').data('controller');
     }
 
     /**
@@ -104,7 +104,7 @@ export class GlpiFormQuestionTypeSelectable {
         this._container.children().each((index, option) => {
             const input      = $(option).find('input[type="text"]');
             const selectable = $(option).find(`input[type="${CSS.escape(this._inputType)}"]`);
-            const order      = $(option).find('input[data-glpi-form-editor-question-option-order]');
+            const order      = $(option).find('input[data-zentra-form-editor-question-option-order]');
 
             options[index] = {
                 value: input.val(),
@@ -126,7 +126,7 @@ export class GlpiFormQuestionTypeSelectable {
         this._container.empty();
 
         for (const [, value] of Object.entries(options)) {
-            const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
+            const template = this._container.closest('div[data-zentra-form-editor-question-type-specific]').find('template').get(0);
             const clone = template.content.cloneNode(true);
             const uuid = getUUID(); // Generate a new UUID to avoid duplicates
 
@@ -136,7 +136,7 @@ export class GlpiFormQuestionTypeSelectable {
             $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
                 .val(uuid)
                 .prop('checked', value.checked);
-            $(clone).find('input[data-glpi-form-editor-question-option-order]')
+            $(clone).find('input[data-zentra-form-editor-question-option-order]')
                 .val(value.order)
                 .attr('name', `options_order[${uuid}]`);
 
@@ -190,7 +190,7 @@ export class GlpiFormQuestionTypeSelectable {
             .on('keydown', (event) => this.#handleKeydown(event));
 
         option
-            .find('button[data-glpi-form-editor-question-option-remove]')
+            .find('button[data-zentra-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
     }
 
@@ -200,13 +200,13 @@ export class GlpiFormQuestionTypeSelectable {
     #enableOptionsSortable() {
         sortable(this._container, {
             // Drag and drop handle selector
-            handle: '[data-glpi-form-editor-question-option-handle]',
+            handle: '[data-zentra-form-editor-question-option-handle]',
 
             // Accept from others questions
-            acceptFrom: '[data-glpi-form-editor-selectable-question-options]',
+            acceptFrom: '[data-zentra-form-editor-selectable-question-options]',
 
             // Placeholder class
-            placeholderClass: 'glpi-form-editor-drag-question-option-placeholder mb-1',
+            placeholderClass: 'zentra-form-editor-drag-question-option-placeholder mb-1',
         });
     }
 
@@ -218,7 +218,7 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {boolean} grab_visibility - Whether to show the grab handle for the new option.
      */
     #addOption(input, focus = false, grab_visibility = false) {
-        const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
+        const template = this._container.closest('div[data-zentra-form-editor-question-type-specific]').find('template').get(0);
         const clone = template.content.cloneNode(true);
 
         $(input).parent().after(clone);
@@ -232,15 +232,15 @@ export class GlpiFormQuestionTypeSelectable {
 
         if (grab_visibility) {
             $(input).parent().next().find('i').removeClass('d-none');
-            $(input).parent().next().find('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
+            $(input).parent().next().find('i[data-zentra-form-editor-question-option-handle]').css('visibility', 'visible');
         }
 
         // Update the uuid with a new random value (random number like mt_rand)
         const uuid = getUUID();
         $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
         $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
-        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
-        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').val(this._container.children().length + 1);
+        $(input).parent().next().find('input[data-zentra-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
+        $(input).parent().next().find('input[data-zentra-form-editor-question-option-order]').val(this._container.children().length + 1);
 
         /**
          * Compute the state to update the input names
@@ -275,8 +275,8 @@ export class GlpiFormQuestionTypeSelectable {
         if ($(input).parent().prev() !== undefined) {
             $(input).parent().prev().find('input[type="text"]').trigger('focus');
         } else {
-            const previous = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-                .find('div[data-glpi-form-editor-selectable-question-options]')
+            const previous = $(input).closest('div[data-zentra-form-editor-question-type-specific]')
+                .find('div[data-zentra-form-editor-selectable-question-options]')
                 .find('input[type="text"]').last();
 
             if (previous !== undefined) {
@@ -294,7 +294,7 @@ export class GlpiFormQuestionTypeSelectable {
         if ($(input).parent().next().length > 0) {
             $(input).parent().next().find('input[type="text"]').trigger('focus');
         } else {
-            const next = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+            const next = $(input).closest('div[data-zentra-form-editor-question-type-specific]')
                 .find('input[type="text"]').last();
 
             if (next !== undefined) {
@@ -309,10 +309,10 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #showOption(input) {
-        $(input).siblings('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
+        $(input).siblings('i[data-zentra-form-editor-question-option-handle]').css('visibility', 'visible');
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', false);
-        $(input).parent().removeAttr('data-glpi-form-editor-question-extra-details');
-        $(input).siblings('button[data-glpi-form-editor-question-option-remove]').removeClass('d-none');
+        $(input).parent().removeAttr('data-zentra-form-editor-question-extra-details');
+        $(input).siblings('button[data-zentra-form-editor-question-option-remove]').removeClass('d-none');
     }
 
     /**
@@ -321,8 +321,8 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #addNewOptionIfNeeded(input) {
-        const isLast = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-            .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+        const isLast = $(input).closest('div[data-zentra-form-editor-question-type-specific]')
+            .find('div[data-zentra-form-editor-selectable-question-options]').parent()
             .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
@@ -330,7 +330,7 @@ export class GlpiFormQuestionTypeSelectable {
             this.#addOption(input);
 
             // Move the current option in the drag and drop container
-            $(input).parent().appendTo($(input).parent().siblings().filter('div[data-glpi-form-editor-selectable-question-options]').last());
+            $(input).parent().appendTo($(input).parent().siblings().filter('div[data-zentra-form-editor-selectable-question-options]').last());
 
             // Focus the new option
             $(input).trigger('focus');
@@ -350,7 +350,7 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #hideOption(input) {
-        $(input).parent().attr('data-glpi-form-editor-question-extra-details', '');
+        $(input).parent().attr('data-zentra-form-editor-question-extra-details', '');
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', true);
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('checked', false);
     }
@@ -362,7 +362,7 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #removeLastOptionIfNeeded(input) {
-        const isLast = $(input).closest('div[data-glpi-form-editor-selectable-question-options]')
+        const isLast = $(input).closest('div[data-zentra-form-editor-selectable-question-options]')
             .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
@@ -377,7 +377,7 @@ export class GlpiFormQuestionTypeSelectable {
             }
 
             // Focus the empty option
-            $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+            $(input).closest('div[data-zentra-form-editor-question-type-specific]')
                 .find('input[type="text"]').last().trigger('focus');
 
             // Call the onRemoveOption method
@@ -394,12 +394,12 @@ export class GlpiFormQuestionTypeSelectable {
     #reindexOptions() {
         // Reindex the order of the options
         this._container.children().each((index, option) => {
-            $(option).find('input[data-glpi-form-editor-question-option-order]').val(index);
+            $(option).find('input[data-zentra-form-editor-question-option-order]').val(index);
         });
 
         // Reindex the order of the empty option
-        this._container.siblings('div[data-glpi-form-selectable-question-option]')
-            .find('input[data-glpi-form-editor-question-option-order]')
+        this._container.siblings('div[data-zentra-form-selectable-question-option]')
+            .find('input[data-zentra-form-editor-question-option-order]')
             .val(this._container.children().length);
     }
 
@@ -410,8 +410,8 @@ export class GlpiFormQuestionTypeSelectable {
      */
     #handleOptionChange(event) {
         const input = event.target;
-        const container = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-            .find('div[data-glpi-form-editor-selectable-question-options]');
+        const container = $(input).closest('div[data-zentra-form-editor-question-type-specific]')
+            .find('div[data-zentra-form-editor-selectable-question-options]');
 
         if (input.value) {
             this.#showOption(input);
@@ -449,7 +449,7 @@ export class GlpiFormQuestionTypeSelectable {
      */
     #handleKeydown(event) {
         const input = event.target;
-        const container = $(input).closest('div[data-glpi-form-editor-selectable-question-options]');
+        const container = $(input).closest('div[data-zentra-form-editor-selectable-question-options]');
 
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -464,7 +464,7 @@ export class GlpiFormQuestionTypeSelectable {
                     $(input).parent().next().find('input[type="text"]').trigger('focus');
                     return;
                 } else if ($(input).parent().next().length == 0) {
-                    $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+                    $(input).closest('div[data-zentra-form-editor-question-type-specific]')
                         .find('input[type="text"]').last().trigger('focus');
                     return;
                 }
@@ -472,8 +472,8 @@ export class GlpiFormQuestionTypeSelectable {
                 this.#addOption(input, true, true);
             }
         } else if (event.key === 'Backspace') {
-            const is_last = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-                .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+            const is_last = $(input).closest('div[data-zentra-form-editor-question-type-specific]')
+                .find('div[data-zentra-form-editor-selectable-question-options]').parent()
                 .children('div').last().find('input[type="text"]').get(0) === input;
 
             // Remove the option

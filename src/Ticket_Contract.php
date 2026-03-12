@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Ticket_Contract extends CommonDBRelation
 {
@@ -50,17 +50,17 @@ class Ticket_Contract extends CommonDBRelation
         return __('Tickets / Contracts');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (Contract::canView()) {
             $nb = 0;
             if ($item::class === Ticket::class) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             } elseif ($item::class === Contract::class) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -72,7 +72,7 @@ class Ticket_Contract extends CommonDBRelation
     }
 
     public static function displayTabContentForItem(
-        CommonGLPI $item,
+        CommonZENTRA $item,
         $tabnum = 1,
         $withtemplate = 0
     ) {
@@ -122,7 +122,7 @@ class Ticket_Contract extends CommonDBRelation
                     <form method="post" action="{{ 'Ticket_Contract'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="{{ item_a_fkey }}" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField(linked_itemtype, linked_itemtype|itemtype_foreign_key, 0, null, {
                                 used: used,
                                 displaywith: ['id'],

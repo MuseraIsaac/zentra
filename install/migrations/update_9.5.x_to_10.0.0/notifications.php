@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
@@ -40,10 +40,10 @@ use Glpi\DBAL\QueryExpression;
  */
 
 /** User mention notification */
-$notification_exists = countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'user_mention']) > 0;
+$notification_exists = countElementsInTable('zentra_notifications', ['itemtype' => 'Ticket', 'event' => 'user_mention']) > 0;
 if (!$notification_exists) {
     $DB->insert(
-        'glpi_notifications',
+        'zentra_notifications',
         [
             'id'              => null,
             'name'            => 'New user mentioned',
@@ -62,7 +62,7 @@ if (!$notification_exists) {
     $notificationtemplate = new NotificationTemplate();
     if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
         $DB->insert(
-            'glpi_notifications_notificationtemplates',
+            'zentra_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -72,7 +72,7 @@ if (!$notification_exists) {
     }
 
     $DB->insert(
-        'glpi_notificationtargets',
+        'zentra_notificationtargets',
         [
             'items_id'         => '39',
             'type'             => '1',

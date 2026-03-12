@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Application\Environment;
-use Glpi\Error\ErrorHandler;
+use Zentra\Application\Environment;
+use Zentra\Error\ErrorHandler;
 use Laminas\I18n\Translator\TextDomain;
 use Laminas\I18n\Translator\Translator;
 
@@ -45,7 +45,7 @@ use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
-global $CFG_GLPI, $TRANSLATE;
+global $CFG_ZENTRA, $TRANSLATE;
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -59,11 +59,11 @@ if ($is_cacheable) {
 }
 
 $requested_language = $_GET['lang'];
-if (!isset($CFG_GLPI['languages'][$requested_language])) {
+if (!isset($CFG_ZENTRA['languages'][$requested_language])) {
     // Fallback to default language if requested one is not available
     $requested_language = Session::getPreferredLanguage();
 }
-$requested_language_file = $CFG_GLPI['languages'][$requested_language][1];
+$requested_language_file = $CFG_ZENTRA['languages'][$requested_language][1];
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
@@ -81,7 +81,7 @@ $messages = null;
 try {
     $messages = $TRANSLATE->getAllMessages($_GET['domain'], $requested_language);
 } catch (Throwable $e) {
-    // Error may happen when overrided translation files does not use same plural rules as GLPI.
+    // Error may happen when overrided translation files does not use same plural rules as ZENTRA.
     ErrorHandler::logCaughtException($e);
 }
 if (!($messages instanceof TextDomain)) {
@@ -92,7 +92,7 @@ if (!($messages instanceof TextDomain)) {
 }
 
 // Extract headers from main po file
-$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language_file);
+$po_file = ZENTRA_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language_file);
 $po_file_handle = fopen(
     $po_file,
     'rb'

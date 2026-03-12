@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use Rule;
@@ -50,10 +50,10 @@ class RuleTest extends DbTestCase
     public function testGetTable()
     {
         $table = Rule::getTable('RuleDictionnarySoftware');
-        $this->assertSame('glpi_rules', $table);
+        $this->assertSame('zentra_rules', $table);
 
         $table = Rule::getTable('RuleTicket');
-        $this->assertSame('glpi_rules', $table);
+        $this->assertSame('zentra_rules', $table);
     }
 
     public function testGetTypeName()
@@ -187,7 +187,7 @@ class RuleTest extends DbTestCase
             $actions
         );
 
-        $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = ALLSTANDARDRIGHT;
+        $_SESSION['zentraactiveprofile']['rule_dictionnary_software'] = ALLSTANDARDRIGHT;
         $rule    = new \RuleDictionnarySoftware();
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
@@ -198,7 +198,7 @@ class RuleTest extends DbTestCase
             $actions
         );
 
-        $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = READ;
+        $_SESSION['zentraactiveprofile']['rule_dictionnary_software'] = READ;
         $rule    = new \RuleDictionnarySoftware();
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
@@ -300,7 +300,7 @@ class RuleTest extends DbTestCase
     {
         $ruleTicket = new RuleTicket();
         $criteria   = $ruleTicket->getCriteria('locations_id');
-        $this->assertSame('glpi_locations', $criteria['table']);
+        $this->assertSame('zentra_locations', $criteria['table']);
         $this->assertEmpty($ruleTicket->getCriteria('location'));
     }
 
@@ -308,7 +308,7 @@ class RuleTest extends DbTestCase
     {
         $ruleTicket = new RuleTicket();
         $action     = $ruleTicket->getAction('locations_id');
-        $this->assertSame('glpi_locations', $action['table']);
+        $this->assertSame('zentra_locations', $action['table']);
         $this->assertEmpty($ruleTicket->getAction('location'));
     }
 
@@ -737,7 +737,7 @@ class RuleTest extends DbTestCase
             'ranking' => $ranking_start + 2,
         ]);
         $this->assertSame($ranking_start + 2, $rule->fields['ranking']);
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertSame(
                 match ($data['id']) {
@@ -799,7 +799,7 @@ class RuleTest extends DbTestCase
     public function testGetNextRanking()
     {
         // Test with a rule type which a single rule
-        $softcat_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleSoftwareCategory']);
+        $softcat_rule_count = countElementsInTable('zentra_rules', ['sub_type' => 'RuleSoftwareCategory']);
         // Make sure this test is still valid
         $this->assertEquals(1, $softcat_rule_count);
 
@@ -821,7 +821,7 @@ class RuleTest extends DbTestCase
         $this->assertEquals($ranking_start + 2, $rule->fields['ranking']);
 
         // Test with a rule type which already has more than 1 rule
-        $ticket_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleTicket']);
+        $ticket_rule_count = countElementsInTable('zentra_rules', ['sub_type' => 'RuleTicket']);
         // Make sure this test is still valid
         $this->assertGreaterThan(1, $ticket_rule_count);
 
@@ -885,7 +885,7 @@ class RuleTest extends DbTestCase
 
         // Move to specific position
         $collection->moveRule($rules_id_1, 0, $ranking_start + 2);
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertEquals(
                 match ($data['id']) {
@@ -900,7 +900,7 @@ class RuleTest extends DbTestCase
 
         // Move before another rule
         $collection->moveRule($rules_id_3, $rules_id_2, 'before');
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertEquals(
                 match ($data['id']) {
@@ -915,7 +915,7 @@ class RuleTest extends DbTestCase
 
         // Move after another rule
         $collection->moveRule($rules_id_1, $rules_id_4, 'after');
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertEquals(
                 match ($data['id']) {
@@ -930,7 +930,7 @@ class RuleTest extends DbTestCase
 
         // Move to first position
         $collection->moveRule($rules_id_1, 0, 'before');
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertEquals(
                 match ($data['id']) {
@@ -945,7 +945,7 @@ class RuleTest extends DbTestCase
 
         // Move to last position
         $collection->moveRule($rules_id_1, 0, 'after');
-        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        $rules = getAllDataFromTable('zentra_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
             $this->assertEquals(
                 match ($data['id']) {
@@ -1001,7 +1001,7 @@ class RuleTest extends DbTestCase
         $this->assertGreaterThan(20, count($existing));
 
         //change one rule
-        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'zentra_rule_import_asset_no_creation_on_partial_import']));
         $this->assertTrue($rules->update(['id' => $rules->getID(), 'name' => 'Changed for tests']));
 
         //init rules, no reset
@@ -1009,14 +1009,14 @@ class RuleTest extends DbTestCase
         $this->assertSame(count($existing), count($rules->find(['sub_type' => $rules::class])));
 
         //check rules has not been reset
-        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'zentra_rule_import_asset_no_creation_on_partial_import']));
         $this->assertSame($rules->fields['name'], 'Changed for tests');
 
         //init rules, reset
         $this->assertTrue($rules->initRules());
         $this->assertSame(count($existing), count($rules->find(['sub_type' => $rules::class])));
 
-        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'zentra_rule_import_asset_no_creation_on_partial_import']));
         $this->assertNotSame($rules->fields['name'], 'Changed for tests');
     }
 

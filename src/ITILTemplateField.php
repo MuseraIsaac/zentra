@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Search\SearchOption;
 
 /**
  * ITILTemplateMandatoryField Class
@@ -102,7 +102,7 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate) {
             return static::showForITILTemplate($item, $withtemplate);
@@ -134,7 +134,7 @@ abstract class ITILTemplateField extends CommonDBChild
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0, $withtypeandcategory = true): bool
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $ID = $tt->fields['id'];
 
@@ -230,7 +230,7 @@ abstract class ITILTemplateField extends CommonDBChild
                 $extra_form_html = Ajax::updateItemOnSelectEvent(
                     "dropdown_num{$rand}",
                     "show_massiveaction_field",
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveActionField.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/dropdownMassiveActionField.php",
                     $embedded_ma_params,
                     false
                 );
@@ -259,7 +259,7 @@ abstract class ITILTemplateField extends CommonDBChild
                         <div class="alert alert-info">{{ task_order_label }}</div>
                     {% endif %}
                     <form name="itiltemplatehidden_form{{ rand }}" method="post" action="{{ form_url }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                         {{ inputs.hidden(items_id_field, id) }}
                         <div class="d-flex justify-content-center flex-wrap">
                             {{ fields.dropdownArrayField('num', 0, fields, null, {
@@ -297,7 +297,7 @@ TWIG, $twig_params);
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                'num_displayed' => min($_SESSION['zentralist_limit'], $numrows),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);

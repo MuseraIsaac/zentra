@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Config;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Plugin\Hooks;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Plugin\Hooks;
+use Zentra\Tests\DbTestCase;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -98,8 +98,8 @@ class ConfigTest extends DbTestCase
             'Config$4'      => "Assistance",
             'Config$12'     => "Management",
             'DisplayPreference$1' => "Search result display",
-            'GLPINetwork$1' => "GLPI Network",
-            'Glpi\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
+            'ZENTRANetwork$1' => "ZENTRA Network",
+            'Zentra\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
         ];
 
         $instance = new Config();
@@ -129,8 +129,8 @@ class ConfigTest extends DbTestCase
             'Config$8'      => "API",
             'Config$11'      => "Impact analysis",
             'DisplayPreference$1' => "Search result display",
-            'GLPINetwork$1' => "GLPI Network",
-            'Glpi\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
+            'ZENTRANetwork$1' => "ZENTRA Network",
+            'Zentra\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
             'Log$1'         => "Historical",
         ];
 
@@ -265,8 +265,8 @@ class ConfigTest extends DbTestCase
         $conf = Config::getConfigurationValues('core', ['version', 'dbversion']);
         $this->assertEquals(
             [
-                'dbversion' => GLPI_SCHEMA_VERSION,
-                'version'   => GLPI_VERSION,
+                'dbversion' => ZENTRA_SCHEMA_VERSION,
+                'version'   => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -278,7 +278,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'notification_to_myself'   => '1',
-                'version'                  => GLPI_VERSION,
+                'version'                  => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -289,7 +289,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'notification_to_myself'   => '0',
-                'version'                  => GLPI_VERSION,
+                'version'                  => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -299,7 +299,7 @@ class ConfigTest extends DbTestCase
         $conf = Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
-                'version' => GLPI_VERSION,
+                'version' => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -310,7 +310,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'new_configuration_key' => 'test',
-                'version'               => GLPI_VERSION,
+                'version'               => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -320,7 +320,7 @@ class ConfigTest extends DbTestCase
         $conf = Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
-                'version' => GLPI_VERSION,
+                'version' => ZENTRA_VERSION,
             ],
             $conf
         );
@@ -537,13 +537,13 @@ class ConfigTest extends DbTestCase
 
     public function testDevicesInMenu()
     {
-        global $CFG_GLPI, $DB;
-        $bkp_devices_in_menu = $CFG_GLPI['devices_in_menu'];
+        global $CFG_ZENTRA, $DB;
+        $bkp_devices_in_menu = $CFG_ZENTRA['devices_in_menu'];
 
         $conf = new Config();
         $this->assertSame(
             ['Item_DeviceSimcard'],
-            $CFG_GLPI['devices_in_menu']
+            $CFG_ZENTRA['devices_in_menu']
         );
 
         //Config::prepareInputForUpdate() always return false.
@@ -564,7 +564,7 @@ class ConfigTest extends DbTestCase
             $res
         );
 
-        $CFG_GLPI['devices_in_menu'] = $bkp_devices_in_menu;
+        $CFG_ZENTRA['devices_in_menu'] = $bkp_devices_in_menu;
     }
 
     /**
@@ -592,12 +592,12 @@ class ConfigTest extends DbTestCase
         // get count of users using local auth
         $local_users_count = countElementsInTable(
             \User::getTable(),
-            ['authtype' => \Auth::DB_GLPI]
+            ['authtype' => \Auth::DB_ZENTRA]
         );
         // get count of users using external auth
         $external_users_count = countElementsInTable(
             \User::getTable(),
-            ['NOT' => ['authtype' => \Auth::DB_GLPI]]
+            ['NOT' => ['authtype' => \Auth::DB_ZENTRA]]
         );
         // reset 'password_last_update' to null for the test
         $DB->update(\User::getTable(), ['password_last_update' => null], [new QueryExpression('true')]);
@@ -613,14 +613,14 @@ class ConfigTest extends DbTestCase
             $local_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['authtype' => \Auth::DB_GLPI, 'password_last_update' => null]
+                ['authtype' => \Auth::DB_ZENTRA, 'password_last_update' => null]
             )
         );
         $this->assertEquals(
             $external_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+                ['NOT' => ['authtype' => \Auth::DB_ZENTRA], 'password_last_update' => null]
             )
         );
         $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
@@ -629,16 +629,16 @@ class ConfigTest extends DbTestCase
         // check that activation of password expiration reset `password_last_update` to current date
         // for all local users but not for external users
         // and activate passwordexpiration crontask
-        $current_time = $_SESSION['glpi_currenttime'];
+        $current_time = $_SESSION['zentra_currenttime'];
         $update_datetime = date('Y-m-d H:i:s', strtotime('-15 days')); // arbitrary date
-        $_SESSION['glpi_currenttime'] = $update_datetime;
+        $_SESSION['zentra_currenttime'] = $update_datetime;
         $conf->update(
             [
                 'id'                        => 1,
                 'password_expiration_delay' => 30,
             ]
         );
-        $_SESSION['glpi_currenttime'] = $current_time;
+        $_SESSION['zentra_currenttime'] = $current_time;
         $values = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
         $this->assertSame(30, (int) $values['password_expiration_delay']);
@@ -646,14 +646,14 @@ class ConfigTest extends DbTestCase
             $local_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['authtype' => \Auth::DB_GLPI, 'password_last_update' => $update_datetime]
+                ['authtype' => \Auth::DB_ZENTRA, 'password_last_update' => $update_datetime]
             )
         );
         $this->assertEquals(
             $external_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+                ['NOT' => ['authtype' => \Auth::DB_ZENTRA], 'password_last_update' => null]
             )
         );
         $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
@@ -661,16 +661,16 @@ class ConfigTest extends DbTestCase
 
         // check that changing password expiration delay does not reset `password_last_update` to current date
         // if password expiration was already active
-        $current_time = $_SESSION['glpi_currenttime'];
+        $current_time = $_SESSION['zentra_currenttime'];
         $new_update_datetime = date('Y-m-d H:i:s', strtotime('-5 days')); // arbitrary date
-        $_SESSION['glpi_currenttime'] = $new_update_datetime;
+        $_SESSION['zentra_currenttime'] = $new_update_datetime;
         $conf->update(
             [
                 'id'                        => 1,
                 'password_expiration_delay' => 45,
             ]
         );
-        $_SESSION['glpi_currenttime'] = $current_time;
+        $_SESSION['zentra_currenttime'] = $current_time;
         $values = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
         $this->assertSame(45, (int) $values['password_expiration_delay']);
@@ -678,14 +678,14 @@ class ConfigTest extends DbTestCase
             $local_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['authtype' => \Auth::DB_GLPI, 'password_last_update' => $update_datetime] // previous config update
+                ['authtype' => \Auth::DB_ZENTRA, 'password_last_update' => $update_datetime] // previous config update
             )
         );
         $this->assertEquals(
             $external_users_count,
             countElementsInTable(
                 \User::getTable(),
-                ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
+                ['NOT' => ['authtype' => \Auth::DB_ZENTRA], 'password_last_update' => null]
             )
         );
     }
@@ -749,7 +749,7 @@ class ConfigTest extends DbTestCase
             'itemtype_link'    => '',
             'linked_action'    => 0,
             'user_name'        => Session::getLoginUserID(false),
-            'date_mod'         => $_SESSION['glpi_currenttime'],
+            'date_mod'         => $_SESSION['zentra_currenttime'],
             'id_search_option' => 1,
             'old_id' => null,
             'new_id' => null,
@@ -797,20 +797,20 @@ class ConfigTest extends DbTestCase
 
     public function testAutoCreateInfocom()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $infocom_types = $CFG_GLPI["infocom_types"];
+        $infocom_types = $CFG_ZENTRA["infocom_types"];
         $excluded_types = [
             'Cartridge', // Should inherit from CartridgeItem
             'Consumable', // Should inherit from ConsumableItem
         ];
         $infocom_types = array_diff($infocom_types, $excluded_types);
 
-        $auto_create_infocoms_original = $CFG_GLPI["auto_create_infocoms"] ?? 0;
+        $auto_create_infocoms_original = $CFG_ZENTRA["auto_create_infocoms"] ?? 0;
 
         $infocom = new \Infocom();
         foreach ($infocom_types as $asset_type) {
-            $CFG_GLPI['auto_create_infocoms'] = 1;
+            $CFG_ZENTRA['auto_create_infocoms'] = 1;
             $asset = new $asset_type();
             $asset_id = $asset->add([
                 'name'                  => 'auto_infocom_test',
@@ -819,12 +819,12 @@ class ConfigTest extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $auto_create_infocoms_original;
+            $CFG_ZENTRA['auto_create_infocoms'] = $auto_create_infocoms_original;
             // Verify an Infocom object exists for the newly created asset
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id);
             $this->assertTrue($infocom_exists);
 
-            $CFG_GLPI['auto_create_infocoms'] = 0;
+            $CFG_ZENTRA['auto_create_infocoms'] = 0;
             // Verify an Infocom object does not exist for a newly created asset
             $asset_id2 = $asset->add([
                 'name'                  => 'auto_infocom_test2',
@@ -833,7 +833,7 @@ class ConfigTest extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $auto_create_infocoms_original;
+            $CFG_ZENTRA['auto_create_infocoms'] = $auto_create_infocoms_original;
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
             $this->assertFalse($infocom_exists);
         }
@@ -844,25 +844,25 @@ class ConfigTest extends DbTestCase
         $itemtype = Config::class;
         $config_id = Config::getConfigIDForContext('core');
         $this->assertGreaterThan(0, $config_id);
-        $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
+        $total_number = countElementsInTable("zentra_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
         $this->assertGreaterThan(0, $total_number);
     }
 
     public function testPrepareInputForUpdateLockProfile(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
         // Ensure the profile used for locks is valid.
         $config = new Config();
-        $default_lock_profile = $CFG_GLPI['lock_lockprofile_id']; // 8
+        $default_lock_profile = $CFG_ZENTRA['lock_lockprofile_id']; // 8
 
         // Invalid profile 1: simplified interface
         $config->prepareInputForUpdate([
             'lock_lockprofile_id' => getItemByTypeName(Profile::class, "Self-Service", true),
         ]);
-        $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
+        $this->assertEquals($default_lock_profile, (int) $CFG_ZENTRA['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
             "The specified profile doesn&#039;t exist or is not allowed to access the central interface.",
         ]);
@@ -871,44 +871,44 @@ class ConfigTest extends DbTestCase
         $config->prepareInputForUpdate([
             'lock_lockprofile_id' => 674568,
         ]);
-        $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
+        $this->assertEquals($default_lock_profile, (int) $CFG_ZENTRA['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
             "The specified profile doesn&#039;t exist or is not allowed to access the central interface.",
         ]);
 
         // Valid profile
         $super_admin = getItemByTypeName(Profile::class, "Super-Admin", true);
-        $this->assertNotEquals($super_admin, (int) $CFG_GLPI['lock_lockprofile_id']);
+        $this->assertNotEquals($super_admin, (int) $CFG_ZENTRA['lock_lockprofile_id']);
         $config->prepareInputForUpdate([
             'lock_lockprofile_id' => $super_admin,
         ]);
-        $this->assertEquals($super_admin, (int) $CFG_GLPI['lock_lockprofile_id']);
+        $this->assertEquals($super_admin, (int) $CFG_ZENTRA['lock_lockprofile_id']);
     }
 
     public function testPrepareInputForUpdatePdfFont(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
         $config = new Config();
-        $default_font = $CFG_GLPI['pdffont'];
+        $default_font = $CFG_ZENTRA['pdffont'];
 
         // Invalid font
         $config->prepareInputForUpdate([
             'pdffont' => 'notavalidfont',
         ]);
-        $this->assertEquals($default_font, $CFG_GLPI['pdffont']);
+        $this->assertEquals($default_font, $CFG_ZENTRA['pdffont']);
         $this->hasSessionMessages(ERROR, [
             'The following field has an incorrect value: &quot;PDF export font&quot;.',
         ]);
 
         // Valid font
-        $this->assertNotEquals('freesans', $CFG_GLPI['pdffont']);
+        $this->assertNotEquals('freesans', $CFG_ZENTRA['pdffont']);
         $config->prepareInputForUpdate([
             'pdffont' => 'freesans',
         ]);
-        $this->assertEquals('freesans', $CFG_GLPI['pdffont']);
+        $this->assertEquals('freesans', $CFG_ZENTRA['pdffont']);
     }
 
     public function testShowFormSecurity(): void

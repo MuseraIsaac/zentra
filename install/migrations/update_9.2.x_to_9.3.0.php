@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,8 @@ function update92xto930()
     $migration->setVersion('9.3');
 
     //Create solutions table
-    if (!$DB->tableExists('glpi_itilsolutions')) {
-        $query = "CREATE TABLE `glpi_itilsolutions` (
+    if (!$DB->tableExists('zentra_itilsolutions')) {
+        $query = "CREATE TABLE `zentra_itilsolutions` (
          `id` int NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
          `items_id` int NOT NULL DEFAULT '0',
@@ -86,17 +86,17 @@ function update92xto930()
 
     //add unicity key required for migration only
     $migration->addKey(
-        'glpi_itilsolutions',
+        'zentra_itilsolutions',
         ['itemtype', 'items_id', 'date_creation'],
         'migration_unicity',
         'UNIQUE'
     );
-    $migration->migrationOneTable('glpi_itilsolutions');
+    $migration->migrationOneTable('zentra_itilsolutions');
 
-    if ($DB->fieldExists('glpi_tickets', 'solution')) {
+    if ($DB->fieldExists('zentra_tickets', 'solution')) {
         //migrate solution history for tickets
         // TODO can be done when DB::insertOrUpdate() supports SELECT
-        $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
+        $query = "REPLACE INTO `zentra_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
                   ticket.`id` AS items_id,
@@ -112,8 +112,8 @@ function update92xto930()
                      ELSE 1                           -- else NONE
                   END) AS status,
                   ticket.`closedate` AS date_approval
-               FROM glpi_tickets AS ticket
-               LEFT JOIN `glpi_logs` AS log
+               FROM zentra_tickets AS ticket
+               LEFT JOIN `zentra_logs` AS log
                   ON log.`itemtype` = 'Ticket'
                   AND log.`items_id` = ticket.`id`
                   AND log.`id_search_option` = 24
@@ -123,15 +123,15 @@ function update92xto930()
                GROUP BY ticket.`id`
                ORDER BY ticket.`id` ASC, log.id DESC";
         $DB->doQuery($query);
-        $migration->dropField('glpi_tickets', 'solution');
-        $migration->dropKey('glpi_tickets', 'solutiontypes_id');
-        $migration->dropField('glpi_tickets', 'solutiontypes_id');
+        $migration->dropField('zentra_tickets', 'solution');
+        $migration->dropKey('zentra_tickets', 'solutiontypes_id');
+        $migration->dropField('zentra_tickets', 'solutiontypes_id');
     }
 
-    if ($DB->fieldExists('glpi_problems', 'solution')) {
+    if ($DB->fieldExists('zentra_problems', 'solution')) {
         // Problem soution history
         // TODO can be done when DB::insertOrUpdate() supports SELECT
-        $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
+        $query = "REPLACE INTO `zentra_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
                   problem.`id` AS items_id,
@@ -148,8 +148,8 @@ function update92xto930()
                      ELSE 1                           -- else NONE
                   END) AS status,
                   problem.`closedate` AS date_approval
-               FROM glpi_problems AS problem
-               LEFT JOIN `glpi_logs` AS log
+               FROM zentra_problems AS problem
+               LEFT JOIN `zentra_logs` AS log
                   ON log.`itemtype` = 'Problem'
                   AND log.`items_id` = problem.`id`
                   AND log.`id_search_option` = 24
@@ -159,15 +159,15 @@ function update92xto930()
                GROUP BY problem.`id`
                ORDER BY problem.`id` ASC, log.id DESC";
         $DB->doQuery($query);
-        $migration->dropField('glpi_problems', 'solution');
-        $migration->dropKey('glpi_problems', 'solutiontypes_id');
-        $migration->dropField('glpi_problems', 'solutiontypes_id');
+        $migration->dropField('zentra_problems', 'solution');
+        $migration->dropKey('zentra_problems', 'solutiontypes_id');
+        $migration->dropField('zentra_problems', 'solutiontypes_id');
     }
 
-    if ($DB->fieldExists('glpi_changes', 'solution')) {
+    if ($DB->fieldExists('zentra_changes', 'solution')) {
         // Change solution history
         // TODO can be done when DB::insertOrUpdate() supports SELECT
-        $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
+        $query = "REPLACE INTO `zentra_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
                   changes.`id` AS items_id,
@@ -184,8 +184,8 @@ function update92xto930()
                      ELSE 1                           -- else NONE
                   END) AS status,
                   changes.`closedate` AS date_approval
-               FROM glpi_changes AS changes
-               LEFT JOIN `glpi_logs` AS log
+               FROM zentra_changes AS changes
+               LEFT JOIN `zentra_logs` AS log
                   ON log.`itemtype` = 'Change'
                   AND log.`items_id` = changes.`id`
                   AND log.`id_search_option` = 24
@@ -195,18 +195,18 @@ function update92xto930()
                GROUP BY changes.`id`
                ORDER BY changes.`id` ASC, log.id DESC";
         $DB->doQuery($query);
-        $migration->dropField('glpi_changes', 'solution');
-        $migration->dropKey('glpi_changes', 'solutiontypes_id');
-        $migration->dropField('glpi_changes', 'solutiontypes_id');
+        $migration->dropField('zentra_changes', 'solution');
+        $migration->dropKey('zentra_changes', 'solutiontypes_id');
+        $migration->dropField('zentra_changes', 'solutiontypes_id');
     }
 
     //drop migration unicity key
-    $migration->dropKey('glpi_itilsolutions', 'migration_unicity');
-    $migration->migrationOneTable('glpi_itilsolutions');
+    $migration->dropKey('zentra_itilsolutions', 'migration_unicity');
+    $migration->migrationOneTable('zentra_itilsolutions');
 
     /** Datacenters */
-    if (!$DB->tableExists('glpi_datacenters')) {
-        $query = "CREATE TABLE `glpi_datacenters` (
+    if (!$DB->tableExists('zentra_datacenters')) {
+        $query = "CREATE TABLE `zentra_datacenters` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `entities_id` int NOT NULL DEFAULT '0',
@@ -224,8 +224,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_dcrooms')) {
-        $query = "CREATE TABLE `glpi_dcrooms` (
+    if (!$DB->tableExists('zentra_dcrooms')) {
+        $query = "CREATE TABLE `zentra_dcrooms` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `entities_id` int NOT NULL DEFAULT '0',
@@ -247,12 +247,12 @@ function update92xto930()
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQuery($query);
     }
-    if (!$DB->fieldExists('glpi_dcrooms', 'blueprint')) {
-        $migration->addField('glpi_dcrooms', 'blueprint', 'text', ['after' => 'vis_rows']);
+    if (!$DB->fieldExists('zentra_dcrooms', 'blueprint')) {
+        $migration->addField('zentra_dcrooms', 'blueprint', 'text', ['after' => 'vis_rows']);
     }
 
-    if (!$DB->tableExists('glpi_rackmodels')) {
-        $query = "CREATE TABLE `glpi_rackmodels` (
+    if (!$DB->tableExists('zentra_rackmodels')) {
+        $query = "CREATE TABLE `zentra_rackmodels` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -266,8 +266,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_racktypes')) {
-        $query = "CREATE TABLE `glpi_racktypes` (
+    if (!$DB->tableExists('zentra_racktypes')) {
+        $query = "CREATE TABLE `zentra_racktypes` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `entities_id` int NOT NULL DEFAULT '0',
                   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -285,8 +285,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_racks')) {
-        $query = "CREATE TABLE `glpi_racks` (
+    if (!$DB->tableExists('zentra_racks')) {
+        $query = "CREATE TABLE `zentra_racks` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -334,8 +334,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_racks')) {
-        $query = "CREATE TABLE `glpi_items_racks` (
+    if (!$DB->tableExists('zentra_items_racks')) {
+        $query = "CREATE TABLE `zentra_items_racks` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `racks_id` int NOT NULL,
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -394,7 +394,7 @@ function update92xto930()
     ];
 
     foreach ($models as $model) {
-        $table = "glpi_{$model}models";
+        $table = "zentra_{$model}models";
         $after = 'product_number';
         foreach ($models_fields as $field) {
             if (!$DB->fieldExists($table, $field['name'])) {
@@ -409,8 +409,8 @@ function update92xto930()
         }
     }
 
-    if (!$DB->tableExists('glpi_enclosuremodels')) {
-        $query = "CREATE TABLE `glpi_enclosuremodels` (
+    if (!$DB->tableExists('zentra_enclosuremodels')) {
+        $query = "CREATE TABLE `zentra_enclosuremodels` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -434,8 +434,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_enclosures')) {
-        $query = "CREATE TABLE `glpi_enclosures` (
+    if (!$DB->tableExists('zentra_enclosures')) {
+        $query = "CREATE TABLE `zentra_enclosures` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `entities_id` int NOT NULL DEFAULT '0',
@@ -471,8 +471,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_enclosures')) {
-        $query = "CREATE TABLE `glpi_items_enclosures` (
+    if (!$DB->tableExists('zentra_items_enclosures')) {
+        $query = "CREATE TABLE `zentra_items_enclosures` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `enclosures_id` int NOT NULL,
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -485,8 +485,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_pdumodels')) {
-        $query = "CREATE TABLE `glpi_pdumodels` (
+    if (!$DB->tableExists('zentra_pdumodels')) {
+        $query = "CREATE TABLE `zentra_pdumodels` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -509,9 +509,9 @@ function update92xto930()
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQuery($query);
     }
-    if ($DB->fieldExists('glpi_pdumodels', 'power_consumption')) {
+    if ($DB->fieldExists('zentra_pdumodels', 'power_consumption')) {
         $migration->changeField(
-            'glpi_pdumodels',
+            'zentra_pdumodels',
             'power_consumption',
             'max_power',
             'integer',
@@ -519,8 +519,8 @@ function update92xto930()
         );
     }
 
-    if (!$DB->tableExists('glpi_pdutypes')) {
-        $query = "CREATE TABLE `glpi_pdutypes` (
+    if (!$DB->tableExists('zentra_pdutypes')) {
+        $query = "CREATE TABLE `zentra_pdutypes` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `entities_id` int NOT NULL DEFAULT '0',
                   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -538,8 +538,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_pdus')) {
-        $query = "CREATE TABLE `glpi_pdus` (
+    if (!$DB->tableExists('zentra_pdus')) {
+        $query = "CREATE TABLE `zentra_pdus` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `entities_id` int NOT NULL DEFAULT '0',
@@ -575,8 +575,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_plugs')) {
-        $query = "CREATE TABLE `glpi_plugs` (
+    if (!$DB->tableExists('zentra_plugs')) {
+        $query = "CREATE TABLE `zentra_plugs` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -590,8 +590,8 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_pdus_plugs')) {
-        $query = "CREATE TABLE `glpi_pdus_plugs` (
+    if (!$DB->tableExists('zentra_pdus_plugs')) {
+        $query = "CREATE TABLE `zentra_pdus_plugs` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `plugs_id` int NOT NULL DEFAULT '0',
                   `pdus_id` int NOT NULL DEFAULT '0',
@@ -605,17 +605,17 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    if (!countElementsInTable('glpi_plugs')) {
+    if (!countElementsInTable('zentra_plugs')) {
         $plugs = ['C13', 'C15', 'C19'];
         foreach ($plugs as $plug) {
             $migration->addPostQuery(
-                $DB->buildInsert('glpi_plugs', ['name' => $plug])
+                $DB->buildInsert('zentra_plugs', ['name' => $plug])
             );
         }
     }
 
-    if (!$DB->tableExists('glpi_pdus_racks')) {
-        $query = "CREATE TABLE `glpi_pdus_racks` (
+    if (!$DB->tableExists('zentra_pdus_racks')) {
+        $query = "CREATE TABLE `zentra_pdus_racks` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `racks_id` int NOT NULL DEFAULT '0',
                   `pdus_id` int NOT NULL DEFAULT '0',
@@ -631,10 +631,10 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-    $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,
+    $migration->addField('zentra_states', 'is_visible_rack', 'bool', ['value' => 1,
         'after' => 'is_visible_certificate',
     ]);
-    $migration->addKey('glpi_states', 'is_visible_rack');
+    $migration->addKey('zentra_states', 'is_visible_rack');
 
     $ADDTODISPLAYPREF['Datacenter'] = [3];
     $ADDTODISPLAYPREF['Rack']       = [31, 23, 5, 7];
@@ -645,45 +645,45 @@ function update92xto930()
     /** /Datacenters */
 
     /** Add address to locations */
-    if (!$DB->fieldExists('glpi_locations', 'address')) {
+    if (!$DB->fieldExists('zentra_locations', 'address')) {
         $migration->addField(
-            'glpi_locations',
+            'zentra_locations',
             'address',
             'text',
             ['after' => 'sons_cache']
         );
     }
 
-    if (!$DB->fieldExists('glpi_locations', 'postcode')) {
+    if (!$DB->fieldExists('zentra_locations', 'postcode')) {
         $migration->addField(
-            'glpi_locations',
+            'zentra_locations',
             'postcode',
             'string',
             ['after' => 'address']
         );
     }
 
-    if (!$DB->fieldExists('glpi_locations', 'town')) {
+    if (!$DB->fieldExists('zentra_locations', 'town')) {
         $migration->addField(
-            'glpi_locations',
+            'zentra_locations',
             'town',
             'string',
             ['after' => 'postcode']
         );
     }
 
-    if (!$DB->fieldExists('glpi_locations', 'state')) {
+    if (!$DB->fieldExists('zentra_locations', 'state')) {
         $migration->addField(
-            'glpi_locations',
+            'zentra_locations',
             'state',
             'string',
             ['after' => 'town']
         );
     }
 
-    if (!$DB->fieldExists('glpi_locations', 'country')) {
+    if (!$DB->fieldExists('zentra_locations', 'country')) {
         $migration->addField(
-            'glpi_locations',
+            'zentra_locations',
             'country',
             'string',
             ['after' => 'state']
@@ -692,7 +692,7 @@ function update92xto930()
     /** /Add address to locations */
 
     /** Innodb */
-    foreach (['glpi_knowbaseitemtranslations', 'glpi_knowbaseitems'] as $table) {
+    foreach (['zentra_knowbaseitemtranslations', 'zentra_knowbaseitems'] as $table) {
         foreach (['name', 'answer'] as $key) {
             $migration->addKey(
                 $table,
@@ -704,28 +704,28 @@ function update92xto930()
     }
 
     /** Migrate computerdisks to items_disks */
-    if (!$DB->tableExists('glpi_items_disks') && $DB->tableExists('glpi_computerdisks')) {
-        $migration->renameTable('glpi_computerdisks', 'glpi_items_disks');
+    if (!$DB->tableExists('zentra_items_disks') && $DB->tableExists('zentra_computerdisks')) {
+        $migration->renameTable('zentra_computerdisks', 'zentra_items_disks');
     }
-    if ($DB->fieldExists('glpi_items_disks', 'computers_id')) {
-        $migration->dropField('glpi_items_disks', 'items_id');
-        $migration->dropKey('glpi_items_disks', 'computers_id');
+    if ($DB->fieldExists('zentra_items_disks', 'computers_id')) {
+        $migration->dropField('zentra_items_disks', 'items_id');
+        $migration->dropKey('zentra_items_disks', 'computers_id');
         $migration->changeField(
-            'glpi_items_disks',
+            'zentra_items_disks',
             'computers_id',
             'items_id',
             'integer'
         );
-        $migration->addKey('glpi_items_disks', 'items_id');
+        $migration->addKey('zentra_items_disks', 'items_id');
     }
-    if (!$DB->fieldExists('glpi_items_disks', 'itemtype')) {
-        $migration->addField('glpi_items_disks', 'itemtype', 'string', ['after' => 'entities_id']);
+    if (!$DB->fieldExists('zentra_items_disks', 'itemtype')) {
+        $migration->addField('zentra_items_disks', 'itemtype', 'string', ['after' => 'entities_id']);
     }
-    $migration->addKey('glpi_items_disks', 'itemtype');
-    $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
+    $migration->addKey('zentra_items_disks', 'itemtype');
+    $migration->addKey('zentra_items_disks', ['itemtype', 'items_id'], 'item');
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_items_disks',
+            'zentra_items_disks',
             ['itemtype' => 'Computer'],
             ['itemtype' => null]
         )
@@ -757,7 +757,7 @@ function update92xto930()
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
-            $DB->updateOrInsert("glpi_displaypreferences", [
+            $DB->updateOrInsert("zentra_displaypreferences", [
                 'rank'      => $rank++,
             ], [
                 'users_id'  => "0",
@@ -768,26 +768,26 @@ function update92xto930()
     }
 
     // upgrade for users multi-domains
-    if (!isIndex('glpi_users', 'unicityloginauth')) {
-        $migration->dropKey("glpi_users", "unicity");
+    if (!isIndex('zentra_users', 'unicityloginauth')) {
+        $migration->dropKey("zentra_users", "unicity");
         $migration->addKey(
-            'glpi_users',
+            'zentra_users',
             ['name', 'authtype', 'auths_id'],
             'unicityloginauth',
             'UNIQUE'
         );
     }
-    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
+    $migration->addField('zentra_authldaps', 'inventory_domain', 'string');
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_users",
-            ["glpi_users.authtype" => 1],
-            ["glpi_users.authtype" => 0]
+            "zentra_users",
+            ["zentra_users.authtype" => 1],
+            ["zentra_users.authtype" => 0]
         )
     );
 
     //Permit same license several times on same computer
-    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
+    $migration->dropKey('zentra_computers_softwarelicenses', 'unicity');
 
     /** Logs purge */
     $purge_params = [
@@ -817,9 +817,9 @@ function update92xto930()
     ];
 
     $purge_plugin_values = [];
-    if ($DB->tableExists('glpi_plugin_purgelogs_configs')) {
+    if ($DB->tableExists('zentra_plugin_purgelogs_configs')) {
         $purge_plugin_values = iterator_to_array(
-            $DB->request(['FROM' => 'glpi_plugin_purgelogs_configs'])
+            $DB->request(['FROM' => 'zentra_plugin_purgelogs_configs'])
         )[1];
     }
 

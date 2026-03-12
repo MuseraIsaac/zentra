@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 use function Safe\json_encode;
 
@@ -53,11 +53,11 @@ class Item_Rack extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $nb = 0;
         if (
-            $_SESSION['glpishow_count_on_tabs']
+            $_SESSION['zentrashow_count_on_tabs']
             && ($item instanceof CommonDBTM)
         ) {
             $nb = countElementsInTable(
@@ -72,7 +72,7 @@ class Item_Rack extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof Rack) {
             return false;
@@ -165,7 +165,7 @@ class Item_Rack extends CommonDBRelation
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
@@ -375,7 +375,7 @@ class Item_Rack extends CommonDBRelation
      */
     public static function showItems(Rack $rack): bool
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID = $rack->getID();
 
@@ -422,7 +422,7 @@ class Item_Rack extends CommonDBRelation
         echo "</div>"; // #viewgraph
 
         $rack_add_tip = __('Insert an item here');
-        $ajax_url     = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
+        $ajax_url     = $CFG_ZENTRA['root_doc'] . "/ajax/rack.php";
 
         $js = '
             // init variables to pass to js/rack.js
@@ -531,7 +531,7 @@ class Item_Rack extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         echo "<div class='center'>";
 
@@ -558,7 +558,7 @@ class Item_Rack extends CommonDBRelation
             );
             echo htmlescape(PDU::getTypeName(1));
         } else {
-            $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
+            $types = array_combine($CFG_ZENTRA['rackable_types'], $CFG_ZENTRA['rackable_types']);
             foreach ($types as $type => &$text) {
                 /** @var class-string $type */
                 $text = $type::getTypeName(1);
@@ -728,13 +728,13 @@ class Item_Rack extends CommonDBRelation
 
         $entities = $rack->fields['entities_id'];
         if ($rack->fields['is_recursive']) {
-            $entities = getSonsOf('glpi_entities', $entities);
+            $entities = getSonsOf('zentra_entities', $entities);
         }
 
         Ajax::updateItemOnSelectEvent(
             ["dropdown_itemtype$rand", "dropdown_is_reserved$rand", "used_$rand"],
             "items_id",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownAllItems.php",
             [
                 'idtable'         => '__VALUE0__',
                 'name'            => 'items_id',

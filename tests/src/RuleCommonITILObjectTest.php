@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use CommonITILActor;
 use CommonITILValidation;
 use Entity;
 use Generator;
-use Glpi\Tests\Glpi\ValidationStepTrait;
+use Zentra\Tests\Zentra\ValidationStepTrait;
 use Group;
 use Group_Ticket;
 use Group_User;
@@ -170,7 +170,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'content'          => "test",
             '_users_id_assign' => getItemByTypeName('User', "tech", true),
         ]);
-        // _users_id_assign is stored in glpi_*_users table, so remove it
+        // _users_id_assign is stored in zentra_*_users table, so remove it
         unset($itil_input['_users_id_assign']);
         $this->checkInput($itil, $itil_id, $itil_input);
         $this->assertEquals(5, (int) $itil->getField('urgency'));
@@ -320,7 +320,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'content'          => 'test',
             '_users_id_assign' => getItemByTypeName('User', 'tech', true),
         ]);
-        unset($itil_input['_users_id_assign']); // _users_id_assign is stored in glpi_*_users table, so remove it
+        unset($itil_input['_users_id_assign']); // _users_id_assign is stored in zentra_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
         $this->assertEquals(\CommonITILObject::WAITING, (int) $itil->getField('status'));
     }
@@ -414,7 +414,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 'id'                => $itil_id,
                 'name'              => 'assign to tech (on update)',
                 'content'           => 'test',
-                '_users_id_assign'  => getItemByTypeName('User', 'glpi', true), // rule should erase this value
+                '_users_id_assign'  => getItemByTypeName('User', 'zentra', true), // rule should erase this value
             ]));
             $this->assertTrue($itil->getFromDB($itil_id));
             $this->assertEquals(\CommonITILObject::INCOMING, (int) $itil->getField('status'));
@@ -755,7 +755,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'content'          => 'test',
             '_users_id_requester' => $user->fields['id'],
         ]);
-        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
+        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in zentra_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
 
         //load ITILGroup
@@ -1966,7 +1966,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
         //add appliance to ITIL Object type
-        $CFG_GLPI["ticket_types"][] = \Appliance::getType();
+        $CFG_ZENTRA["ticket_types"][] = \Appliance::getType();
 
         // Add rule for create / update trigger (and assign action)
         $rule_itil = $this->getRuleInstance();
@@ -2193,10 +2193,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
-        //create appliance "glpi"
+        //create appliance "zentra"
         $applianceTest2 = new \Appliance();
         $appliancetest2_id = $applianceTest2->add($applianceTest2_input = [
-            "name"                  => "glpi",
+            "name"                  => "zentra",
             "is_helpdesk_visible"   => true,
             "entities_id"           => $root_entity,
         ]);
@@ -2848,7 +2848,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // --- arrange : set a manager in the requester's group
         $this->login();
         $group = getItemByTypeName(Group::class, '_test_group_1');
-        $manager = getItemByTypeName(User::class, 'glpi');
+        $manager = getItemByTypeName(User::class, 'zentra');
 
         $this->createItem(
             Group_User::class,
@@ -2902,7 +2902,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // --- arrange : set a manager in the tech's group
         $this->login();
         $group = getItemByTypeName(Group::class, '_test_group_1');
-        $manager = getItemByTypeName(User::class, 'glpi');
+        $manager = getItemByTypeName(User::class, 'zentra');
 
         $this->createItem(
             Group_User::class,
@@ -2989,7 +2989,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             '_validation_targets' => [
                 [
                     'itemtype_target' => User::class,
-                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true),
+                    'items_id_target' => getItemByTypeName(User::class, 'zentra', true),
                 ],
             ],
             '_add_validation'   => false,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use Change;
 use CommonDBTM;
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Comment;
-use Glpi\Form\Condition\Type;
-use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
-use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Form;
-use Glpi\Form\FormTranslation;
-use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\Section;
-use Glpi\Form\Tag\Tag;
+use Zentra\DBAL\JsonFieldInterface;
+use Zentra\Form\AccessControl\FormAccessControl;
+use Zentra\Form\AnswersHandler\AnswersHandler;
+use Zentra\Form\AnswersSet;
+use Zentra\Form\Comment;
+use Zentra\Form\Condition\Type;
+use Zentra\Form\Destination\CommonITILField\SimpleValueConfig;
+use Zentra\Form\Destination\FormDestination;
+use Zentra\Form\Export\Context\DatabaseMapper;
+use Zentra\Form\Form;
+use Zentra\Form\FormTranslation;
+use Zentra\Form\Question;
+use Zentra\Form\QuestionType\QuestionTypeShortText;
+use Zentra\Form\Section;
+use Zentra\Form\Tag\Tag;
 use LogicException;
 use Problem;
 use RuntimeException;
@@ -892,14 +892,14 @@ trait FormTesterTrait
         global $DB;
 
         // Add form
-        $DB->insert('glpi_plugin_formcreator_forms', [
+        $DB->insert('zentra_plugin_formcreator_forms', [
             'name' => $name,
             'show_rule' => $submit_conditions['show_rule'] ?? 1,
         ] + $properties);
         $form_id = $DB->insertId();
 
         // Add a section
-        $DB->insert('glpi_plugin_formcreator_sections', [
+        $DB->insert('zentra_plugin_formcreator_sections', [
             'plugin_formcreator_forms_id' => $form_id,
         ]);
         $section_id = $DB->insertId();
@@ -914,7 +914,7 @@ trait FormTesterTrait
             }
 
             $data['plugin_formcreator_sections_id'] = $section_id;
-            $DB->insert('glpi_plugin_formcreator_questions', $data);
+            $DB->insert('zentra_plugin_formcreator_questions', $data);
             $question_id = $DB->insertId();
 
             // Keep track of name => id map
@@ -930,7 +930,7 @@ trait FormTesterTrait
                     $condition['itemtype'] = 'PluginFormcreatorQuestion';
                     $condition['items_id'] = $question_id;
 
-                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
+                    $DB->insert('zentra_plugin_formcreator_conditions', $condition);
                 }
             }
         }
@@ -941,7 +941,7 @@ trait FormTesterTrait
             $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
             $target_q_id = $questions_names_map[$target_q_name];
 
-            $DB->insert('glpi_plugin_formcreator_conditions', [
+            $DB->insert('zentra_plugin_formcreator_conditions', [
                 'itemtype'                        => 'PluginFormcreatorForm',
                 'items_id'                        => $form_id,
                 'plugin_formcreator_questions_id' => $target_q_id,
@@ -955,7 +955,7 @@ trait FormTesterTrait
         foreach ($ticket_destinations as $ticket_destination) {
             $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
             $DB->insert(
-                'glpi_plugin_formcreator_targettickets',
+                'zentra_plugin_formcreator_targettickets',
                 $ticket_destination,
             );
         }
@@ -971,7 +971,7 @@ trait FormTesterTrait
         global $DB;
 
         $data['plugin_formcreator_forms_id'] = $form_id;
-        $DB->insert('glpi_plugin_formcreator_targetchanges', $data);
+        $DB->insert('zentra_plugin_formcreator_targetchanges', $data);
     }
 
     protected function addProblemTargetToFromcreatorForm(
@@ -982,7 +982,7 @@ trait FormTesterTrait
         global $DB;
 
         $data['plugin_formcreator_forms_id'] = $form_id;
-        $DB->insert('glpi_plugin_formcreator_targetproblems', $data);
+        $DB->insert('zentra_plugin_formcreator_targetproblems', $data);
     }
 
     protected function getFormCreatorQuestionId(string $name): int
@@ -992,7 +992,7 @@ trait FormTesterTrait
 
         $results = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_plugin_formcreator_questions',
+            'FROM'   => 'zentra_plugin_formcreator_questions',
             'WHERE'  => ['name' => $name],
         ]);
 

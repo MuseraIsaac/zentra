@@ -35,7 +35,7 @@ _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
 
 ##
 ## This Makefile is used for *local development* only.
-## Production or deployment should be handled following GLPI's documentation.
+## Production or deployment should be handled following ZENTRA's documentation.
 ##
 
 ## —— General ——————————————————————————————————————————————————————————————————
@@ -83,8 +83,8 @@ sql: ## Enter the database cli
 	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
 .PHONY: sql
 
-## —— GLPI commands ————————————————————————————————————————————————————————————
-console: ## Run a console command, example: make console c='glpi:mycommand'
+## —— ZENTRA commands ————————————————————————————————————————————————————————————
+console: ## Run a console command, example: make console c='zentra:mycommand'
 	@$(eval c ?=)
 	@$(CONSOLE) $(c)
 .PHONY: console
@@ -119,9 +119,9 @@ db-install: ## Install local development's database
 		-r -f \
 		--db-host=db \
 		--db-port=3306 \
-		--db-name=glpi \
+		--db-name=zentra \
 		--db-user=root \
-		--db-password=glpi \
+		--db-password=zentra \
 		--no-interaction \
 		--no-telemetry
 .PHONY: db-install
@@ -160,9 +160,9 @@ test-db-install: ## Install testing's database
 		-r -f \
 		--db-host=db \
 		--db-port=3306 \
-		--db-name=glpi_test \
+		--db-name=zentra_test \
 		--db-user=root \
-		--db-password=glpi \
+		--db-password=zentra \
 		--no-interaction \
 		--no-telemetry \
 		--env=testing
@@ -181,10 +181,10 @@ test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-
 	@$(eval p ?= 4)
 	@$(DB) bash -c ' \
 		for i in $$(seq 2 $(p)); do \
-			mariadb -u root -pglpi -e "DROP DATABASE IF EXISTS glpi_test_$$i"; \
-			mariadb -u root -pglpi -e "CREATE DATABASE glpi_test_$$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"; \
-			mariadb-dump -u root -pglpi --single-transaction glpi_test | mariadb -u root -pglpi glpi_test_$$i; \
-			echo "Database glpi_test_$$i created and populated"; \
+			mariadb -u root -pzentra -e "DROP DATABASE IF EXISTS zentra_test_$$i"; \
+			mariadb -u root -pzentra -e "CREATE DATABASE zentra_test_$$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"; \
+			mariadb-dump -u root -pzentra --single-transaction zentra_test | mariadb -u root -pzentra zentra_test_$$i; \
+			echo "Database zentra_test_$$i created and populated"; \
 		done \
 	'
 .PHONY: test-db-clone
@@ -194,9 +194,9 @@ e2e-db-install: ## Install e2e testing's database
 		-r -f \
 		--db-host=db \
 		--db-port=3306 \
-		--db-name=glpi_e2e \
+		--db-name=zentra_e2e \
 		--db-user=root \
-		--db-password=glpi \
+		--db-password=zentra \
 		--no-interaction \
 		--no-telemetry \
 		--env=e2e_testing
@@ -223,7 +223,7 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 .PHONY: npm
 
 ## —— Testing and static analysis ——————————————————————————————————————————————
-phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/MySpecificTest.php'
+phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Zentra/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/phpunit $(c)
 .PHONY: phpunit

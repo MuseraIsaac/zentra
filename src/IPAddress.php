@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryUnion;
 
 use function Safe\preg_match;
 
@@ -232,12 +232,12 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param CommonGLPI $item
+     * @param CommonZENTRA $item
      * @param int $withtemplate
      *
      * @return void
      */
-    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
+    public static function showForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         global $DB;
 
@@ -273,7 +273,7 @@ class IPAddress extends CommonDBChild
 
         $criteria = self::getCriteriaLinkedToNetwork($item);
         $criteria['START'] = $start;
-        $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = $_SESSION['zentralist_limit'];
         $criteria['ORDER'] = $orderby;
 
         $entries = [];
@@ -309,7 +309,7 @@ class IPAddress extends CommonDBChild
             'is_tab' => true,
             'nofilter' => true,
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'sort' => $sort,
             'order' => $order,
             'columns' => [
@@ -332,7 +332,7 @@ class IPAddress extends CommonDBChild
         ]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'IPNetwork':
@@ -355,7 +355,7 @@ class IPAddress extends CommonDBChild
             case 'IPNetwork':
                 $result = $DB->request([
                     'COUNT'  => 'cpt',
-                    'FROM'   => 'glpi_ipaddresses_ipnetworks',
+                    'FROM'   => 'zentra_ipaddresses_ipnetworks',
                     'WHERE'  => [
                         'ipnetworks_id'   => $item->getID(),
                     ],
@@ -364,7 +364,7 @@ class IPAddress extends CommonDBChild
         }
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (
@@ -373,7 +373,7 @@ class IPAddress extends CommonDBChild
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -762,7 +762,7 @@ class IPAddress extends CommonDBChild
         // $binary is an array that is only defined for IPv4 or IPv6 address
         if ($binary !== null && $binary !== false) {
             // Calling setAddressFromBinary is usefull to recheck one more time inside
-            // glpi_ipaddresses table and to make canonical textual version
+            // zentra_ipaddresses table and to make canonical textual version
             return $this->setAddressFromBinary($binary, $itemtype, $items_id);
         }
 
@@ -980,7 +980,7 @@ class IPAddress extends CommonDBChild
 
         $criteria = [
             'SELECT' => 'gip.id',
-            'FROM'   => 'glpi_ipaddresses AS gip',
+            'FROM'   => 'zentra_ipaddresses AS gip',
             'WHERE'  => ['gip.version' => $address->version],
         ];
         $startIndex = (($address->version == 4) ? 3 : 1);
@@ -1137,7 +1137,7 @@ class IPAddress extends CommonDBChild
      */
     private static function getCriteriaLinkedToNetwork(IPNetwork $network): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $queries = [];
         $main_criteria = [
@@ -1151,11 +1151,11 @@ class IPAddress extends CommonDBChild
                 'ADDR.itemtype AS addr_item_type',
                 'ADDR.items_id AS addr_item_id',
                 'ADDR.is_dynamic AS is_dynamic',
-                'glpi_entities.completename AS entity',
+                'zentra_entities.completename AS entity',
             ],
-            'FROM'         => 'glpi_ipaddresses_ipnetworks AS LINK',
+            'FROM'         => 'zentra_ipaddresses_ipnetworks AS LINK',
             'INNER JOIN'   => [
-                'glpi_ipaddresses AS ADDR' => [
+                'zentra_ipaddresses AS ADDR' => [
                     'ON' => [
                         'ADDR'   => 'id',
                         'LINK'   => 'ipaddresses_id', [
@@ -1168,10 +1168,10 @@ class IPAddress extends CommonDBChild
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_entities'             => [
+                'zentra_entities'             => [
                     'ON' => [
                         'ADDR'            => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
             ],
@@ -1180,7 +1180,7 @@ class IPAddress extends CommonDBChild
             ],
         ];
 
-        foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
             $criteria = $main_criteria;
             $criteria['SELECT'] = array_merge($criteria['SELECT'], [
@@ -1190,7 +1190,7 @@ class IPAddress extends CommonDBChild
                 new QueryExpression($DB::quoteValue($itemtype), 'item_type'),
             ]);
             $criteria['INNER JOIN'] += [
-                'glpi_networknames AS NAME'   => [
+                'zentra_networknames AS NAME'   => [
                     'ON' => [
                         'NAME'   => 'id',
                         'ADDR'   => 'items_id', [
@@ -1200,7 +1200,7 @@ class IPAddress extends CommonDBChild
                         ],
                     ],
                 ],
-                'glpi_networkports AS PORT'   => [
+                'zentra_networkports AS PORT'   => [
                     'ON' => [
                         'NAME'   => 'items_id',
                         'PORT'   => 'id', [
@@ -1229,7 +1229,7 @@ class IPAddress extends CommonDBChild
             new QueryExpression('NULL', 'item_type'),
         ]);
         $criteria['INNER JOIN'] += [
-            'glpi_networknames AS NAME'   => [
+            'zentra_networknames AS NAME'   => [
                 'ON' => [
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
@@ -1239,13 +1239,13 @@ class IPAddress extends CommonDBChild
                     ],
                 ],
             ],
-            'glpi_networkports AS PORT'   => [
+            'zentra_networkports AS PORT'   => [
                 'ON' => [
                     'NAME'   => 'items_id',
                     'PORT'   => 'id', [
                         'AND' => [
                             'NOT' => [
-                                'PORT.itemtype' => $CFG_GLPI['networkport_types'],
+                                'PORT.itemtype' => $CFG_ZENTRA['networkport_types'],
                             ],
                         ],
                     ],
@@ -1262,7 +1262,7 @@ class IPAddress extends CommonDBChild
             new QueryExpression('NULL', 'item_type'),
         ]);
         $criteria['INNER JOIN'] += [
-            'glpi_networknames AS NAME'   => [
+            'zentra_networknames AS NAME'   => [
                 'ON' => [
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
@@ -1282,7 +1282,7 @@ class IPAddress extends CommonDBChild
             new QueryExpression('NULL', 'item_id'),
             new QueryExpression('NULL', 'item_type'),
         ]);
-        $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
+        $criteria['INNER JOIN']['zentra_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
 
         $union = new QueryUnion($queries);

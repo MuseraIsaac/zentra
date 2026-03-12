@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Cache\CacheManager;
-use Glpi\Cache\I18nCache;
-use Glpi\Controller\InventoryController;
-use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\SessionExpiredException;
-use Glpi\Plugin\Hooks;
-use Glpi\Session\SessionInfo;
+use Zentra\Cache\CacheManager;
+use Zentra\Cache\I18nCache;
+use Zentra\Controller\InventoryController;
+use Zentra\Event;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\SessionExpiredException;
+use Zentra\Plugin\Hooks;
+use Zentra\Session\SessionInfo;
 use Laminas\I18n\Translator\Translator;
 use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
@@ -63,7 +63,7 @@ use function Safe\strtotime;
  **/
 class Session
 {
-    // GLPI MODE
+    // ZENTRA MODE
     public const NORMAL_MODE       = 0;
     public const TRANSLATION_MODE  = 1; // no more used
     public const DEBUG_MODE        = 2;
@@ -108,7 +108,7 @@ class Session
      */
     public static function writeClose()
     {
-        if ($_SESSION['glpi_use_mode'] !== self::DEBUG_MODE) {
+        if ($_SESSION['zentra_use_mode'] !== self::DEBUG_MODE) {
             session_write_close();
         }
     }
@@ -122,13 +122,13 @@ class Session
      **/
     public static function init(Auth $auth)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($auth->auth_succeded) {
-            // Restart GLPI session : complete destroy to prevent lost datas
-            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
-                'glpiskipMaintenance',
-                'glpi_remote_user',
+            // Restart ZENTRA session : complete destroy to prevent lost datas
+            $tosave = ['zentra_plugins', 'zentracookietest', 'phpCAS', 'zentracsrftokens',
+                'zentraskipMaintenance',
+                'zentra_remote_user',
             ];
             $save   = [];
             foreach ($tosave as $t) {
@@ -144,10 +144,10 @@ class Session
             $_SESSION = $save;
             $_SESSION['valid_id'] = session_id();
             // Define default time :
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+            $_SESSION["zentra_currenttime"] = date("Y-m-d H:i:s");
 
             // Normal mode for this request
-            $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
+            $_SESSION["zentra_use_mode"] = self::NORMAL_MODE;
             // Check ID exists and load complete user from DB (plugins...)
             if (
                 isset($auth->user->fields['id'])
@@ -156,50 +156,50 @@ class Session
                 if (
                     !$auth->user->fields['is_deleted']
                     && ($auth->user->fields['is_active']
-                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                    && (($auth->user->fields['begin_date'] < $_SESSION["zentra_currenttime"])
                         || is_null($auth->user->fields['begin_date']))
-                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                    && (($auth->user->fields['end_date'] > $_SESSION["zentra_currenttime"])
                         || is_null($auth->user->fields['end_date'])))
                 ) {
-                    $_SESSION["glpiID"]              = $auth->user->fields['id'];
-                    $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
-                    $_SESSION["glpiname"]            = $auth->user->fields['name'];
-                    $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
-                    $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
-                    $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
-                    $_SESSION["glpiextauth"]         = $auth->extauth;
+                    $_SESSION["zentraID"]              = $auth->user->fields['id'];
+                    $_SESSION["zentrafriendlyname"]    = $auth->user->getFriendlyName();
+                    $_SESSION["zentraname"]            = $auth->user->fields['name'];
+                    $_SESSION["zentrarealname"]        = $auth->user->fields['realname'];
+                    $_SESSION["zentrafirstname"]       = $auth->user->fields['firstname'];
+                    $_SESSION["zentradefault_entity"]  = $auth->user->fields['entities_id'];
+                    $_SESSION["zentraextauth"]         = $auth->extauth;
                     if (isset($_SESSION['phpCAS']['user'])) {
-                        $_SESSION["glpiauthtype"]     = Auth::CAS;
-                        $_SESSION["glpiextauth"]      = 0;
+                        $_SESSION["zentraauthtype"]     = Auth::CAS;
+                        $_SESSION["zentraextauth"]      = 0;
                     } else {
-                        $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
+                        $_SESSION["zentraauthtype"]     = $auth->user->fields['authtype'];
                     }
-                    $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
-                    $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
-                    $_SESSION["glpicrontimer"]       = time();
+                    $_SESSION["zentra_use_mode"]       = $auth->user->fields['use_mode'];
+                    $_SESSION["zentra_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
+                    $_SESSION["zentracrontimer"]       = time();
                     // Default tab
-                    // $_SESSION['glpi_tab']=1;
-                    $_SESSION['glpi_tabs']           = [];
+                    // $_SESSION['zentra_tab']=1;
+                    $_SESSION['zentra_tabs']           = [];
 
                     $auth->user->computePreferences();
-                    foreach ($CFG_GLPI['user_pref_field'] as $field) {
+                    foreach ($CFG_ZENTRA['user_pref_field'] as $field) {
                         if (isset($auth->user->fields[$field])) {
-                            $_SESSION["glpi$field"] = $auth->user->fields[$field];
+                            $_SESSION["zentra$field"] = $auth->user->fields[$field];
                         }
                     }
 
-                    if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
-                        Session::setActiveTab("central", "Central$" . $_SESSION['glpidefault_central_tab']);
+                    if (isset($_SESSION['zentradefault_central_tab']) && $_SESSION['zentradefault_central_tab']) {
+                        Session::setActiveTab("central", "Central$" . $_SESSION['zentradefault_central_tab']);
                     }
                     // Do it here : do not reset on each page, cause export issue
-                    if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
-                        $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
+                    if ($_SESSION["zentralist_limit"] > $CFG_ZENTRA['list_limit_max']) {
+                        $_SESSION["zentralist_limit"] = $CFG_ZENTRA['list_limit_max'];
                     }
                     // Init not set value for language
-                    if (empty($_SESSION["glpilanguage"])) {
-                        $_SESSION["glpilanguage"] = self::getPreferredLanguage();
+                    if (empty($_SESSION["zentralanguage"])) {
+                        $_SESSION["zentralanguage"] = self::getPreferredLanguage();
                     }
-                    $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+                    $_SESSION['zentra_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["zentralanguage"]);
 
                     self::loadLanguage();
 
@@ -208,22 +208,22 @@ class Session
                         // fail the session check (as we use a special partial session here without profiles) and thus
                         // destroy the session (which would make the "password expired" form impossible to submit as the
                         // csrf check would fail as the session data would be empty).
-                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
-                        $_SESSION['glpi_password_expired'] = 1;
-                        // Do not init profiles, as user has to update its password to be able to use GLPI
+                        $_SESSION["zentra_use_mode"] = self::NORMAL_MODE;
+                        $_SESSION['zentra_password_expired'] = 1;
+                        // Do not init profiles, as user has to update its password to be able to use ZENTRA
                         return;
                     }
 
-                    // glpiprofiles -> other available profile with link to the associated entities
+                    // zentraprofiles -> other available profile with link to the associated entities
                     Plugin::doHook(Hooks::INIT_SESSION);
 
                     self::initEntityProfiles(self::getLoginUserID());
 
                     // Use default profile if exist
-                    if (isset($_SESSION['glpiprofiles'][$auth->user->fields['profiles_id']])) {
+                    if (isset($_SESSION['zentraprofiles'][$auth->user->fields['profiles_id']])) {
                         self::changeProfile($auth->user->fields['profiles_id']);
                     } else { // Else use first
-                        self::changeProfile(key($_SESSION['glpiprofiles']));
+                        self::changeProfile(key($_SESSION['zentraprofiles']));
                     }
 
                     if (!Session::getCurrentInterface()) {
@@ -254,13 +254,13 @@ class Session
             ini_get("session.save_handler") == "files"
             && session_status() !== PHP_SESSION_ACTIVE
         ) {
-            session_save_path(GLPI_SESSION_DIR);
+            session_save_path(ZENTRA_SESSION_DIR);
         }
     }
 
 
     /**
-     * Start the GLPI php session
+     * Start the ZENTRA php session
      *
      * @return void
      **/
@@ -279,16 +279,16 @@ class Session
     public static function initVars(): void
     {
         // Define current time for sync of action timing
-        $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+        $_SESSION["zentra_currenttime"] = date("Y-m-d H:i:s");
 
         // Define session default mode
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        if (!isset($_SESSION['zentra_use_mode'])) {
+            $_SESSION['zentra_use_mode'] = Session::NORMAL_MODE;
         }
 
         // Define default language
-        if (!isset($_SESSION['glpilanguage'])) {
-            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+        if (!isset($_SESSION['zentralanguage'])) {
+            $_SESSION['zentralanguage'] = Session::getPreferredLanguage();
         }
 
         // Init messages array
@@ -308,37 +308,37 @@ class Session
     public function getRootEntityName()
     {
 
-        if (isset($_SESSION['glpirootentityname'])) {
-            return $_SESSION['glpirootentityname'];
+        if (isset($_SESSION['zentrarootentityname'])) {
+            return $_SESSION['zentrarootentityname'];
         }
 
         $entity = new Entity();
         if ($entity->getFromDB(0)) {
-            $_SESSION['glpirootentityname'] = $entity->fields['name'];
+            $_SESSION['zentrarootentityname'] = $entity->fields['name'];
         } else {
-            $_SESSION['glpirootentityname'] = 'No root entity / DB troubles';
+            $_SESSION['zentrarootentityname'] = 'No root entity / DB troubles';
         }
-        return $_SESSION['glpirootentityname'];
+        return $_SESSION['zentrarootentityname'];
     }
 
 
     /**
-     * Is GLPI used in multi-entities mode?
+     * Is ZENTRA used in multi-entities mode?
      *
      * @return bool
      **/
     public static function isMultiEntitiesMode()
     {
 
-        if (!isset($_SESSION['glpi_multientitiesmode'])) {
-            if (countElementsInTable("glpi_entities") > 1) {
-                $_SESSION['glpi_multientitiesmode'] = 1;
+        if (!isset($_SESSION['zentra_multientitiesmode'])) {
+            if (countElementsInTable("zentra_entities") > 1) {
+                $_SESSION['zentra_multientitiesmode'] = 1;
             } else {
-                $_SESSION['glpi_multientitiesmode'] = 0;
+                $_SESSION['zentra_multientitiesmode'] = 0;
             }
         }
 
-        return $_SESSION['glpi_multientitiesmode'];
+        return $_SESSION['zentra_multientitiesmode'];
     }
 
 
@@ -353,7 +353,7 @@ class Session
     {
         // Command line can see all entities
         return (isCommandLine()
-              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
+              || ((countElementsInTable("zentra_entities")) == count($_SESSION["zentraactiveentities"] ?? [])));
     }
 
 
@@ -366,7 +366,7 @@ class Session
      */
     public static function addToNavigateListItems($itemtype, $ID)
     {
-        $_SESSION['glpilistitems'][$itemtype][] = $ID;
+        $_SESSION['zentralistitems'][$itemtype][] = $ID;
     }
 
 
@@ -397,9 +397,9 @@ class Session
             }
         }
 
-        $_SESSION['glpilisttitle'][$itemtype] = $title;
-        $_SESSION['glpilistitems'][$itemtype] = [];
-        $_SESSION['glpilisturl'][$itemtype]   = $url;
+        $_SESSION['zentralisttitle'][$itemtype] = $title;
+        $_SESSION['zentralistitems'][$itemtype] = [];
+        $_SESSION['zentralisturl'][$itemtype]   = $url;
     }
 
 
@@ -410,41 +410,41 @@ class Session
      */
     public static function shouldReloadActiveEntities(): bool
     {
-        if (!array_key_exists('glpiactive_entity', $_SESSION)) {
+        if (!array_key_exists('zentraactive_entity', $_SESSION)) {
             return false;
         }
-        $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
-        if (count($glpiactiveentities)) {
-            $glpiactive_entity = $_SESSION['glpiactive_entity'];
-            $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
-            $entities = [$glpiactive_entity => $glpiactive_entity];
+        $zentraactiveentities = $_SESSION['zentraactiveentities'] ?? [];
+        if (count($zentraactiveentities)) {
+            $zentraactive_entity = $_SESSION['zentraactive_entity'];
+            $zentraactive_entity_recursive = $_SESSION['zentraactive_entity_recursive'] ?? false;
+            $entities = [$zentraactive_entity => $zentraactive_entity];
             if (
-                ($_SESSION["glpientity_fullstructure"] ?? false)
-                && isset($_SESSION['glpiactiveprofile']['entities'])
+                ($_SESSION["zentraentity_fullstructure"] ?? false)
+                && isset($_SESSION['zentraactiveprofile']['entities'])
             ) {
-                foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+                foreach ($_SESSION['zentraactiveprofile']['entities'] as $val) {
                     $entities[$val['id']] = $val['id'];
                     if ($val['is_recursive']) {
-                        $sons = getSonsOf("glpi_entities", $val['id']);
+                        $sons = getSonsOf("zentra_entities", $val['id']);
                         foreach ($sons as $key2 => $val2) {
                             $entities[$key2] = $key2;
                         }
                     }
                 }
-            } elseif ($glpiactive_entity_recursive) {
-                $entities = getSonsOf("glpi_entities", $glpiactive_entity);
+            } elseif ($zentraactive_entity_recursive) {
+                $entities = getSonsOf("zentra_entities", $zentraactive_entity);
             }
 
-            return count($entities) !== count($glpiactiveentities)
-                || array_diff($entities, $glpiactiveentities) !== []
-                || array_diff($glpiactiveentities, $entities) !== [];
+            return count($entities) !== count($zentraactiveentities)
+                || array_diff($entities, $zentraactiveentities) !== []
+                || array_diff($zentraactiveentities, $entities) !== [];
         }
         return false;
     }
 
 
     /**
-     * Change active entity to the $ID one. Update glpiactiveentities session variable.
+     * Change active entity to the $ID one. Update zentraactiveentities session variable.
      * Reload groups related to this entity.
      *
      * @param int|string $ID           ID of the new active entity ("all"=>load all possible entities)
@@ -459,14 +459,14 @@ class Session
         $newentities = [];
         $ancestors = [];
 
-        $_SESSION["glpientity_fullstructure"] = ($ID === 'all');
+        $_SESSION["zentraentity_fullstructure"] = ($ID === 'all');
 
-        if (isset($_SESSION['glpiactiveprofile'])) {
+        if (isset($_SESSION['zentraactiveprofile'])) {
             if ($ID === "all") {
-                foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+                foreach ($_SESSION['zentraactiveprofile']['entities'] as $val) {
                     $ancestors               = array_unique(array_merge(
                         getAncestorsOf(
-                            "glpi_entities",
+                            "zentra_entities",
                             $val['id']
                         ),
                         $ancestors
@@ -474,7 +474,7 @@ class Session
                     $newentities[$val['id']] = $val['id'];
 
                     if ($val['is_recursive']) {
-                        $entities = getSonsOf("glpi_entities", $val['id']);
+                        $entities = getSonsOf("zentra_entities", $val['id']);
                         if (count($entities)) {
                             foreach (array_keys($entities) as $key2) {
                                 $newentities[$key2] = $key2;
@@ -487,9 +487,9 @@ class Session
                 $ID = (int) $ID;
 
                 /// Check entity validity
-                $ancestors = getAncestorsOf("glpi_entities", $ID);
+                $ancestors = getAncestorsOf("zentra_entities", $ID);
                 $ok        = false;
-                foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+                foreach ($_SESSION['zentraactiveprofile']['entities'] as $val) {
                     if (($val['id'] == $ID) || in_array($val['id'], $ancestors)) {
                         // Not recursive or recursive and root entity is recursive
                         if (!$is_recursive || $val['is_recursive']) {
@@ -503,7 +503,7 @@ class Session
 
                 $newentities[$ID] = $ID;
                 if ($is_recursive) {
-                    $entities = getSonsOf("glpi_entities", $ID);
+                    $entities = getSonsOf("zentra_entities", $ID);
                     if (count($entities)) {
                         foreach (array_keys($entities) as $key2) {
                             $newentities[$key2] = $key2;
@@ -514,58 +514,58 @@ class Session
         }
 
         if (count($newentities) > 0) {
-            $_SESSION['glpiactiveentities']           = $newentities;
-            $_SESSION['glpiactiveentities_string']    = "'" . implode("', '", $newentities) . "'";
+            $_SESSION['zentraactiveentities']           = $newentities;
+            $_SESSION['zentraactiveentities_string']    = "'" . implode("', '", $newentities) . "'";
             $active                                   = reset($newentities);
-            $_SESSION['glpiparententities']           = $ancestors;
-            $_SESSION['glpiparententities_string']    = implode("', '", $ancestors);
-            if (!empty($_SESSION['glpiparententities_string'])) {
-                $_SESSION['glpiparententities_string'] = "'" . $_SESSION['glpiparententities_string'] . "'";
+            $_SESSION['zentraparententities']           = $ancestors;
+            $_SESSION['zentraparententities_string']    = implode("', '", $ancestors);
+            if (!empty($_SESSION['zentraparententities_string'])) {
+                $_SESSION['zentraparententities_string'] = "'" . $_SESSION['zentraparententities_string'] . "'";
             }
             // Active entity loading
-            $_SESSION["glpiactive_entity"]           = $active;
-            $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
-            $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName(
-                "glpi_entities",
+            $_SESSION["zentraactive_entity"]           = $active;
+            $_SESSION["zentraactive_entity_recursive"] = $is_recursive;
+            $_SESSION["zentraactive_entity_name"]      = Dropdown::getDropdownName(
+                "zentra_entities",
                 $active
             );
-            $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
+            $_SESSION["zentraactive_entity_shortname"] = getTreeLeafValueName("zentra_entities", $active);
             if ($ID == "all") {
                 //TRANS: %s is the entity name
-                $_SESSION["glpiactive_entity_name"]      = sprintf(
+                $_SESSION["zentraactive_entity_name"]      = sprintf(
                     __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_name"],
+                    $_SESSION["zentraactive_entity_name"],
                     __('full structure')
                 );
-                $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                $_SESSION["zentraactive_entity_shortname"] = sprintf(
                     __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_shortname"],
+                    $_SESSION["zentraactive_entity_shortname"],
                     __('full structure')
                 );
             } elseif ($is_recursive) {
                 //TRANS: %s is the entity name
-                $_SESSION["glpiactive_entity_name"]      = sprintf(
+                $_SESSION["zentraactive_entity_name"]      = sprintf(
                     __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_name"],
+                    $_SESSION["zentraactive_entity_name"],
                     __('tree structure')
                 );
-                $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                $_SESSION["zentraactive_entity_shortname"] = sprintf(
                     __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_shortname"],
+                    $_SESSION["zentraactive_entity_shortname"],
                     __('tree structure')
                 );
             }
 
-            if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
-                $_SESSION['glpishowallentities'] = 1;
+            if (countElementsInTable('zentra_entities') <= count($_SESSION['zentraactiveentities'])) {
+                $_SESSION['zentrashowallentities'] = 1;
             } else {
-                $_SESSION['glpishowallentities'] = 0;
+                $_SESSION['zentrashowallentities'] = 0;
             }
             // Clean session variable to search system
-            if (isset($_SESSION['glpisearch']) && count($_SESSION['glpisearch'])) {
-                foreach ($_SESSION['glpisearch'] as $itemtype => $tab) {
+            if (isset($_SESSION['zentrasearch']) && count($_SESSION['zentrasearch'])) {
+                foreach ($_SESSION['zentrasearch'] as $itemtype => $tab) {
                     if (isset($tab['start']) && ($tab['start'] > 0)) {
-                        $_SESSION['glpisearch'][$itemtype]['start'] = 0;
+                        $_SESSION['zentrasearch'][$itemtype]['start'] = 0;
                     }
                 }
             }
@@ -578,7 +578,7 @@ class Session
 
 
     /**
-     * Change active profile to the $ID one. Update glpiactiveprofile session variable.
+     * Change active profile to the $ID one. Update zentraactiveprofile session variable.
      *
      * @param int $ID ID of the new profile
      *
@@ -588,24 +588,24 @@ class Session
     {
 
         if (
-            isset($_SESSION['glpiprofiles'][$ID])
-            && count($_SESSION['glpiprofiles'][$ID]['entities'])
+            isset($_SESSION['zentraprofiles'][$ID])
+            && count($_SESSION['zentraprofiles'][$ID]['entities'])
         ) {
             $profile = new Profile();
             if ($profile->getFromDB($ID)) {
                 $profile->cleanProfile();
                 $data             = $profile->fields;
-                $data['entities'] = $_SESSION['glpiprofiles'][$ID]['entities'];
+                $data['entities'] = $_SESSION['zentraprofiles'][$ID]['entities'];
 
-                $_SESSION['glpiactiveprofile']  = $data;
-                $_SESSION['glpiactiveentities'] = [];
+                $_SESSION['zentraactiveprofile']  = $data;
+                $_SESSION['zentraactiveentities'] = [];
 
                 Search::resetSaveSearch();
                 $active_entity_done = false;
 
                 // Try to load default entity if it is a root entity
                 foreach ($data['entities'] as $val) {
-                    if ($val['id'] === $_SESSION["glpidefault_entity"]) {
+                    if ($val['id'] === $_SESSION["zentradefault_entity"]) {
                         if (self::changeActiveEntities($val['id'], $val['is_recursive'])) {
                             $active_entity_done = true;
                         }
@@ -614,8 +614,8 @@ class Session
                 if (!$active_entity_done) {
                     // Try to load default entity
                     if (
-                        $_SESSION["glpidefault_entity"] === null
-                        || !self::changeActiveEntities($_SESSION["glpidefault_entity"], true)
+                        $_SESSION["zentradefault_entity"] === null
+                        || !self::changeActiveEntities($_SESSION["zentradefault_entity"], true)
                     ) {
                         // Load all entities
                         self::changeActiveEntities("all");
@@ -625,8 +625,8 @@ class Session
             }
         }
         // Clean specific datas
-        if (isset($_SESSION['glpimenu'])) {
-            unset($_SESSION['glpimenu']);
+        if (isset($_SESSION['zentramenu'])) {
+            unset($_SESSION['zentramenu']);
         }
     }
 
@@ -642,68 +642,68 @@ class Session
     {
         global $DB;
 
-        $_SESSION['glpiprofiles'] = [];
+        $_SESSION['zentraprofiles'] = [];
 
-        if (!$DB->tableExists('glpi_profiles_users')) {
-            //table does not exists in old GLPI versions
+        if (!$DB->tableExists('zentra_profiles_users')) {
+            //table does not exists in old ZENTRA versions
             return;
         }
 
         $iterator = $DB->request([
             'SELECT'          => [
-                'glpi_profiles.id',
-                'glpi_profiles.name',
+                'zentra_profiles.id',
+                'zentra_profiles.name',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_profiles_users',
+            'FROM'            => 'zentra_profiles_users',
             'INNER JOIN'      => [
-                'glpi_profiles'   => [
+                'zentra_profiles'   => [
                     'ON' => [
-                        'glpi_profiles_users'   => 'profiles_id',
-                        'glpi_profiles'         => 'id',
+                        'zentra_profiles_users'   => 'profiles_id',
+                        'zentra_profiles'         => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_profiles_users.users_id'   => $userID,
+                'zentra_profiles_users.users_id'   => $userID,
             ],
-            'ORDERBY'         => 'glpi_profiles.name',
+            'ORDERBY'         => 'zentra_profiles.name',
         ]);
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $key = $data['id'];
-                $_SESSION['glpiprofiles'][$key]['name'] = $data['name'];
+                $_SESSION['zentraprofiles'][$key]['name'] = $data['name'];
                 $entities_iterator = $DB->request([
                     'SELECT'    => [
-                        'glpi_profiles_users.entities_id AS eID',
-                        'glpi_profiles_users.id AS kID',
-                        'glpi_profiles_users.is_recursive',
-                        'glpi_entities.*',
+                        'zentra_profiles_users.entities_id AS eID',
+                        'zentra_profiles_users.id AS kID',
+                        'zentra_profiles_users.is_recursive',
+                        'zentra_entities.*',
                     ],
-                    'FROM'      => 'glpi_profiles_users',
+                    'FROM'      => 'zentra_profiles_users',
                     'LEFT JOIN' => [
-                        'glpi_entities'   => [
+                        'zentra_entities'   => [
                             'ON' => [
-                                'glpi_profiles_users'   => 'entities_id',
-                                'glpi_entities'         => 'id',
+                                'zentra_profiles_users'   => 'entities_id',
+                                'zentra_entities'         => 'id',
                             ],
                         ],
                     ],
                     'WHERE'     => [
-                        'glpi_profiles_users.profiles_id'   => $key,
-                        'glpi_profiles_users.users_id'      => $userID,
+                        'zentra_profiles_users.profiles_id'   => $key,
+                        'zentra_profiles_users.users_id'      => $userID,
                     ],
-                    'ORDERBY'   => 'glpi_entities.completename',
+                    'ORDERBY'   => 'zentra_entities.completename',
                 ]);
 
                 foreach ($entities_iterator as $data) {
                     // Do not override existing entity if define as recursive
                     if (
-                        !isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
+                        !isset($_SESSION['zentraprofiles'][$key]['entities'][$data['eID']])
                          || $data['is_recursive']
                     ) {
-                        $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
+                        $_SESSION['zentraprofiles'][$key]['entities'][$data['eID']] = [
                             'id'           => $data['eID'],
                             'name'         => $data['name'],
                             'is_recursive' => $data['is_recursive'],
@@ -724,12 +724,12 @@ class Session
     {
         global $DB;
 
-        $_SESSION["glpigroups"] = [];
+        $_SESSION["zentragroups"] = [];
 
         $entity_restriction = getEntitiesRestrictCriteria(
             Group::getTable(),
             'entities_id',
-            $_SESSION['glpiactiveentities'],
+            $_SESSION['zentraactiveentities'],
             true
         );
 
@@ -758,7 +758,7 @@ class Session
         ]);
 
         foreach ($iterator as $data) {
-            $_SESSION["glpigroups"][] = $data["groups_id"];
+            $_SESSION["zentragroups"][] = $data["groups_id"];
 
             // Add children groups
             if ($data['recursive_membership']) {
@@ -780,7 +780,7 @@ class Session
                     // Iterate on the children
                     foreach ($children_data as $data) {
                         // Add the child to the user's groups
-                        $_SESSION["glpigroups"][] = $data['id'];
+                        $_SESSION["zentragroups"][] = $data['id'];
 
                         // If the child support recursive membership, load its
                         // children too
@@ -793,17 +793,17 @@ class Session
         }
 
         // Clear duplicates
-        $_SESSION["glpigroups"] = array_unique($_SESSION["glpigroups"]);
+        $_SESSION["zentragroups"] = array_unique($_SESSION["zentragroups"]);
 
         // Set new valid cache date
-        $_SESSION['glpigroups_cache_date'] = $_SESSION["glpi_currenttime"];
+        $_SESSION['zentragroups_cache_date'] = $_SESSION["zentra_currenttime"];
     }
 
 
     /**
      * Include the good language dict.
      *
-     * Get the default language from current user in $_SESSION["glpilanguage"].
+     * Get the default language from current user in $_SESSION["zentralanguage"].
      * And load the dict that correspond.
      *
      * @param string  $forcelang     Force to load a specific lang
@@ -813,13 +813,13 @@ class Session
      **/
     public static function loadLanguage($forcelang = '', $with_plugins = true)
     {
-        global $CFG_GLPI, $TRANSLATE;
+        global $CFG_ZENTRA, $TRANSLATE;
 
-        if (!isset($_SESSION["glpilanguage"])) {
-            $_SESSION["glpilanguage"] = self::getPreferredLanguage();
+        if (!isset($_SESSION["zentralanguage"])) {
+            $_SESSION["zentralanguage"] = self::getPreferredLanguage();
         }
 
-        $trytoload = $_SESSION["glpilanguage"];
+        $trytoload = $_SESSION["zentralanguage"];
         // Force to load a specific lang
         if (!empty($forcelang)) {
             $trytoload = $forcelang;
@@ -827,22 +827,22 @@ class Session
 
         // If not set try default lang file
         if (empty($trytoload)) {
-            $trytoload = $CFG_GLPI["language"];
+            $trytoload = $CFG_ZENTRA["language"];
         }
 
-        if (isset($CFG_GLPI["languages"][$trytoload])) {
-            $newfile = "/" . $CFG_GLPI["languages"][$trytoload][1];
+        if (isset($CFG_ZENTRA["languages"][$trytoload])) {
+            $newfile = "/" . $CFG_ZENTRA["languages"][$trytoload][1];
         }
 
-        if (empty($newfile) || !is_file(GLPI_I18N_DIR . $newfile)) {
+        if (empty($newfile) || !is_file(ZENTRA_I18N_DIR . $newfile)) {
             $newfile = "/en_GB.mo";
         }
 
-        if (isset($CFG_GLPI["languages"][$trytoload][5])) {
-            $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
+        if (isset($CFG_ZENTRA["languages"][$trytoload][5])) {
+            $_SESSION['zentrapluralnumber'] = $CFG_ZENTRA["languages"][$trytoload][5];
         }
 
-        $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
+        $_SESSION['zentraisrtl'] = self::isRTL($trytoload);
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = new I18nCache((new CacheManager())->getTranslationsCacheInstance());
@@ -855,7 +855,7 @@ class Session
 
             public function removeCoreTranslationsForLanguage(string $language): void
             {
-                $this->messages['glpi'][$language] = [];
+                $this->messages['zentra'][$language] = [];
             }
         };
 
@@ -869,11 +869,11 @@ class Session
             trigger_error('Missing required intl PHP extension', E_USER_WARNING);
         }
 
-        $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR . $newfile, 'glpi', $trytoload);
+        $TRANSLATE->addTranslationFile('gettext', ZENTRA_I18N_DIR . $newfile, 'zentra', $trytoload);
 
-        $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
+        $core_folders = is_dir(ZENTRA_LOCAL_I18N_DIR) ? scandir(ZENTRA_LOCAL_I18N_DIR) : [];
         $core_folders = array_filter($core_folders, function ($dir) {
-            if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+            if (!is_dir(ZENTRA_LOCAL_I18N_DIR . "/$dir")) {
                 return false;
             }
 
@@ -885,17 +885,17 @@ class Session
         });
 
         foreach ($core_folders as $core_folder) {
-            $mofile = GLPI_LOCAL_I18N_DIR . "/$core_folder/" . $newfile;
+            $mofile = ZENTRA_LOCAL_I18N_DIR . "/$core_folder/" . $newfile;
             $phpfile = str_replace('.mo', '.php', $mofile);
 
             // Load local PHP file if it exists
             if (file_exists($phpfile)) {
-                $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
+                $TRANSLATE->addTranslationFile('phparray', $phpfile, 'zentra', $trytoload);
             }
 
             // Load local MO file if it exists -- keep last so it gets precedence
             if (file_exists($mofile)) {
-                $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
+                $TRANSLATE->addTranslationFile('gettext', $mofile, 'zentra', $trytoload);
             }
         }
 
@@ -923,11 +923,11 @@ class Session
      */
     public static function loadAllCoreLocales(): void
     {
-        global $CFG_GLPI, $TRANSLATE;
+        global $CFG_ZENTRA, $TRANSLATE;
 
-        $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
+        $core_folders = is_dir(ZENTRA_LOCAL_I18N_DIR) ? scandir(ZENTRA_LOCAL_I18N_DIR) : [];
         $core_folders = array_filter($core_folders, static function ($dir) {
-            if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+            if (!is_dir(ZENTRA_LOCAL_I18N_DIR . "/$dir")) {
                 return false;
             }
 
@@ -937,35 +937,35 @@ class Session
 
             return str_starts_with($dir, 'core_');
         });
-        $core_folders = array_map(static fn($dir) => GLPI_LOCAL_I18N_DIR . "/$dir", $core_folders);
-        $core_folders = [GLPI_I18N_DIR, ...$core_folders];
+        $core_folders = array_map(static fn($dir) => ZENTRA_LOCAL_I18N_DIR . "/$dir", $core_folders);
+        $core_folders = [ZENTRA_I18N_DIR, ...$core_folders];
 
         foreach ($core_folders as $core_folder) {
-            foreach ($CFG_GLPI['languages'] as $lang => $data) {
+            foreach ($CFG_ZENTRA['languages'] as $lang => $data) {
                 $mofile = "$core_folder/" . $data['1'];
                 $phpfile = str_replace('.mo', '.php', $mofile);
 
                 // Load local PHP file if it exists
                 if (file_exists($phpfile)) {
-                    $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $lang);
+                    $TRANSLATE->addTranslationFile('phparray', $phpfile, 'zentra', $lang);
                 }
 
                 // Load local MO file if it exists -- keep last so it gets precedence
                 if (file_exists($mofile)) {
-                    $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $lang);
+                    $TRANSLATE->addTranslationFile('gettext', $mofile, 'zentra', $lang);
                 }
             }
         }
     }
 
     /**
-     * Return preffered language (from HTTP headers, fallback to default GLPI lang).
+     * Return preffered language (from HTTP headers, fallback to default ZENTRA lang).
      *
      * @return string
      */
     public static function getPreferredLanguage(): string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             // Use Symfony Request to parse Accept-Language header
@@ -975,26 +975,26 @@ class Session
 
             foreach ($accepted_languages as $language) {
                 // Direct match with locale key (e.g., 'pl_PL')
-                if (array_key_exists($language, $CFG_GLPI['languages'])) {
+                if (array_key_exists($language, $CFG_ZENTRA['languages'])) {
                     return $language;
                 }
 
                 // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
-                if (isset($CFG_GLPI['main_languages'][$language])) {
-                    $main_lang = $CFG_GLPI['main_languages'][$language];
-                    if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
+                if (isset($CFG_ZENTRA['main_languages'][$language])) {
+                    $main_lang = $CFG_ZENTRA['main_languages'][$language];
+                    if (array_key_exists($main_lang, $CFG_ZENTRA['languages'])) {
                         return $main_lang;
                     }
                 }
             }
         }
 
-        if (isset($CFG_GLPI['language'])) {
-            // Default config in GLPI >= 0.72
-            return $CFG_GLPI['language'];
-        } elseif (isset($CFG_GLPI['default_language'])) {
-            // Default config in GLPI < 0.72 : keep it for upgrade process
-            return $CFG_GLPI['default_language'];
+        if (isset($CFG_ZENTRA['language'])) {
+            // Default config in ZENTRA >= 0.72
+            return $CFG_ZENTRA['language'];
+        } elseif (isset($CFG_ZENTRA['default_language'])) {
+            // Default config in ZENTRA < 0.72 : keep it for upgrade process
+            return $CFG_ZENTRA['default_language'];
         }
 
         return 'en_GB';
@@ -1010,8 +1010,8 @@ class Session
         /** @var int $DEFAULT_PLURAL_NUMBER */
         global $DEFAULT_PLURAL_NUMBER;
 
-        if (isset($_SESSION['glpipluralnumber'])) {
-            return $_SESSION['glpipluralnumber'];
+        if (isset($_SESSION['zentrapluralnumber'])) {
+            return $_SESSION['zentrapluralnumber'];
         } else {
             return $DEFAULT_PLURAL_NUMBER;
         }
@@ -1026,7 +1026,7 @@ class Session
      **/
     public static function isCron()
     {
-        return (self::isInventory() || isset($_SESSION["glpicronuserrunning"]))
+        return (self::isInventory() || isset($_SESSION["zentracronuserrunning"]))
             && (
                 isCommandLine()
                 || str_starts_with(Request::createFromGlobals()->getPathInfo(), '/front/cron.php')
@@ -1041,7 +1041,7 @@ class Session
     public static function isInventory(): bool
     {
 
-        return (isset($_SESSION["glpiinventoryuserrunning"])
+        return (isset($_SESSION["zentrainventoryuserrunning"])
               && (
                   InventoryController::$is_running === true
                   || defined('TU_USER')
@@ -1060,16 +1060,16 @@ class Session
     public static function getLoginUserID($force_human = true)
     {
         if (self::isInventory()) { // Check inventory
-            return $_SESSION["glpiinventoryuserrunning"];
+            return $_SESSION["zentrainventoryuserrunning"];
         }
 
         if (
             !$force_human
             && self::isCron()
         ) { // Check cron jobs
-            return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
+            return $_SESSION["zentracronuserrunning"] ?? $_SESSION['zentrainventoryuserrunning'];
         }
-        return $_SESSION["glpiID"] ?? false;
+        return $_SESSION["zentraID"] ?? false;
     }
 
     /**
@@ -1083,7 +1083,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (
             !isset($_SESSION['valid_id'])
@@ -1093,20 +1093,20 @@ class Session
         }
 
         $user_id    = self::getLoginUserID();
-        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
-        $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
+        $profile_id = $_SESSION['zentraactiveprofile']['id'] ?? null;
+        $entity_id  = $_SESSION['zentraactive_entity'] ?? null;
 
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
             throw new SessionExpiredException();
         }
 
         // Check if remote user changed (SSO case)
-        if (array_key_exists('glpi_remote_user', $_SESSION)) {
+        if (array_key_exists('zentra_remote_user', $_SESSION)) {
             $ssovariable = Dropdown::getDropdownName(
-                'glpi_ssovariables',
-                $CFG_GLPI["ssovariables_id"]
+                'zentra_ssovariables',
+                $CFG_ZENTRA["ssovariables_id"]
             );
-            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
+            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['zentra_remote_user']) {
                 throw new SessionExpiredException();
             }
         }
@@ -1153,10 +1153,10 @@ class Session
 
         if (
             $row['last_rights_update'] !== null
-            && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
+            && $row['last_rights_update'] > ($_SESSION['zentraactiveprofile']['last_rights_update'] ?? 0)
         ) {
             Session::reloadCurrentProfile();
-            $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
+            $_SESSION['zentraactiveprofile']['last_rights_update'] = $row['last_rights_update'];
         }
 
         return true;
@@ -1183,9 +1183,9 @@ class Session
      **/
     public static function checkFaqAccess()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!$CFG_GLPI["use_public_faq"]) {
+        if (!$CFG_ZENTRA["use_public_faq"]) {
             self::checkValidSessionId();
             if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
                 throw new AccessDeniedHttpException("Missing FAQ right");
@@ -1215,7 +1215,7 @@ class Session
     public static function checkLoginUser()
     {
         self::checkValidSessionId();
-        if (!isset($_SESSION["glpiname"])) {
+        if (!isset($_SESSION["zentraname"])) {
             throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
@@ -1250,7 +1250,7 @@ class Session
         } catch (SessionException $e) {
             //empty catch; session may already be closed
         }
-        $current_lang = $_SESSION['glpilanguage'];
+        $current_lang = $_SESSION['zentralanguage'];
         self::loadLanguage('en_GB');
 
         $all_specific_rights = Profile::getRightsForForm(self::getCurrentInterface());
@@ -1399,11 +1399,11 @@ class Session
             return false;
         }
 
-        if (!isset($_SESSION['glpiactiveentities'])) {
+        if (!isset($_SESSION['zentraactiveentities'])) {
             return false;
         }
 
-        if (in_array($ID, $_SESSION['glpiactiveentities'])) {
+        if (in_array($ID, $_SESSION['zentraactiveentities'])) {
             return true;
         }
 
@@ -1412,7 +1412,7 @@ class Session
         }
 
         /// Recursive object
-        return in_array($ID, getAncestorsOf("glpi_entities", $_SESSION['glpiactiveentities']));
+        return in_array($ID, getAncestorsOf("zentra_entities", $_SESSION['zentraactiveentities']));
     }
 
 
@@ -1449,14 +1449,14 @@ class Session
     {
 
         // Right by profile
-        foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+        foreach ($_SESSION['zentraactiveprofile']['entities'] as $val) {
             if ($val['id'] == $ID) {
                 return $val['is_recursive'];
             }
         }
         // Right is from a recursive profile
-        if (isset($_SESSION['glpiactiveentities'])) {
-            return in_array($ID, $_SESSION['glpiactiveentities']);
+        if (isset($_SESSION['zentraactiveentities'])) {
+            return in_array($ID, $_SESSION['zentraactiveentities']);
         }
         return false;
     }
@@ -1478,7 +1478,7 @@ class Session
             return true;
         }
 
-        //If GLPI is using the slave DB -> read only mode
+        //If ZENTRA is using the slave DB -> read only mode
         if (
             $DB->isSlave()
             && ($right & (CREATE | UPDATE | DELETE | PURGE))
@@ -1486,8 +1486,8 @@ class Session
             return false;
         }
 
-        if (isset($_SESSION["glpiactiveprofile"][$module])) {
-            return (int) $_SESSION["glpiactiveprofile"][$module] & $right;
+        if (isset($_SESSION["zentraactiveprofile"][$module])) {
+            return (int) $_SESSION["zentraactiveprofile"][$module] & $right;
         }
 
         return false;
@@ -1544,7 +1544,7 @@ class Session
     public static function getActiveTab($itemtype)
     {
 
-        return $_SESSION['glpi_tabs'][strtolower($itemtype)] ?? "";
+        return $_SESSION['zentra_tabs'][strtolower($itemtype)] ?? "";
     }
 
     /**
@@ -1655,7 +1655,7 @@ class Session
      **/
     public static function setActiveTab($itemtype, $tab)
     {
-        $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
+        $_SESSION['zentra_tabs'][strtolower($itemtype)] = $tab;
     }
 
 
@@ -1675,9 +1675,9 @@ class Session
     {
 
         if (isset($_REQUEST[$name])) {
-            return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
+            return $_SESSION['zentra_saved'][$itemtype][$name] = $_REQUEST[$name];
         }
-        return $_SESSION['glpi_saved'][$itemtype][$name] ?? $defvalue;
+        return $_SESSION['zentra_saved'][$itemtype][$name] ?? $defvalue;
     }
 
 
@@ -1691,7 +1691,7 @@ class Session
     public static function isReadOnlyAccount()
     {
 
-        foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
+        foreach ($_SESSION['zentraactiveprofile'] as $name => $val) {
             if (
                 is_numeric($val)
                 && ($name != 'search_config')
@@ -1728,10 +1728,10 @@ class Session
             } while ($token == '');
         }
 
-        if (!isset($_SESSION['glpicsrftokens'])) {
-            $_SESSION['glpicsrftokens'] = [];
+        if (!isset($_SESSION['zentracsrftokens'])) {
+            $_SESSION['zentracsrftokens'] = [];
         }
-        $_SESSION['glpicsrftokens'][$token] = 1;
+        $_SESSION['zentracsrftokens'][$token] = 1;
 
         if (!$standalone) {
             $CURRENTCSRFTOKEN = $token;
@@ -1751,13 +1751,13 @@ class Session
     public static function cleanCSRFTokens()
     {
         if (
-            isset($_SESSION['glpicsrftokens'])
-            && is_array($_SESSION['glpicsrftokens'])
-            && count($_SESSION['glpicsrftokens']) > self::CSRF_MAX_TOKENS
+            isset($_SESSION['zentracsrftokens'])
+            && is_array($_SESSION['zentracsrftokens'])
+            && count($_SESSION['zentracsrftokens']) > self::CSRF_MAX_TOKENS
         ) {
-            $overflow = count($_SESSION['glpicsrftokens']) - self::CSRF_MAX_TOKENS;
-            $_SESSION['glpicsrftokens'] = array_slice(
-                $_SESSION['glpicsrftokens'],
+            $overflow = count($_SESSION['zentracsrftokens']) - self::CSRF_MAX_TOKENS;
+            $_SESSION['zentracsrftokens'] = array_slice(
+                $_SESSION['zentracsrftokens'],
                 $overflow,
                 null,
                 true
@@ -1782,13 +1782,13 @@ class Session
     {
         Session::cleanCSRFTokens();
 
-        if (!isset($data['_glpi_csrf_token'])) {
+        if (!isset($data['_zentra_csrf_token'])) {
             return false;
         }
-        $requestToken = $data['_glpi_csrf_token'];
-        if (isset($_SESSION['glpicsrftokens'][$requestToken])) {
+        $requestToken = $data['_zentra_csrf_token'];
+        if (isset($_SESSION['zentracsrftokens'][$requestToken])) {
             if (!$preserve_token) {
-                unset($_SESSION['glpicsrftokens'][$requestToken]);
+                unset($_SESSION['zentracsrftokens'][$requestToken]);
             }
             return true;
         }
@@ -1846,11 +1846,11 @@ class Session
             $token = bin2hex(random_bytes(32));
         } while ($token == '');
 
-        if (!isset($_SESSION['glpiidortokens'])) {
-            $_SESSION['glpiidortokens'] = [];
+        if (!isset($_SESSION['zentraidortokens'])) {
+            $_SESSION['zentraidortokens'] = [];
         }
 
-        $_SESSION['glpiidortokens'][$token] = ($itemtype !== "" ? ['itemtype' => $itemtype] : []) + $add_params;
+        $_SESSION['zentraidortokens'][$token] = ($itemtype !== "" ? ['itemtype' => $itemtype] : []) + $add_params;
 
         return $token;
     }
@@ -1878,8 +1878,8 @@ class Session
 
         $token = $data['_idor_token'];
 
-        if (isset($_SESSION['glpiidortokens'][$token])) {
-            $idor_data =  $_SESSION['glpiidortokens'][$token];
+        if (isset($_SESSION['zentraidortokens'][$token])) {
+            $idor_data =  $_SESSION['zentraidortokens'][$token];
 
             // Ensure that `displaywith` and `condition` is checked if passed in data
             $mandatory_properties = [
@@ -1928,13 +1928,13 @@ class Session
     public static function cleanIDORTokens()
     {
         if (
-            isset($_SESSION['glpiidortokens'])
-            && is_array($_SESSION['glpiidortokens'])
-            && count($_SESSION['glpiidortokens']) > self::IDOR_MAX_TOKENS
+            isset($_SESSION['zentraidortokens'])
+            && is_array($_SESSION['zentraidortokens'])
+            && count($_SESSION['zentraidortokens']) > self::IDOR_MAX_TOKENS
         ) {
-            $overflow = count($_SESSION['glpiidortokens']) - self::IDOR_MAX_TOKENS;
-            $_SESSION['glpiidortokens'] = array_slice(
-                $_SESSION['glpiidortokens'],
+            $overflow = count($_SESSION['zentraidortokens']) - self::IDOR_MAX_TOKENS;
+            $_SESSION['zentraidortokens'] = array_slice(
+                $_SESSION['zentraidortokens'],
                 $overflow,
                 null,
                 true
@@ -1959,8 +1959,8 @@ class Session
             return false;
         }
 
-        return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
-              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
+        return (isset($_SESSION['zentra_dropdowntranslations'][$itemtype])
+              && isset($_SESSION['zentra_dropdowntranslations'][$itemtype][$field]));
     }
 
     /**
@@ -1973,7 +1973,7 @@ class Session
      */
     public static function getCurrentInterface()
     {
-        return $_SESSION['glpiactiveprofile']['interface'] ?? false;
+        return $_SESSION['zentraactiveprofile']['interface'] ?? false;
     }
 
     /**
@@ -2055,23 +2055,23 @@ class Session
         }
 
         //store user who impersonated another user
-        $impersonator = $_SESSION['glpiname'];
+        $impersonator = $_SESSION['zentraname'];
 
         // Store current user values
         $impersonator_id  = self::isImpersonateActive()
          ? $_SESSION['impersonator_id']
          : self::getLoginUserID();
-        $lang             = $_SESSION['glpilanguage'];
-        $session_use_mode = $_SESSION['glpi_use_mode'];
+        $lang             = $_SESSION['zentralanguage'];
+        $session_use_mode = $_SESSION['zentra_use_mode'];
 
         $impersonator_info = [
             'id'                            => $impersonator_id,
-            'glpiname'                      => $impersonator,
-            'glpilanguage'                  => $lang,
-            'glpi_use_mode'                 => $session_use_mode,
-            'glpiactive_entity'             => $_SESSION['glpiactive_entity'],
-            'glpiactive_entity_recursive'   => $_SESSION['glpiactive_entity_recursive'],
-            'profiles_id'                   => $_SESSION['glpiactiveprofile']['id'],
+            'zentraname'                      => $impersonator,
+            'zentralanguage'                  => $lang,
+            'zentra_use_mode'                 => $session_use_mode,
+            'zentraactive_entity'             => $_SESSION['zentraactive_entity'],
+            'zentraactive_entity_recursive'   => $_SESSION['zentraactive_entity_recursive'],
+            'profiles_id'                   => $_SESSION['zentraactiveprofile']['id'],
         ];
 
         $auth = new Auth();
@@ -2080,8 +2080,8 @@ class Session
         Session::init($auth);
 
         // Force usage of current user lang and session mode
-        $_SESSION['glpilanguage'] = $lang;
-        $_SESSION['glpi_use_mode'] = $session_use_mode;
+        $_SESSION['zentralanguage'] = $lang;
+        $_SESSION['zentra_use_mode'] = $session_use_mode;
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
@@ -2114,7 +2114,7 @@ class Session
         }
 
         //store user which was impersonated by another user
-        $impersonate_user = $_SESSION['glpiname'];
+        $impersonate_user = $_SESSION['zentraname'];
         $impersonator_info = $_SESSION['impersonator_info'] ?? [];
 
         $auth = new Auth();
@@ -2125,11 +2125,11 @@ class Session
         // Restore previous user values
         if (!empty($impersonator_info)) {
             // Basic values
-            $_SESSION['glpilanguage'] = $impersonator_info['glpilanguage'];
-            $_SESSION['glpi_use_mode'] = $impersonator_info['glpi_use_mode'];
+            $_SESSION['zentralanguage'] = $impersonator_info['zentralanguage'];
+            $_SESSION['zentra_use_mode'] = $impersonator_info['zentra_use_mode'];
             // Restore profile/entity
             self::changeProfile($impersonator_info['profiles_id']);
-            self::changeActiveEntities($impersonator_info['glpiactive_entity'], $impersonator_info['glpiactive_entity_recursive']);
+            self::changeActiveEntities($impersonator_info['zentraactive_entity'], $impersonator_info['zentraactive_entity_recursive']);
         }
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
@@ -2169,7 +2169,7 @@ class Session
      */
     public static function mustChangePassword()
     {
-        return array_key_exists('glpi_password_expired', $_SESSION);
+        return array_key_exists('zentra_password_expired', $_SESSION);
     }
 
     /**
@@ -2181,7 +2181,7 @@ class Session
      */
     public static function getActiveEntity()
     {
-        return $_SESSION['glpiactive_entity'] ?? 0;
+        return $_SESSION['zentraactive_entity'] ?? 0;
     }
 
     /**
@@ -2191,7 +2191,7 @@ class Session
      */
     public static function getActiveEntities(): array
     {
-        return $_SESSION['glpiactiveentities'] ?? [];
+        return $_SESSION['zentraactiveentities'] ?? [];
     }
 
     /**
@@ -2223,7 +2223,7 @@ class Session
         }
 
         $active_entities_ids = [];
-        foreach ($_SESSION['glpiactiveentities'] ?? [] as $active_entity_id) {
+        foreach ($_SESSION['zentraactiveentities'] ?? [] as $active_entity_id) {
             if (
                 !is_int($active_entity_id)
                 && (!is_string($active_entity_id) || !ctype_digit($active_entity_id))
@@ -2231,7 +2231,7 @@ class Session
                 // Ensure no unexpected value converted to int
                 // as it would be converted to `0` and would permit access to root entity
                 trigger_error(
-                    sprintf('Unexpected value `%s` found in `$_SESSION[\'glpiactiveentities\']`.', $active_entity_id ?? 'null'),
+                    sprintf('Unexpected value `%s` found in `$_SESSION[\'zentraactiveentities\']`.', $active_entity_id ?? 'null'),
                     E_USER_WARNING
                 );
                 continue;
@@ -2264,7 +2264,7 @@ class Session
      */
     public static function getIsActiveEntityRecursive(): bool
     {
-        return $_SESSION['glpiactive_entity_recursive'] ?? false;
+        return $_SESSION['zentraactive_entity_recursive'] ?? false;
     }
 
     /**
@@ -2312,15 +2312,15 @@ class Session
      */
     public static function loadEntity($entities_id, $is_recursive): void
     {
-        $_SESSION["glpiactive_entity"]           = $entities_id;
-        $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
+        $_SESSION["zentraactive_entity"]           = $entities_id;
+        $_SESSION["zentraactive_entity_recursive"] = $is_recursive;
         if ($is_recursive) {
-            $entities = getSonsOf("glpi_entities", $entities_id);
+            $entities = getSonsOf("zentra_entities", $entities_id);
         } else {
             $entities = [$entities_id];
         }
-        $_SESSION['glpiactiveentities']        = $entities;
-        $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+        $_SESSION['zentraactiveentities']        = $entities;
+        $_SESSION['zentraactiveentities_string'] = "'" . implode("', '", $entities) . "'";
     }
 
     /**
@@ -2340,26 +2340,26 @@ class Session
     /**
      * Get the current language
      *
-     * @return null|string language corresponding to a key of `$CFG_GLPI['languages']` or null if not set
+     * @return null|string language corresponding to a key of `$CFG_ZENTRA['languages']` or null if not set
      */
     public static function getLanguage(): ?string
     {
-        return $_SESSION['glpilanguage'] ?? null;
+        return $_SESSION['zentralanguage'] ?? null;
     }
 
     /**
-     * Helper function to get the date + time stored in $_SESSION['glpi_currenttime']
+     * Helper function to get the date + time stored in $_SESSION['zentra_currenttime']
      *
      * @return null|string timestamp formated as 'Y-m-d H:i:s' or null if not set
      */
     public static function getCurrentTime(): ?string
     {
-        // TODO replace references to $_SESSION['glpi_currenttime'] by a call to this function
-        return $_SESSION['glpi_currenttime'] ?? null;
+        // TODO replace references to $_SESSION['zentra_currenttime'] by a call to this function
+        return $_SESSION['zentra_currenttime'] ?? null;
     }
 
     /**
-     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     * Helper function to get the date stored in $_SESSION['zentra_currenttime']
      *
      * @return null|string
      */
@@ -2369,7 +2369,7 @@ class Session
     }
 
     /**
-     * Checks if the GLPI sessions directory can be written to if the PHP session save handler is set to "files".
+     * Checks if the ZENTRA sessions directory can be written to if the PHP session save handler is set to "files".
      * @return bool True if the directory is writable, or if the session save handler is not set to "files".
      */
     public static function canWriteSessionFiles(): bool
@@ -2380,7 +2380,7 @@ class Session
             $session_handler = false;
         }
         return $session_handler !== false
-            && (strtolower($session_handler) !== 'files' || is_writable(GLPI_SESSION_DIR));
+            && (strtolower($session_handler) !== 'files' || is_writable(ZENTRA_SESSION_DIR));
     }
 
     /**
@@ -2391,13 +2391,13 @@ class Session
      */
     public static function reloadCurrentProfile(): void
     {
-        $current_profile_id = $_SESSION['glpiactiveprofile']['id'];
+        $current_profile_id = $_SESSION['zentraactiveprofile']['id'];
 
         $profile = new Profile();
         if ($profile->getFromDB($current_profile_id)) {
             $profile->cleanProfile();
-            $_SESSION['glpiactiveprofile'] = array_merge(
-                $_SESSION['glpiactiveprofile'],
+            $_SESSION['zentraactiveprofile'] = array_merge(
+                $_SESSION['zentraactiveprofile'],
                 $profile->fields
             );
         }
@@ -2421,9 +2421,9 @@ class Session
 
         return new SessionInfo(
             user_id   : self::getLoginUserID(),
-            group_ids : $_SESSION['glpigroups'] ?? [],
-            profile_id: $_SESSION['glpiactiveprofile']['id'],
-            active_entities_ids: $_SESSION['glpiactiveentities'],
+            group_ids : $_SESSION['zentragroups'] ?? [],
+            profile_id: $_SESSION['zentraactiveprofile']['id'],
+            active_entities_ids: $_SESSION['zentraactiveentities'],
             current_entity_id: self::getActiveEntity(),
         );
     }
@@ -2431,7 +2431,7 @@ class Session
     public static function getCurrentProfile(): Profile
     {
         //FIXME: Why are we loading the full profile from the DB again when the callers of this just use information that is already in the session?
-        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        $profile_id = $_SESSION['zentraactiveprofile']['id'] ?? null;
         if ($profile_id === null) {
             throw new RuntimeException("No active session");
         }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->tableExists('glpi_appliances')) {
-    $query = "CREATE TABLE `glpi_appliances` (
+if (!$DB->tableExists('zentra_appliances')) {
+    $query = "CREATE TABLE `zentra_appliances` (
          `id` int NOT NULL auto_increment,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -79,8 +79,8 @@ if (!$DB->tableExists('glpi_appliances')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_appliances_items')) {
-    $query = "CREATE TABLE `glpi_appliances_items` (
+if (!$DB->tableExists('zentra_appliances_items')) {
+    $query = "CREATE TABLE `zentra_appliances_items` (
          `id` int NOT NULL auto_increment,
          `appliances_id` int NOT NULL default '0',
          `items_id` int NOT NULL default '0',
@@ -93,8 +93,8 @@ if (!$DB->tableExists('glpi_appliances_items')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_appliancetypes')) {
-    $query = "CREATE TABLE `glpi_appliancetypes` (
+if (!$DB->tableExists('zentra_appliancetypes')) {
+    $query = "CREATE TABLE `zentra_appliancetypes` (
          `id` int NOT NULL auto_increment,
          `entities_id` int NOT NULL default '0',
          `is_recursive` tinyint NOT NULL default '0',
@@ -109,8 +109,8 @@ if (!$DB->tableExists('glpi_appliancetypes')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_applianceenvironments')) {
-    $query = "CREATE TABLE `glpi_applianceenvironments` (
+if (!$DB->tableExists('zentra_applianceenvironments')) {
+    $query = "CREATE TABLE `zentra_applianceenvironments` (
          `id` int NOT NULL auto_increment,
          `name` varchar(255) default NULL,
          `comment` text,
@@ -120,8 +120,8 @@ if (!$DB->tableExists('glpi_applianceenvironments')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_appliancerelations')) {
-    $query = "CREATE TABLE `glpi_appliancerelations` (
+if (!$DB->tableExists('zentra_appliancerelations')) {
+    $query = "CREATE TABLE `zentra_appliancerelations` (
          `id` int NOT NULL auto_increment,
          `appliances_items_id` int NOT NULL default '0',
          `relations_id` int NOT NULL default '0' comment 'locations_id,domains_id or networks_id',

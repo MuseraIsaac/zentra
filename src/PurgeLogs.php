@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryFunction;
 
 class PurgeLogs extends CommonDBTM
 {
@@ -92,14 +92,14 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeSoftware()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_item_software_install']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_item_software_install']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
-                    'itemtype'        => $CFG_GLPI['software_types'],
+                    'itemtype'        => $CFG_ZENTRA['software_types'],
                     'linked_action'   => [
                         Log::HISTORY_INSTALL_SOFTWARE,
                         Log::HISTORY_UNINSTALL_SOFTWARE,
@@ -111,10 +111,10 @@ class PurgeLogs extends CommonDBTM
             );
         }
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_software_item_install']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_software_item_install']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => SoftwareVersion::class,
                     'linked_action'   => [
@@ -125,11 +125,11 @@ class PurgeLogs extends CommonDBTM
             );
         }
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_software_version_install']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_software_version_install']);
         if ($month) {
             //Delete software version association
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'OR' => [
                         [
@@ -166,13 +166,13 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeInfocom()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_infocom_creation']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_infocom_creation']);
         if ($month) {
             //Delete add infocom
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => Software::class,
                     'itemtype_link'   => 'Infocom',
@@ -181,7 +181,7 @@ class PurgeLogs extends CommonDBTM
             );
 
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => Infocom::class,
                     'linked_action'   => Log::HISTORY_CREATE_ITEM,
@@ -197,12 +197,12 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeUserinfos()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_profile_user']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_profile_user']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => User::class,
                     'itemtype_link'   => 'Profile_User',
@@ -215,10 +215,10 @@ class PurgeLogs extends CommonDBTM
             );
         }
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_group_user']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_group_user']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => User::class,
                     'itemtype_link'   => 'Group_User',
@@ -231,10 +231,10 @@ class PurgeLogs extends CommonDBTM
             );
         }
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_userdeletedfromldap']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_userdeletedfromldap']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => User::class,
                     'linked_action'   => Log::HISTORY_LOG_SIMPLE_MESSAGE,
@@ -242,10 +242,10 @@ class PurgeLogs extends CommonDBTM
             );
         }
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_user_auth_changes']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_user_auth_changes']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'        => User::class,
                     'linked_action'   => Log::HISTORY_ADD_RELATION,
@@ -262,7 +262,7 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeDevices()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $actions = [
             Log::HISTORY_ADD_DEVICE          => "adddevice",
@@ -272,11 +272,11 @@ class PurgeLogs extends CommonDBTM
             Log::HISTORY_DISCONNECT_DEVICE   => "disconnectdevice",
         ];
         foreach ($actions as $key => $value) {
-            $month = self::getDateModRestriction($CFG_GLPI['purge_' . $value]);
+            $month = self::getDateModRestriction($CFG_ZENTRA['purge_' . $value]);
             if ($month) {
                 //Delete software version association
                 $DB->delete(
-                    'glpi_logs',
+                    'zentra_logs',
                     [
                         'linked_action' => $key,
                     ] + $month
@@ -292,7 +292,7 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRelations()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $actions = [
             Log::HISTORY_ADD_RELATION     => "addrelation",
@@ -300,11 +300,11 @@ class PurgeLogs extends CommonDBTM
             Log::HISTORY_DEL_RELATION     => "deleterelation",
         ];
         foreach ($actions as $key => $value) {
-            $month = self::getDateModRestriction($CFG_GLPI['purge_' . $value]);
+            $month = self::getDateModRestriction($CFG_ZENTRA['purge_' . $value]);
             if ($month) {
                 //Delete software version association
                 $DB->delete(
-                    'glpi_logs',
+                    'zentra_logs',
                     [
                         'linked_action' => $key,
                     ] + $month
@@ -320,7 +320,7 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeItems()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $actions = [
             Log::HISTORY_CREATE_ITEM      => "createitem",
@@ -331,11 +331,11 @@ class PurgeLogs extends CommonDBTM
             Log::HISTORY_RESTORE_ITEM     => "restoreitem",
         ];
         foreach ($actions as $key => $value) {
-            $month = self::getDateModRestriction($CFG_GLPI['purge_' . $value]);
+            $month = self::getDateModRestriction($CFG_ZENTRA['purge_' . $value]);
             if ($month) {
                 //Delete software version association
                 $DB->delete(
-                    'glpi_logs',
+                    'zentra_logs',
                     [
                         'linked_action' => $key,
                     ] + $month
@@ -351,9 +351,9 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRefusedLogs()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_refusedequipment']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_refusedequipment']);
         if ($month) {
             $refused = new RefusedEquipment();
             $iterator = $DB->request([
@@ -376,17 +376,17 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeOthers()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $actions = [
             16 => 'comments',
             19 => 'datemod',
         ];
         foreach ($actions as $key => $value) {
-            $month = self::getDateModRestriction($CFG_GLPI['purge_' . $value]);
+            $month = self::getDateModRestriction($CFG_ZENTRA['purge_' . $value]);
             if ($month) {
                 $DB->delete(
-                    'glpi_logs',
+                    'zentra_logs',
                     [
                         'id_search_option' => $key,
                     ] + $month
@@ -403,12 +403,12 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgePlugins()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_plugins']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_plugins']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype' => ['LIKE', 'Plugin%'],
                 ] + $month
@@ -424,12 +424,12 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeAll()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $month = self::getDateModRestriction($CFG_GLPI['purge_all']);
+        $month = self::getDateModRestriction($CFG_ZENTRA['purge_all']);
         if ($month) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 $month
             );
         }
@@ -462,6 +462,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function getLogsCount()
     {
-        return countElementsInTable('glpi_logs');
+        return countElementsInTable('zentra_logs');
     }
 }

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
             {% set field_options = {
                 field_class: 'col-4',
             } %}
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
             {% if source_itemtype is not defined or source_itemtype == 'User' %}
                 {{ inputs.hidden('users_id', item.fields['users_id']) }}
                 {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id']|default(0), 'Group'|itemtype_name, {
@@ -48,7 +48,7 @@
                     condition: {
                         is_usergroup: 1
                     },
-                    entity: session('glpiactive_entity'),
+                    entity: session('zentraactive_entity'),
                     entity_sons: true
                 } + field_options) }}
             {% endif %}
@@ -56,7 +56,7 @@
                 {{ inputs.hidden('groups_id', item.fields['groups_id']) }}
                 {{ fields.dropdownField('User', 'users_id', item.fields['users_id']|default(0), 'User'|itemtype_name, {
                     used: used,
-                    entity: entityrestrict|default(session('glpiactive_entity')),
+                    entity: entityrestrict|default(session('zentraactive_entity')),
                     right: 'all',
                     with_no_right: true
                 } + field_options) }}

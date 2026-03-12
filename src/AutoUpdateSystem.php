@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 class AutoUpdateSystem extends CommonDropdown
 {
-    public const NATIVE_INVENTORY = "GLPI Native Inventory";
+    public const NATIVE_INVENTORY = "ZENTRA Native Inventory";
 
     public static function getTypeName($nb = 0)
     {
@@ -46,7 +46,7 @@ class AutoUpdateSystem extends CommonDropdown
     {
         switch ($key) {
             case self::NATIVE_INVENTORY:
-                return __('GLPI Native Inventory');
+                return __('ZENTRA Native Inventory');
         }
 
         return '';

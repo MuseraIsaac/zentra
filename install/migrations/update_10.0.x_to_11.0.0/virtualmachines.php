@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,13 +38,13 @@
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if ($DB->tableExists('glpi_computervirtualmachines')) {
-    $migration->renameTable('glpi_computervirtualmachines', 'glpi_itemvirtualmachines');
+if ($DB->tableExists('zentra_computervirtualmachines')) {
+    $migration->renameTable('zentra_computervirtualmachines', 'zentra_itemvirtualmachines');
 }
 
-if (!$DB->fieldExists('glpi_itemvirtualmachines', 'itemtype')) {
+if (!$DB->fieldExists('zentra_itemvirtualmachines', 'itemtype')) {
     $migration->addField(
-        'glpi_itemvirtualmachines',
+        'zentra_itemvirtualmachines',
         'itemtype',
         'string',
         [
@@ -52,13 +52,13 @@ if (!$DB->fieldExists('glpi_itemvirtualmachines', 'itemtype')) {
             'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
         ]
     );
-    $migration->migrationOneTable('glpi_itemvirtualmachines');
+    $migration->migrationOneTable('zentra_itemvirtualmachines');
 }
 
-if (!$DB->fieldExists('glpi_itemvirtualmachines', 'items_id')) {
-    $migration->dropKey('glpi_itemvirtualmachines', 'computers_id');
+if (!$DB->fieldExists('zentra_itemvirtualmachines', 'items_id')) {
+    $migration->dropKey('zentra_itemvirtualmachines', 'computers_id');
     $migration->changeField(
-        'glpi_itemvirtualmachines',
+        'zentra_itemvirtualmachines',
         'computers_id',
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
@@ -66,7 +66,7 @@ if (!$DB->fieldExists('glpi_itemvirtualmachines', 'items_id')) {
             'after' => 'itemtype',
         ]
     );
-    $migration->migrationOneTable('glpi_itemvirtualmachines');
+    $migration->migrationOneTable('zentra_itemvirtualmachines');
 }
 
-$migration->addKey('glpi_itemvirtualmachines', ['itemtype', 'items_id'], 'item');
+$migration->addKey('zentra_itemvirtualmachines', ['itemtype', 'items_id'], 'item');

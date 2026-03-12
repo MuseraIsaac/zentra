@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
 describe('Form rendering', () => {
     it('Can preset form fields using GET parameters', () => {
         // Set up a form with all questions types that support url initialization
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test form preview',
         }).as('form_id');
         cy.login();
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Form$1';
+            const tab = 'Zentra\\Form\\Form$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
         addQuestionAndGetUuuid('Name');
@@ -75,7 +75,7 @@ describe('Form rendering', () => {
                 [age_uuid]: 29,
                 [urgency_uuid] : 'very loW', // case insentive value
                 [request_type_uuid]: 'reQuest', // // case insentive value
-                [prefered_software_uuid]: 'I really like GLPI',
+                [prefered_software_uuid]: 'I really like ZENTRA',
             });
             cy.visit(`/Form/Render/${form_id}?${params}`);
         });
@@ -84,14 +84,14 @@ describe('Form rendering', () => {
         cy.findByRole('textbox', { 'name': 'Name' }).should('have.value', 'My name');
         cy.findByRole('textbox', { 'name': 'Email' }).should('have.value', 'myemail@teclib.com');
         cy.findByRole('spinbutton', { 'name': 'Age' }).should('have.value', '29');
-        cy.findByLabelText("Prefered software").awaitTinyMCE().should('have.text', 'I really like GLPI');
+        cy.findByLabelText("Prefered software").awaitTinyMCE().should('have.text', 'I really like ZENTRA');
         cy.getDropdownByLabelText('Urgency').should('have.text', "Very low");
         cy.getDropdownByLabelText('Request type').should('have.text', "Request");
     });
 
     it('Mandatory questions must be filled', () => {
         // Set up a form with two sections, each with a mandatory question
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test mandatory questions',
         }).as('form_id');
         cy.get('@form_id').then((form_id) => {
@@ -99,7 +99,7 @@ describe('Form rendering', () => {
             cy.addQuestionToDefaultSectionWithAPI(
                 form_id,
                 'First question',
-                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                 0,
                 null,
                 null,
@@ -108,7 +108,7 @@ describe('Form rendering', () => {
             );
 
             // Add second section
-            cy.createWithAPI('Glpi\\Form\\Section', {
+            cy.createWithAPI('Zentra\\Form\\Section', {
                 'name': 'Second section',
                 'rank': 1,
                 'forms_forms_id': form_id,
@@ -116,9 +116,9 @@ describe('Form rendering', () => {
 
             cy.get('@second_section_id').then((second_section_id) => {
                 // Add mandatory question to second section
-                cy.createWithAPI('Glpi\\Form\\Question', {
+                cy.createWithAPI('Zentra\\Form\\Question', {
                     'name': 'Second question',
-                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     'vertical_rank': 1,
                     'forms_sections_id': second_section_id,
                     'is_mandatory' : true,
@@ -159,7 +159,7 @@ describe('Form rendering', () => {
 
     it('Mandatory question alert is correctly removed when value is set and go to next section', () => {
         // Set up a form with two sections, each with a mandatory question
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test mandatory questions',
         }).as('form_id');
         cy.get('@form_id').then((form_id) => {
@@ -167,7 +167,7 @@ describe('Form rendering', () => {
             cy.addQuestionToDefaultSectionWithAPI(
                 form_id,
                 'First question',
-                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                 0,
                 null,
                 null,
@@ -176,7 +176,7 @@ describe('Form rendering', () => {
             );
 
             // Add second section
-            cy.createWithAPI('Glpi\\Form\\Section', {
+            cy.createWithAPI('Zentra\\Form\\Section', {
                 'name': 'Second section',
                 'rank': 1,
                 'forms_forms_id': form_id,
@@ -184,9 +184,9 @@ describe('Form rendering', () => {
 
             cy.get('@second_section_id').then((second_section_id) => {
                 // Add mandatory question to second section
-                cy.createWithAPI('Glpi\\Form\\Question', {
+                cy.createWithAPI('Zentra\\Form\\Question', {
                     'name': 'Second question',
-                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'type': 'Zentra\\Form\\QuestionType\\QuestionTypeShortText',
                     'vertical_rank': 1,
                     'forms_sections_id': second_section_id,
                     'is_mandatory' : true,
@@ -331,7 +331,7 @@ describe('Form rendering', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Item question with advanced configuration',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeItem',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeItem',
                     0,
                     0,
                     null,
@@ -355,7 +355,7 @@ describe('Form rendering', () => {
                     cy.findByRole('option', { name: `»Test entity grandchild ${uid}` }).should('not.have.attr', 'aria-disabled');
 
                     // Update subtree depth to 1 and allow selection of the root
-                    cy.updateWithAPI('Glpi\\Form\\Question', question_id, {
+                    cy.updateWithAPI('Zentra\\Form\\Question', question_id, {
                         'extra_data': {
                             "root_items_id"       : entity_root_id,
                             "subtree_depth"       : "1",
@@ -409,7 +409,7 @@ describe('Form rendering', () => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     form_id,
                     'Item dropdown question with advanced configuration',
-                    'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                    'Zentra\\Form\\QuestionType\\QuestionTypeItemDropdown',
                     0,
                     0,
                     null,
@@ -432,7 +432,7 @@ describe('Form rendering', () => {
                     cy.findByRole('option', { name: `»Test location grandchild ${uid}` }).should('not.have.attr', 'aria-disabled');
 
                     // Update subtree depth to 1 and allow selection of the root
-                    cy.updateWithAPI('Glpi\\Form\\Question', question_id, {
+                    cy.updateWithAPI('Zentra\\Form\\Question', question_id, {
                         'extra_data': {
                             "categories_filter"   : [],
                             "root_items_id"       : location_root_id,
@@ -464,8 +464,8 @@ describe('Form rendering', () => {
             cy.visit(`/Form/Render/${form_id}`);
 
             // Assert submit button is hidden initially
-            cy.get('[data-glpi-form-renderer-actions]')
-                .find('button[data-glpi-form-renderer-action="submit"]')
+            cy.get('[data-zentra-form-renderer-actions]')
+                .find('button[data-zentra-form-renderer-action="submit"]')
                 .should('be.hidden');
 
             // Fill the TinyMCE description

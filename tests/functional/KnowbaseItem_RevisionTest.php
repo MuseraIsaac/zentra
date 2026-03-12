@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/knowbaseitem_revision.class.php */
 
@@ -44,7 +44,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
     public function tearDown(): void
     {
         global $DB;
-        $DB->delete('glpi_knowbaseitems_revisions', [new QueryExpression('true')]);
+        $DB->delete('zentra_knowbaseitems_revisions', [new QueryExpression('true')]);
         parent::tearDown();
     }
 
@@ -72,7 +72,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         ];
 
         $nb = countElementsInTable(
-            'glpi_knowbaseitems_revisions',
+            'zentra_knowbaseitems_revisions',
             $where
         );
         $this->assertEquals(0, $nb);
@@ -87,14 +87,14 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         );
 
         $nb = countElementsInTable(
-            'glpi_knowbaseitems_revisions',
+            'zentra_knowbaseitems_revisions',
             $where
         );
         $this->assertEquals(1, $nb);
 
         $data = $DB->request([
             'SELECT' => ['MIN' => 'id as id'],
-            'FROM'   => 'glpi_knowbaseitems_revisions',
+            'FROM'   => 'zentra_knowbaseitems_revisions',
         ])->current();
         $rev_id = $data['id'];
 
@@ -102,7 +102,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertTrue($kb1->revertTo($rev_id));
 
         $nb = countElementsInTable(
-            'glpi_knowbaseitems_revisions',
+            'zentra_knowbaseitems_revisions',
             $where
         );
         $this->assertEquals(2, $nb);
@@ -127,14 +127,14 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         );
 
         $nb = countElementsInTable(
-            'glpi_knowbaseitems_revisions',
+            'zentra_knowbaseitems_revisions',
             $where
         );
         $this->assertEquals(4, $nb);
 
         $data = $DB->request([
             'SELECT' => new QueryExpression('MAX(id) AS id'),
-            'FROM'   => 'glpi_knowbaseitems_revisions',
+            'FROM'   => 'zentra_knowbaseitems_revisions',
         ])->current();
         $nrev_id = $data['id'];
 
@@ -155,7 +155,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $kb_rev = new \KnowbaseItem_Revision();
         $kb1 = $this->getNewKbItem();
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
         $this->assertSame('', $name);
     }
@@ -176,7 +176,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             )
         );
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
         $this->assertSame("Revision 1", strip_tags($name));
 
@@ -192,7 +192,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $name = $kb_rev->getTabNameForItem($kb1);
         $this->assertSame("Revisions 2", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $name = $kb_rev->getTabNameForItem($kb1);
         $this->assertSame("Revisions", strip_tags($name));
     }

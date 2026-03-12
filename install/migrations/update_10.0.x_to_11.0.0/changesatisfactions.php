@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
@@ -42,8 +42,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_changesatisfactions')) {
-    $query = "CREATE TABLE `glpi_changesatisfactions` (
+if (!$DB->tableExists('zentra_changesatisfactions')) {
+    $query = "CREATE TABLE `zentra_changesatisfactions` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `changes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `type` int NOT NULL DEFAULT '1',
@@ -65,14 +65,14 @@ $migration->addCrontask(
 );
 
 // Add new entity config columns
-if (!$DB->fieldExists('glpi_entities', 'max_closedate_change')) {
-    $migration->addField('glpi_entities', 'max_closedate_change', 'timestamp', [
+if (!$DB->fieldExists('zentra_entities', 'max_closedate_change')) {
+    $migration->addField('zentra_entities', 'max_closedate_change', 'timestamp', [
         'after' => 'inquest_URL',
         'null'  => true,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_config_change')) {
-    $migration->addField('glpi_entities', 'inquest_config_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_config_change')) {
+    $migration->addField('zentra_entities', 'inquest_config_change', 'integer', [
         'after'     => 'max_closedate_change',
         'value'     => -2,
         // Internal survey for root entity
@@ -80,14 +80,14 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_config_change')) {
         'condition' => 'WHERE `id` = 0',
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_rate_change')) {
-    $migration->addField('glpi_entities', 'inquest_rate_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_rate_change')) {
+    $migration->addField('zentra_entities', 'inquest_rate_change', 'integer', [
         'after' => 'inquest_config_change',
         'value' => 0,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_delay_change')) {
-    $migration->addField('glpi_entities', 'inquest_delay_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_delay_change')) {
+    $migration->addField('zentra_entities', 'inquest_delay_change', 'integer', [
         'after'     => 'inquest_rate_change',
         'value'     => -10,
         // Unlimited for root entity
@@ -95,32 +95,32 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_delay_change')) {
         'condition' => 'WHERE `id` = 0',
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_URL_change')) {
-    $migration->addField('glpi_entities', 'inquest_URL_change', 'string', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_URL_change')) {
+    $migration->addField('zentra_entities', 'inquest_URL_change', 'string', [
         'after' => 'inquest_delay_change',
         'null'  => true,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_max_rate_change')) {
-    $migration->addField('glpi_entities', 'inquest_max_rate_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_max_rate_change')) {
+    $migration->addField('zentra_entities', 'inquest_max_rate_change', 'integer', [
         'after' => 'inquest_URL_change',
         'value' => 5,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_default_rate_change')) {
-    $migration->addField('glpi_entities', 'inquest_default_rate_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_default_rate_change')) {
+    $migration->addField('zentra_entities', 'inquest_default_rate_change', 'integer', [
         'after' => 'inquest_max_rate_change',
         'value' => 3,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_mandatory_comment_change')) {
-    $migration->addField('glpi_entities', 'inquest_mandatory_comment_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_mandatory_comment_change')) {
+    $migration->addField('zentra_entities', 'inquest_mandatory_comment_change', 'integer', [
         'after' => 'inquest_default_rate_change',
         'value' => 0,
     ]);
 }
-if (!$DB->fieldExists('glpi_entities', 'inquest_duration_change')) {
-    $migration->addField('glpi_entities', 'inquest_duration_change', 'integer', [
+if (!$DB->fieldExists('zentra_entities', 'inquest_duration_change')) {
+    $migration->addField('zentra_entities', 'inquest_duration_change', 'integer', [
         'after' => 'inquest_duration',
         'value' => 0,
     ]);
@@ -132,7 +132,7 @@ $migration->giveRight('change', CommonITILObject::SURVEY, [
 
 // Replace old TICKETCATEGORY tags in Entity inquest_URL field with ITILCATEGORY
 $DB->update(
-    'glpi_entities',
+    'zentra_entities',
     [
         'inquest_URL' => new QueryExpression(
             'REPLACE(inquest_URL, \'[TICKETCATEGORY_\', \'##[ITILCATEGORY_\')'
@@ -144,7 +144,7 @@ $DB->update(
 );
 
 // Keep track of satisfaction on a fixed scale (for stats)
-foreach (['glpi_changesatisfactions', 'glpi_ticketsatisfactions'] as $table) {
+foreach (['zentra_changesatisfactions', 'zentra_ticketsatisfactions'] as $table) {
     if (!$DB->fieldExists($table, 'satisfaction_scaled_to_5')) {
         $migration->addField($table, 'satisfaction_scaled_to_5', 'float DEFAULT NULL', [
             'after' => 'satisfaction',

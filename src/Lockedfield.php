@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Inventory\Inventory;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Inventory\Inventory;
+use Zentra\Search\SearchOption;
 
 /**
  *  Locked fields for inventory
@@ -214,7 +214,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return bool
      */
-    public function isHandled(CommonGLPI $item)
+    public function isHandled(CommonZENTRA $item)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -438,7 +438,7 @@ class Lockedfield extends CommonDBTM
      */
     public function getFieldsToLock(?string $specific_itemtype = null): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'field'],
@@ -469,7 +469,7 @@ class Lockedfield extends CommonDBTM
             'uuid',
             'comment',
         ];
-        $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+        $itemtypes = $CFG_ZENTRA['inventory_types'] + $CFG_ZENTRA['inventory_lockable_objects'];
 
         if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
             $itemtypes = [$specific_itemtype];

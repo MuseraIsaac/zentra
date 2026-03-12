@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                 // Manage cartridge assoc Update items
                 if (static::getRuleClassName() === RuleDictionnaryPrinterModel::class) {
                     $iterator2 = $DB->request([
-                        'FROM'   => 'glpi_cartridgeitems_printermodels',
+                        'FROM'   => 'zentra_cartridgeitems_printermodels',
                         'WHERE'  => ['printermodels_id' => $ID],
                     ]);
 
@@ -239,7 +239,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                         // Delete cartrodges_assoc
                         if ($deletecartmodel) {
                             $DB->delete(
-                                'glpi_cartridgeitems_printermodels',
+                                'zentra_cartridgeitems_printermodels',
                                 [
                                     'printermodels_id'   => $ID,
                                 ]
@@ -268,8 +268,8 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
             return [
                 'SELECT'          => [
-                    'glpi_manufacturers.id AS idmanu',
-                    'glpi_manufacturers.name AS manufacturer',
+                    'zentra_manufacturers.id AS idmanu',
+                    'zentra_manufacturers.name AS manufacturer',
                     $this->item_table . '.id',
                     $this->item_table . '.name AS name',
                     $this->item_table . '.comment',
@@ -285,9 +285,9 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     ],
                 ],
                 'LEFT JOIN'       => [
-                    'glpi_manufacturers' => [
+                    'zentra_manufacturers' => [
                         'ON' => [
-                            'glpi_manufacturers' => 'id',
+                            'zentra_manufacturers' => 'id',
                             $model_table         => 'manufacturers_id',
                         ],
                     ],

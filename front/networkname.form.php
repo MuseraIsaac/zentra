@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\NotFoundHttpException;
 
 Session::checkRight(NetworkName::$rightname, READ);
 
@@ -52,9 +52,9 @@ if (isset($_POST["add"])) {
             5,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s adds an item'), $_SESSION["glpiname"])
+            sprintf(__('%s adds an item'), $_SESSION["zentraname"])
         );
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($nn->getLinkURL());
         }
     }
@@ -69,9 +69,9 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        sprintf(__('%s deletes an item'), $_SESSION["zentraname"])
     );
-    if ($_SESSION['glpibackcreated']) {
+    if ($_SESSION['zentrabackcreated']) {
         Html::redirect($nn->getLinkURL());
     }
     Html::back();
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
         5,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
     if ($node = getItemForItemtype($nn->fields["itemtype"])) {
         if ($node->can($nn->fields["items_id"], READ)) {
@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } elseif (isset($_POST["unaffect"])) {
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     if ($node = getItemForItemtype($nn->fields["itemtype"])) {
         if ($node->can($nn->fields["items_id"], READ)) {
@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
             5,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s associates a network name to an item'), $_SESSION["glpiname"])
+            sprintf(__('%s associates a network name to an item'), $_SESSION["zentraname"])
         );
         Html::back();
     } else {

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +47,11 @@ use DocumentType;
 use Dropdown;
 use Entity;
 use Generator;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\Clonable;
-use Glpi\Socket;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\Clonable;
+use Zentra\Socket;
+use Zentra\Tests\DbTestCase;
 use Group;
 use Group_User;
 use Item_DeviceSimcard;
@@ -170,7 +170,7 @@ class DropdownTest extends DbTestCase
 
         // basic test returns string only
         $expected_name = '_cat_1 > _subcat_1';
-        $ret = Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownName('zentra_taskcategories', $subcat_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -180,37 +180,37 @@ class DropdownTest extends DbTestCase
     
 Comment for sub-category _subcat_1
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_taskcategories', $subcat_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownComments('zentra_taskcategories', $subcat_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for sub-category _subcat_1';
-        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_taskcategories', $subcat_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_taskcategories', $subcat_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         // test of return with translations
-        $_SESSION["glpilanguage"] = Session::loadLanguage('fr_FR');
-        $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+        $_SESSION["zentralanguage"] = Session::loadLanguage('fr_FR');
+        $_SESSION['zentra_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["zentralanguage"]);
         $expected_name = 'FR - _cat_1 > FR - _subcat_1';
         $expected_comments = 'FR - Commentaire pour sous-catégorie _subcat_1';
 
-        $ret = Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownName('zentra_taskcategories', $subcat_id);
         $this->assertSame($expected_name, $ret);
 
-        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_taskcategories', $subcat_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_taskcategories', $subcat_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         // switch back to default language
-        $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
+        $_SESSION["zentralanguage"] = Session::loadLanguage('en_GB');
 
         ////////////////////////////////
         // test for other dropdown types
@@ -221,14 +221,14 @@ HTML;
         $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
 
         $expected_name = '_test_pc01';
-        $ret = Dropdown::getDropdownName('glpi_computers', $computer_id);
+        $ret = Dropdown::getDropdownName('zentra_computers', $computer_id);
         $this->assertSame($expected_name, $ret);
 
         $expected_comments = 'Comment for computer _test_pc01';
-        $ret = @Dropdown::getDropdownName('glpi_computers', $computer_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_computers', $computer_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_computers', $computer_id);
+        $ret = Dropdown::getDropdownComments('zentra_computers', $computer_id);
         $this->assertSame($expected_comments, $ret);
 
         //////////
@@ -236,7 +236,7 @@ HTML;
         $contact_id = getItemByTypeName('Contact', '_contact01_name', true);
 
         $expected_name = '_contact01_name _contact01_firstname';
-        $ret = Dropdown::getDropdownName('glpi_contacts', $contact_id);
+        $ret = Dropdown::getDropdownName('zentra_contacts', $contact_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -245,23 +245,23 @@ HTML;
             <span class="b">Phone 2: </span>0123456788<br />
             <span class="b">Mobile phone: </span>0623456789<br />
             <span class="b">Fax: </span>0123456787<br />
-            <span class="b">Email: </span>_contact01_firstname._contact01_name@glpi.com<br />
+            <span class="b">Email: </span>_contact01_firstname._contact01_name@zentra.com<br />
                 <span class="b">Comments: </span>
     
 Comment for contact _contact01_name
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_contacts', $contact_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_contacts', $contact_id);
+        $ret = Dropdown::getDropdownComments('zentra_contacts', $contact_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for contact _contact01_name';
-        $ret = @Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_contacts', $contact_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_contacts', $contact_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_contacts', $contact_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
@@ -269,7 +269,7 @@ HTML;
         $supplier_id = getItemByTypeName(Supplier::class, '_suplier01_name', true);
 
         $expected_name = '_suplier01_name';
-        $ret = Dropdown::getDropdownName('glpi_suppliers', $supplier_id);
+        $ret = Dropdown::getDropdownName('zentra_suppliers', $supplier_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -281,18 +281,18 @@ HTML;
     
 Comment for supplier _suplier01_name
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_suppliers', $supplier_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_suppliers', $supplier_id);
+        $ret = Dropdown::getDropdownComments('zentra_suppliers', $supplier_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for supplier _suplier01_name';
-        $ret = @Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_suppliers', $supplier_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_suppliers', $supplier_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_suppliers', $supplier_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
@@ -300,7 +300,7 @@ HTML;
         $budget_id = getItemByTypeName(Budget::class, '_budget01', true);
 
         $expected_name = '_budget01';
-        $ret = Dropdown::getDropdownName('glpi_budgets', $budget_id);
+        $ret = Dropdown::getDropdownName('zentra_budgets', $budget_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -313,18 +313,18 @@ HTML;
     
 Comment for budget _budget01
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_budgets', $budget_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_budgets', $budget_id);
+        $ret = Dropdown::getDropdownComments('zentra_budgets', $budget_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for budget _budget01';
-        $ret = @Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_budgets', $budget_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_budgets', $budget_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_budgets', $budget_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
@@ -332,7 +332,7 @@ HTML;
         $location_id = getItemByTypeName(Location::class, '_location01', true);
 
         $expected_name = '_location01';
-        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('zentra_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -342,25 +342,25 @@ HTML;
     
 Comment for location _location01
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _location01';
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with code only:
         $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation02', true);
 
         $expected_name = "_location02 > _sublocation02 - code_sublocation02";
-        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('zentra_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -371,25 +371,25 @@ HTML;
     
 Comment for location _sublocation02
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation02';
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with alias only:
         $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation03', true);
 
         $expected_name = "alias_sublocation03";
-        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('zentra_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -400,25 +400,25 @@ HTML;
     
 Comment for location _sublocation03
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation03';
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with alias and code:
         $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation04', true);
 
         $expected_name = "alias_sublocation04 - code_sublocation04";
-        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('zentra_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -430,18 +430,18 @@ HTML;
     
 Comment for location _sublocation04
 HTML;
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation04';
-        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('zentra_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('zentra_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
     }
 
@@ -455,7 +455,7 @@ HTML;
                 'entities_id' => $this->getTestRootEntity(true),
             ],
         );
-        $this->assertSame('', Dropdown::getDropdownComments('glpi_computers', $item->getID()));
+        $this->assertSame('', Dropdown::getDropdownComments('zentra_computers', $item->getID()));
     }
 
     public static function dataGetValueWithUnit()
@@ -852,7 +852,7 @@ HTML;
                     'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true,
+                    'zentrause_flat_dropdowntree' => true,
                 ],
             ], [
                 'params' => [
@@ -892,7 +892,7 @@ HTML;
                     'count' => 3,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true,
+                    'zentrause_flat_dropdowntree' => true,
                 ],
             ], [
                 'params' => [
@@ -927,7 +927,7 @@ HTML;
                     'count' => 1,
                 ],
             ], [
-                // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
+                // search using id on CommonTreeDropdown but without "zentrais_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => TaskCategory::class,
@@ -939,10 +939,10 @@ HTML;
                     'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false,
+                    'zentrais_ids_visible' => false,
                 ],
             ], [
-                // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
+                // search using id on CommonTreeDropdown with "zentrais_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => TaskCategory::class,
@@ -973,10 +973,10 @@ HTML;
                     'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true,
+                    'zentrais_ids_visible' => true,
                 ],
             ], [
-                // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
+                // search using id on "not a CommonTreeDropdown" but without "zentrais_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => DocumentType::class,
@@ -988,10 +988,10 @@ HTML;
                     'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false,
+                    'zentrais_ids_visible' => false,
                 ],
             ], [
-                // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
+                // search using id on "not a CommonTreeDropdown" with "zentrais_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => DocumentType::class,
@@ -1008,7 +1008,7 @@ HTML;
                     'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true,
+                    'zentrais_ids_visible' => true,
                 ],
             ], [
                 'params' => [
@@ -1063,7 +1063,7 @@ HTML;
                     'count'     => 1,
                 ],
             ],
-            // This test verifies the behavior of searches by ID when $_SESSION['glpiis_ids_visible'] is true.
+            // This test verifies the behavior of searches by ID when $_SESSION['zentrais_ids_visible'] is true.
             // Specifically, it checks that a WHERE clause is applied on the index name ("id")
             // when 'searchText' contains only numeric characters (one or more), with no other characters.
             // This condition is evaluated in two contexts: when the related object is either a CommonDropdown or a CommonTreeDropdown.
@@ -1341,7 +1341,7 @@ HTML;
                     ],
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true,
+                    'zentrais_ids_visible' => true,
                 ],
             ],
         ];
@@ -1534,11 +1534,11 @@ HTML;
     #[DataProvider('getDropdownNumberProvider')]
     public function testGetDropdownNumber($params, $expected)
     {
-        global $CFG_GLPI;
-        $orig_max = $CFG_GLPI['dropdown_max'];
-        $CFG_GLPI['dropdown_max'] = 10;
+        global $CFG_ZENTRA;
+        $orig_max = $CFG_ZENTRA['dropdown_max'];
+        $CFG_ZENTRA['dropdown_max'] = 10;
         $result = Dropdown::getDropdownNumber($params, false);
-        $CFG_GLPI['dropdown_max'] = $orig_max;
+        $CFG_ZENTRA['dropdown_max'] = $orig_max;
         $this->assertSame($expected, $result);
     }
 
@@ -1559,9 +1559,9 @@ HTML;
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int) getItemByTypeName(User::class, 'glpi', true),
-                            'text'   => 'glpi',
-                            'title'  => 'glpi - glpi',
+                            'id'     => (int) getItemByTypeName(User::class, 'zentra', true),
+                            'text'   => 'zentra',
+                            'title'  => 'zentra - zentra',
                         ],
                         3 => [
                             'id'     => (int) getItemByTypeName(User::class, 'normal', true),
@@ -1589,7 +1589,7 @@ HTML;
             ], [
                 'params'    => [
                     'used'   => [
-                        getItemByTypeName(User::class, 'glpi', true),
+                        getItemByTypeName(User::class, 'zentra', true),
                         getItemByTypeName(User::class, 'tech', true),
                     ],
                 ],
@@ -1626,7 +1626,7 @@ HTML;
                 'params'    => [
                     'all'    => true,
                     'used'   => [
-                        getItemByTypeName(User::class, 'glpi', true),
+                        getItemByTypeName(User::class, 'zentra', true),
                         getItemByTypeName(User::class, 'tech', true),
                         getItemByTypeName(User::class, 'normal', true),
                         getItemByTypeName(User::class, 'post-only', true),
@@ -1762,12 +1762,12 @@ HTML;
         //use a WHERE array condition
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
+            'condition'             => ['WHERE' => ['zentra_locations.name' => ['LIKE', "%3%"]]],
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['zentra_locations.name' => ['LIKE', "%3%"]]]]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1778,12 +1778,12 @@ HTML;
         //use a "multiple" WHERE array condition
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
+            'condition'             => [0 => ['WHERE' => ['zentra_locations.name' => ['LIKE', "%3%"]]]],
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['zentra_locations.name' => ['LIKE', "%3%"]]]]]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1794,7 +1794,7 @@ HTML;
         //use a string condition
         // Put condition in session and post its key
         $condition_key = sha1(serialize($post['condition']));
-        $_SESSION['glpicondition'][$condition_key] = $post['condition'];
+        $_SESSION['zentracondition'][$condition_key] = $post['condition'];
         $post['condition']   = $condition_key;
         $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = Dropdown::getDropdownValue($post);
@@ -2276,7 +2276,7 @@ HTML;
         $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
-            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['zentraID']])
         );
 
         Session::loadGroups();
@@ -2295,7 +2295,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $_SESSION['glpiID'],
+                'users_id_tech' => $_SESSION['zentraID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2320,7 +2320,7 @@ HTML;
         $this->assertContains(__FUNCTION__ . '3', array_column($results[$optgroup_id]['children'], 'text'));
 
         // Remove permission to read all items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $results = Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
@@ -2331,7 +2331,7 @@ HTML;
         $this->assertContains(__FUNCTION__ . '3', array_column($results[$optgroup_id]['children'], 'text'));
 
         // Remove permission to read assigned items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = 0;
         $results = Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
@@ -2367,7 +2367,7 @@ HTML;
         $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
-            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['zentraID']])
         );
 
         Session::loadGroups();
@@ -2386,7 +2386,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $_SESSION['glpiID'],
+                'users_id_tech' => $_SESSION['zentraID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2403,7 +2403,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '4',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id' => $_SESSION['glpiID'],
+                'users_id' => $_SESSION['zentraID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2430,7 +2430,7 @@ HTML;
         $this->assertContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         // Remove permission to read all items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
@@ -2445,7 +2445,7 @@ HTML;
         $this->assertNotContains(__FUNCTION__ . '4', array_column($results, 'text'));
         $this->assertNotContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
@@ -2461,7 +2461,7 @@ HTML;
         $this->assertContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         // Remove permission to read assigned items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = 0;
         $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
@@ -2646,8 +2646,8 @@ HTML;
 
     public function testShowTimeStamp()
     {
-        global $CFG_GLPI;
-        $CFG_GLPI["time_step"] = 30;
+        global $CFG_ZENTRA;
+        $CFG_ZENTRA["time_step"] = 30;
         $out = Dropdown::showTimeStamp('timestamp', [
             'display' => false,
             'min' => 30,
@@ -2667,20 +2667,20 @@ HTML;
 
     public function testGetLanguages()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $this->assertCount(count($CFG_GLPI['languages']), Dropdown::getLanguages());
+        $this->assertCount(count($CFG_ZENTRA['languages']), Dropdown::getLanguages());
     }
 
     public function testGetDropdownMyDevices()
     {
         $this->login();
 
-        $user_id   = \getItemByTypeName(User::class, 'glpi', true);
+        $user_id   = \getItemByTypeName(User::class, 'zentra', true);
         $group_id  = \getItemByTypeName(Group::class, '_test_group_1', true);
         $entity_id = $this->getTestRootEntity(true);
 
-        // Add `glpi` user inside the test group
+        // Add `zentra` user inside the test group
         $this->createItem(
             Group_User::class,
             [
@@ -2689,7 +2689,7 @@ HTML;
             ]
         );
 
-        // Create test equipment owned by user/group using GLPI's createItem helper
+        // Create test equipment owned by user/group using ZENTRA's createItem helper
         $computer_1 = $this->createItem(Computer::class, [
             'name' => 'Test Laptop',
             'users_id' => $user_id,
@@ -2735,7 +2735,7 @@ HTML;
         ]);
         $printer_2 = $this->createItem(Printer::class, [
             'name' => 'Test group Printer HP',
-            'users_id' => \getItemByTypeName(User::class, 'post-only', true), // not visible for glpi user
+            'users_id' => \getItemByTypeName(User::class, 'post-only', true), // not visible for zentra user
             'groups_id' => [\getItemByTypeName(Group::class, '_test_group_1', true)], // not visible for _test_group_1
             'entities_id' => $entity_id,
             'serial' => 'PRT975',
@@ -2756,9 +2756,9 @@ HTML;
         ]);
 
         // Check with user that can see only its own hardware
-        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0; // cannot see group hardware
-        $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
-        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = [Computer::class, Monitor::class, Printer::class];
+        $_SESSION["zentraactiveprofile"]["show_group_hardware"] = 0; // cannot see group hardware
+        $_SESSION["zentraactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
+        $_SESSION["zentraactiveprofile"]["helpdesk_item_type"] = [Computer::class, Monitor::class, Printer::class];
 
         $post = [
             'userID' => $user_id,
@@ -2829,7 +2829,7 @@ HTML;
         );
 
         // Check with user that can see its own hardware + its groups hardware
-        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = READ; // can see group hardware
+        $_SESSION["zentraactiveprofile"]["show_group_hardware"] = READ; // can see group hardware
 
         $result = Dropdown::getDropdownMyDevices($post, false);
 
@@ -2837,7 +2837,7 @@ HTML;
         $this->assertArrayHasKey('count', $result);
         $this->assertArrayHasKey('results', $result);
         $this->assertIsArray($result['results']);
-        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0;
+        $_SESSION["zentraactiveprofile"]["show_group_hardware"] = 0;
 
         $this->assertEquals(
             [
@@ -3020,7 +3020,7 @@ HTML;
             'display_emptychoice' => false,
             'entity_restrict' => 0,
             'used' => [$task_used->getID() => $task_used->getID()],
-            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]],
+            'condition' => ['NOT' => ['zentra_projecttasks.name' => ['Task excluded by condition']]],
         ];
         $params['_idor_token'] = Session::getNewIDORToken(ProjectTask::class, $params);
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,21 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Form\Destination;
+namespace Zentra\Tests\Form\Destination;
 
 use CommonDBTM;
-use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\AbstractCommonITILFormDestination;
-use Glpi\Form\Destination\CommonITILField\ContentField;
-use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
-use Glpi\Form\Destination\CommonITILField\TitleField;
-use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Zentra\Form\AnswersHandler\AnswersHandler;
+use Zentra\Form\AnswersSet;
+use Zentra\Form\Destination\AbstractCommonITILFormDestination;
+use Zentra\Form\Destination\CommonITILField\ContentField;
+use Zentra\Form\Destination\CommonITILField\SimpleValueConfig;
+use Zentra\Form\Destination\CommonITILField\TitleField;
+use Zentra\Form\Destination\FormDestination;
+use Zentra\Form\Form;
+use Zentra\Form\QuestionType\QuestionTypeShortText;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\FormBuilder;
+use Zentra\Tests\FormTesterTrait;
 
 abstract class AbstractCommonITILFormDestinationType extends DbTestCase
 {

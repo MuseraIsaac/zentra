@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @since 0.84
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 global $DB;
 
@@ -57,18 +57,18 @@ if (
     $name_field = new QueryExpression("'' AS " . $DB->quoteName('socketname'));
 
     if ($_POST['instantiation_type'] == 'NetworkPortEthernet') {
-        $name_field = 'glpi_sockets.name AS socketname';
+        $name_field = 'zentra_sockets.name AS socketname';
         $joins = [
-            'glpi_networkportethernets'   => [
+            'zentra_networkportethernets'   => [
                 'ON'  => [
-                    'glpi_networkportethernets'   => 'id',
-                    'glpi_networkports'           => 'id',
+                    'zentra_networkportethernets'   => 'id',
+                    'zentra_networkports'           => 'id',
                 ],
             ],
-            'glpi_sockets'              => [
+            'zentra_sockets'              => [
                 'ON'  => [
-                    'glpi_networkports'   => 'id',
-                    'glpi_sockets'        => 'networkports_id',
+                    'zentra_networkports'   => 'id',
+                    'zentra_sockets'        => 'networkports_id',
                 ],
             ],
         ];
@@ -76,46 +76,46 @@ if (
 
     $criteria = [
         'SELECT'    => [
-            'glpi_networkports_networkports.id AS wid',
-            'glpi_networkports.id AS did',
+            'zentra_networkports_networkports.id AS wid',
+            'zentra_networkports.id AS did',
             "$table.name AS cname",
-            'glpi_networkports.name AS nname',
+            'zentra_networkports.name AS nname',
             $name_field,
         ],
         'DISTINCT'  => true,
         'FROM'      => $table,
         'LEFT JOIN' => [
-            'glpi_networkports'  => [
+            'zentra_networkports'  => [
                 'ON'  => [
-                    'glpi_networkports'  => 'items_id',
+                    'zentra_networkports'  => 'items_id',
                     $table               => 'id', [
                         'AND' => [
-                            'glpi_networkports.items_id'           => $_POST['item'],
-                            'glpi_networkports.itemtype'           => $_POST["itemtype"],
-                            'glpi_networkports.instantiation_type' => $_POST['instantiation_type'],
+                            'zentra_networkports.items_id'           => $_POST['item'],
+                            'zentra_networkports.itemtype'           => $_POST["itemtype"],
+                            'zentra_networkports.instantiation_type' => $_POST['instantiation_type'],
                         ],
                     ],
                 ],
             ],
-            'glpi_networkports_networkports' => [
+            'zentra_networkports_networkports' => [
                 'ON'  => [
-                    'glpi_networkports_networkports' => 'networkports_id_1',
-                    'glpi_networkports'              => 'id', [
+                    'zentra_networkports_networkports' => 'networkports_id_1',
+                    'zentra_networkports'              => 'id', [
                         'OR'  => [
-                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+                            'zentra_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('zentra_networkports.id')),
                         ],
                     ],
                 ],
             ],
         ] + $joins,
         'WHERE'     => [
-            'glpi_networkports_networkports.id' => null,
-            'NOT'                               => ['glpi_networkports.id' => null],
-            'glpi_networkports.id'              => ['<>', $_POST['networkports_id']],
+            'zentra_networkports_networkports.id' => null,
+            'NOT'                               => ['zentra_networkports.id' => null],
+            'zentra_networkports.id'              => ['<>', $_POST['networkports_id']],
             "$table.is_deleted"                 => 0,
             "$table.is_template"                => 0,
         ],
-        'ORDERBY'   => 'glpi_networkports.id',
+        'ORDERBY'   => 'zentra_networkports.id',
     ];
     $iterator = $DB->request($criteria);
 
@@ -140,7 +140,7 @@ if (
         }
         $ID = $data['did'];
 
-        if ($_SESSION["glpiis_ids_visible"] || empty($output) || empty($output_long)) {
+        if ($_SESSION["zentrais_ids_visible"] || empty($output) || empty($output_long)) {
             $output      = sprintf(__('%1$s (%2$s)'), $output, $ID);
             $output_long = sprintf(__('%1$s (%2$s)'), $output_long, $ID);
         }

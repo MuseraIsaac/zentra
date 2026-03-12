@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -76,8 +76,8 @@
 
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+               <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
+               {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -127,9 +127,9 @@
 
          <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
          <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
-         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+         <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
 
-         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+         {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
          <div class="mb-3 comment-part">
             {{ fields.textareaField(
@@ -295,7 +295,7 @@
                 ) }}
             </div>
 
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             <div class="d-flex justify-content-center card-footer">
                 {% if subitem.fields['id'] <= 0 %}
@@ -320,7 +320,7 @@
                 {% endif %}
             </div>
 
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
         </form>
 
       {% if scroll ?? false %}
@@ -333,7 +333,7 @@
          // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
-               url: `${CFG_GLPI.root_doc}/ajax/itilvalidation.php`,
+               url: `${CFG_ZENTRA.root_doc}/ajax/itilvalidation.php`,
                type: 'POST',
                data: {
                   validationtemplates_id: value,

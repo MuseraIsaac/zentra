@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\Asset_PeripheralAsset;
+use Zentra\Asset\Asset_PeripheralAsset;
 
 class RuleDictionnaryPrinterCollection extends RuleCollection
 {
@@ -111,7 +111,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 //Find all the printers in the database with the same name and manufacturer
                 $print_iterator = $DB->request([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_printers',
+                    'FROM'   => 'zentra_printers',
                     'WHERE'  => [
                         'name'               => $input['name'],
                         'manufacturers_id'   => $input['manufacturers_id'],
@@ -142,25 +142,25 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         //Select all the differents software
         return [
             'SELECT' => [
-                'glpi_printers.name',
-                'glpi_manufacturers.name AS manufacturer',
-                'glpi_printers.manufacturers_id AS manufacturers_id',
-                'glpi_printers.comment AS comment',
+                'zentra_printers.name',
+                'zentra_manufacturers.name AS manufacturer',
+                'zentra_printers.manufacturers_id AS manufacturers_id',
+                'zentra_printers.comment AS comment',
             ],
             'DISTINCT'  => true,
-            'FROM'      => 'glpi_printers',
+            'FROM'      => 'zentra_printers',
             'LEFT JOIN' => [
-                'glpi_manufacturers' => [
+                'zentra_manufacturers' => [
                     'ON'  => [
-                        'glpi_manufacturers' => 'id',
-                        'glpi_printers'      => 'manufacturers_id',
+                        'zentra_manufacturers' => 'id',
+                        'zentra_printers'      => 'manufacturers_id',
                     ],
                 ],
             ],
             'WHERE'     => [
                 // Do not replay on trashbin and templates
-                'glpi_printers.is_deleted'    => 0,
-                'glpi_printers.is_template'   => 0,
+                'zentra_printers.is_deleted'    => 0,
+                'zentra_printers.is_template'   => 0,
             ],
         ];
     }
@@ -201,24 +201,24 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_printers.id',
-                'glpi_printers.name',
-                'glpi_printers.entities_id AS entities_id',
-                'glpi_printers.is_global AS is_global',
-                'glpi_manufacturers.name AS manufacturer',
+                'zentra_printers.id',
+                'zentra_printers.name',
+                'zentra_printers.entities_id AS entities_id',
+                'zentra_printers.is_global AS is_global',
+                'zentra_manufacturers.name AS manufacturer',
             ],
-            'FROM'      => 'glpi_printers',
+            'FROM'      => 'zentra_printers',
             'LEFT JOIN' => [
-                'glpi_manufacturers'  => [
+                'zentra_manufacturers'  => [
                     'FKEY'   => [
-                        'glpi_printers'      => 'manufacturers_id',
-                        'glpi_manufacturers' => 'id',
+                        'zentra_printers'      => 'manufacturers_id',
+                        'zentra_manufacturers' => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_printers.is_template'   => 0,
-                'glpi_printers.id'            => $IDs,
+                'zentra_printers.is_template'   => 0,
+                'zentra_printers.id'            => $IDs,
             ],
         ]);
 
@@ -287,7 +287,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
             if (isset($res_rule["manufacturer"])) {
                 $manufacturer = Dropdown::getDropdownName(
-                    "glpi_manufacturers",
+                    "zentra_manufacturers",
                     $res_rule["manufacturer"]
                 );
             } else {

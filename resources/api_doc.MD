@@ -1,8 +1,8 @@
-# GLPI API Documentation
+# ZENTRA API Documentation
 
 ## Introduction
 
-The GLPI API is a RESTful API. This version of the API is referred to as the "High-level API".
+The ZENTRA API is a RESTful API. This version of the API is referred to as the "High-level API".
 The original API is now referred to as the "legacy API" but it is still available and in some cases, allows more functionality at the cost of user-friendliness.
 
 For more information on the legacy API, see the [legacy API documentation](/apirest.php).
@@ -19,7 +19,7 @@ Grants that do not require specific user credentials are not currently supported
 
 ### Client Setup
 
-Clients must be registered with the GLPI server before they can be used to authenticate.
+Clients must be registered with the ZENTRA server before they can be used to authenticate.
 Clients are used to identify the application/user that is using the API and may be limited to specific grant types.
 
 To register a client, you can do so from Setup > OAuth Clients.
@@ -30,7 +30,7 @@ When the client is created, there will be an automatically generated client ID a
 - `email`: Access to the user's own default email address
 - `user`: Access to the user's information
 - `status`: Access to the status endpoints (Does not apply when accessed via the CLI commands)
-- `inventory`: Access to submit inventory from the GLPI Agent via Client Credentials grant
+- `inventory`: Access to submit inventory from the ZENTRA Agent via Client Credentials grant
 - `graphql`: Access to the GraphQL endpoint
 - `api`: Access to the API (All other endpoints not handled by their own scope)
 
@@ -49,7 +49,7 @@ To authenticate with the password grant, you will need to make a POST request to
 The endpoint will respond (if successful) with a JSON object containing the following fields:
 
 - `token_type`: `Bearer`
-- `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `GLPI_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://glpi-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring GLPI config constants).
+- `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `ZENTRA_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://zentra-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring ZENTRA config constants).
 - `access_token`: The access token that can be used to authenticate future requests.
 
 For API requests, you should include the access token in the `Authorization` header of the request with the `Bearer` prefix in the format `Authorization: Bearer <access_token>`.
@@ -62,7 +62,7 @@ To authenticate with the authorization code grant, you will need to make a GET r
 - `client_id`: The client ID of the client you are using
 - `scope`: The scope of the request. The client must be allowed to use the requested scope.
 
-The endpoint will respond with a redirect to the GLPI login page.
+The endpoint will respond with a redirect to the ZENTRA login page.
 If successful, the user will be redirected back to the client with a `code` parameter in the query string.
 This code can be used to get an access token by making a POST request to the `/api.php/token` endpoint with the following parameters in the request body:
 
@@ -74,7 +74,7 @@ This code can be used to get an access token by making a POST request to the `/a
 The endpoint will respond (if successful) with a JSON object containing the following fields:
 
 - `token_type`: `Bearer`
-- `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `GLPI_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://glpi-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring GLPI config constants).
+- `expires_in`: The number of seconds until the token expires. By default, this is set to 1 hour, but it can be controlled by defining the `ZENTRA_OAUTH_ACCESS_TOKEN_EXPIRES` in your `config/local_define.php` file (See the [installation documentation](https://zentra-install.readthedocs.io/en/latest/install/index.html#files-and-directories-locations) for more information on configuring ZENTRA config constants).
 - `access_token`: The access token that can be used to authenticate future requests.
 - `refresh_token`: The refresh token that can be used to get a new access token when the current one expires.
 
@@ -85,7 +85,7 @@ Access to other API resources requires an actual user to be authenticated which 
 
 ## RSQL Filtering
 
-The GLPI supports "REST Query Language" (RSQL) filtering in a `filter` parameter for certain endpoints that return collections of items.
+The ZENTRA supports "REST Query Language" (RSQL) filtering in a `filter` parameter for certain endpoints that return collections of items.
 RSQL itself is a super-set of the "Feed Item Query Language" (FIQL).
 It allows for an intuitive and easy to use syntax for filtering collections of items.
 
@@ -119,7 +119,7 @@ You may also make a request to `/api.php/doc` to get the raw Swagger JSON docume
 
 ## GraphQL
 
-The GLPI API is also available via a GraphQL wrapper at `/api.php/GraphQL`. Like all compliant GraphQL implementations, it is self documenting and accepts only POST requests.
+The ZENTRA API is also available via a GraphQL wrapper at `/api.php/GraphQL`. Like all compliant GraphQL implementations, it is self documenting and accepts only POST requests.
 Since it is a wrapper around the REST API, that means that any object schema defined and available through the REST API is also available via GraphQL.
 It also means that authentication is the exact same as the rest of the API.
 The only difference is that you can access more properties in some cases via the GraphQL API.

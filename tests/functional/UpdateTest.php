@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,21 +34,21 @@
 
 namespace tests\units;
 
-use Glpi\Tests\GLPITestCase;
+use Zentra\Tests\ZENTRATestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Update;
 
-class UpdateTest extends GLPITestCase
+class UpdateTest extends ZENTRATestCase
 {
     public function testCurrents()
     {
         global $DB;
         $update = new Update($DB);
         $this->assertEquals([
-            'dbversion' => GLPI_SCHEMA_VERSION,
+            'dbversion' => ZENTRA_SCHEMA_VERSION,
             'language'  => 'en_GB',
-            'version'   => GLPI_VERSION,
+            'version'   => ZENTRA_VERSION,
         ], $update->getCurrents());
     }
 
@@ -56,7 +56,7 @@ class UpdateTest extends GLPITestCase
     {
         global $DB;
         $update = new Update($DB);
-        $migration = new \Migration(GLPI_VERSION);
+        $migration = new \Migration(ZENTRA_VERSION);
         $this->assertInstanceOf(Update::class, $update->setMigration($migration));
     }
 

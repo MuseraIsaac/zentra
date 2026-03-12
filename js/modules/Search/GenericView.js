@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 /* global bootstrap */
 
 // Explicitly bind to window so Jest tests work properly
-window.GLPI = window.GLPI || {};
-window.GLPI.Search = window.GLPI.Search || {};
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.Search = window.ZENTRA.Search || {};
 
-window.GLPI.Search.GenericView = class GenericView {
+window.ZENTRA.Search.GenericView = class GenericView {
 
     constructor(element_id) {
         this.element_id = element_id;
@@ -103,7 +103,7 @@ window.GLPI.Search.GenericView = class GenericView {
             modal.off('show.bs.modal').on('show.bs.modal', () => {
                 const params = JSON.parse(modal.attr('data-params'));
                 params['url'] = window.location.pathname + window.location.search;
-                modal.find('.modal-body').load(`${CFG_GLPI.root_doc}/ajax/savedsearch.php`, params);
+                modal.find('.modal-body').load(`${CFG_ZENTRA.root_doc}/ajax/savedsearch.php`, params);
             });
             bs_modal.show();
         });
@@ -115,4 +115,4 @@ window.GLPI.Search.GenericView = class GenericView {
 
     refreshResults() {}
 };
-export default window.GLPI.Search.GenericView;
+export default window.ZENTRA.Search.GenericView;

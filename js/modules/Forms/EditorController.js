@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
+/* global _, tinymce_editor_configs, getUUID, sortable, tinymce, zentra_toast_info, zentra_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
-import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
-import { GlpiFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
+import { ZentraFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
+import { ZentraFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
 
 /**
  * Client code to handle users actions on the form_editor template
  */
-export class GlpiFormEditorController
+export class ZentraFormEditorController
 {
     /**
      * Target form editor (jquery selector)
@@ -84,7 +84,7 @@ export class GlpiFormEditorController
     #question_subtypes_options;
 
     /**
-     * @type {array<GlpiFormConditionVisibilityEditorController>}
+     * @type {array<ZentraFormConditionVisibilityEditorController>}
      */
     #conditions_editors_controllers;
 
@@ -99,7 +99,7 @@ export class GlpiFormEditorController
     #is_readonly = false;
 
     /**
-     * Create a new GlpiFormEditorController instance for the given target.
+     * Create a new ZentraFormEditorController instance for the given target.
      * The target must be a valid form.
      *
      * @param {string}  target
@@ -140,13 +140,13 @@ export class GlpiFormEditorController
 
             // Enable sortable on questions
             this.#enableSortable(
-                $(this.#target).find("[data-glpi-form-editor-blocks]")
+                $(this.#target).find("[data-zentra-form-editor-blocks]")
             );
 
             // Focus the form's name input if there are no questions
             if (this.#getQuestionsCount() === 0) {
                 $(this.#target)
-                    .find("[data-glpi-form-editor-form-details-name]")[0]
+                    .find("[data-zentra-form-editor-form-details-name]")[0]
                     .select();
             }
         }
@@ -160,7 +160,7 @@ export class GlpiFormEditorController
     }
 
     #initRadioUncheck() {
-        $(this.#target).on('mousedown', '[data-glpi-form-radio-uncheckable]', function() {
+        $(this.#target).on('mousedown', '[data-zentra-form-radio-uncheckable]', function() {
             const $this = $(this);
             if ($this.is(':checked')) {
                 $this.data('was-checked', true);
@@ -169,7 +169,7 @@ export class GlpiFormEditorController
             }
         });
 
-        $(this.#target).on('click', '[data-glpi-form-radio-uncheckable]', function() {
+        $(this.#target).on('click', '[data-zentra-form-radio-uncheckable]', function() {
             const $this = $(this);
             if ($this.data('was-checked')) {
                 $this.prop('checked', false);
@@ -181,7 +181,7 @@ export class GlpiFormEditorController
 
     /**
      * Init event handlers for each possible editors actions (identified by the
-     *  "data-glpi-form-editor-on-xxx" data attributes) and external events.
+     *  "data-zentra-form-editor-on-xxx" data attributes) and external events.
      */
     #initEventHandlers() {
         // Register throttled version of the adjustContainerHeight() function
@@ -195,7 +195,7 @@ export class GlpiFormEditorController
 
         // Handle ajax controller submit event
         $(this.#target).on(
-            "glpi-ajax-controller-submit-success",
+            "zentra-ajax-controller-submit-success",
             () => this.#handleBackendUpdateResponse()
         );
 
@@ -204,7 +204,7 @@ export class GlpiFormEditorController
         $(document)
             .on(
                 'click',
-                '[data-glpi-form-editor]',
+                '[data-zentra-form-editor]',
                 () => {
                     $('.simulate-focus').removeClass('simulate-focus');
                 }
@@ -233,11 +233,11 @@ export class GlpiFormEditorController
         $(document)
             .on(
                 'show.bs.dropdown',
-                '[data-glpi-form-editor-visibility-dropdown]',
+                '[data-zentra-form-editor-visibility-dropdown]',
                 (e) => this.#renderVisibilityEditor(
                     $(e.target)
                         .parent()
-                        .find('[data-glpi-conditions-editor-container]')
+                        .find('[data-zentra-conditions-editor-container]')
                 ),
             );
 
@@ -249,11 +249,11 @@ export class GlpiFormEditorController
         $(document)
             .on(
                 'show.bs.dropdown',
-                '[data-glpi-form-editor-validation-dropdown]',
+                '[data-zentra-form-editor-validation-dropdown]',
                 (e) => this.#renderValidationEditor(
                     $(e.target)
                         .parent()
-                        .find('[data-glpi-conditions-editor-container]')
+                        .find('[data-zentra-conditions-editor-container]')
                 ),
             );
 
@@ -270,15 +270,15 @@ export class GlpiFormEditorController
                 // Do not submit the form if the state isn't computed
                 event.preventDefault();
                 event.stopPropagation();
-                glpi_toast_error(__("An unexpected error occurred"));
+                zentra_toast_error(__("An unexpected error occurred"));
                 throw e;
             }
         });
 
         // Handle form submit success event
-        $(this.#target).on('glpi-ajax-controller-submit-success', () => {
+        $(this.#target).on('zentra-ajax-controller-submit-success', () => {
             const save_and_preview_button = $(this.#target).find(
-                '[data-glpi-form-editor-save-and-preview-action]'
+                '[data-zentra-form-editor-save-and-preview-action]'
             );
 
             // Reset unsaved changes
@@ -288,14 +288,14 @@ export class GlpiFormEditorController
             if (this.#do_preview_after_save) {
                 // Open the preview page in a new tab
                 window.open(
-                    save_and_preview_button.data('glpi-form-editor-preview-url'),
+                    save_and_preview_button.data('zentra-form-editor-preview-url'),
                     '_blank'
                 );
                 this.#do_preview_after_save = false;
             }
         });
 
-        $(document).on('glpiFormChangeEvent', () => {
+        $(document).on('zentraFormChangeEvent', () => {
             this.#updatePreviewButton();
         });
 
@@ -303,7 +303,7 @@ export class GlpiFormEditorController
         document.addEventListener('updated_strategy', (e) => {
             this.#updateConditionBadge(
                 $(e.detail.container).closest(
-                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
+                    '[data-zentra-form-editor-block],[data-zentra-form-editor-section-details],[data-zentra-form-editor-container]'
                 ),
                 e.detail.strategy
             );
@@ -313,7 +313,7 @@ export class GlpiFormEditorController
         document.addEventListener('conditions_count_changed', (e) => {
             this.#updateConditionsCount(
                 $(e.detail.container).closest(
-                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
+                    '[data-zentra-form-editor-block],[data-zentra-form-editor-section-details],[data-zentra-form-editor-container]'
                 ),
                 e.detail.conditions_count
             );
@@ -328,7 +328,7 @@ export class GlpiFormEditorController
         // data attributes
         const events = ["click", "change", "input"];
         events.forEach((event) => {
-            const attribute = `data-glpi-form-editor-on-${event}`;
+            const attribute = `data-zentra-form-editor-on-${event}`;
             $(document)
                 .on(event, `${this.#target} [${attribute}]`, async (e) => {
                     // Get action and a jQuery wrapper for the target
@@ -338,7 +338,7 @@ export class GlpiFormEditorController
                     try {
                         await this.#handleEditorAction(action, target, e);
                     } catch (e) {
-                        glpi_toast_error(__("An unexpected error occurred"));
+                        zentra_toast_error(__("An unexpected error occurred"));
                         throw e;
                     }
                 });
@@ -409,12 +409,12 @@ export class GlpiFormEditorController
             case "add-question":
                 this.#addQuestion(
                     target.closest(`
-                        [data-glpi-form-editor-active-form],
-                        [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-horizontal-blocks],
-                        [data-glpi-form-editor-active-question],
-                        [data-glpi-form-editor-active-comment],
-                        [data-glpi-form-editor-horizontal-block-placeholder]
+                        [data-zentra-form-editor-active-form],
+                        [data-zentra-form-editor-active-section],
+                        [data-zentra-form-editor-active-horizontal-blocks],
+                        [data-zentra-form-editor-active-question],
+                        [data-zentra-form-editor-active-comment],
+                        [data-zentra-form-editor-horizontal-block-placeholder]
                     `),
                 );
                 break;
@@ -422,14 +422,14 @@ export class GlpiFormEditorController
             // Delete the target question
             case "delete-question":
                 this.#deleteQuestion(
-                    target.closest("[data-glpi-form-editor-question]")
+                    target.closest("[data-zentra-form-editor-question]")
                 );
                 break;
 
             // Change the type category of the target question
             case "change-question-type-category":
                 await this.#changeQuestionTypeCategory(
-                    target.closest("[data-glpi-form-editor-question]"),
+                    target.closest("[data-zentra-form-editor-question]"),
                     target.val()
                 );
                 break;
@@ -437,14 +437,14 @@ export class GlpiFormEditorController
             // Change the type of the target question
             case "change-question-type":
                 await this.#changeQuestionType(
-                    target.closest("[data-glpi-form-editor-question]"),
+                    target.closest("[data-zentra-form-editor-question]"),
                     target.val()
                 );
                 break;
 
             case "change-question-sub-type":
                 this.#changeQuestionSubType(
-                    target.closest("[data-glpi-form-editor-question]"),
+                    target.closest("[data-zentra-form-editor-question]"),
                     target.val()
                 );
                 break;
@@ -453,11 +453,11 @@ export class GlpiFormEditorController
             case "add-section":
                 this.#addSection(
                     target.closest(`
-                        [data-glpi-form-editor-active-form],
-                        [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-horizontal-blocks],
-                        [data-glpi-form-editor-active-question],
-                        [data-glpi-form-editor-active-comment]
+                        [data-zentra-form-editor-active-form],
+                        [data-zentra-form-editor-active-section],
+                        [data-zentra-form-editor-active-horizontal-blocks],
+                        [data-zentra-form-editor-active-question],
+                        [data-zentra-form-editor-active-comment]
                     `),
                 );
                 break;
@@ -465,7 +465,7 @@ export class GlpiFormEditorController
             // Delete the target section
             case "delete-section":
                 this.#deleteSection(
-                    target.closest("[data-glpi-form-editor-section]")
+                    target.closest("[data-zentra-form-editor-section]")
                 );
                 break;
 
@@ -483,35 +483,35 @@ export class GlpiFormEditorController
             // Merge current section with the previous section
             case "merge-with-previous-section":
                 this.#mergeWithPreviousSection(
-                    target.closest("[data-glpi-form-editor-section]")
+                    target.closest("[data-zentra-form-editor-section]")
                 );
                 break;
 
             // Collapse/uncollapse target section
             case "collapse-section":
                 this.#collaspeSection(
-                    target.closest("[data-glpi-form-editor-section]")
+                    target.closest("[data-zentra-form-editor-section]")
                 );
                 break;
 
             // Duplicate target section
             case "duplicate-section":
                 this.#duplicateSection(
-                    target.closest("[data-glpi-form-editor-section]")
+                    target.closest("[data-zentra-form-editor-section]")
                 );
                 break;
 
             // Duplicate target question
             case "duplicate-question":
                 this.#duplicateQuestion(
-                    target.closest("[data-glpi-form-editor-question]")
+                    target.closest("[data-zentra-form-editor-question]")
                 );
                 break;
 
             // Duplicate target comment
             case "duplicate-comment":
                 this.#duplicateComment(
-                    target.closest("[data-glpi-form-editor-comment]")
+                    target.closest("[data-zentra-form-editor-comment]")
                 );
                 break;
 
@@ -525,12 +525,12 @@ export class GlpiFormEditorController
             case "add-comment":
                 this.#addComment(
                     target.closest(`
-                        [data-glpi-form-editor-active-form],
-                        [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-horizontal-blocks],
-                        [data-glpi-form-editor-active-question],
-                        [data-glpi-form-editor-active-comment],
-                        [data-glpi-form-editor-horizontal-block-placeholder]
+                        [data-zentra-form-editor-active-form],
+                        [data-zentra-form-editor-active-section],
+                        [data-zentra-form-editor-active-horizontal-blocks],
+                        [data-zentra-form-editor-active-question],
+                        [data-zentra-form-editor-active-comment],
+                        [data-zentra-form-editor-horizontal-block-placeholder]
                     `),
                 );
                 break;
@@ -538,55 +538,55 @@ export class GlpiFormEditorController
             // Delete the target comment
             case "delete-comment":
                 this.#deleteComment(
-                    target.closest("[data-glpi-form-editor-comment]")
+                    target.closest("[data-zentra-form-editor-comment]")
                 );
                 break;
 
             case "show-visibility-dropdown":
                 this.#showVisibilityDropdown(
-                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
+                    target.closest('[data-zentra-form-editor-block],[data-zentra-form-editor-section-details]')
                 );
                 break;
 
             case "show-validation-dropdown":
                 this.#showValidationDropdown(
-                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
+                    target.closest('[data-zentra-form-editor-block],[data-zentra-form-editor-section-details]')
                 );
                 break;
 
             case "add-horizontal-layout":
                 this.#addHorizontalLayout(
                     target.closest(`
-                        [data-glpi-form-editor-active-form],
-                        [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-horizontal-blocks],
-                        [data-glpi-form-editor-active-question],
-                        [data-glpi-form-editor-active-comment]
+                        [data-zentra-form-editor-active-form],
+                        [data-zentra-form-editor-active-section],
+                        [data-zentra-form-editor-active-horizontal-blocks],
+                        [data-zentra-form-editor-active-question],
+                        [data-zentra-form-editor-active-comment]
                     `)
                 );
                 break;
 
             case "delete-horizontal-layout":
                 this.#deleteHorizontalLayout(
-                    target.closest("[data-glpi-form-editor-horizontal-blocks-container]")
+                    target.closest("[data-zentra-form-editor-horizontal-blocks-container]")
                 );
                 break;
 
             case "add-horizontal-layout-slot":
                 this.#addHorizontalLayoutSlot(
-                    target.closest("[data-glpi-form-editor-horizontal-blocks]")
+                    target.closest("[data-zentra-form-editor-horizontal-blocks]")
                 );
                 break;
 
             case "remove-horizontal-layout-slot":
                 this.#removeHorizontalLayoutSlot(
-                    target.closest("[data-glpi-form-editor-horizontal-block-placeholder]")
+                    target.closest("[data-zentra-form-editor-horizontal-block-placeholder]")
                 );
                 break;
 
             case "copy-uuid":
                 this.#copyQuestionUuidToClipboard(
-                    target.closest('[data-glpi-form-editor-question')
+                    target.closest('[data-zentra-form-editor-question')
                 );
                 break;
 
@@ -621,11 +621,11 @@ export class GlpiFormEditorController
         const global_block_indices = { 'question': 0, 'comment': 0 };
 
         // Find all sections
-        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
+        const sections = $(this.#target).find("[data-zentra-form-editor-section]");
         sections.each((s_index, section) => {
             // Compute state for each sections
             this.#formatInputsNames(
-                $(section).find("[data-glpi-form-editor-section-details]"),
+                $(section).find("[data-zentra-form-editor-section-details]"),
                 'section',
                 s_index
             );
@@ -633,24 +633,24 @@ export class GlpiFormEditorController
             this.#setUuid($(section));
 
             // Find all items for this section (both questions and comments)
-            const items = $(section).find('[data-glpi-form-editor-section-blocks]').children("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container]");
+            const items = $(section).find('[data-zentra-form-editor-section-blocks]').children("[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-blocks-container]");
 
             items.each((vertical_rank, item) => {
                 let blocks = $(item);
-                const is_horizontal_block = $(item).is("[data-glpi-form-editor-horizontal-blocks-container]");
+                const is_horizontal_block = $(item).is("[data-zentra-form-editor-horizontal-blocks-container]");
 
                 // If the item is a horizontal block, we need to find all questions and comments
                 if (is_horizontal_block) {
-                    blocks = $(item).find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]");
+                    blocks = $(item).find("[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]");
                 }
 
                 blocks.each((horizontal_rank, block) => {
-                    if ($(block).is("[data-glpi-form-editor-horizontal-block-placeholder]")) {
+                    if ($(block).is("[data-zentra-form-editor-horizontal-block-placeholder]")) {
                         return;
                     }
 
                     // Determine the type of the block
-                    const itemType = $(block).is("[data-glpi-form-editor-question]") ? 'question' : 'comment';
+                    const itemType = $(block).is("[data-zentra-form-editor-question]") ? 'question' : 'comment';
 
                     // Compute state for each block
                     this.#formatInputsNames(
@@ -702,12 +702,12 @@ export class GlpiFormEditorController
             const name = $(input).attr("name");
 
             // Input was never parsed before, store its original name
-            if (!$(input).data("glpi-form-editor-original-name")) {
-                $(input).attr("data-glpi-form-editor-original-name", name);
+            if (!$(input).data("zentra-form-editor-original-name")) {
+                $(input).attr("data-zentra-form-editor-original-name", name);
             }
 
             // Format input name
-            let field = $(input).data("glpi-form-editor-original-name");
+            let field = $(input).data("zentra-form-editor-original-name");
             let base_input_index = "";
             if (type === "section") {
                 // The input is for the section itself
@@ -716,8 +716,8 @@ export class GlpiFormEditorController
                 // The input is for a question
                 base_input_index =  `_questions[${item_index}]`;
 
-                // Check if the input is an option (has the data-glpi-form-editor-specific-question-extra-data attribute)
-                const is_option = $(input).attr("data-glpi-form-editor-specific-question-extra-data") !== undefined;
+                // Check if the input is an option (has the data-zentra-form-editor-specific-question-extra-data attribute)
+                const is_option = $(input).attr("data-zentra-form-editor-specific-question-extra-data") !== undefined;
 
                 if (is_option) {
                     base_input_index += `[extra_data]`;
@@ -789,7 +789,7 @@ export class GlpiFormEditorController
         this.#setItemInput(question, "horizontal_rank", horizontal_rank);
 
         // Disable horizontal rank input if the question is not in a horizontal block
-        const horizontal_rank_input = question.find("input[name='horizontal_rank'], input[data-glpi-form-editor-original-name='horizontal_rank']");
+        const horizontal_rank_input = question.find("input[name='horizontal_rank'], input[data-zentra-form-editor-original-name='horizontal_rank']");
         horizontal_rank_input.prop("disabled", horizontal_rank === null);
     }
 
@@ -831,7 +831,7 @@ export class GlpiFormEditorController
     #handleTinyMCEChange(e) {
         // Check if the change is related to a question description
         const description_container = $(e.target.container)
-            .closest("[data-glpi-form-editor-question-description]");
+            .closest("[data-zentra-form-editor-question-description]");
 
         if (description_container.length > 0) {
             // This is a question description, mark as extra details if empty
@@ -858,7 +858,7 @@ export class GlpiFormEditorController
         // Handle 'set-active' action for clicks inside tinymce
         this.#setActiveItem(
             textarea
-                .closest('[data-glpi-form-editor-on-click="set-active"]')
+                .closest('[data-zentra-form-editor-on-click="set-active"]')
         );
     }
 
@@ -924,10 +924,10 @@ export class GlpiFormEditorController
         // Mark as secondary data if empty
         if (length == 0) {
             container
-                .attr("data-glpi-form-editor-question-extra-details", "");
+                .attr("data-zentra-form-editor-question-extra-details", "");
         } else {
             container
-                .removeAttr("data-glpi-form-editor-question-extra-details");
+                .removeAttr("data-zentra-form-editor-question-extra-details");
         }
     }
 
@@ -948,7 +948,7 @@ export class GlpiFormEditorController
         // Remove current active item
         possible_active_items.forEach((type) => {
             $(this.#target)
-                .find(`[data-glpi-form-editor-active-${type}]`)
+                .find(`[data-zentra-form-editor-active-${type}]`)
                 .filter((index, element) => {
                     if (type === 'form' || type === 'section') {
                         return true;
@@ -958,7 +958,7 @@ export class GlpiFormEditorController
                         || (!$(element).is(item_container)
                         && $(element).has(item_container).length === 0);
                 })
-                .removeAttr(`data-glpi-form-editor-active-${type}`);
+                .removeAttr(`data-zentra-form-editor-active-${type}`);
         });
 
         // Nothing selected, stop here to avoid triggering lazy loading on null.
@@ -967,7 +967,7 @@ export class GlpiFormEditorController
         }
 
         // Lazy load dropdowns
-        item_container.find('select[data-glpi-loaded=false]').each(function() {
+        item_container.find('select[data-zentra-loaded=false]').each(function() {
             // Get editor config for this field
             const id = $(this).attr("id");
             const config = window.select2_configs[id];
@@ -976,7 +976,7 @@ export class GlpiFormEditorController
             } else if (config.type === "adapt") {
                 setupAdaptDropdown(config);
             }
-            $(this).attr('data-glpi-loaded', "true");
+            $(this).attr('data-zentra-loaded', "true");
         });
 
         /**
@@ -991,29 +991,29 @@ export class GlpiFormEditorController
                     type = CSS.escape(type);
 
                     // Can be set active from the container itself or the sub "details" container
-                    if (item_container.data(`glpi-form-editor-${type}-details`) !== undefined) {
+                    if (item_container.data(`zentra-form-editor-${type}-details`) !== undefined) {
                         item_container
-                            .closest(`[data-glpi-form-editor-${type}]`)
-                            .attr(`data-glpi-form-editor-active-${type}`, "");
-                    } else if (item_container.data(`glpi-form-editor-${type}`) !== undefined) {
+                            .closest(`[data-zentra-form-editor-${type}]`)
+                            .attr(`data-zentra-form-editor-active-${type}`, "");
+                    } else if (item_container.data(`zentra-form-editor-${type}`) !== undefined) {
                         item_container
-                            .attr(`data-glpi-form-editor-active-${type}`, "");
+                            .attr(`data-zentra-form-editor-active-${type}`, "");
                     }
                 });
 
                 // An item can't be active if its parent section is collapsed
-                const section = item_container.closest("[data-glpi-form-editor-section]");
+                const section = item_container.closest("[data-zentra-form-editor-section]");
                 if (section.hasClass("section-collapsed")) {
                     return;
                 }
 
                 item_container.addClass("active");
 
-                const horizontal_blocks = item_container.closest("section[data-glpi-form-editor-horizontal-blocks]");
+                const horizontal_blocks = item_container.closest("section[data-zentra-form-editor-horizontal-blocks]");
                 if (horizontal_blocks.length > 0) {
                     // Set active the horizontal container
-                    horizontal_blocks.closest("section[data-glpi-form-editor-horizontal-blocks-container]")
-                        .attr("data-glpi-form-editor-active-horizontal-blocks", "");
+                    horizontal_blocks.closest("section[data-zentra-form-editor-horizontal-blocks-container]")
+                        .attr("data-zentra-form-editor-active-horizontal-blocks", "");
                 }
 
                 if (item_container.length > 0) {
@@ -1035,33 +1035,33 @@ export class GlpiFormEditorController
 
         // Find the context using the target
         if (
-            target.data('glpi-form-editor-question') !== undefined
-            || target.data('glpi-form-editor-comment') !== undefined
+            target.data('zentra-form-editor-question') !== undefined
+            || target.data('zentra-form-editor-comment') !== undefined
         ) {
             // Adding a new block after an existing question
             destination = target;
             action = "after";
-        } else if (target.data('glpi-form-editor-section') !== undefined) {
+        } else if (target.data('zentra-form-editor-section') !== undefined) {
             // Adding a block at the start of a section
             destination = target
-                .closest("[data-glpi-form-editor-section]")
-                .find("[data-glpi-form-editor-section-blocks]");
+                .closest("[data-zentra-form-editor-section]")
+                .find("[data-zentra-form-editor-section-blocks]");
             action = "prepend";
-        } else if (target.data('glpi-form-editor-form') !== undefined) {
+        } else if (target.data('zentra-form-editor-form') !== undefined) {
             // Add a block at the end of the form
             destination = $(this.#target)
-                .find("[data-glpi-form-editor-section]:last-child")
-                .find("[data-glpi-form-editor-section-blocks]:last-child");
+                .find("[data-zentra-form-editor-section]:last-child")
+                .find("[data-zentra-form-editor-section-blocks]:last-child");
             action = "append";
-        } else if (target.data('glpi-form-editor-horizontal-blocks-container') !== undefined) {
+        } else if (target.data('zentra-form-editor-horizontal-blocks-container') !== undefined) {
             // Adding a new block after an existing horizontal block
             destination = target;
             action = "after";
-        } else if (target.data('glpi-form-editor-horizontal-blocks') !== undefined) {
+        } else if (target.data('zentra-form-editor-horizontal-blocks') !== undefined) {
             // Adding a block at the end of a horizontal block
             destination = target;
             action = "append";
-        } else if (target.data('glpi-form-editor-horizontal-block-placeholder') !== undefined) {
+        } else if (target.data('zentra-form-editor-horizontal-block-placeholder') !== undefined) {
             // Adding a block just after the horizontal layout placeholder
             destination = target;
             action = "after";
@@ -1100,7 +1100,7 @@ export class GlpiFormEditorController
 
         // Focus question's name
         new_question
-            .find("[data-glpi-form-editor-question-details-name]")[0]
+            .find("[data-zentra-form-editor-question-details-name]")[0]
             .focus();
 
         // Enable sortable on the new question
@@ -1120,7 +1120,7 @@ export class GlpiFormEditorController
         question.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
         if (
-            $(this.#target).find("[data-glpi-form-editor-question]").length == 1
+            $(this.#target).find("[data-zentra-form-editor-question]").length == 1
             && this.#getSectionCount() == 1
         ) {
             // If the last questions is going to be deleted and there is only one section
@@ -1131,7 +1131,7 @@ export class GlpiFormEditorController
             if (question.prev().length > 0) {
                 this.#setActiveItem(question.prev());
             } else {
-                this.#setActiveItem(question.closest("[data-glpi-form-editor-section]"));
+                this.#setActiveItem(question.closest("[data-zentra-form-editor-section]"));
             }
         }
 
@@ -1142,8 +1142,8 @@ export class GlpiFormEditorController
 
         // Remove horizontal layout if needed
         if (
-            question_container.is("[data-glpi-form-editor-horizontal-blocks]")
-            && question_container.find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]").length === 0
+            question_container.is("[data-zentra-form-editor-horizontal-blocks]")
+            && question_container.find("[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]").length === 0
         ) {
             this.#deleteHorizontalLayout(question_container);
         }
@@ -1168,7 +1168,7 @@ export class GlpiFormEditorController
         const itemIdentifier = `${type}-${uuid}`;
 
         // Find elements using this item in their conditions
-        const conditionsUsingItem = $('[data-glpi-form-editor-form] [data-glpi-conditions-editor-item]')
+        const conditionsUsingItem = $('[data-zentra-form-editor-form] [data-zentra-conditions-editor-item]')
             .filter((_index, element) => {
                 if (element.value !== itemIdentifier) {
                     return false;
@@ -1178,11 +1178,11 @@ export class GlpiFormEditorController
                 let parent_item;
                 if (type === "section") {
                     parent_item = $(element).closest(
-                        '[data-glpi-form-editor-section]'
+                        '[data-zentra-form-editor-section]'
                     );
                 } else {
                     parent_item = $(element).closest(
-                        '[data-glpi-form-editor-block]'
+                        '[data-zentra-form-editor-block]'
                     );
                 }
                 if (parent_item.length !== 1) {
@@ -1206,8 +1206,8 @@ export class GlpiFormEditorController
             );
 
         // Find submit button conditions using this item
-        const item_used_by_submit_button = $('[data-glpi-form-editor-submit-button-conditional-visibility-field]')
-            .find('[data-glpi-conditions-editor-item]').filter((_index, element) => {
+        const item_used_by_submit_button = $('[data-zentra-form-editor-submit-button-conditional-visibility-field]')
+            .find('[data-zentra-conditions-editor-item]').filter((_index, element) => {
                 return element.value === itemIdentifier;
             }).length > 0;
 
@@ -1256,7 +1256,7 @@ export class GlpiFormEditorController
     async #getSupportedValueOperators(questionData) {
         try {
             const response = await $.ajax({
-                url: `${CFG_GLPI.root_doc}/Form/Condition/Editor/SupportedValueOperators`,
+                url: `${CFG_ZENTRA.root_doc}/Form/Condition/Editor/SupportedValueOperators`,
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(questionData),
@@ -1293,8 +1293,8 @@ export class GlpiFormEditorController
 
         const unsupported_conditions = dependencies.conditionsUsingItem
             .filter((index, element) => !supported_value_operators.includes($(element)
-                .closest('[data-glpi-conditions-editor-condition]')
-                .find('[data-glpi-conditions-editor-value-operator]').val()
+                .closest('[data-zentra-conditions-editor-condition]')
+                .find('[data-zentra-conditions-editor-value-operator]').val()
             ));
 
         const unsupported_destinations_conditions = dependencies.destinationsUsingItem
@@ -1309,13 +1309,13 @@ export class GlpiFormEditorController
             );
 
         const is_submit_button_conditions_unsupported = dependencies.itemUsedBySubmitButton
-            && $('[data-glpi-form-editor-submit-button-conditional-visibility-field]')
-                .find('[data-glpi-conditions-editor-condition]').filter((_index, element) => {
-                    const item_value = $(element).find('[data-glpi-conditions-editor-item]').val();
+            && $('[data-zentra-form-editor-submit-button-conditional-visibility-field]')
+                .find('[data-zentra-conditions-editor-condition]').filter((_index, element) => {
+                    const item_value = $(element).find('[data-zentra-conditions-editor-item]').val();
                     if (item_value !== `question-${questionData.uuid}`) {
                         return false;
                     }
-                    const value_operator = $(element).find('[data-glpi-conditions-editor-value-operator]').val();
+                    const value_operator = $(element).find('[data-zentra-conditions-editor-value-operator]').val();
                     return !supported_value_operators.includes(value_operator);
                 }).length > 0;
 
@@ -1346,9 +1346,9 @@ export class GlpiFormEditorController
      */
     #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem, itemUsedBySubmitButton, modal_name) {
         // Show only the relevant header for this item type
-        $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-modal-header]`)
+        $(`[data-zentra-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-zentra-form-editor-item-has-conditions-modal-header]`)
             .addClass('d-none')
-            .filter(`[data-glpi-form-editor-item-has-conditions-modal-header="${CSS.escape(type)}"]`)
+            .filter(`[data-zentra-form-editor-item-has-conditions-modal-header="${CSS.escape(type)}"]`)
             .removeClass('d-none');
 
         // Collect all elements using this item in their conditions
@@ -1358,7 +1358,7 @@ export class GlpiFormEditorController
         const already_reported_items = [];
         conditionsUsingItem.each((_index, element) => {
             // Check if condition is in a question
-            const parentItem = $(element).closest('[data-glpi-form-editor-block]');
+            const parentItem = $(element).closest('[data-zentra-form-editor-block]');
             if (parentItem.length > 0) {
                 const uuid = this.#getItemInput(parentItem, "uuid");
                 if (already_reported_items.indexOf(uuid) != -1) {
@@ -1373,7 +1373,7 @@ export class GlpiFormEditorController
                 already_reported_items.push(uuid);
             } else {
                 // Check if condition is in a section
-                const parentSection = $(element).closest('[data-glpi-form-editor-section]');
+                const parentSection = $(element).closest('[data-zentra-form-editor-section]');
                 if (parentSection.length > 0) {
                     const uuid = this.#getItemInput(parentSection, "uuid");
                     if (already_reported_items.indexOf(uuid) != -1) {
@@ -1407,27 +1407,27 @@ export class GlpiFormEditorController
         }
 
         // Render the list of elements in the modal
-        const modalList = $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-list]`);
+        const modalList = $(`[data-zentra-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-zentra-form-editor-item-has-conditions-list]`);
         modalList.empty();
 
-        const template = $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-item-template]`).html();
+        const template = $(`[data-zentra-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-zentra-form-editor-item-has-conditions-item-template]`).html();
 
         // Add each element to the list
         elementsWithConditions.forEach(data => {
             const item = $(template);
-            const nameElement = item.find('[data-glpi-form-editor-item-has-conditions-item-name]');
+            const nameElement = item.find('[data-zentra-form-editor-item-has-conditions-item-name]');
 
             nameElement.text(data.name);
 
             if (data.uuid) {
-                nameElement.attr('data-glpi-form-editor-item-has-conditions-item-uuid', data.uuid);
+                nameElement.attr('data-zentra-form-editor-item-has-conditions-item-uuid', data.uuid);
             }
 
-            nameElement.attr('data-glpi-form-editor-item-has-conditions-item-type', data.type);
+            nameElement.attr('data-zentra-form-editor-item-has-conditions-item-type', data.type);
 
             // For destinations, link to the destinations tab
             if (data.type === 'destination') {
-                const tab = $('[data-bs-target^="#tab-Glpi_Form_Destination_FormDestination_"]');
+                const tab = $('[data-bs-target^="#tab-Zentra_Form_Destination_FormDestination_"]');
                 nameElement.attr('href', tab.attr('href'));
             }
 
@@ -1435,23 +1435,23 @@ export class GlpiFormEditorController
         });
 
         // Set up click handlers for the items
-        modalList.find('[data-glpi-form-editor-item-has-conditions-item-selector][href="#"]').on('click', e => {
+        modalList.find('[data-zentra-form-editor-item-has-conditions-item-selector][href="#"]').on('click', e => {
             e.preventDefault();
 
             // Hide modal
-            $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('hide');
+            $(`[data-zentra-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('hide');
 
             // Get the UUID and type
             const clickedElement = $(e.currentTarget);
-            const uuid = clickedElement.data('glpi-form-editor-item-has-conditions-item-uuid');
-            const type = clickedElement.data('glpi-form-editor-item-has-conditions-item-type');
+            const uuid = clickedElement.data('zentra-form-editor-item-has-conditions-item-uuid');
+            const type = clickedElement.data('zentra-form-editor-item-has-conditions-item-type');
 
             // Find and scroll to the element with matching UUID
             this.#findAndHighlightElement(type, uuid);
         });
 
         // Show the modal
-        $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('show');
+        $(`[data-zentra-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('show');
     }
 
     /**
@@ -1470,13 +1470,13 @@ export class GlpiFormEditorController
             if (type === 'question' || type === 'comment') {
                 // Find block with matching UUID
                 targetElement = $(this.#target)
-                    .find('[data-glpi-form-editor-block]')
+                    .find('[data-zentra-form-editor-block]')
                     .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
                     .first();
             } else if (type === 'section') {
                 // Find section with matching UUID
                 targetElement = $(this.#target)
-                    .find('[data-glpi-form-editor-section-details]')
+                    .find('[data-zentra-form-editor-section-details]')
                     .filter((_index, section) => this.#getItemInput($(section), "uuid") === uuid)
                     .first();
             }
@@ -1484,7 +1484,7 @@ export class GlpiFormEditorController
             // Make sure we found the element before proceeding
             if (targetElement && targetElement.length > 0) {
                 // Make sure parent section is not collapsed
-                const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
+                const parentSection = targetElement.closest('[data-zentra-form-editor-section]');
                 if (parentSection.hasClass('section-collapsed')) {
                     this.#collaspeSection(parentSection);
                 }
@@ -1502,7 +1502,7 @@ export class GlpiFormEditorController
         } else if (type === 'submit-button') {
             // Open the submit button dropdown menu
             setTimeout(() => {
-                $('[data-glpi-form-editor-visibility-dropdown]').dropdown('show');
+                $('[data-zentra-form-editor-visibility-dropdown]').dropdown('show');
             });
         }
     }
@@ -1514,7 +1514,7 @@ export class GlpiFormEditorController
      */
     #getQuestionTemplate(question_type) {
         return $(this.#templates)
-            .find(`[data-glpi-form-editor-question-template="${CSS.escape(question_type)}"]`);
+            .find(`[data-zentra-form-editor-question-template="${CSS.escape(question_type)}"]`);
     }
 
     /**
@@ -1580,11 +1580,11 @@ export class GlpiFormEditorController
 
             // Update on demand id if needed
             const div = $(this).parent().find(
-                'div[data-glpi-tinymce-init-on-demand-render]'
+                'div[data-zentra-tinymce-init-on-demand-render]'
             );
             if (div.length > 0) {
                 div.attr(
-                    'data-glpi-tinymce-init-on-demand-render',
+                    'data-zentra-tinymce-init-on-demand-render',
                     id,
                 );
             } else {
@@ -1610,7 +1610,7 @@ export class GlpiFormEditorController
 
                 // Add the target select to the select2_to_init list
                 target.find(`#${CSS.escape($(this).attr("id"))}`).each(function() {
-                    const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+                    const id = $(this).attr("data-zentra-form-editor-original-id") ?? $(this).attr("id");
                     const config = { ...window.select2_configs[id] };
 
                     config.field_id = $(this).attr("id");
@@ -1621,7 +1621,7 @@ export class GlpiFormEditorController
                 });
             }
 
-            const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+            const id = $(this).attr("data-zentra-form-editor-original-id") ?? $(this).attr("id");
             const config = { ...window.select2_configs[id] };
 
             if (id !== undefined && config !== undefined) {
@@ -1629,7 +1629,7 @@ export class GlpiFormEditorController
                 const uid = getUUID();
                 const new_id = `_config_${uid}`;
                 $(this).attr("id", new_id);
-                $(this).attr("data-glpi-form-editor-original-id", id);
+                $(this).attr("data-zentra-form-editor-original-id", id);
 
                 // Check if label is set for this select2
                 if (copy.find(`label[for="${CSS.escape(id)}"]`).length > 0) {
@@ -1646,7 +1646,7 @@ export class GlpiFormEditorController
                     config.field_id = new_id;
                     window.select2_configs[new_id] = config;
 
-                    if ($(this).attr('data-glpi-loaded') !== 'false') {
+                    if ($(this).attr('data-zentra-loaded') !== 'false') {
                         select2_to_init.push(config);
 
                         if (selected_values) {
@@ -1769,7 +1769,7 @@ export class GlpiFormEditorController
      *
      * @param {HTMLElement} question - The question DOM element to extract data from
      * @returns {Object.<string, string>} An object containing name-value pairs of extra data
-     *    where keys are the original input names (from data-glpi-form-editor-original-name attribute or the input's name)
+     *    where keys are the original input names (from data-zentra-form-editor-original-name attribute or the input's name)
      *    and values are the input values. Unchecked checkboxes are excluded.
      * @private
      */
@@ -1777,7 +1777,7 @@ export class GlpiFormEditorController
         const extra_data = {};
 
         const inputs = question.querySelectorAll(
-            "[data-glpi-form-editor-specific-question-extra-data]"
+            "[data-zentra-form-editor-specific-question-extra-data]"
         );
         /** @var {HTMLInputElement} input */
         for (const input of inputs) {
@@ -1787,7 +1787,7 @@ export class GlpiFormEditorController
             }
 
             // Try to load the original name of the input.
-            let name = input.dataset.glpiFormEditorOriginalName;
+            let name = input.dataset.zentraFormEditorOriginalName;
             if (name === undefined) {
                 name = input.name;
             }
@@ -1825,8 +1825,8 @@ export class GlpiFormEditorController
     #getItemInput(item, field) {
         // Reduce scope when working with a section as we don't want to target
         // its sub-questions inputs
-        if (item.data("glpi-form-editor-section") !== undefined) {
-            item = item.find("[data-glpi-form-editor-section-details]");
+        if (item.data("zentra-form-editor-section") !== undefined) {
+            item = item.find("[data-zentra-form-editor-section-details]");
         }
 
         // Input name before state was computed by #formatInputsNames()
@@ -1838,10 +1838,10 @@ export class GlpiFormEditorController
         }
 
         // Input name after computation
-        input = item.find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`);
+        input = item.find(`input[data-zentra-form-editor-original-name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`)
+                .find(`input[data-zentra-form-editor-original-name="${CSS.escape(field)}"]`)
                 .val();
         }
 
@@ -1858,8 +1858,8 @@ export class GlpiFormEditorController
     #setItemInput(item, field, value) {
         // Reduce scope when working with a section as we don't want to target
         // its sub-questions inputs
-        if (item.data("glpi-form-editor-section") !== undefined) {
-            item = item.find("[data-glpi-form-editor-section-details]");
+        if (item.data("zentra-form-editor-section") !== undefined) {
+            item = item.find("[data-zentra-form-editor-section-details]");
         }
 
         // Input name before state was computed by #formatInputsNames()
@@ -1871,10 +1871,10 @@ export class GlpiFormEditorController
         }
 
         // Input name after computation
-        input = item.find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`);
+        input = item.find(`input[data-zentra-form-editor-original-name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`)
+                .find(`input[data-zentra-form-editor-original-name="${CSS.escape(field)}"]`)
                 .val(value);
         }
 
@@ -1888,13 +1888,13 @@ export class GlpiFormEditorController
      * @param {boolean} isLoading Whether to set or remove loading state
      */
     setQuestionTypeSpecificLoadingState(question, isLoading) {
-        const specificContent = question.find("[data-glpi-form-editor-question-type-specific]");
+        const specificContent = question.find("[data-zentra-form-editor-question-type-specific]");
 
         if (isLoading) {
             // Create loading overlay if it doesn't exist
-            if (specificContent.find('.glpi-form-editor-loading-overlay').length === 0) {
+            if (specificContent.find('.zentra-form-editor-loading-overlay').length === 0) {
                 const loadingOverlay = $(`
-                    <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+                    <div class="zentra-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
                         <div class="spinner-border spinner-border-sm text-secondary" role="status">
                             <span class="visually-hidden">${__('Loading...')}</span>
                         </div>
@@ -1908,10 +1908,10 @@ export class GlpiFormEditorController
                     'opacity': '0.7',
                     'pointer-events': 'none'
                 })
-                .attr('data-glpi-loading', 'true');
+                .attr('data-zentra-loading', 'true');
         } else {
             // Remove loading overlay
-            specificContent.find('.glpi-form-editor-loading-overlay').remove();
+            specificContent.find('.zentra-form-editor-loading-overlay').remove();
 
             specificContent
                 .css({
@@ -1919,7 +1919,7 @@ export class GlpiFormEditorController
                     'pointer-events': '',
                     'position': ''
                 })
-                .removeAttr('data-glpi-loading');
+                .removeAttr('data-zentra-loading');
         }
     }
 
@@ -1939,7 +1939,7 @@ export class GlpiFormEditorController
 
         // Find types available in the new category
         const new_options = $(this.#templates)
-            .find(`option[data-glpi-form-editor-question-type="${CSS.escape(category)}"]`);
+            .find(`option[data-zentra-form-editor-question-type="${CSS.escape(category)}"]`);
 
         // Set loading state for question type specific content
         this.setQuestionTypeSpecificLoadingState(question, true);
@@ -1950,9 +1950,9 @@ export class GlpiFormEditorController
             this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
-            const previous_category = question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').data('previous-value');
+            const previous_category = question.find('[data-zentra-form-editor-on-change="change-question-type-category"]').data('previous-value');
             if (previous_category !== undefined) {
-                question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').val(previous_category).trigger('change.select2');
+                question.find('[data-zentra-form-editor-on-change="change-question-type-category"]').val(previous_category).trigger('change.select2');
             }
 
             return false;
@@ -1963,7 +1963,7 @@ export class GlpiFormEditorController
 
         // Remove current types options
         const types_select = question
-            .find("[data-glpi-form-editor-question-type-selector]");
+            .find("[data-zentra-form-editor-question-type-selector]");
         types_select.children().remove();
 
         // Copy the new types options into the dropdown
@@ -2010,9 +2010,9 @@ export class GlpiFormEditorController
             this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
-            const previous_type = question.find('[data-glpi-form-editor-on-change="change-question-type"]').data('previous-value');
+            const previous_type = question.find('[data-zentra-form-editor-on-change="change-question-type"]').data('previous-value');
             if (previous_type !== undefined) {
-                question.find('[data-glpi-form-editor-on-change="change-question-type"]').val(previous_type).trigger('change.select2');
+                question.find('[data-zentra-form-editor-on-change="change-question-type"]').val(previous_type).trigger('change.select2');
             }
 
             return;
@@ -2026,24 +2026,24 @@ export class GlpiFormEditorController
 
         // Clear the specific form of the question
         const specific = question
-            .find("[data-glpi-form-editor-question-type-specific]");
+            .find("[data-zentra-form-editor-question-type-specific]");
         specific.children().remove();
 
         // Clear the extra data of the question
         const extra_data = question
-            .find("[data-glpi-form-editor-specific-question-options]");
+            .find("[data-zentra-form-editor-specific-question-options]");
         extra_data.children().remove();
 
         // Find the specific content of the given type
         const new_specific_content = this
             .#getQuestionTemplate(type)
-            .find("[data-glpi-form-editor-question-type-specific]")
+            .find("[data-zentra-form-editor-question-type-specific]")
             .children();
 
         // Find the extra data of the given type
         const new_extra_data = this
             .#getQuestionTemplate(type)
-            .find("[data-glpi-form-editor-specific-question-options]")
+            .find("[data-zentra-form-editor-specific-question-options]")
             .children();
 
         // Copy the specific form of the new question type into the question
@@ -2062,8 +2062,8 @@ export class GlpiFormEditorController
         this.#setItemInput(question, "type", type);
 
         // Handle blacklisted question type warning visibility
-        const allow_anonymous = this.#getQuestionTemplate(type).find("[data-glpi-form-editor-question-details]").data("glpi-form-editor-allow-anonymous");
-        question.find("[data-glpi-form-editor-blacklisted-question-type-warning]")
+        const allow_anonymous = this.#getQuestionTemplate(type).find("[data-zentra-form-editor-question-details]").data("zentra-form-editor-allow-anonymous");
+        question.find("[data-zentra-form-editor-blacklisted-question-type-warning]")
             .toggleClass("d-none", allow_anonymous == 1);
 
         // Convert the default value to match the new type
@@ -2074,7 +2074,7 @@ export class GlpiFormEditorController
 
         // Update sub question types
         if (this.#question_subtypes_options[type] !== undefined) {
-            const sub_types_select = question.find("[data-glpi-form-editor-question-sub-type-selector]");
+            const sub_types_select = question.find("[data-zentra-form-editor-question-sub-type-selector]");
 
             // Show sub question type selector
             sub_types_select.closest("div").removeClass("d-none");
@@ -2114,19 +2114,19 @@ export class GlpiFormEditorController
             sub_types_select.attr("aria-label", this.#question_subtypes_options[type].field_aria_label);
 
             // Remove the "original-name" data attribute to avoid conflicts
-            sub_types_select.removeAttr("data-glpi-form-editor-original-name");
-            sub_types_select.removeData("glpi-form-editor-original-name");
+            sub_types_select.removeAttr("data-zentra-form-editor-original-name");
+            sub_types_select.removeData("zentra-form-editor-original-name");
 
             // Trigger sub type change
             sub_types_select.trigger("change");
         } else {
             // Hide sub question type selector
-            question.find("[data-glpi-form-editor-question-sub-type-selector]")
+            question.find("[data-zentra-form-editor-question-sub-type-selector]")
                 .attr('disabled', true)
                 .closest("div").addClass("d-none");
         }
 
-        $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);
+        $(document).trigger('zentra-form-editor-question-type-changed', [question, type]);
     }
 
     /**
@@ -2135,7 +2135,7 @@ export class GlpiFormEditorController
      * @param {string} sub_type New sub type
      */
     #changeQuestionSubType(question, sub_type) {
-        $(document).trigger('glpi-form-editor-question-sub-type-changed', [question, sub_type]);
+        $(document).trigger('zentra-form-editor-question-sub-type-changed', [question, sub_type]);
     }
 
     /**
@@ -2149,35 +2149,35 @@ export class GlpiFormEditorController
 
         // Find the context using the target
         if (
-            target.data('glpi-form-editor-question') !== undefined
-            || target.data('glpi-form-editor-comment') !== undefined
+            target.data('zentra-form-editor-question') !== undefined
+            || target.data('zentra-form-editor-comment') !== undefined
         ) {
             // Adding a new section after an existing question
             // For the existing sections, any questions AFTER the target will
             // be moved into the new section
             destination = target
-                .closest("[data-glpi-form-editor-section]");
+                .closest("[data-zentra-form-editor-section]");
             action = "after";
             to_move = $(target).nextAll();
-        } else if (target.data('glpi-form-editor-section') !== undefined) {
+        } else if (target.data('zentra-form-editor-section') !== undefined) {
             // Adding a new section at the start of an existing section
             // All questions of the existing section will be moved into the new
             // section, leaving it empty
             destination = target
-                .closest("[data-glpi-form-editor-section]");
+                .closest("[data-zentra-form-editor-section]");
             action = "after";
             to_move = $(target)
-                .closest("[data-glpi-form-editor-section]")
-                .find("[data-glpi-form-editor-question]");
-        } else if (target.data('glpi-form-editor-form') !== undefined) {
+                .closest("[data-zentra-form-editor-section]")
+                .find("[data-zentra-form-editor-question]");
+        } else if (target.data('zentra-form-editor-form') !== undefined) {
             // Adding a section at the end of the form
             // The new section will be empty
             destination = target
-                .closest("[data-glpi-form-editor-form]")
-                .find("[data-glpi-form-editor-section]:last-child");
+                .closest("[data-zentra-form-editor-form]")
+                .find("[data-zentra-form-editor-section]:last-child");
             action = "after";
             to_move = null;
-        } else if (target.data('glpi-form-editor-horizontal-blocks-container') !== undefined) {
+        } else if (target.data('zentra-form-editor-horizontal-blocks-container') !== undefined) {
             // Adding a new section after an existing horizontal block
             // For the existing sections, any questions AFTER the target will
             // be moved into the new section
@@ -2190,7 +2190,7 @@ export class GlpiFormEditorController
 
         // Find the section template
         const template = $(this.#templates)
-            .find("[data-glpi-form-editor-section-template]")
+            .find("[data-zentra-form-editor-section-template]")
             .children();
 
         // Copy the new section template into the sections area
@@ -2203,7 +2203,7 @@ export class GlpiFormEditorController
         // Move questions into their new sections if needed
         if (to_move !== null && to_move.length > 0) {
             to_move.detach().appendTo(
-                section.find("[data-glpi-form-editor-section-blocks]")
+                section.find("[data-zentra-form-editor-section-blocks]")
             );
             to_move.each((index, question) => {
                 this.#handleItemMove($(question));
@@ -2212,7 +2212,7 @@ export class GlpiFormEditorController
 
         // Mark new serction as active
         this.#setActiveItem(
-            section.find("[data-glpi-form-editor-section-details]")
+            section.find("[data-zentra-form-editor-section-details]")
         );
 
         // Enable sortable
@@ -2220,7 +2220,7 @@ export class GlpiFormEditorController
 
         // Focus section's name
         section
-            .find("[data-glpi-form-editor-section-details-name]")[0]
+            .find("[data-zentra-form-editor-section-details-name]")[0]
             .focus();
     }
 
@@ -2234,19 +2234,19 @@ export class GlpiFormEditorController
         }
 
         // Check if the section has any blocks (questions or comments)
-        const blocks = section.find("[data-glpi-form-editor-block]");
+        const blocks = section.find("[data-zentra-form-editor-block]");
         if (blocks.length > 0) {
             // Check if any block in the section is used in conditions outside the section
             const sectionUuid = this.#getItemInput(section, "uuid");
 
             const dependencies = blocks.map((_index, block) => {
                 const $block = $(block);
-                const blockType = $block.is('[data-glpi-form-editor-question]') ? 'question' : 'comment';
+                const blockType = $block.is('[data-zentra-form-editor-question]') ? 'question' : 'comment';
                 return this.#getItemConditionDependencies(blockType, $block);
             }).get().map(dep => {
                 // Filter out dependencies that are within the same section
                 const externalConditions = dep.conditionsUsingItem.filter((_idx, conditionElement) => {
-                    const parentSection = $(conditionElement).closest('[data-glpi-form-editor-section]');
+                    const parentSection = $(conditionElement).closest('[data-zentra-form-editor-section]');
                     const parentSectionUuid = this.#getItemInput(parentSection, "uuid");
                     return parentSectionUuid !== sectionUuid;
                 });
@@ -2293,7 +2293,7 @@ export class GlpiFormEditorController
      * @param {jQuery} section The section to delete
      */
     #showDeleteNonEmptySectionModal(section) {
-        const blocks = section.find("[data-glpi-form-editor-block]");
+        const blocks = section.find("[data-zentra-form-editor-block]");
 
         // Count questions and comments
         let questionCount = 0;
@@ -2301,9 +2301,9 @@ export class GlpiFormEditorController
 
         blocks.each((_index, block) => {
             const $block = $(block);
-            if ($block.is('[data-glpi-form-editor-question]')) {
+            if ($block.is('[data-zentra-form-editor-question]')) {
                 questionCount++;
-            } else if ($block.is('[data-glpi-form-editor-comment]')) {
+            } else if ($block.is('[data-zentra-form-editor-comment]')) {
                 commentCount++;
             }
         });
@@ -2324,21 +2324,21 @@ export class GlpiFormEditorController
             .replace('%s', elementsText);
 
         // Set the message in the modal
-        $('[data-glpi-form-editor-delete-section-message]').text(message);
+        $('[data-zentra-form-editor-delete-section-message]').text(message);
 
         // Set up the confirm button handler
-        $('[data-glpi-form-editor-confirm-delete-section]')
+        $('[data-zentra-form-editor-confirm-delete-section]')
             .off('click')
             .on('click', () => {
                 // Hide modal
-                $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('hide');
+                $('[data-zentra-form-editor-delete-non-empty-section-modal]').modal('hide');
 
                 // Proceed with deletion
                 this.#performSectionDeletion(section);
             });
 
         // Show the modal
-        $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('show');
+        $('[data-zentra-form-editor-delete-non-empty-section-modal]').modal('show');
     }
 
     /**
@@ -2356,7 +2356,7 @@ export class GlpiFormEditorController
             }
         } else {
             // Else, set the previous section last question (if it exist) as active
-            const prev_questions = section.prev().find("[data-glpi-form-editor-question]");
+            const prev_questions = section.prev().find("[data-zentra-form-editor-question]");
             if (prev_questions.length > 0) {
                 this.#setActiveItem(prev_questions.last());
             } else {
@@ -2382,7 +2382,7 @@ export class GlpiFormEditorController
     #addComment(target) {
         // Find the comment template
         const template = $(this.#templates)
-            .find("[data-glpi-form-editor-comment-template]")
+            .find("[data-zentra-form-editor-comment-template]")
             .children();
 
         const new_comment = this.#addBlock(target, template);
@@ -2395,7 +2395,7 @@ export class GlpiFormEditorController
 
         // Focus title's name
         new_comment
-            .find("[data-glpi-form-editor-comment-details-name]")[0]
+            .find("[data-zentra-form-editor-comment-details-name]")[0]
             .focus();
 
         // Enable sortable on the new comment
@@ -2416,7 +2416,7 @@ export class GlpiFormEditorController
         comment.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
         if (
-            $(this.#target).find("[data-glpi-form-editor-comment]").length == 1
+            $(this.#target).find("[data-zentra-form-editor-comment]").length == 1
             && this.#getSectionCount() == 1
         ) {
             // If the last comments is going to be deleted and there is only one section
@@ -2427,7 +2427,7 @@ export class GlpiFormEditorController
             if (comment.prev().length > 0) {
                 this.#setActiveItem(comment.prev());
             } else {
-                this.#setActiveItem(comment.closest("[data-glpi-form-editor-section]"));
+                this.#setActiveItem(comment.closest("[data-zentra-form-editor-section]"));
             }
         }
 
@@ -2438,8 +2438,8 @@ export class GlpiFormEditorController
 
         // Remove horizontal layout if needed
         if (
-            question_container.is("[data-glpi-form-editor-horizontal-blocks]")
-            && question_container.find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]").length === 0
+            question_container.is("[data-zentra-form-editor-horizontal-blocks]")
+            && question_container.find("[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]").length === 0
         ) {
             this.#deleteHorizontalLayout(question_container);
         }
@@ -2451,15 +2451,15 @@ export class GlpiFormEditorController
      */
     #updateAddSectionActionVisiblity() {
         const block_count = $(this.#target)
-            .find("[data-glpi-form-editor-block]")
+            .find("[data-zentra-form-editor-block]")
             .length;
 
         // Hide the "add section" action unless there is at least one question
         if (block_count == 0) {
-            $("[data-glpi-form-editor-on-click='add-section']")
+            $("[data-zentra-form-editor-on-click='add-section']")
                 .addClass("d-none");
         } else {
-            $("[data-glpi-form-editor-on-click='add-section']")
+            $("[data-zentra-form-editor-on-click='add-section']")
                 .removeClass("d-none");
         }
     }
@@ -2470,7 +2470,7 @@ export class GlpiFormEditorController
      */
     #getSectionCount() {
         return $(this.#target)
-            .find("[data-glpi-form-editor-section]")
+            .find("[data-zentra-form-editor-section]")
             .length;
     }
 
@@ -2480,7 +2480,7 @@ export class GlpiFormEditorController
      */
     #getQuestionsCount() {
         return $(this.#target)
-            .find("[data-glpi-form-editor-question]")
+            .find("[data-zentra-form-editor-question]")
             .length;
     }
 
@@ -2492,12 +2492,12 @@ export class GlpiFormEditorController
         if (this.#getSectionCount() <= 1) {
             // Only one section, do not display its details
             $(this.#target)
-                .find("[data-glpi-form-editor-section-details]")
+                .find("[data-zentra-form-editor-section-details]")
                 .addClass("d-none");
         } else {
             // Mutliple sections, display all details
             $(this.#target)
-                .find("[data-glpi-form-editor-section-details]")
+                .find("[data-zentra-form-editor-section-details]")
                 .removeClass("d-none");
         }
     }
@@ -2509,13 +2509,13 @@ export class GlpiFormEditorController
     #updateMergeSectionActionVisibility() {
         // Reset hidden actions
         $(this.#target)
-            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .find(`[data-zentra-form-editor-on-click="merge-with-previous-section"]`)
             .removeClass("d-none");
 
         // Hide first section's action
         $(this.#target)
-            .find(`[data-glpi-form-editor-section]:first-child`)
-            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .find(`[data-zentra-form-editor-section]:first-child`)
+            .find(`[data-zentra-form-editor-on-click="merge-with-previous-section"]`)
             .addClass("d-none");
     }
 
@@ -2528,7 +2528,7 @@ export class GlpiFormEditorController
         // Sortable instance must be unique for each section
         sections.each((index, section) => {
             const blocks_container = $(section)
-                .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]");
+                .find("[data-zentra-form-editor-section-blocks], [data-zentra-form-editor-horizontal-blocks], [data-zentra-form-editor-question-drag-merge], [data-zentra-form-editor-horizontal-block-placeholder]");
 
             blocks_container.each((index, container) => {
                 const $container = $(container);
@@ -2536,21 +2536,21 @@ export class GlpiFormEditorController
                 // Common sortable configuration
                 const sortableConfig = {
                     // Drag and drop handle selector
-                    handle: '[data-glpi-form-editor-question-handle]',
+                    handle: '[data-zentra-form-editor-question-handle]',
 
                     // Restrict sortable items
-                    items: '[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]',
+                    items: '[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]',
 
                     // Accept from others sections
-                    acceptFrom: '[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks]',
+                    acceptFrom: '[data-zentra-form-editor-section-blocks], [data-zentra-form-editor-horizontal-blocks]',
 
                     // Placeholder class
-                    placeholder: '<section class="glpi-form-editor-drag-question-placeholder"></section>',
+                    placeholder: '<section class="zentra-form-editor-drag-question-placeholder"></section>',
                 };
 
 
                 // Add specific configuration based on container type
-                if ($container.is("[data-glpi-form-editor-horizontal-blocks]")) {
+                if ($container.is("[data-zentra-form-editor-horizontal-blocks]")) {
                     sortableConfig.maxItems = 4; // Limit the number of blocks in horizontal blocks
                 }
 
@@ -2561,7 +2561,7 @@ export class GlpiFormEditorController
 
         // Keep track on unsaved changes if the sort order was updated
         sections
-            .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]")
+            .find("[data-zentra-form-editor-section-blocks], [data-zentra-form-editor-horizontal-blocks], [data-zentra-form-editor-question-drag-merge], [data-zentra-form-editor-horizontal-block-placeholder]")
             .on('sortupdate', (e) => {
                 // Trigger an action to make sure we use the main entry point
                 // where common action related functions are excuted
@@ -2570,7 +2570,7 @@ export class GlpiFormEditorController
 
         // Add a special class while a drag and drop is happening
         sections
-            .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]")
+            .find("[data-zentra-form-editor-section-blocks], [data-zentra-form-editor-horizontal-blocks], [data-zentra-form-editor-question-drag-merge], [data-zentra-form-editor-horizontal-block-placeholder]")
             .on('sortstart', (e) => {
                 // Prevent the "merge" area from being shown for the current item.
                 // It prevent some issue in chrome and we don't want to be able
@@ -2588,21 +2588,21 @@ export class GlpiFormEditorController
                     $(e.detail.item).addClass('d-none');
 
                     // If dragged item is active, store it to restore it later
-                    if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
-                        $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
+                    if ($(e.detail.item).is('[data-zentra-form-editor-active-question],[data-zentra-form-editor-active-comment]')) {
+                        $(e.detail.item).attr('data-zentra-form-editor-restore-active-state', '');
                     }
 
                     // Remove active states
                     this.#setActiveItem(null);
 
-                    $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
+                    $(this.#target).addClass("disable-focus").attr('data-zentra-form-editor-sorting', '');
                 }, 0);
             });
 
         // Run the post move process if any item was dragged, even if it was not
         // moved in the end (= dragged on itself)
         sections
-            .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]")
+            .find("[data-zentra-form-editor-section-blocks], [data-zentra-form-editor-horizontal-blocks], [data-zentra-form-editor-question-drag-merge], [data-zentra-form-editor-horizontal-block-placeholder]")
             .on('sortstop', (e) => {
                 // The 'sortstop' event trigger twice for a single drag and drop
                 // action.
@@ -2613,17 +2613,17 @@ export class GlpiFormEditorController
                 }
 
                 if (
-                    $(e.detail.origin.container).data('glpi-form-editor-horizontal-blocks') !== undefined
-                    && $(e.detail.origin.container).find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]").length === 0
+                    $(e.detail.origin.container).data('zentra-form-editor-horizontal-blocks') !== undefined
+                    && $(e.detail.origin.container).find("[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]").length === 0
                 ) {
                     this.#deleteHorizontalLayout(
-                        $(e.detail.origin.container).parent('[data-glpi-form-editor-horizontal-blocks-container]')
+                        $(e.detail.origin.container).parent('[data-zentra-form-editor-horizontal-blocks-container]')
                     );
                 }
 
                 // Handle case where the item was dragged in a placeholder
                 // This is a special case where the item is not moved but replace the placeholder
-                if ($(e.detail.item).parent().data('glpi-form-editor-horizontal-block-placeholder') !== undefined) {
+                if ($(e.detail.item).parent().data('zentra-form-editor-horizontal-block-placeholder') !== undefined) {
                     const placeholder = $(e.detail.item).parent();
                     $(e.detail.item).insertAfter(placeholder);
                     placeholder.remove();
@@ -2632,8 +2632,8 @@ export class GlpiFormEditorController
                 // Handle case where the item was dragged in a drag and merge area
                 // This is a special case where the item is not moved but merged
                 // with the question into a horizontal block
-                if ($(e.detail.item).parent().data('glpi-form-editor-question-drag-merge') !== undefined) {
-                    const blocks = $(e.detail.item).parents('[data-glpi-form-editor-block]').addBack();
+                if ($(e.detail.item).parent().data('zentra-form-editor-question-drag-merge') !== undefined) {
+                    const blocks = $(e.detail.item).parents('[data-zentra-form-editor-block]').addBack();
                     this.#mergeBlocksIntoHorizontalBlock(blocks);
                 }
 
@@ -2644,13 +2644,13 @@ export class GlpiFormEditorController
                 // It seems to be caused by the fact that tinymce expect files
                 // to be dragged into it, thus we have to manually disable focus
                 // until our drag operation is over.
-                $(this.#target).removeClass("disable-focus").removeAttr('data-glpi-form-editor-sorting');
+                $(this.#target).removeClass("disable-focus").removeAttr('data-zentra-form-editor-sorting');
                 $('.content-editable-tinymce').removeClass('simulate-focus');
 
                 // Restore active state if needed
-                const restore_active_state = $(e.detail.item).attr('data-glpi-form-editor-restore-active-state');
+                const restore_active_state = $(e.detail.item).attr('data-zentra-form-editor-restore-active-state');
                 if (restore_active_state !== undefined) {
-                    $(e.detail.item).removeAttr('data-glpi-form-editor-restore-active-state');
+                    $(e.detail.item).removeAttr('data-zentra-form-editor-restore-active-state');
                     this.#setActiveItem($(e.detail.item));
                 }
 
@@ -2666,51 +2666,51 @@ export class GlpiFormEditorController
     #buildMoveSectionModalContent() {
         // Clear modal content
         const modal_content = $(this.#target)
-            .find("[data-glpi-form-editor-move-section-modal-items]");
+            .find("[data-zentra-form-editor-move-section-modal-items]");
 
         modal_content.children().remove();
 
         // Find all sections and insert them into the modal
         $(this.#target)
-            .find("[data-glpi-form-editor-section]")
+            .find("[data-zentra-form-editor-section]")
             .each((index, section) => {
                 const name = this.#getItemInput($(section), "name");
 
                 // Copy template
-                const copy = $("[data-glpi-form-editor-move-section-modal-item-template]")
+                const copy = $("[data-zentra-form-editor-move-section-modal-item-template]")
                     .clone();
 
                 // Set an unique identifier on both the section and its modal counter part
                 // This will allow us to find the matching sections for each modal list items
                 const uuid = getUUID();
-                $(section).attr("data-glpi-form-editor-move-section-modal-uuid", uuid);
+                $(section).attr("data-zentra-form-editor-move-section-modal-uuid", uuid);
                 copy
-                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
+                    .find("[data-zentra-form-editor-move-section-modal-item-section-key]")
                     .attr(
-                        "data-glpi-form-editor-move-section-modal-item-section-key",
+                        "data-zentra-form-editor-move-section-modal-item-section-key",
                         uuid
                     );
                 copy
-                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
+                    .find("[data-zentra-form-editor-move-section-modal-item-section-key]")
                     .attr("aria-label", _.unescape(__('Move section: %1$d')).replace("%1$d", name));
 
                 // Set section name
                 copy
-                    .find("[data-glpi-form-editor-move-section-modal-item-section-name]")
+                    .find("[data-zentra-form-editor-move-section-modal-item-section-name]")
                     .text(name);
 
                 // Remove template tag
-                copy.removeAttr("data-glpi-form-editor-move-section-modal-item-template");
+                copy.removeAttr("data-zentra-form-editor-move-section-modal-item-template");
 
                 modal_content.append(copy);
             });
 
-        sortable($("[data-glpi-form-editor-move-section-modal-items]"), {
+        sortable($("[data-zentra-form-editor-move-section-modal-items]"), {
             // Drag and drop handle selector
-            handle: '[data-glpi-form-editor-section-handle]',
+            handle: '[data-zentra-form-editor-section-handle]',
 
             // Placeholder class
-            placeholderClass: 'glpi-form-editor-drag-section-placeholder',
+            placeholderClass: 'zentra-form-editor-drag-section-placeholder',
         });
     }
 
@@ -2720,21 +2720,21 @@ export class GlpiFormEditorController
     #reorderSections() {
         // Close modal
         $(this.#target)
-            .find("[data-glpi-form-editor-move-section-modal]")
+            .find("[data-zentra-form-editor-move-section-modal]")
             .modal('hide');
 
         $(this.#target)
-            .find("[data-glpi-form-editor-move-section-modal-items]")
+            .find("[data-zentra-form-editor-move-section-modal-items]")
             .children()
             .each((index, item) => {
                 // Get the UUID defined in the buildMoveSectionModalContent process
                 const section_key = $(item)
-                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
-                    .data("glpi-form-editor-move-section-modal-item-section-key");
+                    .find("[data-zentra-form-editor-move-section-modal-item-section-key]")
+                    .data("zentra-form-editor-move-section-modal-item-section-key");
 
                 // Find section by index
                 const section = $(this.#target)
-                    .find(`[data-glpi-form-editor-move-section-modal-uuid="${CSS.escape(section_key)}"]`);
+                    .find(`[data-zentra-form-editor-move-section-modal-uuid="${CSS.escape(section_key)}"]`);
 
                 // Move section at the end of the form
                 // This will naturally sort all sections as they are moved one
@@ -2742,12 +2742,12 @@ export class GlpiFormEditorController
                 section
                     .remove()
                     .appendTo(
-                        $(this.#target).find("[data-glpi-form-editor-blocks]")
+                        $(this.#target).find("[data-zentra-form-editor-blocks]")
                     );
             });
 
         // Handle the move for each sections
-        $(this.#target).find("[data-glpi-form-editor-section]").each((index, section) => {
+        $(this.#target).find("[data-zentra-form-editor-section]").each((index, section) => {
             this.#handleItemMove($(section));
         });
     }
@@ -2772,12 +2772,12 @@ export class GlpiFormEditorController
 
         // Move questions into the previous section
         const to_move = section
-            .find("[data-glpi-form-editor-section-blocks]")
+            .find("[data-zentra-form-editor-section-blocks]")
             .children();
         to_move
             .detach()
             .appendTo(
-                previous_section.find("[data-glpi-form-editor-section-blocks]")
+                previous_section.find("[data-zentra-form-editor-section-blocks]")
             );
 
         // Fix complex inputs like tinymce that don't like to be moved
@@ -2807,11 +2807,11 @@ export class GlpiFormEditorController
      */
     #updateSectionBlockCount(section) {
         const blocks = section
-            .find("[data-glpi-form-editor-block]")
+            .find("[data-zentra-form-editor-block]")
             .length;
 
         // Update the badge with the new block count
-        const badge = section.find('span[data-glpi-form-editor-section-block-badge]');
+        const badge = section.find('span[data-zentra-form-editor-section-block-badge]');
         badge.html(badge.html().trim().replace(/^\d+\s/, `${blocks} `));
     }
 
@@ -2827,7 +2827,7 @@ export class GlpiFormEditorController
 
         this.#setItemInput(new_section, "uuid", '');
         new_section
-            .find("[data-glpi-form-editor-question]")
+            .find("[data-zentra-form-editor-question]")
             .each((index, question) => {
                 this.#setItemInput($(question), "uuid", '');
             })
@@ -2851,10 +2851,10 @@ export class GlpiFormEditorController
         this.#setActiveItem(new_question);
 
         // Remove the placeholder if it exists
-        question.closest("[data-glpi-form-editor-horizontal-blocks]")
-            .find("[data-glpi-form-editor-horizontal-block-placeholder]").first().remove();
+        question.closest("[data-zentra-form-editor-horizontal-blocks]")
+            .find("[data-zentra-form-editor-horizontal-block-placeholder]").first().remove();
 
-        $(document).trigger('glpi-form-editor-question-duplicated', [question, new_question]);
+        $(document).trigger('zentra-form-editor-question-duplicated', [question, new_question]);
     }
 
     /**
@@ -2871,8 +2871,8 @@ export class GlpiFormEditorController
         this.#setActiveItem(new_comment);
 
         // Remove the placeholder if it exists
-        comment.closest("[data-glpi-form-editor-horizontal-blocks]")
-            .find("[data-glpi-form-editor-horizontal-block-placeholder]").first().remove();
+        comment.closest("[data-zentra-form-editor-horizontal-blocks]")
+            .find("[data-zentra-form-editor-horizontal-block-placeholder]").first().remove();
     }
 
     /**
@@ -2883,15 +2883,15 @@ export class GlpiFormEditorController
     #addFakeDivToEmptySections() {
         // Clear fake divs
         $(this.#target)
-            .find("[data-glpi-form-editor-empty-div]")
+            .find("[data-zentra-form-editor-empty-div]")
             .remove();
 
         // Add fake divs to empty sections
-        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
+        const sections = $(this.#target).find("[data-zentra-form-editor-section]");
         sections.each((index, section) => {
-            const questions = $(section).find("[data-glpi-form-editor-section-blocks]");
+            const questions = $(section).find("[data-zentra-form-editor-section-blocks]");
             if (questions.children().length == 0) {
-                questions.append('<div data-glpi-form-editor-empty-div style="height: 1px"></div>');
+                questions.append('<div data-zentra-form-editor-empty-div style="height: 1px"></div>');
             }
         });
     }
@@ -2932,32 +2932,32 @@ export class GlpiFormEditorController
 
     #updatePreviewButton() {
         if (hasUnsavedChanges()) {
-            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
-                .find('[data-glpi-form-editor-preview-action]').addClass('d-none');
-            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
-                .find('[data-glpi-form-editor-save-and-preview-action]').removeClass('d-none');
+            $(this.#target).find('[data-zentra-form-editor-preview-actions]')
+                .find('[data-zentra-form-editor-preview-action]').addClass('d-none');
+            $(this.#target).find('[data-zentra-form-editor-preview-actions]')
+                .find('[data-zentra-form-editor-save-and-preview-action]').removeClass('d-none');
         } else {
-            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
-                .find('[data-glpi-form-editor-preview-action]').removeClass('d-none');
-            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
-                .find('[data-glpi-form-editor-save-and-preview-action]').addClass('d-none');
+            $(this.#target).find('[data-zentra-form-editor-preview-actions]')
+                .find('[data-zentra-form-editor-preview-action]').removeClass('d-none');
+            $(this.#target).find('[data-zentra-form-editor-preview-actions]')
+                .find('[data-zentra-form-editor-save-and-preview-action]').addClass('d-none');
         }
     }
 
     #setFormDetailsAsActive() {
-        const form_details = $(this.#target).find("[data-glpi-form-editor-form-details]");
+        const form_details = $(this.#target).find("[data-zentra-form-editor-form-details]");
         this.#setActiveItem(form_details);
     }
 
     #showVisibilityDropdown(container) {
         container
-            .find('[data-glpi-form-editor-visibility-dropdown-container]')
+            .find('[data-zentra-form-editor-visibility-dropdown-container]')
             .removeClass('d-none')
         ;
 
         const dropdown = container
-            .find('[data-glpi-form-editor-visibility-dropdown-container]')
-            .find('[data-glpi-form-editor-visibility-dropdown]')
+            .find('[data-zentra-form-editor-visibility-dropdown-container]')
+            .find('[data-zentra-form-editor-visibility-dropdown]')
         ;
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
@@ -2965,37 +2965,37 @@ export class GlpiFormEditorController
     #updateConditionBadge(container, value) {
         // Determine which type of badge we're updating based on the container
         let badgeType = null;
-        if (container.find(`[data-glpi-editor-visibility-badge="${CSS.escape(value)}"]`).length > 0) {
+        if (container.find(`[data-zentra-editor-visibility-badge="${CSS.escape(value)}"]`).length > 0) {
             badgeType = 'visibility';
-        } else if (container.find(`[data-glpi-editor-validation-badge="${CSS.escape(value)}"]`).length > 0) {
+        } else if (container.find(`[data-zentra-editor-validation-badge="${CSS.escape(value)}"]`).length > 0) {
             badgeType = 'validation';
         }
 
         // Hide all badges of this type
-        container.find(`[data-glpi-editor-${CSS.escape(badgeType)}-badge]`)
+        container.find(`[data-zentra-editor-${CSS.escape(badgeType)}-badge]`)
             .removeClass('d-flex')
             .addClass('d-none');
 
         // Show only the specific badge for the current value
-        container.find(`[data-glpi-editor-${CSS.escape(badgeType)}-badge="${CSS.escape(value)}"]`)
+        container.find(`[data-zentra-editor-${CSS.escape(badgeType)}-badge="${CSS.escape(value)}"]`)
             .removeClass('d-none')
             .addClass('d-flex');
     }
 
     #updateConditionsCount(container, value) {
-        container.find('[data-glpi-editor-validation-conditions-count-badge], [data-glpi-editor-visibility-conditions-count-badge]')
+        container.find('[data-zentra-editor-validation-conditions-count-badge], [data-zentra-editor-visibility-conditions-count-badge]')
             .html(value);
     }
 
     #showValidationDropdown(container) {
         container
-            .find('[data-glpi-form-editor-validation-dropdown-container]')
+            .find('[data-zentra-form-editor-validation-dropdown-container]')
             .removeClass('d-none')
         ;
 
         const dropdown = container
-            .find('[data-glpi-form-editor-validation-dropdown-container]')
-            .find('[data-glpi-form-editor-validation-dropdown]')
+            .find('[data-zentra-form-editor-validation-dropdown-container]')
+            .find('[data-zentra-form-editor-validation-dropdown]')
         ;
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
@@ -3012,7 +3012,7 @@ export class GlpiFormEditorController
 
         // Extract all sections
         $(this.#target)
-            .find("[data-glpi-form-editor-section]")
+            .find("[data-zentra-form-editor-section]")
             .each((_index, section) => {
                 sections.push({
                     'uuid': this.#getItemInput($(section), "uuid"),
@@ -3039,7 +3039,7 @@ export class GlpiFormEditorController
 
         // Extract all questions
         $(this.#target)
-            .find("[data-glpi-form-editor-question]")
+            .find("[data-zentra-form-editor-question]")
             .each((_index, question) => {
                 questions.push({
                     'uuid': this.#getItemInput($(question), "uuid"),
@@ -3065,7 +3065,7 @@ export class GlpiFormEditorController
 
         // Extract all comments
         $(this.#target)
-            .find("[data-glpi-form-editor-comment]")
+            .find("[data-zentra-form-editor-comment]")
             .each((_index, comment) => {
                 comments.push({
                     'uuid': this.#getItemInput($(comment), "uuid"),
@@ -3085,16 +3085,16 @@ export class GlpiFormEditorController
             // Read selected item uuid and type
             const uuid = this.#getItemInput(
                 container.closest(
-                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details], [data-glpi-form-editor-container]'
+                    '[data-zentra-form-editor-block], [data-zentra-form-editor-section-details], [data-zentra-form-editor-container]'
                 ),
                 'uuid',
             );
             const type = container.closest(
-                '[data-glpi-form-editor-condition-type]'
-            ).data('glpi-form-editor-condition-type');
+                '[data-zentra-form-editor-condition-type]'
+            ).data('zentra-form-editor-condition-type');
 
             // Init and register controller
-            controller = new GlpiFormConditionVisibilityEditorController(
+            controller = new ZentraFormConditionVisibilityEditorController(
                 container[0],
                 uuid,
                 type,
@@ -3103,7 +3103,7 @@ export class GlpiFormEditorController
                 this.#getCommentStateForConditionEditor(),
             );
             container.attr(
-                'data-glpi-editor-condition-controller-index',
+                'data-zentra-editor-condition-controller-index',
                 this.#conditions_editors_controllers.length,
             );
             this.#conditions_editors_controllers.push(controller);
@@ -3125,16 +3125,16 @@ export class GlpiFormEditorController
             // Read selected item uuid and type
             const uuid = this.#getItemInput(
                 container.closest(
-                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details], [data-glpi-form-editor-container]'
+                    '[data-zentra-form-editor-block], [data-zentra-form-editor-section-details], [data-zentra-form-editor-container]'
                 ),
                 'uuid',
             );
             const type = container.closest(
-                '[data-glpi-form-editor-condition-type]'
-            ).data('glpi-form-editor-condition-type');
+                '[data-zentra-form-editor-condition-type]'
+            ).data('zentra-form-editor-condition-type');
 
             // Init and register controller
-            controller = new GlpiFormConditionValidationEditorController(
+            controller = new ZentraFormConditionValidationEditorController(
                 container[0],
                 uuid,
                 type,
@@ -3143,7 +3143,7 @@ export class GlpiFormEditorController
                 this.#getCommentStateForConditionEditor(),
             );
             container.attr(
-                'data-glpi-editor-condition-controller-index',
+                'data-zentra-editor-condition-controller-index',
                 this.#conditions_editors_controllers.length,
             );
             this.#conditions_editors_controllers.push(controller);
@@ -3158,17 +3158,17 @@ export class GlpiFormEditorController
     }
 
     #getConditionEditorController(container) {
-        const controller_index = container.data('glpi-editor-condition-controller-index');
+        const controller_index = container.data('zentra-editor-condition-controller-index');
         return this.#conditions_editors_controllers[controller_index] ?? null;
     }
 
     #refreshCheckedInputs() {
         $(this.#target)
-            .find('[data-glpi-editor-refresh-checked]')
+            .find('[data-zentra-editor-refresh-checked]')
             .removeProp('checked')
         ;
         $(this.#target)
-            .find('[data-glpi-editor-refresh-checked]')
+            .find('[data-zentra-editor-refresh-checked]')
             .prop('checked', true)
         ;
     }
@@ -3176,7 +3176,7 @@ export class GlpiFormEditorController
     #addHorizontalLayout(target) {
         // Find the horizontal block template
         const template = $(this.#templates)
-            .find("[data-glpi-form-editor-horizontal-block-template]")
+            .find("[data-zentra-form-editor-horizontal-block-template]")
             .children();
 
         const new_horizontal_block = this.#addBlock(target, template);
@@ -3194,12 +3194,12 @@ export class GlpiFormEditorController
         target.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
         // If the horizontal block contains blocks, move them just after the horizontal block
-        const blocks = target.find('[data-glpi-form-editor-block]');
+        const blocks = target.find('[data-zentra-form-editor-block]');
         blocks.insertAfter(target);
 
         // Remove horizontal block specific elements
-        target.prev('[data-glpi-form-editor-horizontal-blocks-fix-sortable-issue]').remove();
-        target.next('[data-glpi-form-editor-horizontal-blocks-fix-sortable-issue]').remove();
+        target.prev('[data-zentra-form-editor-horizontal-blocks-fix-sortable-issue]').remove();
+        target.next('[data-zentra-form-editor-horizontal-blocks-fix-sortable-issue]').remove();
 
         // Remove horizontal block
         target.remove();
@@ -3212,7 +3212,7 @@ export class GlpiFormEditorController
     #addHorizontalLayoutSlot(target) {
         // Find the horizontal block placeholder template
         const template = $(this.#templates)
-            .find("[data-glpi-form-editor-horizontal-block-placeholder-template]")
+            .find("[data-zentra-form-editor-horizontal-block-placeholder-template]")
             .children();
 
         const new_placeholder = this.#addBlock(target, template);
@@ -3236,7 +3236,7 @@ export class GlpiFormEditorController
         target.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
         // If the placeholder is the last element of the horizontal block, remove the horizontal block
-        if (target.parent().find('[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]').length == 1) {
+        if (target.parent().find('[data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-block-placeholder]').length == 1) {
             this.#deleteHorizontalLayout(target.parent());
         } else {
             // Remove placeholder
@@ -3251,7 +3251,7 @@ export class GlpiFormEditorController
     #mergeBlocksIntoHorizontalBlock(blocks) {
         // Find the horizontal block template
         const template = $(this.#templates)
-            .find("[data-glpi-form-editor-horizontal-block-template]")
+            .find("[data-zentra-form-editor-horizontal-block-template]")
             .children();
 
         // Copy the new horizontal block template just after the first block
@@ -3263,14 +3263,14 @@ export class GlpiFormEditorController
 
         // Move the blocks into the horizontal block
         blocks.detach().appendTo(
-            horizontal_block.find("[data-glpi-form-editor-horizontal-blocks]")
+            horizontal_block.find("[data-zentra-form-editor-horizontal-blocks]")
         );
 
         // Enable sortable on the new horizontal block
         this.#enableSortable(horizontal_block);
 
         // Remove default template placeholders
-        horizontal_block.find('[data-glpi-form-editor-horizontal-block-placeholder]').remove();
+        horizontal_block.find('[data-zentra-form-editor-horizontal-block-placeholder]').remove();
     }
 
     #copyQuestionUuidToClipboard(question) {
@@ -3282,7 +3282,7 @@ export class GlpiFormEditorController
 
         // Write to clipbaord and show info toast
         navigator.clipboard.writeText(uuid);
-        glpi_toast_info(__("UUID copied successfully to clipboard."));
+        zentra_toast_info(__("UUID copied successfully to clipboard."));
     }
 
     #scrollToItemIfNeeded(item_container) {

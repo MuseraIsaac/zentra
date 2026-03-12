@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,11 @@ function update910to911()
     $migration->setVersion('9.1.1');
 
     // rectify missing right in 9.1 update
-    if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
-        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'software']]);
+    if (countElementsInTable("zentra_profilerights", ['name' => 'license']) == 0) {
+        $prights = $DB->request(['FROM' => 'zentra_profilerights', 'WHERE' => ['name' => 'software']]);
         foreach ($prights as $profrights) {
             $DB->insert(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 $itil_types = ['Ticket', 'Change', 'Problem'];
 $iterator = $DB->request([
     'SELECT' => ['id', 'event'],
-    'FROM'   => 'glpi_notifications',
+    'FROM'   => 'zentra_notifications',
     'WHERE'  => [
         'itemtype' => $itil_types,
     ],
@@ -49,7 +49,7 @@ $iterator = $DB->request([
 foreach ($iterator as $notification) {
     $target_iterator = $DB->request([
         'SELECT' => ['id', 'items_id'],
-        'FROM'   => 'glpi_notificationtargets',
+        'FROM'   => 'zentra_notificationtargets',
         'WHERE'  => [
             'notifications_id' => $notification['id'],
         ],
@@ -66,7 +66,7 @@ foreach ($iterator as $notification) {
             || $items_id === Notification::ITEM_TECH_IN_CHARGE
             || $items_id === Notification::ITEM_USER
         ) {
-            $DB->delete('glpi_notificationtargets', [
+            $DB->delete('zentra_notificationtargets', [
                 'id' => $target_id,
             ]);
             if ($items_id === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
@@ -78,7 +78,7 @@ foreach ($iterator as $notification) {
         }
     }
     if ($notification['event'] === 'assign_group' && $removed_item_group && !$found_assigned_group) {
-        $DB->insert('glpi_notificationtargets', [
+        $DB->insert('zentra_notificationtargets', [
             'notifications_id'  => $notification['id'],
             'type'              => Notification::USER_TYPE,
             'items_id'          => Notification::ASSIGN_GROUP,
@@ -90,7 +90,7 @@ foreach ($iterator as $notification) {
 /* BEGIN: Fixes notification templates encoding (see #10295) */
 $template_iterator = $DB->request([
     'SELECT' => ['id', 'content_html'],
-    'FROM'   => 'glpi_notificationtemplatetranslations',
+    'FROM'   => 'zentra_notificationtemplatetranslations',
 ]);
 foreach ($template_iterator as $template_data) {
     $content_html = $template_data['content_html'];
@@ -112,7 +112,7 @@ foreach ($template_iterator as $template_data) {
 
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_notificationtemplatetranslations',
+                'zentra_notificationtemplatetranslations',
                 [
                     'content_html' => $content_html,
                 ],

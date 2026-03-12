@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,12 +54,12 @@ class RuleMailCollector extends Rule
 
         $criterias['mailcollector']['field']            = 'name';
         $criterias['mailcollector']['name']             = __('Mails receiver');
-        $criterias['mailcollector']['table']            = 'glpi_mailcollectors';
+        $criterias['mailcollector']['table']            = 'zentra_mailcollectors';
         $criterias['mailcollector']['type']             = 'dropdown';
 
         $criterias['_users_id_requester']['field']      = 'name';
         $criterias['_users_id_requester']['name']       = _n('Requester', 'Requesters', 1);
-        $criterias['_users_id_requester']['table']      = 'glpi_users';
+        $criterias['_users_id_requester']['table']      = 'zentra_users';
         $criterias['_users_id_requester']['type']       = 'dropdown';
 
         $criterias['subject']['name']                   = __('Subject email header');
@@ -118,7 +118,7 @@ class RuleMailCollector extends Rule
         $criterias['received']['table']                 = '';
         $criterias['received']['type']                  = 'text';
 
-        $criterias['_groups_id_requester']['table']     = 'glpi_groups';
+        $criterias['_groups_id_requester']['table']     = 'zentra_groups';
         $criterias['_groups_id_requester']['field']     = 'completename';
         $criterias['_groups_id_requester']['name']      = sprintf(
             __('%1$s: %2$s'),
@@ -132,7 +132,7 @@ class RuleMailCollector extends Rule
 
         $criterias['KNOWN_DOMAIN']['field']             = 'name';
         $criterias['KNOWN_DOMAIN']['name']              = __('Known mail domain');
-        $criterias['KNOWN_DOMAIN']['table']             = 'glpi_entities';
+        $criterias['KNOWN_DOMAIN']['table']             = 'zentra_entities';
         $criterias['KNOWN_DOMAIN']['type']              = 'yesno';
         $criterias['KNOWN_DOMAIN']['virtual']           = true;
         $criterias['KNOWN_DOMAIN']['id']                = 'entitydatas';
@@ -140,7 +140,7 @@ class RuleMailCollector extends Rule
 
         $criterias['PROFILES']['field']                 = 'name';
         $criterias['PROFILES']['name']                  = __('User featuring the profile');
-        $criterias['PROFILES']['table']                 = 'glpi_profiles';
+        $criterias['PROFILES']['table']                 = 'zentra_profiles';
         $criterias['PROFILES']['type']                  = 'dropdown';
         $criterias['PROFILES']['virtual']               = true;
         $criterias['PROFILES']['id']                    = 'profiles';
@@ -149,7 +149,7 @@ class RuleMailCollector extends Rule
         if (Session::isMultiEntitiesMode()) {
             $criterias['UNIQUE_PROFILE']['field']           = 'name';
             $criterias['UNIQUE_PROFILE']['name']            = __('User featuring a single profile');
-            $criterias['UNIQUE_PROFILE']['table']           = 'glpi_profiles';
+            $criterias['UNIQUE_PROFILE']['table']           = 'zentra_profiles';
             $criterias['UNIQUE_PROFILE']['type']            = 'dropdown';
             $criterias['UNIQUE_PROFILE']['virtual']         = true;
             $criterias['UNIQUE_PROFILE']['id']              = 'profiles';
@@ -173,7 +173,7 @@ class RuleMailCollector extends Rule
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
         $actions['entities_id']['type']                       = 'dropdown';
-        $actions['entities_id']['table']                      = 'glpi_entities';
+        $actions['entities_id']['table']                      = 'zentra_entities';
 
         $actions['_affect_entity_by_domain']['name']          = __('Entity from domain');
         $actions['_affect_entity_by_domain']['type']          = 'text';

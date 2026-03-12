@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,30 +34,30 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Tests\GLPITestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Tests\ZENTRATestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
 /* Test for inc/dbmysql.class.php */
 
-class DBTest extends GLPITestCase
+class DBTest extends ZENTRATestCase
 {
     public function testTableExist()
     {
         $instance = new \DB();
-        $this->assertTrue($instance->tableExists('glpi_configs'));
+        $this->assertTrue($instance->tableExists('zentra_configs'));
         $this->assertFalse($instance->tableExists('fakeTable'));
     }
 
     public function testFieldExists()
     {
         $instance = new \DB();
-        $this->assertTrue($instance->fieldExists('glpi_configs', 'id'));
-        $this->assertFalse($instance->fieldExists('glpi_configs', 'ID'));
-        $this->assertFalse($instance->fieldExists('glpi_configs', 'fakeField'));
+        $this->assertTrue($instance->fieldExists('zentra_configs', 'id'));
+        $this->assertFalse($instance->fieldExists('zentra_configs', 'ID'));
+        $this->assertFalse($instance->fieldExists('zentra_configs', 'fakeField'));
     }
 
     public function testFieldExistsNoTable()
@@ -129,7 +129,7 @@ class DBTest extends GLPITestCase
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
-            ['Glpi\Socket', "'Glpi\\\Socket'"],
+            ['Zentra\Socket', "'Zentra\\\Socket'"],
         ];
     }
 
@@ -350,7 +350,7 @@ class DBTest extends GLPITestCase
         $tables = $instance->listTables();
         $this->assertInstanceOf(\DBmysqlIterator::class, $tables);
         $this->assertGreaterThan(100, count($tables));
-        $tables = $instance->listTables('glpi_configs');
+        $tables = $instance->listTables('zentra_configs');
         $this->assertInstanceOf(\DBmysqlIterator::class, $tables);
         $this->assertCount(1, $tables);
     }
@@ -365,9 +365,9 @@ class DBTest extends GLPITestCase
 
         // Tables that don't have an itemtype on purpose
         $excluded_tables = [
-            'glpi_assets_assets', 'glpi_assets_assetmodels', 'glpi_assets_assettypes',
-            'glpi_appliancerelations', 'glpi_dropdowns_dropdowns', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
-            'glpi_oauth_refresh_tokens', 'glpi_stencils', 'glpi_itemtranslations_itemtranslations', 'glpi_itils_validationsteps',
+            'zentra_assets_assets', 'zentra_assets_assetmodels', 'zentra_assets_assettypes',
+            'zentra_appliancerelations', 'zentra_dropdowns_dropdowns', 'zentra_oauth_access_tokens', 'zentra_oauth_auth_codes',
+            'zentra_oauth_refresh_tokens', 'zentra_stencils', 'zentra_itemtranslations_itemtranslations', 'zentra_itils_validationsteps',
         ];
 
         //check if each table has a corresponding itemtype
@@ -652,7 +652,7 @@ SQL,
 
         $asserter = $warning === null ? 'notExists' : 'exists';
 
-        $table = sprintf('glpitests_%s', uniqid());
+        $table = sprintf('zentratests_%s', uniqid());
         $db->doQuery(sprintf($create_query_template, $table));
         $db->doQuery(sprintf($drop_query_template, $table));
 
@@ -838,7 +838,7 @@ SQL,
                 'expected' => false,
             ];
 
-            // Data produced by GLPI <= 10.0 XSS cleaning process.
+            // Data produced by ZENTRA <= 10.0 XSS cleaning process.
             yield [
                 'method'   => $method,
                 'row'      => [
@@ -853,7 +853,7 @@ SQL,
                 ],
             ];
 
-            // Data produced by GLPI 10.0 XSS cleaning process.
+            // Data produced by ZENTRA 10.0 XSS cleaning process.
             yield [
                 'method'   => $method,
                 'row'      => [
@@ -868,7 +868,7 @@ SQL,
                 ],
             ];
 
-            // Data produced by GLPI 11.0.
+            // Data produced by ZENTRA 11.0.
             yield [
                 'method'   => $method,
                 'row'      => [

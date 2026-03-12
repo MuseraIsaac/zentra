@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryFunction;
 
 /**
  * CommonDevice Class
@@ -68,8 +68,8 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public static function getDeviceTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
-        global $CFG_GLPI;
+        //TODO After ZENTRA 11.0, make this always return grouped values
+        global $CFG_ZENTRA;
 
         $valid_types = [
             __('Input/Output') => [
@@ -101,7 +101,7 @@ abstract class CommonDevice extends CommonDropdown
             $valid_types[__('Power management')],
             $valid_types[__('Others')]
         );
-        $all_device_types = $CFG_GLPI['device_types'] ?? [];
+        $all_device_types = $CFG_ZENTRA['device_types'] ?? [];
         // Remove the default device types which are not in $all_device_types (may have been removed by plugins)
         // Add any devices not already in the list to 'Others'
         foreach ($valid_types as &$device_classes) {
@@ -249,7 +249,7 @@ abstract class CommonDevice extends CommonDropdown
         if (!parent::canUnrecurs()) {
             return false;
         }
-        $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+        $entities = getAncestorsOf("zentra_entities", $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
 
         // RELATION : device -> item_device -> item
@@ -339,7 +339,7 @@ abstract class CommonDevice extends CommonDropdown
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -373,7 +373,7 @@ abstract class CommonDevice extends CommonDropdown
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -643,18 +643,18 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getFormURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
         $itemtype = static::class;
         return "$dir/front/device.form.php?itemtype=$itemtype";
     }
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
         $itemtype = static::class;
         return "$dir/front/device.php?itemtype=$itemtype";
     }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,13 +190,13 @@ class RuleTicket extends RuleCommonITILObject
 
         $criterias = parent::getCriterias();
 
-        $criterias['type']['table']                           = 'glpi_tickets';
+        $criterias['type']['table']                           = 'zentra_tickets';
         $criterias['type']['field']                           = 'type';
         $criterias['type']['name']                            = _n('Type', 'Types', 1);
         $criterias['type']['linkfield']                       = 'type';
         $criterias['type']['type']                            = 'dropdown_tickettype';
 
-        $criterias['_mailgate']['table']                      = 'glpi_mailcollectors';
+        $criterias['_mailgate']['table']                      = 'zentra_mailcollectors';
         $criterias['_mailgate']['field']                      = 'name';
         $criterias['_mailgate']['name']                       = __('Mails receiver');
         $criterias['_mailgate']['linkfield']                  = '_mailgate';
@@ -226,7 +226,7 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['_to']['table']                            = '';
         $criterias['_to']['type']                             = 'text';
 
-        $criterias['slas_id_ttr']['table']                    = 'glpi_slas';
+        $criterias['slas_id_ttr']['table']                    = 'zentra_slas';
         $criterias['slas_id_ttr']['field']                    = 'name';
         $criterias['slas_id_ttr']['name']                     = sprintf(
             __('%1$s %2$s'),
@@ -235,9 +235,9 @@ class RuleTicket extends RuleCommonITILObject
         );
         $criterias['slas_id_ttr']['linkfield']                = 'slas_id_ttr';
         $criterias['slas_id_ttr']['type']                     = 'dropdown';
-        $criterias['slas_id_ttr']['condition']                = ['glpi_slas.type' => SLM::TTR];
+        $criterias['slas_id_ttr']['condition']                = ['zentra_slas.type' => SLM::TTR];
 
-        $criterias['slas_id_tto']['table']                    = 'glpi_slas';
+        $criterias['slas_id_tto']['table']                    = 'zentra_slas';
         $criterias['slas_id_tto']['field']                    = 'name';
         $criterias['slas_id_tto']['name']                     = sprintf(
             __('%1$s %2$s'),
@@ -246,9 +246,9 @@ class RuleTicket extends RuleCommonITILObject
         );
         $criterias['slas_id_tto']['linkfield']                = 'slas_id_tto';
         $criterias['slas_id_tto']['type']                     = 'dropdown';
-        $criterias['slas_id_tto']['condition']                = ['glpi_slas.type' => SLM::TTO];
+        $criterias['slas_id_tto']['condition']                = ['zentra_slas.type' => SLM::TTO];
 
-        $criterias['olas_id_ttr']['table']                    = 'glpi_olas';
+        $criterias['olas_id_ttr']['table']                    = 'zentra_olas';
         $criterias['olas_id_ttr']['field']                    = 'name';
         $criterias['olas_id_ttr']['name']                     = sprintf(
             __('%1$s %2$s'),
@@ -257,9 +257,9 @@ class RuleTicket extends RuleCommonITILObject
         );
         $criterias['olas_id_ttr']['linkfield']                = 'olas_id_ttr';
         $criterias['olas_id_ttr']['type']                     = 'dropdown';
-        $criterias['olas_id_ttr']['condition']                = ['glpi_olas.type' => SLM::TTR];
+        $criterias['olas_id_ttr']['condition']                = ['zentra_olas.type' => SLM::TTR];
 
-        $criterias['olas_id_tto']['table']                    = 'glpi_olas';
+        $criterias['olas_id_tto']['table']                    = 'zentra_olas';
         $criterias['olas_id_tto']['field']                    = 'name';
         $criterias['olas_id_tto']['name']                     = sprintf(
             __('%1$s %2$s'),
@@ -268,27 +268,27 @@ class RuleTicket extends RuleCommonITILObject
         );
         $criterias['olas_id_tto']['linkfield']                = 'olas_id_tto';
         $criterias['olas_id_tto']['type']                     = 'dropdown';
-        $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
+        $criterias['olas_id_tto']['condition']                = ['zentra_olas.type' => SLM::TTO];
 
-        $criterias['_locations_id_of_requester']['table']     = 'glpi_locations';
+        $criterias['_locations_id_of_requester']['table']     = 'zentra_locations';
         $criterias['_locations_id_of_requester']['field']     = 'completename';
         $criterias['_locations_id_of_requester']['name']      = __('Requester location');
         $criterias['_locations_id_of_requester']['linkfield'] = '_locations_id_of_requester';
         $criterias['_locations_id_of_requester']['type']      = 'dropdown';
 
-        $criterias['_locations_id_of_item']['table']          = 'glpi_locations';
+        $criterias['_locations_id_of_item']['table']          = 'zentra_locations';
         $criterias['_locations_id_of_item']['field']          = 'completename';
         $criterias['_locations_id_of_item']['name']           = __('Item location');
         $criterias['_locations_id_of_item']['linkfield']      = '_locations_id_of_item';
         $criterias['_locations_id_of_item']['type']           = 'dropdown';
 
-        $criterias['locations_id']['table']                   = 'glpi_locations';
+        $criterias['locations_id']['table']                   = 'zentra_locations';
         $criterias['locations_id']['field']                   = 'completename';
         $criterias['locations_id']['name']                    = Location::getTypeName(1);
         $criterias['locations_id']['linkfield']               = 'locations_id';
         $criterias['locations_id']['type']                    = 'dropdown';
 
-        $criterias['_locations_code']['table']              = 'glpi_locations';
+        $criterias['_locations_code']['table']              = 'zentra_locations';
         $criterias['_locations_code']['field']              = 'code';
         $criterias['_locations_code']['name']               = __('Location code');
 
@@ -305,19 +305,19 @@ class RuleTicket extends RuleCommonITILObject
 
         // set a ticket type
         $actions['type']['name']                              = _n('Type', 'Types', 1);
-        $actions['type']['table']                             = 'glpi_tickets';
+        $actions['type']['table']                             = 'zentra_tickets';
         $actions['type']['type']                              = 'dropdown_tickettype';
 
         // assign a projet
         $actions['assign_project']['name']                  = Project::getTypeName(1);
         $actions['assign_project']['type']                  = 'dropdown';
-        $actions['assign_project']['table']                 = 'glpi_projects';
+        $actions['assign_project']['table']                 = 'zentra_projects';
         $actions['assign_project']['permitseveral']         = ['append'];
         $actions['assign_project']['force_actions']         = ['assign','regex_result', 'append'];
         $actions['assign_project']['appendto']              = '_projects_id';
 
         // assign sla ttr
-        $actions['slas_id_ttr']['table']                      = 'glpi_slas';
+        $actions['slas_id_ttr']['table']                      = 'zentra_slas';
         $actions['slas_id_ttr']['field']                      = 'name';
         $actions['slas_id_ttr']['name']                       = sprintf(
             __('%1$s %2$s'),
@@ -326,7 +326,7 @@ class RuleTicket extends RuleCommonITILObject
         );
         $actions['slas_id_ttr']['linkfield']                  = 'slas_id_ttr';
         $actions['slas_id_ttr']['type']                       = 'dropdown';
-        $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
+        $actions['slas_id_ttr']['condition']                  = ['zentra_slas.type' => SLM::TTR];
 
         // empty ttr
         $actions['time_to_resolve']['name']                   = __('Time to resolve');
@@ -334,7 +334,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['time_to_resolve']['force_actions']          = ['delete'];
 
         // assign (existing) sla tto
-        $actions['slas_id_tto']['table']                      = 'glpi_slas';
+        $actions['slas_id_tto']['table']                      = 'zentra_slas';
         $actions['slas_id_tto']['field']                      = 'name';
         $actions['slas_id_tto']['name']                       = sprintf(
             __('%1$s %2$s'),
@@ -343,7 +343,7 @@ class RuleTicket extends RuleCommonITILObject
         );
         $actions['slas_id_tto']['linkfield']                  = 'slas_id_tto';
         $actions['slas_id_tto']['type']                       = 'dropdown';
-        $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
+        $actions['slas_id_tto']['condition']                  = ['zentra_slas.type' => SLM::TTO];
 
         // empty sla tto
         $actions['time_to_own']['name']                       = __('Time to own');
@@ -351,7 +351,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['time_to_own']['force_actions']              = ['delete'];
 
         // assign (existing) ola ttr
-        $actions['olas_id_ttr']['table']                      = 'glpi_olas';
+        $actions['olas_id_ttr']['table']                      = 'zentra_olas';
         $actions['olas_id_ttr']['field']                      = 'name';
         $actions['olas_id_ttr']['name']                       = sprintf(
             __('%1$s %2$s'),
@@ -360,7 +360,7 @@ class RuleTicket extends RuleCommonITILObject
         );
         $actions['olas_id_ttr']['linkfield']                  = 'olas_id_ttr';
         $actions['olas_id_ttr']['type']                       = 'dropdown';
-        $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
+        $actions['olas_id_ttr']['condition']                  = ['zentra_olas.type' => SLM::TTR];
 
         // empty ola ttr
         $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
@@ -368,7 +368,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
 
         // assign (existing) ola tto
-        $actions['olas_id_tto']['table']                      = 'glpi_olas';
+        $actions['olas_id_tto']['table']                      = 'zentra_olas';
         $actions['olas_id_tto']['field']                      = 'name';
         $actions['olas_id_tto']['name']                       = sprintf(
             __('%1$s %2$s'),
@@ -377,7 +377,7 @@ class RuleTicket extends RuleCommonITILObject
         );
         $actions['olas_id_tto']['linkfield']                  = 'olas_id_tto';
         $actions['olas_id_tto']['type']                       = 'dropdown';
-        $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
+        $actions['olas_id_tto']['condition']                  = ['zentra_olas.type' => SLM::TTO];
 
         // set ola tto value
         $actions['internal_time_to_own']['name']              = __('Internal Time to own');
@@ -387,13 +387,13 @@ class RuleTicket extends RuleCommonITILObject
         // assign a location
         $actions['locations_id']['name']                            = Location::getTypeName(1);
         $actions['locations_id']['type']                            = 'dropdown';
-        $actions['locations_id']['table']                           = 'glpi_locations';
+        $actions['locations_id']['table']                           = 'zentra_locations';
         $actions['locations_id']['force_actions']                   = ['assign', 'fromuser', 'fromitem'];
 
         // assign a contract
         $actions['assign_contract']['name']                  = Contract::getTypeName(1);
         $actions['assign_contract']['type']                  = 'dropdown';
-        $actions['assign_contract']['table']                 = 'glpi_contracts';
+        $actions['assign_contract']['table']                 = 'zentra_contracts';
         $actions['assign_contract']['force_actions']         = ['assign','regex_result'];
 
         return $actions;

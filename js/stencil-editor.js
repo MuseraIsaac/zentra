@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -292,7 +292,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.sendDataForm = function () {
         $.ajax({
             type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/stencil.php`,
             data: {
                 'update': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -365,7 +365,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.addNewZone = function () {
         $.ajax({
             type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/stencil.php`,
             data: {
                 'add-new-zone': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -389,7 +389,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.removeZone = function () {
         $.ajax({
             type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/stencil.php`,
             data: {
                 'remove-zone': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -410,7 +410,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         const zoneId = $(container).find(`#zone_number-${rand}`).data('zone-index');
         $.ajax({
             type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/stencil.php`,
             data: {
                 'reset-zone': '',
                 'id': $(container).find('input[name=id]').val(),

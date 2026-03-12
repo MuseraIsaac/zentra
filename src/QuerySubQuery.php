@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 /**
  * @deprecated 11.0.0
  */
-class QuerySubQuery extends Glpi\DBAL\QuerySubQuery
+class QuerySubQuery extends Zentra\DBAL\QuerySubQuery
 {
     /**
      * @param array   $expression Array of query criteria. Any valid DBmysqlIterator parameters are valid.
@@ -44,7 +44,7 @@ class QuerySubQuery extends Glpi\DBAL\QuerySubQuery
      */
     public function __construct($expression, $alias = null)
     {
-        Toolbox::deprecated('\QuerySubQuery is deprecated, use \Glpi\DBAL\QuerySubQuery instead');
+        Toolbox::deprecated('\QuerySubQuery is deprecated, use \Zentra\DBAL\QuerySubQuery instead');
         parent::__construct($expression, $alias);
     }
 }

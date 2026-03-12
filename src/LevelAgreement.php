@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QuerySubQuery;
 
 use function Safe\strtotime;
 
@@ -445,7 +445,7 @@ TWIG, $twig_params);
         $rules_id_list = iterator_to_array($DB->request([
             'SELECT'          => 'rules_id',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_ruleactions',
+            'FROM'            => 'zentra_ruleactions',
             'WHERE'           => [
                 'field' => $fk,
                 'value' => $this->getID(),
@@ -492,14 +492,14 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'SLM':
                     /** @var SLM $item */
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
                             ['slms_id' => $item->getField('id')]
@@ -511,7 +511,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch (true) {
             case $item instanceof SLM:
@@ -539,14 +539,14 @@ TWIG, $twig_params);
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
             'INNER JOIN'   => [
-                'glpi_tickets' => [
+                'zentra_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field,
+                        'zentra_tickets'       => $field,
                     ],
                 ],
             ],
-            'WHERE'        => ['glpi_tickets.id' => $tickets_id],
+            'WHERE'        => ['zentra_tickets.id' => $tickets_id],
             'LIMIT'        => 1,
         ]);
 
@@ -613,7 +613,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => 'glpi_slms',
+            'table'              => 'zentra_slms',
             'field'              => 'name',
             'name'               => __('SLM'),
             'datatype'           => 'dropdown',
@@ -1012,7 +1012,7 @@ TWIG, $twig_params);
         [, $laField] = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_tickets',
+            'FROM'   => 'zentra_tickets',
             'WHERE'  => [$laField => $this->fields['id']],
         ]);
 

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-window.GLPI = window.GLPI || {};
+window.ZENTRA = window.ZENTRA || {};
 
 /**
  * @typedef CompletionItemDefinition
@@ -56,7 +56,7 @@ export default class MonacoEditor {
         // Stupid workaround to allow multiple Monaco editors to be created for the same language but with different completions
         // since it registers completions by langauge in a global variable rather than allowing it to be instance-specific
         const existing_lang = window.monaco.languages.getLanguages().find((lang) => lang.id === language);
-        const new_lang_id = options['_force_default_lang'] ? language : `glpi_${language}_${Math.random().toString(36).substring(2, 15)}`;
+        const new_lang_id = options['_force_default_lang'] ? language : `zentra_${language}_${Math.random().toString(36).substring(2, 15)}`;
 
         // Can't just specify the loader when registering the language apparently...
         async function registerNewLangLoaderData() {
@@ -146,14 +146,14 @@ export default class MonacoEditor {
                 };
             }
         });
-        const dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
+        const dark_theme = $('html').attr('data-zentra-theme-dark') === '1';
         delete options._force_default_lang;
 
-        window.GLPI.Monaco.registerGLPIThemes();
+        window.ZENTRA.Monaco.registerZENTRAThemes();
         this.editor = window.monaco.editor.create(el, Object.assign({
             value: value,
             language: new_lang_id,
-            theme: dark_theme ? 'glpi-dark' : 'glpi'
+            theme: dark_theme ? 'zentra-dark' : 'zentra'
         }, options));
 
         if (options._single_line_editor) {
@@ -232,13 +232,13 @@ export default class MonacoEditor {
     }
 }
 
-window.GLPI.Monaco = {
+window.ZENTRA.Monaco = {
     /**
-     * Register custom GLPI themes for Monaco editor.
+     * Register custom ZENTRA themes for Monaco editor.
      * Does not automatically import the Monaco library.
      */
-    registerGLPIThemes: () => {
-        if (window.GLPI.Monaco._themes_registered) {
+    registerZENTRAThemes: () => {
+        if (window.ZENTRA.Monaco._themes_registered) {
             return;
         }
         const light_overrides = [
@@ -251,19 +251,19 @@ window.GLPI.Monaco = {
                 foreground: '#d90000'
             }
         ];
-        window.monaco.editor.defineTheme('glpi', {
+        window.monaco.editor.defineTheme('zentra', {
             base: 'vs',
             inherit: true,
             colors: {},
             rules: light_overrides,
         });
-        window.monaco.editor.defineTheme('glpi-dark', {
+        window.monaco.editor.defineTheme('zentra-dark', {
             base: 'vs-dark',
             inherit: true,
             colors: {},
             rules: [],
         });
-        window.GLPI.Monaco._themes_registered = true;
+        window.ZENTRA.Monaco._themes_registered = true;
     },
     createEditor: async (element_id, language, value = '', completions = [], options = {}) => {
         return import('/lib/monaco.js').then(() => {
@@ -280,7 +280,7 @@ window.GLPI.Monaco = {
         const el = document.createElement('div');
         $(el).attr('lang', language);
         $(el).text(text);
-        return window.GLPI.Monaco.colorizeElement(el, language).then(() => {
+        return window.ZENTRA.Monaco.colorizeElement(el, language).then(() => {
             return el.innerHTML;
         });
     },
@@ -292,10 +292,10 @@ window.GLPI.Monaco = {
      */
     colorizeElement: async (element, language) => {
         return import('/lib/monaco.js').then(() => {
-            window.GLPI.Monaco.registerGLPIThemes();
+            window.ZENTRA.Monaco.registerZENTRAThemes();
             return window.monaco.editor.colorizeElement(element, {
                 language: language,
-                theme: $('html').attr('data-glpi-theme-dark') === '1' ? 'glpi-dark' : 'glpi'
+                theme: $('html').attr('data-zentra-theme-dark') === '1' ? 'zentra-dark' : 'zentra'
             });
         });
     },

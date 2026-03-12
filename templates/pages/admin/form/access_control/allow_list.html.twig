@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,13 +30,13 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
-{# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
+{# @var \Zentra\Form\AccessControl\ControlType\FormAccessControl access_control #}
+{# @var \Zentra\Form\AccessControl\ControlType\AllowListConfig config #}
 {# @var string label #}
 
 {# Multi dropdown (User, Group and Profile) #}
 {{ call(
-    "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
+    "\\Zentra\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
     [
         access_control.getNormalizedInputName("_allow_list_dropdown"),
         {
@@ -50,7 +50,7 @@
 
 {# Helper link that will be populated using a JS script #}
 <div class="mt-2">
-    <a href="" data-glpi-dropdown-count-preview></a>
+    <a href="" data-zentra-dropdown-count-preview></a>
 </div>
 
 <script>
@@ -64,7 +64,7 @@
             }
         );
 
-        $('[data-glpi-dropdown-count-preview]')
+        $('[data-zentra-dropdown-count-preview]')
             .attr('href', response.link ?? null)
             .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}"
             .replace("%d", response.count))

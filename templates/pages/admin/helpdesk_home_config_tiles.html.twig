@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@
         class="col-12 col-lg-6 col-xl-4 d-flex-soft {{ editable ? "pointer-events-none" : "" }}"
         aria-label="{{ tile.getTitle() }}"
         {% if editable %}
-            data-glpi-draggable-item
-            data-glpi-helpdesk-config-tile-container
-            data-glpi-helpdesk-config-action-show-edit-form
+            data-zentra-draggable-item
+            data-zentra-helpdesk-config-tile-container
+            data-zentra-helpdesk-config-action-show-edit-form
             data-bs-toggle="offcanvas"
             data-bs-target="#tile-form-offcanvas"
             data-testid="config-tile"
@@ -47,11 +47,11 @@
         <div
             {% if editable %}
                 {% set item_tile_id = tiles_manager.getItemTileForTile(tile).getID() %}
-                data-glpi-helpdesk-config-tile
-                data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
-                data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
-                data-glpi-helpdesk-config-item-tile-id="{{ item_tile_id }}"
-                data-glpi-helpdesk-config-tile-sortable
+                data-zentra-helpdesk-config-tile
+                data-zentra-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
+                data-zentra-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
+                data-zentra-helpdesk-config-item-tile-id="{{ item_tile_id }}"
+                data-zentra-helpdesk-config-tile-sortable
             {% endif %}
             class="card rounded my-2 flex-grow-1 {{ editable ? "cursor-pointer" : "" }}"
         >
@@ -69,7 +69,7 @@
                             {% if editable %}
                                 <i
                                     class="ti ti-grip-horizontal cursor-grab ms-auto opacity-50"
-                                    data-glpi-helpdesk-config-tile-handle
+                                    data-zentra-helpdesk-config-tile-handle
                                     draggable="true"
                                 ></i>
                             {% endif %}
@@ -98,7 +98,7 @@
         aria-label="{{ __('Add tile') }}"
         data-bs-toggle="offcanvas"
         data-bs-target="#tile-form-offcanvas"
-        data-glpi-helpdesk-config-action-new-tile
+        data-zentra-helpdesk-config-action-new-tile
         class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110 pointer-events-none"
     >
         <div class="card rounded my-2 flex-grow-1 border-dashed">

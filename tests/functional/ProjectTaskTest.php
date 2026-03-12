@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Team\Team;
-use Glpi\Tests\DbTestCase;
+use Zentra\Team\Team;
+use Zentra\Tests\DbTestCase;
 use Project;
 
 /* Test for inc/projecttask.class.php */
@@ -544,7 +544,7 @@ class ProjectTaskTest extends DbTestCase
 
     protected function testAutoSetDateForAddProvider()
     {
-        $_SESSION['glpi_currenttime'] = '2023-10-10 10:10:10';
+        $_SESSION['zentra_currenttime'] = '2023-10-10 10:10:10';
         $project = $this->createItem('Project', [
             'name' => 'Project 1',
         ]);

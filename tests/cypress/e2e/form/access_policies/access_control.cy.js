@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@ describe('Access Control', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
 
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': '[Tests] Access Control',
             '_init_access_policies': false,
         }).then((form_id) => {
-            const tab = 'Glpi\\Form\\AccessControl\\FormAccessControl$1';
+            const tab = 'Zentra\\Form\\AccessControl\\FormAccessControl$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
     });

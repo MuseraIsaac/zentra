@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,17 +45,17 @@ class BarcodeManager
      */
     public function generateQRCode(CommonDBTM $item)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         if (
             $item->isNewItem()
-            || !in_array($item::class, $CFG_GLPI["asset_types"])
+            || !in_array($item::class, $CFG_ZENTRA["asset_types"])
         ) {
             return false;
         }
         $barcode = new Barcode();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
-            $CFG_GLPI["url_base"] . $item->getLinkURL(),
+            $CFG_ZENTRA["url_base"] . $item->getLinkURL(),
             200,
             200,
             'black',

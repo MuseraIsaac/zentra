@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +36,10 @@ namespace tests\units;
 
 use Certificate;
 use Certificate_Item;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasCertificatesCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasCertificatesCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
@@ -47,13 +47,13 @@ class Certificate_ItemTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasCertificatesCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['certificate_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -66,11 +66,11 @@ class Certificate_ItemTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasCertificatesCapacity::class)]);
 
-        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['certificate_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -187,7 +187,7 @@ class Certificate_ItemTest extends DbTestCase
 
     public function testShowList(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -196,7 +196,7 @@ class Certificate_ItemTest extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['certificate_types'] as $itemtype) {
             $this->createItem(Certificate_Item::class, [
                 'certificates_id' => $certificate->getID(),
                 'itemtype'        => $itemtype,
@@ -215,10 +215,10 @@ class Certificate_ItemTest extends DbTestCase
 
         $crawler = new Crawler($out);
         $rows = $crawler->filter('table tr[data-itemtype="Certificate_Item"]');
-        $this->assertCount(count($CFG_GLPI['certificate_types']), $rows);
+        $this->assertCount(count($CFG_ZENTRA['certificate_types']), $rows);
         $certificate_types = array_combine(
-            array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['certificate_types']),
-            $CFG_GLPI['certificate_types'],
+            array_map(static fn($t) => $t::getTypeName(1), $CFG_ZENTRA['certificate_types']),
+            $CFG_ZENTRA['certificate_types'],
         );
         foreach ($rows as $row) {
             $cells = (new Crawler($row))->filter('td');
@@ -230,7 +230,7 @@ class Certificate_ItemTest extends DbTestCase
             $this->assertStringContainsString($item->isField('otherserial') ? "{$itemtype}-otherserial" : '-', trim($cells->getNode(5)->textContent));
         }
 
-        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['certificate_types'] as $itemtype) {
             ob_start();
             Certificate_Item::showForItem(getItemByTypeName($itemtype, __FUNCTION__));
             $out = ob_get_clean();

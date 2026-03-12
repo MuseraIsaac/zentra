@@ -27,13 +27,13 @@
                     "id": 1,
                     "uuid": "question-1",
                     "name": "Observers",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,
                     "description": null,
                     "default_value": {
-                        "users_ids": ["glpi"],
+                        "users_ids": ["zentra"],
                         "groups_ids": [],
                         "suppliers_ids": []
                     },
@@ -52,7 +52,7 @@
                 },
                 {
                     "itemtype": "User",
-                    "name": "glpi"
+                    "name": "zentra"
                 }
             ]
         },
@@ -82,7 +82,7 @@
                     "id": 2,
                     "uuid": "question-2",
                     "name": "Watchers",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@
 
 {% if entity_id is not defined %}
     {% if item.getType() == 'Entity' %}
-        {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
+        {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('zentraactive_entity')) %}
     {% elseif item.isEntityAssign() %}
-        {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+        {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('zentraactive_entity') %}
     {% else %}
         {% set entity_id = 0 %}
     {% endif %}
@@ -68,7 +68,7 @@
    <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
          action="{{ path('/front/massiveaction.php') }}?_single_item[itemtype]={{ item.getType() }}&_single_item[id]={{ item.getID() }}" data-submit-once>
       <div id="massive_container_{{ rand }}"></div>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
    </form>
 {% endif %}
 

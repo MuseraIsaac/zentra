@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use Profile;
 use Profile_User;
 use User;
@@ -61,13 +61,13 @@ class Profile_UserTest extends DbTestCase
             'profiles_id' => $super_admin->fields['id'],
         ]);
         $this->assertCount(4, $authorizations);
-        $glpi_users_id = getItemByTypeName('User', 'glpi', true);
+        $zentra_users_id = getItemByTypeName('User', 'zentra', true);
         $tu_users_id = getItemByTypeName('User', TU_USER, true);
         $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
         $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
 
         $auth_array = array_column($authorizations, 'users_id');
-        $this->assertContains($glpi_users_id, $auth_array);
+        $this->assertContains($zentra_users_id, $auth_array);
         $this->assertContains($tu_users_id, $auth_array);
         $this->assertContains($jsmith_users_id, $auth_array);
         $this->assertContains($e2e_tests_users_id, $auth_array);
@@ -78,7 +78,7 @@ class Profile_UserTest extends DbTestCase
         }
 
         // Delete 2 authorizations
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$tu_users_id])->canPurgeItem());
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
         $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
@@ -87,16 +87,16 @@ class Profile_UserTest extends DbTestCase
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
 
         // Last user, can't be purged
-        $this->assertFalse(Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
+        $this->assertFalse(Profile_User::getById($authorizations_by_user_id[$zentra_users_id])->canPurgeItem());
         // Can still be purged by calling delete, maybe it should not be possible ?
-        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
+        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$zentra_users_id]], 1));
     }
 
     public function testLogOperationOnAddAndDelete(): void
     {
         global $DB;
 
-        $user     = getItemByTypeName(User::class, 'glpi');
+        $user     = getItemByTypeName(User::class, 'zentra');
         $profile1 = getItemByTypeName(Profile::class, 'Self-Service');
         $profile2 = getItemByTypeName(Profile::class, 'Observer');
         $entity1  = getItemByTypeName(\Entity::class, '_test_root_entity');
@@ -419,23 +419,23 @@ class Profile_UserTest extends DbTestCase
     {
         // The tab counter for the Users tab of a profile should not count deleted users
         $this->login();
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $profile = getItemByTypeName(Profile::class, 'Self-Service');
         $profile_user = new Profile_User();
-        $this->assertStringContainsString('<span class="badge glpi-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge zentra-badge">2</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
             'is_deleted' => 1,
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge zentra-badge">2</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_not_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge">3</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge zentra-badge">3</span>', $profile_user->getTabNameForItem($profile));
 
     }
 }

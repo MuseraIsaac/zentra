@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
 {
     public static function raise(
         $event,
-        CommonGLPI $item,
+        CommonZENTRA $item,
         array $options,
         $label,
         array $data,
@@ -47,8 +47,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
         $emitter = null,
         ?CommonDBTM $trigger = null
     ) {
-        global $CFG_GLPI;
-        if ($CFG_GLPI['notifications_' . $options['mode']]) {
+        global $CFG_ZENTRA;
+        if ($CFG_ZENTRA['notifications_' . $options['mode']]) {
             $entity = $notificationtarget->getEntity();
             if (isset($options['processed'])) {
                 $processed = &$options['processed'];
@@ -56,7 +56,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
             }
 
             $targets = getAllDataFromTable(
-                'glpi_notificationtargets',
+                'zentra_notificationtargets',
                 ['notifications_id' => $data['id']]
             );
 
@@ -113,7 +113,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
                                     $send_data['attach_documents']          = $data['attach_documents'] === NotificationSetting::ATTACH_INHERIT
-                                        ? $CFG_GLPI['attach_ticket_documents_to_mail']
+                                        ? $CFG_ZENTRA['attach_ticket_documents_to_mail']
                                         : $data['attach_documents'];
                                     $send_data['itemtype_trigger']          = $trigger !== null ? $trigger::class : $itemtype;
                                     $send_data['items_id_trigger']          = $trigger !== null ? $trigger->getID() : $items_id;
@@ -149,7 +149,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      * Extra steps raising
      *
      * @param array{
-     *              notificationtarget: NotificationTarget<covariant CommonGLPI>,
+     *              notificationtarget: NotificationTarget<covariant CommonZENTRA>,
      *              event: string,
      *              options: array<mixed>,
      *              data: array<mixed>,

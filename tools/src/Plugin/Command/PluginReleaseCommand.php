@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Plugin\Command;
+namespace Zentra\Tools\Plugin\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -73,9 +73,9 @@ final class PluginReleaseCommand extends AbstractPluginCommand
     {
         parent::configure();
         $this->setName('tools:plugin:release');
-        $this->setDescription('Build a GLPI plugin release archive.');
+        $this->setDescription('Build a ZENTRA plugin release archive.');
 
-        $this->addOption('dest', 'd', InputOption::VALUE_REQUIRED, 'Destination path for the archive (e.g., /build/glpi-myplugin-1.0.0.tar.bz2)');
+        $this->addOption('dest', 'd', InputOption::VALUE_REQUIRED, 'Destination path for the archive (e.g., /build/zentra-myplugin-1.0.0.tar.bz2)');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force rebuild even if release exists');
     }
 
@@ -85,7 +85,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $plugin_dir = $this->getPluginDirectory();
 
         if (!file_exists($plugin_dir . '/setup.php')) {
-            $this->io->error('Current directory is not a valid GLPI plugin.');
+            $this->io->error('Current directory is not a valid ZENTRA plugin.');
             return Command::FAILURE;
         }
 

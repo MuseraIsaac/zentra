@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssetImage;
-use Glpi\Features\Clonable;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssetImage;
+use Zentra\Features\Clonable;
+use Zentra\Plugin\Hooks;
 use Sabre\VObject\Component\VCard;
 
 /**
@@ -129,19 +129,19 @@ class Contact extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_suppliers.name',
-                'glpi_suppliers.address',
-                'glpi_suppliers.postcode',
-                'glpi_suppliers.town',
-                'glpi_suppliers.state',
-                'glpi_suppliers.country',
+                'zentra_suppliers.name',
+                'zentra_suppliers.address',
+                'zentra_suppliers.postcode',
+                'zentra_suppliers.town',
+                'zentra_suppliers.state',
+                'zentra_suppliers.country',
             ],
-            'FROM'         => 'glpi_suppliers',
+            'FROM'         => 'zentra_suppliers',
             'INNER JOIN'   => [
-                'glpi_contacts_suppliers'  => [
+                'zentra_contacts_suppliers'  => [
                     'ON' => [
-                        'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id',
+                        'zentra_contacts_suppliers'  => 'suppliers_id',
+                        'zentra_suppliers'           => 'id',
                     ],
                 ],
             ],
@@ -166,14 +166,14 @@ class Contact extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_suppliers.website AS website',
+                'zentra_suppliers.website AS website',
             ],
-            'FROM'         => 'glpi_suppliers',
+            'FROM'         => 'zentra_suppliers',
             'INNER JOIN'   => [
-                'glpi_contacts_suppliers'  => [
+                'zentra_contacts_suppliers'  => [
                     'ON' => [
-                        'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id',
+                        'zentra_contacts_suppliers'  => 'suppliers_id',
+                        'zentra_suppliers'           => 'id',
                     ],
                 ],
             ],
@@ -367,7 +367,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_contacttypes',
+            'table'              => 'zentra_contacttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -375,7 +375,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '81',
-            'table'              => 'glpi_usertitles',
+            'table'              => 'zentra_usertitles',
             'field'              => 'name',
             'name'               => __('Title'),
             'datatype'           => 'dropdown',
@@ -383,14 +383,14 @@ HTML;
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => 'glpi_suppliers',
+            'table'              => 'zentra_suppliers',
             'field'              => 'name',
             'name'               => _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber()),
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contacts_suppliers',
+                    'table'              => 'zentra_contacts_suppliers',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -408,7 +408,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,

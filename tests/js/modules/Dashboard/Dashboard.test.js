@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,15 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI */
+/* global ZENTRA */
 
-import {GLPIDashboard} from '/js/modules/Dashboard/Dashboard.js';
+import {ZENTRADashboard} from '/js/modules/Dashboard/Dashboard.js';
 import {jest} from '@jest/globals';
 
 describe('Dashboard', () => {
     beforeAll(() => {
         // Make backups of some methods on the prototype we will mock by default because they are called from the constructor
-        GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
+        ZENTRADashboard.prototype._refreshDashboard = ZENTRADashboard.prototype.refreshDashboard;
     });
     beforeEach(() => {
         jest.clearAllMocks();
@@ -47,7 +47,7 @@ describe('Dashboard', () => {
         window.AjaxMock.end();
 
         // Mock some instance methods we don't want to test but are called from the constructor
-        GLPIDashboard.prototype.refreshDashboard = jest.fn().mockImplementation(() => {});
+        ZENTRADashboard.prototype.refreshDashboard = jest.fn().mockImplementation(() => {});
 
         // Mock GridStack
         window.GridStack = {
@@ -90,13 +90,13 @@ describe('Dashboard', () => {
 
     test('Class availability', () => {
         // Expect class to be available as a global
-        expect(window.GLPI.Dashboard.GLPIDashboard).toBeDefined();
+        expect(window.ZENTRA.Dashboard.ZENTRADashboard).toBeDefined();
         // Expect old reference to be available too
-        expect(window.GLPIDashboard).toBeDefined();
+        expect(window.ZENTRADashboard).toBeDefined();
     });
 
     test('saveMarkdown', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
         dashboard.saveMarkdown($('body').find('.grid-stack-item textarea').first());
         expect(dashboard.markdown_contents[1]).toBe('test');
@@ -104,10 +104,10 @@ describe('Dashboard', () => {
     });
 
     test('setWidgetFromForm default values', () => {
-        // Mock glpi_close_all_dialogs
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        // Mock zentra_close_all_dialogs
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
 
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
 
         //Mock getUuidV4 from legacy script common.js
         window.getUuidV4 = jest.fn().mockImplementation(() => {
@@ -139,15 +139,15 @@ describe('Dashboard', () => {
             gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
         });
 
-        // Expect glpi_close_all_dialogs to be called
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        // Expect zentra_close_all_dialogs to be called
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm custom form values', () => {
-        // Mock glpi_close_all_dialogs
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        // Mock zentra_close_all_dialogs
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
 
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
 
         //Mock getUuidV4 from legacy script common.js
         window.getUuidV4 = jest.fn().mockImplementation(() => {
@@ -202,13 +202,13 @@ describe('Dashboard', () => {
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         });
 
-        // Expect glpi_close_all_dialogs to be called
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        // Expect zentra_close_all_dialogs to be called
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm No Card', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget = jest.fn().mockImplementation(() => {});
         const result = dashboard.setWidgetFromForm({
             serializeArray: () => {
@@ -217,12 +217,12 @@ describe('Dashboard', () => {
         });
         expect(result).toBeFalse();
         expect(dashboard.addWidget).not.toHaveBeenCalled();
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm Edit No Old ID', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget = jest.fn().mockImplementation(() => {});
         const result = dashboard.setWidgetFromForm({
             serializeArray: () => {
@@ -231,12 +231,12 @@ describe('Dashboard', () => {
         });
         expect(result).toBeFalse();
         expect(dashboard.addWidget).not.toHaveBeenCalled();
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm Edit Remove Old Card', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget = jest.fn().mockImplementation(() => {});
         dashboard.grid.removeWidget = jest.fn().mockImplementation(() => {});
         dashboard.setWidgetFromForm({
@@ -256,12 +256,12 @@ describe('Dashboard', () => {
             return $(widget).attr('gs-id') === '2';
         }));
         expect(dashboard.addWidget).toHaveBeenCalled();
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm Encoded Card Options', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget = jest.fn().mockImplementation(() => {});
         dashboard.setWidgetFromForm({
             serializeArray: () => {
@@ -280,15 +280,15 @@ describe('Dashboard', () => {
             return opts.card_options['test'] === 'test' && opts.card_id === '6'
                 && opts.card_options['gridstack_id'] === '6_12345678-1234-1234-1234-123456789012';
         }));
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     /**
      * Test the calling of the AJAX endpoint for the action 'get_card' from the method setWidgetFromForm
      */
     test('setWidgetFromForm ajax', async () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        const dashboard = new GLPIDashboard({
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -369,7 +369,7 @@ describe('Dashboard', () => {
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         };
 
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
@@ -394,7 +394,7 @@ describe('Dashboard', () => {
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         };
 
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
@@ -423,7 +423,7 @@ describe('Dashboard', () => {
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         };
 
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append('<div id="mock_widget12345" data-card-options="">test</div>');
         dashboard.grid.addWidget = jest.fn().mockImplementation(() => {
             return $('#mock_widget12345')[0];
@@ -447,9 +447,9 @@ describe('Dashboard', () => {
     });
 
     test('setFilterFromForm', async () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
         $('body').append(`<div id="filter-selector"></div>`);
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.filters_selector = '#filter-selector';
         dashboard.saveFilter = jest.fn().mockImplementation(() => {});
 
@@ -471,12 +471,12 @@ describe('Dashboard', () => {
         await new Promise(process.nextTick);
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
         expect(dashboard.saveFilter).toHaveBeenCalledWith('myfilter', []);
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalledTimes(1);
         expect($('#filter-selector .filter-content').length).toBe(1);
     });
 
     test('refreshDashboard', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard'
         });
@@ -498,7 +498,7 @@ describe('Dashboard', () => {
         }));
 
         // Restore refreshDashboard so it can be tested
-        dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.refreshDashboard = ZENTRADashboard.prototype._refreshDashboard;
         dashboard.refreshDashboard();
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
@@ -518,7 +518,7 @@ describe('Dashboard', () => {
     });
 
     test('refreshDashboard embed', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard'
         });
@@ -548,7 +548,7 @@ describe('Dashboard', () => {
         }));
 
         // Restore refreshDashboard so it can be tested
-        dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.refreshDashboard = ZENTRADashboard.prototype._refreshDashboard;
         dashboard.refreshDashboard();
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
@@ -568,7 +568,7 @@ describe('Dashboard', () => {
     });
 
     test('setLastDashboard', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard'
         });
@@ -584,7 +584,7 @@ describe('Dashboard', () => {
     });
 
     test('saveFilter', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.filters_selector = '#filter-selector';
 
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
@@ -608,7 +608,7 @@ describe('Dashboard', () => {
     });
 
     test('refreshCardsImpactedByFilter', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="dashboard">
                 <div class="grid-stack-item" gs-id="4"><div class="card filter-filter1"></div></div>
@@ -625,7 +625,7 @@ describe('Dashboard', () => {
     });
 
     test('saveDashboard', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard'
         });
@@ -646,7 +646,7 @@ describe('Dashboard', () => {
     });
 
     test('saveDashboard Force Refresh', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard'
         });
@@ -667,7 +667,7 @@ describe('Dashboard', () => {
     });
 
     test('computeWidth', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="parent1" style="width: 100px; height: 150px">
                 <div><div class="child-item"></div></div>
@@ -690,7 +690,7 @@ describe('Dashboard', () => {
     });
 
     test('resetComputedWidth', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="parent1" style="width: 100px; height: 150px">
                 <div><div class="child-item"></div></div>
@@ -711,7 +711,7 @@ describe('Dashboard', () => {
     });
 
     test('fitNumbers', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.dash_width = 1000;
         $('body').append(`
             <div class="parent1">
@@ -752,7 +752,7 @@ describe('Dashboard', () => {
     });
 
     test('fitNumbers small width', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.dash_width = 500;
         $('body').append(`
             <div class="parent1">
@@ -793,7 +793,7 @@ describe('Dashboard', () => {
     });
 
     test('animateNumbers Int', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="parent1">
                 <div class="big-number big-number-1">
@@ -816,7 +816,7 @@ describe('Dashboard', () => {
     });
 
     test('animateNumbers Float', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="parent1">
                 <div class="big-number big-number-1">
@@ -839,7 +839,7 @@ describe('Dashboard', () => {
     });
 
     test('animateNumbers Non-Number', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`
             <div class="parent1">
                 <div class="big-number big-number-1">
@@ -859,7 +859,7 @@ describe('Dashboard', () => {
     });
 
     test('animateNumbers Int + Suffix', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'filters_selector': '.filters',
         });
@@ -880,7 +880,7 @@ describe('Dashboard', () => {
     });
 
     test('setEditMode', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
         dashboard.grid.setStatic = jest.fn().mockImplementation(() => {});
         window.sortable = jest.fn().mockImplementation(() => {});
@@ -913,7 +913,7 @@ describe('Dashboard', () => {
     });
 
     test('toggleFullscreenMode', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         window.GoInFullscreen = jest.fn().mockImplementation(() => {});
         window.GoOutFullscreen = jest.fn().mockImplementation(() => {});
         dashboard.setEditMode = jest.fn().mockImplementation(() => {});
@@ -937,7 +937,7 @@ describe('Dashboard', () => {
     });
 
     test('clone', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -961,7 +961,7 @@ describe('Dashboard', () => {
     });
 
     test('delete', async () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -997,16 +997,16 @@ describe('Dashboard', () => {
     });
 
     test('addForm', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
+        window.zentra_ajax_dialog = jest.fn().mockImplementation(() => {});
         dashboard.addForm();
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
             return arg.params.action === 'add_new' && arg.url === '//ajax/dashboard.php';
         }));
     });
 
     test('addNew', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addNewDashbardInSelect = jest.fn().mockImplementation(() => {});
         dashboard.setEditMode = jest.fn().mockImplementation(() => {});
 
@@ -1029,7 +1029,7 @@ describe('Dashboard', () => {
     });
 
     test('addNew Other Context', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.context = 'other_context';
         dashboard.addNewDashbardInSelect = jest.fn().mockImplementation(() => {});
         dashboard.setEditMode = jest.fn().mockImplementation(() => {});
@@ -1053,7 +1053,7 @@ describe('Dashboard', () => {
     });
 
     test('addNewDashbardInSelect', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('.dashboard_select').off('change');
         expect($('.dashboard_select option[value="new_dashboard"]').length).toBe(0);
         dashboard.addNewDashbardInSelect('New dashboard', 'new_dashboard');
@@ -1064,7 +1064,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax multi-mode all', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
@@ -1084,7 +1084,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax multi-mode embed', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
         dashboard.embed = true;
         dashboard.token = 'mytoken';
@@ -1135,7 +1135,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax multi-mode single', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
@@ -1155,7 +1155,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax multi-mode Error', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {};
@@ -1183,7 +1183,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax single-mode all', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
@@ -1205,7 +1205,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax single-mode embed', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
         dashboard.embed = true;
         dashboard.token = 'mytoken';
@@ -1251,7 +1251,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax single-mode single', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
@@ -1273,7 +1273,7 @@ describe('Dashboard', () => {
     });
 
     test('getCardsAjax single-mode Error', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {};
@@ -1301,7 +1301,7 @@ describe('Dashboard', () => {
     });
 
     test('initFilters', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1321,7 +1321,7 @@ describe('Dashboard', () => {
         dashboard.filters_selector = '.filters';
         $('#dashboard-12345').append('<div class="filters"></div>');
         const init_filter_event_handler = jest.fn().mockImplementation(() => {});
-        $(document).on('glpiDasbhoardInitFilter', init_filter_event_handler);
+        $(document).on('zentraDasbhoardInitFilter', init_filter_event_handler);
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
             action: 'get_dashboard_filters',
             filters: {
@@ -1347,7 +1347,7 @@ describe('Dashboard', () => {
     });
 
     test('getFiltersFromDB', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1377,7 +1377,7 @@ describe('Dashboard', () => {
     });
 
     test('setFiltersInDB', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1401,7 +1401,7 @@ describe('Dashboard', () => {
     });
 
     test('Change selected dashboard', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1418,16 +1418,16 @@ describe('Dashboard', () => {
 
     test('Click add dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="add-dashboard"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addForm = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .add-dashboard').trigger('click');
         expect(dashboard.addForm).toHaveBeenCalled();
     });
 
     test('Submit add dashboard form', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.addNew = jest.fn().mockImplementation(() => {});
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
         $('body').append(`
             <form class="display-add-dashboard-form">
                 <input type="text" name="title" id="title_12345" class="form-control" value="New Dashboard">
@@ -1437,12 +1437,12 @@ describe('Dashboard', () => {
         expect(dashboard.addNew).toHaveBeenCalledWith({
             'title': 'New Dashboard',
         });
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalled();
     });
 
     test('Click delete dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="delete-dashboard"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.delete = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .delete-dashboard').trigger('click');
         expect(dashboard.delete).toHaveBeenCalled();
@@ -1450,7 +1450,7 @@ describe('Dashboard', () => {
 
     test('Click clone dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="clone-dashboard"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.clone = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .clone-dashboard').trigger('click');
         expect(dashboard.clone).toHaveBeenCalled();
@@ -1458,19 +1458,19 @@ describe('Dashboard', () => {
 
     test('Click open embed form button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="open-embed"></button>');
-        new GLPIDashboard({
+        new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.zentra_ajax_dialog = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .open-embed').trigger('click');
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
             return params.params.action === 'display_embed_form' && params.params.dashboard === 'current_dashboard';
         }));
     });
 
     test('Click toggle edit mode button', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         const edit_btn = $('#dashboard-12345 .toolbar .edit-dashboard');
         dashboard.setEditMode = jest.fn().mockImplementation(() => {});
         edit_btn.trigger('click');
@@ -1483,7 +1483,7 @@ describe('Dashboard', () => {
 
     test('Click toggle fullscreen button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="toggle-fullscreen"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.toggleFullscreenMode = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .toggle-fullscreen').trigger('click');
         expect(dashboard.toggleFullscreenMode).toHaveBeenCalled();
@@ -1491,7 +1491,7 @@ describe('Dashboard', () => {
 
     test('Click toggle night mode button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="night-mode"></button>');
-        new GLPIDashboard({'rand': '12345'});
+        new ZENTRADashboard({'rand': '12345'});
         $('#dashboard-12345 .toolbar .night-mode').trigger('click');
         expect($('#dashboard-12345').hasClass('theme-dark')).toBeTrue();
         expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBeTrue();
@@ -1502,9 +1502,9 @@ describe('Dashboard', () => {
 
     test('Click refresh mode button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
-        CFG_GLPI.refresh_views = 1; // Refresh every minute
+        CFG_ZENTRA.refresh_views = 1; // Refresh every minute
         const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
 
         jest.useFakeTimers('legacy');
@@ -1526,11 +1526,11 @@ describe('Dashboard', () => {
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(3);
     });
 
-    test('Click Refresh Mode button with Invalid CFG_GLPI.refresh_views', () => {
+    test('Click Refresh Mode button with Invalid CFG_ZENTRA.refresh_views', () => {
         $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
-        CFG_GLPI.refresh_views = 'not a number';
+        CFG_ZENTRA.refresh_views = 'not a number';
         const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
 
         jest.useFakeTimers('legacy');
@@ -1545,7 +1545,7 @@ describe('Dashboard', () => {
         refresh_btn.trigger('click');
         jest.clearAllMocks();
 
-        CFG_GLPI.refresh_views = 0;
+        CFG_ZENTRA.refresh_views = 0;
         refresh_btn.trigger('click');
         expect(refresh_btn.hasClass('active')).toBeTrue();
         jest.advanceTimersByTime(60000 * 30);
@@ -1555,7 +1555,7 @@ describe('Dashboard', () => {
     });
 
     test('Click save rights button', () => {
-        new GLPIDashboard({
+        new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1574,7 +1574,7 @@ describe('Dashboard', () => {
                 </select>
             </form>
         `);
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
             action: 'save_rights',
@@ -1590,14 +1590,14 @@ describe('Dashboard', () => {
 
         $('.display-rights-form .save_rights').trigger('click');
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalled();
     });
 
     test('Click widget delete button', () => {
         $('#dashboard-12345 .grid-stack-item[gs-id="2"]').empty().append(`
             <div><button class="delete-item"></button></div>
         `);
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.grid.removeWidget = jest.fn().mockImplementation(() => {});
         dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
 
@@ -1613,7 +1613,7 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .grid-stack-item[gs-id="2"]').empty().append(`
             <div><button class="refresh-item"></button></div>
         `);
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .refresh-item').trigger('click');
@@ -1628,15 +1628,15 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .grid-stack-item[gs-id="2"]').data('card-options', {
             card_id: 'mycard_id'
         });
-        new GLPIDashboard({
+        new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.zentra_ajax_dialog = jest.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .edit-item').trigger('click');
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledTimes(1);
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledTimes(1);
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
             return params.url === '//ajax/dashboard.php' && params.params.action === 'display_edit_widget'
                 && params.params.gridstack_id === '2' && params.params.dashboard === 'current_dashboard'
                 && params.params.card_id === 'mycard_id';
@@ -1647,14 +1647,14 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .grid-stack').append(`
             <div class="cell-add"></div>
         `);
-        new GLPIDashboard({
+        new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.zentra_ajax_dialog = jest.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .cell-add').trigger('click');
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
             return params.url === '//ajax/dashboard.php' && params.params.action === 'display_add_widget'
                 && params.params.dashboard === 'current_dashboard';
         }));
@@ -1666,12 +1666,12 @@ describe('Dashboard', () => {
                 <button class="add-filter"></button>
             </div>
         `);
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.zentra_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.zentra_close_all_dialogs = jest.fn().mockImplementation(() => {});
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
                 filter1: 'value1',
@@ -1680,12 +1680,12 @@ describe('Dashboard', () => {
         });
 
         $('#dashboard-12345 .filters_toolbar .add-filter').trigger('click');
-        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+        expect(window.zentra_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
             return params.url === '//ajax/dashboard.php' && params.params.action === 'display_add_filter'
                 && params.params.dashboard === 'current_dashboard' && params.params.used.includes('filter1')
                 && params.params.used.includes('filter2');
         }));
-        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+        expect(window.zentra_close_all_dialogs).toHaveBeenCalled();
         expect(dashboard.getFiltersFromDB).toHaveBeenCalled();
     });
 
@@ -1697,7 +1697,7 @@ describe('Dashboard', () => {
                 </div>
             </div>
         `);
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1720,16 +1720,16 @@ describe('Dashboard', () => {
 
     test('Single ajax mode - Animate on load', () => {
         //let  = false;
-        const MockGLPIDashboard = class extends GLPIDashboard {
+        const MockZENTRADashboard = class extends ZENTRADashboard {
             fitNumbers() {}
         };
-        MockGLPIDashboard.prototype.fitNumbers = jest.fn().mockImplementation(() => {});
-        let dashboard = new MockGLPIDashboard({
+        MockZENTRADashboard.prototype.fitNumbers = jest.fn().mockImplementation(() => {});
+        let dashboard = new MockZENTRADashboard({
             'rand': '12345',
             'ajax_cards': true,
         });
         expect(dashboard.fitNumbers).not.toHaveBeenCalled();
-        dashboard = new MockGLPIDashboard({
+        dashboard = new MockZENTRADashboard({
             'rand': '12345',
             'ajax_cards': false,
         });
@@ -1737,7 +1737,7 @@ describe('Dashboard', () => {
     });
 
     test('Update CSS and Fit Numbers on Resize', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $(window).trigger('resize');
@@ -1746,7 +1746,7 @@ describe('Dashboard', () => {
     });
 
     test('Do not Update CSS and Fit Numbers on Propagated Resize', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $('body').trigger('resize');
@@ -1755,21 +1755,21 @@ describe('Dashboard', () => {
     });
 
     test('Save Dashboard on GridStack DragStop', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('dragstop'));
         expect(dashboard.saveDashboard).toHaveBeenCalled();
     });
 
     test('Save Dashboard on GridStack ResizeStop', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('resizestop'));
         expect(dashboard.saveDashboard).toHaveBeenCalled();
     });
 
     test('Resize and Animate Numbers on GridStack ResizeStop', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         dashboard.resetComputedWidth = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
@@ -1780,7 +1780,7 @@ describe('Dashboard', () => {
     });
 
     test('Add/Update Widget after Form Submit', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`<form class="display-widget-form"></form>`);
         dashboard.setWidgetFromForm = jest.fn().mockImplementation(() => {});
         $('.display-widget-form').trigger('submit');
@@ -1788,7 +1788,7 @@ describe('Dashboard', () => {
     });
 
     test('Add/Update Filter after Form Submit', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('body').append(`<form class="display-filter-form"></form>`);
         dashboard.setFilterFromForm = jest.fn().mockImplementation(() => {});
         $('.display-filter-form').trigger('submit');
@@ -1796,7 +1796,7 @@ describe('Dashboard', () => {
     });
 
     test('Rename Dahboard', () => {
-        const dashboard = new GLPIDashboard({
+        const dashboard = new ZENTRADashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
@@ -1810,7 +1810,7 @@ describe('Dashboard', () => {
     });
 
     test('Save Markdown on Input', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new ZENTRADashboard({'rand': '12345'});
         $('#dashboard-12345').append(`<div class="card markdown"><textarea class="markdown_content"></textarea></div>`);
         dashboard.saveMarkdown = jest.fn().mockImplementation(() => {});
         $('#dashboard-12345 .markdown_content').trigger('input');

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@
                         if (translationInput.siblings('.tox-tinymce').length === 0) {
                             initTinyMCEOnDemand(
                                 translationInput,
-                                $('[data-glpi-tinymce-init-on-demand-render="' + CSS.escape(translationInput.attr('id')) + '"]')
+                                $('[data-zentra-tinymce-init-on-demand-render="' + CSS.escape(translationInput.attr('id')) + '"]')
                             ).then((editors) => {
                                 editors[0].setContent('{{ handler.getValue()|e('js') }}');
                             });
@@ -165,7 +165,7 @@
 
     {% if group_entries is not empty %}
         {% set entries = entries|merge([{
-            'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
+            'type': '<span data-zentra-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
             'type_colspan': 4,
             'type_aria_label': _n('Category', 'Categories', 1)
         }]) %}
@@ -186,7 +186,7 @@
 <div class="modal fade" id="form-translation-modal-{{ form_translation.fields['language'] }}" tabindex="-1" role="dialog" aria-labelledby="form-translation-modal-title-{{ form_translation.fields['language'] }}">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <form class="modal-content" method="POST">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
 
             <div class="modal-header border-bottom-0">
@@ -197,7 +197,7 @@
             </div>
             <div class="modal-body p-0">
                 {% include "components/datatable.html.twig" with {
-                    'datatable_id': 'glpi-form-translations-languages',
+                    'datatable_id': 'zentra-form-translations-languages',
                     'datatable_aria_label': _n('Form translation', 'Form translations', get_plural_number()),
                     'columns': {
                         'type': '',

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
 Session::checkRight("refusedequipment", READ);
 
@@ -56,7 +56,7 @@ if (isset($_POST["purge"])) {
             4,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+            sprintf(__('%s purges an item'), $_SESSION["zentraname"])
         );
     }
     $refusedequipment->redirectToList();
@@ -69,11 +69,11 @@ if (isset($_POST["purge"])) {
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } else {
-    $menus = ["admin", "glpi\inventory\inventory", "RefusedEquipment"];
+    $menus = ["admin", "zentra\inventory\inventory", "RefusedEquipment"];
     RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true",

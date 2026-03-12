@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\KanbanInterface;
+use Zentra\Features\KanbanInterface;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -96,20 +96,20 @@ class Item_Kanban extends CommonDBRelation
             'items_id'  => $items_id,
             'users_id'  => $users_id,
             'state'     => json_encode($state, JSON_FORCE_OBJECT),
-            'date_mod'  => $_SESSION['glpi_currenttime'],
+            'date_mod'  => $_SESSION['zentra_currenttime'],
         ];
         $criteria = [
             'users_id' => $users_id,
             'itemtype' => $itemtype,
             'items_id' => $items_id,
         ];
-        if (countElementsInTable('glpi_items_kanbans', $criteria)) {
-            $DB->update('glpi_items_kanbans', [
-                'date_mod'  => $_SESSION['glpi_currenttime'],
+        if (countElementsInTable('zentra_items_kanbans', $criteria)) {
+            $DB->update('zentra_items_kanbans', [
+                'date_mod'  => $_SESSION['zentra_currenttime'],
             ] + $common_input, $criteria);
         } else {
-            $DB->insert('glpi_items_kanbans', [
-                'date_creation'   => $_SESSION['glpi_currenttime'],
+            $DB->insert('zentra_items_kanbans', [
+                'date_creation'   => $_SESSION['zentra_currenttime'],
             ] + $common_input);
         }
         return true;
@@ -131,7 +131,7 @@ class Item_Kanban extends CommonDBRelation
 
         return $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_items_kanbans',
+            'FROM'   => 'zentra_items_kanbans',
             'WHERE'  => [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
@@ -160,7 +160,7 @@ class Item_Kanban extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT' => ['date_mod', 'state'],
-            'FROM'   => 'glpi_items_kanbans',
+            'FROM'   => 'zentra_items_kanbans',
             'WHERE'  => [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
@@ -201,7 +201,7 @@ class Item_Kanban extends CommonDBRelation
             $item->getFromDB($items_id);
             $force_global = $item->forceGlobalState();
 
-            return (bool) $DB->delete('glpi_items_kanbans', [
+            return (bool) $DB->delete('zentra_items_kanbans', [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,

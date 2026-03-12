@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -55,16 +55,16 @@ class CronTaskTest extends DbTestCase
             'file4.txt',
         ];
         foreach ($filenames as $filename) {
-            $this->assertNotFalse(file_put_contents(GLPI_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))));
+            $this->assertNotFalse(file_put_contents(ZENTRA_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))));
         }
 
         //create auto_orient directory
-        if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
-            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0o755, true));
+        if (!file_exists(ZENTRA_TMP_DIR . '/auto_orient/')) {
+            $this->assertTrue(mkdir(ZENTRA_TMP_DIR . '/auto_orient/', 0o755, true));
         }
 
         $tmp_dir_iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(GLPI_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+            new RecursiveDirectoryIterator(ZENTRA_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($tmp_dir_iterator as $path) {
@@ -78,7 +78,7 @@ class CronTaskTest extends DbTestCase
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'temp');
 
-        $nb_file = $this->getFileCountRecursively(GLPI_TMP_DIR);
+        $nb_file = $this->getFileCountRecursively(ZENTRA_TMP_DIR);
         $this->assertEquals(1, $nb_file); // only recent_file.txt should be preserved
     }
 
@@ -108,7 +108,7 @@ class CronTaskTest extends DbTestCase
                 'should_register' => true, // Existing core class
             ],
             [
-                'itemtype'        => 'Glpi\Marketplace\Controller',
+                'itemtype'        => 'Zentra\Marketplace\Controller',
                 'name'            => 'CoreTest3',
                 'should_register' => true, // Existing core namespaced class
             ],
@@ -118,7 +118,7 @@ class CronTaskTest extends DbTestCase
                 'should_register' => true, // Plugin class. Existence not checked.
             ],
             [
-                'itemtype'        => 'GlpiPlugin\\Tester\\TestItemtype',
+                'itemtype'        => 'ZentraPlugin\\Tester\\TestItemtype',
                 'name'            => 'NamespacedPluginTest1',
                 'should_register' => true, // Plugin class with namespace. Existence not checked.
             ],
@@ -148,13 +148,13 @@ class CronTaskTest extends DbTestCase
             ],
             [
                 'plugin_name'       => 'Tester',
-                'itemtype'          => 'GlpiPlugin\\Tester\\TestItemtype',
+                'itemtype'          => 'ZentraPlugin\\Tester\\TestItemtype',
                 'name'              => 'NamespacedPluginTest1',
                 'should_unregister' => true,
             ],
             [
                 'plugin_name'       => 'Tester',
-                'itemtype'          => 'GlpiPlugin\\TesterNg\\TestItemtype',
+                'itemtype'          => 'ZentraPlugin\\TesterNg\\TestItemtype',
                 'name'              => 'NamespacedPluginTest2',
                 'should_unregister' => false, // plugin name does not match class namespace
             ],
@@ -200,7 +200,7 @@ class CronTaskTest extends DbTestCase
                 'should_run'  => true,
             ],
             [
-                'itemtype'    => 'Glpi\Marketplace\Controller',
+                'itemtype'    => 'Zentra\Marketplace\Controller',
                 'name'        => 'CoreTest2',
                 'should_run'  => true,
             ],
@@ -215,7 +215,7 @@ class CronTaskTest extends DbTestCase
                 'should_run'  => true,
             ],
             [
-                'itemtype'    => 'GlpiPlugin\\Tester\\TestItemtype',
+                'itemtype'    => 'ZentraPlugin\\Tester\\TestItemtype',
                 'name'        => 'NamespacedPluginTest',
                 'should_run'  => true,
             ],

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\SearchEngine;
-use Glpi\Search\SearchOption;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\SearchEngine;
+use Zentra\Search\SearchOption;
+use Zentra\Toolbox\URL;
 
 use function Safe\json_encode;
 
 /**
  * @since 9.5.0
- * @todo This should use standard GLPI right management. Currently blocking API access.
+ * @todo This should use standard ZENTRA right management. Currently blocking API access.
  */
-class Impact extends CommonGLPI
+class Impact extends CommonZENTRA
 {
     // Constants used to express the direction or "flow" of a graph
     // These constants can also be used to express if an edge is reachable
@@ -87,7 +87,7 @@ class Impact extends CommonGLPI
         return 'ti ti-affiliate';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         global $DB;
 
@@ -116,7 +116,7 @@ class Impact extends CommonGLPI
         }
 
         if (
-            !$_SESSION['glpishow_count_on_tabs']
+            !$_SESSION['zentrashow_count_on_tabs']
             || !isset($item->fields['id'])
             || $is_itil_object
         ) {
@@ -150,7 +150,7 @@ class Impact extends CommonGLPI
     }
 
     public static function displayTabContentForItem(
-        CommonGLPI $item,
+        CommonZENTRA $item,
         $tabnum = 1,
         $withtemplate = 0
     ) {
@@ -268,7 +268,7 @@ JS);
      */
     public static function displayListView(CommonDBTM $item, array $graph, bool $scripts = false): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $impact_item = ImpactItem::findForItem($item);
         $impact_context = ImpactContext::findForImpactItem($impact_item);
@@ -389,7 +389,7 @@ JS);
         // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
-            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc'] . '/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id']) . '">';
+            echo '<a target="_blank" href="' . htmlescape($CFG_ZENTRA['root_doc'] . '/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id']) . '">';
             echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to CSV') . '"></i>';
             echo '</a>';
         }
@@ -403,7 +403,7 @@ JS);
         if ($can_update && $impact_context) {
             $rand = mt_rand();
 
-            $setting_dialog = '<form id="list_depth_form" action="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
+            $setting_dialog = '<form id="list_depth_form" action="' . htmlescape($CFG_ZENTRA['root_doc']) . '/front/impactitem.form.php" method="POST">';
             $setting_dialog .= '<table class="tab_cadre_fixe">';
             $setting_dialog .= '<tr>';
             $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __s("Max depth") . '</label></td>';
@@ -503,7 +503,7 @@ TWIG, $twig_params);
             // Handle settings actions
             echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
-               glpi_html_dialog({
+               zentra_html_dialog({
                   title: "' . jsescape(__("Settings")) . '",
                   body: "' . jsescape($setting_dialog) . '",
                });
@@ -794,8 +794,8 @@ TWIG, $twig_params);
             $('#sviewlist i').removeClass('selected');
             $('#sviewgraph i').addClass('selected');
 
-            if (window.GLPIImpact !== undefined && GLPIImpact.cy === null) {
-               GLPIImpact.buildNetwork($graph, $params, " . ($readonly ? 'true' : 'false') . ");
+            if (window.ZENTRAImpact !== undefined && ZENTRAImpact.cy === null) {
+               ZENTRAImpact.buildNetwork($graph, $params, " . ($readonly ? 'true' : 'false') . ");
             }
          }
 
@@ -838,7 +838,7 @@ TWIG, $twig_params);
      */
     public static function printAssetSelectionForm(array $items): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Dropdown values
         $values = [];
@@ -870,14 +870,14 @@ TWIG, $twig_params);
 
                $.ajax({
                   type: "GET",
-                  url: CFG_GLPI.root_doc + "/ajax/impact.php",
+                  url: CFG_ZENTRA.root_doc + "/ajax/impact.php",
                   data: {
                      itemtype: values[0],
                      items_id: values[1],
                      action  : "load",
                   },
                   success: function(data, textStatus, jqXHR) {
-                     GLPIImpact.buildNetwork(
+                     ZENTRAImpact.buildNetwork(
                         JSON.parse(data.graph),
                         JSON.parse(data.params),
                         data.readonly
@@ -1001,9 +1001,9 @@ TWIG, $twig_params);
      */
     public static function printImpactNetworkContainer()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $action = htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php';
+        $action = htmlescape($CFG_ZENTRA['root_doc']) . '/ajax/impact.php';
         $formName = "form_impact_network";
 
         echo "<form name=\"$formName\" action=\"$action\" method=\"post\" class='no-track'>";
@@ -1028,7 +1028,7 @@ TWIG, $twig_params);
         ]);
 
         echo '<div class="impact-side-filter-itemtypes-items">';
-        $itemtypes = array_keys($CFG_GLPI["impact_asset_types"]);
+        $itemtypes = array_keys($CFG_ZENTRA["impact_asset_types"]);
         // Sort by translated itemtypes
         usort($itemtypes, function ($a, $b) {
             /** @var class-string $a
@@ -1287,7 +1287,7 @@ TWIG, $twig_params);
      */
     public static function getImpactIcon(string $itemtype, ?int $id = null): string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // First, try to get the icon from plugins
         $plugin_icon = Plugin::doHookFunction(
@@ -1297,34 +1297,34 @@ TWIG, $twig_params);
                 'items_id' => $id,
             ]
         );
-        if (is_string($plugin_icon) && $plugin_icon !== '' && URL::isGLPIRelativeUrl($plugin_icon)) {
+        if (is_string($plugin_icon) && $plugin_icon !== '' && URL::isZENTRARelativeUrl($plugin_icon)) {
             if (!str_starts_with($plugin_icon, '/')) {
-                // Fix paths declared without a leading `/`, as it was done before GLPI 11.0.
+                // Fix paths declared without a leading `/`, as it was done before ZENTRA 11.0.
                 Toolbox::deprecated(
                     sprintf('Impact icon path `%s` must now be prefixed by a `/`.', $plugin_icon)
                 );
                 $plugin_icon = '/' . $plugin_icon;
             }
 
-            return $CFG_GLPI['root_doc'] . $plugin_icon;
+            return $CFG_ZENTRA['root_doc'] . $plugin_icon;
         }
 
         // Second, try to get the icon from the configuration entry
-        $icon = $CFG_GLPI['impact_asset_types'][$itemtype] ?? '';
-        if (is_string($icon) && $icon !== '' && URL::isGLPIRelativeUrl($icon)) {
+        $icon = $CFG_ZENTRA['impact_asset_types'][$itemtype] ?? '';
+        if (is_string($icon) && $icon !== '' && URL::isZENTRARelativeUrl($icon)) {
             if (!str_starts_with($icon, '/')) {
-                // Fix paths declared without a leading `/`, as it was done before GLPI 11.0.
+                // Fix paths declared without a leading `/`, as it was done before ZENTRA 11.0.
                 Toolbox::deprecated(
                     sprintf('Impact icon path `%s` must now be prefixed by a `/`.', $icon)
                 );
                 $icon = '/' . $icon;
             }
 
-            return $CFG_GLPI['root_doc'] . $icon;
+            return $CFG_ZENTRA['root_doc'] . $icon;
         }
 
         // Fallback to the default icon
-        return $CFG_GLPI['root_doc'] . '/pics/impact/default.png';
+        return $CFG_ZENTRA['root_doc'] . '/pics/impact/default.png';
     }
 
     /**
@@ -1339,7 +1339,7 @@ TWIG, $twig_params);
      */
     private static function addNode(array &$nodes, CommonDBTM $item): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Check if the node already exist
         $key = self::getNodeID($item);
@@ -1619,7 +1619,7 @@ TWIG, $twig_params);
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <script defer>
                 {% autoescape 'js' %}
-                    GLPIImpact.prepareNetwork($("#network_container"), {
+                    ZENTRAImpact.prepareNetwork($("#network_container"), {
                         'default' : '{{ default }}',
                         'forward' : '{{ forward }}',
                         'backward' : '{{ backward }}',
@@ -1786,10 +1786,10 @@ TWIG, $twig_params);
      */
     public static function getEnabledItemtypes(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Get configured values
-        $enabled_itemtypes = $CFG_GLPI[Impact::CONF_ENABLED] ?? [];
+        $enabled_itemtypes = $CFG_ZENTRA[Impact::CONF_ENABLED] ?? [];
 
         if (!count($enabled_itemtypes)) {
             return [];
@@ -1797,9 +1797,9 @@ TWIG, $twig_params);
 
         // Remove any forbidden values
         return array_filter($enabled_itemtypes, static function ($itemtype) {
-            global $CFG_GLPI;
+            global $CFG_ZENTRA;
 
-            return array_key_exists($itemtype, $CFG_GLPI['impact_asset_types']);
+            return array_key_exists($itemtype, $CFG_ZENTRA['impact_asset_types']);
         });
     }
 
@@ -1810,9 +1810,9 @@ TWIG, $twig_params);
      */
     public static function getDefaultItemtypes(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $values = $CFG_GLPI["default_impact_asset_types"];
+        $values = $CFG_ZENTRA["default_impact_asset_types"];
         return array_keys($values);
     }
 
@@ -1821,7 +1821,7 @@ TWIG, $twig_params);
      */
     public static function showConfigForm(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Form head
         $action = htmlescape(Toolbox::getItemTypeFormURL(Config::getType()));
@@ -1833,7 +1833,7 @@ TWIG, $twig_params);
 
         // First row: enabled itemtypes
         $input_name = self::CONF_ENABLED;
-        $values = $CFG_GLPI["impact_asset_types"];
+        $values = $CFG_ZENTRA["impact_asset_types"];
         foreach ($values as $itemtype => $icon) {
             $values[$itemtype] = $itemtype::getTypeName();
         }

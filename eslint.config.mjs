@@ -48,7 +48,7 @@ export default [
                 ...globals.jquery,
                 ...globals.es2021,
                 ...{
-                    CFG_GLPI: true,
+                    CFG_ZENTRA: true,
                     tinyMCE: true,
                     __: true,
                     _n: true,

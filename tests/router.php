@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\Environment;
+use Zentra\Application\Environment;
 
 Environment::set(Environment::TESTING);
 
 ini_set("log_error", 1);
 
-// Forward to GLPI router
+// Forward to ZENTRA router
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 require(__DIR__ . '/../public/index.php');
 

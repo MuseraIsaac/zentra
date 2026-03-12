@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,15 +68,15 @@ function update952to953()
         foreach ($names as $oldname => $newname) {
             $migration->addPostQuery(
                 $DB->buildUpdate(
-                    'glpi_rulecriterias',
+                    'zentra_rulecriterias',
                     ['criteria' => $newname],
-                    ['glpi_rulecriterias.criteria' => $oldname, 'glpi_rules.sub_type' => $type],
+                    ['zentra_rulecriterias.criteria' => $oldname, 'zentra_rules.sub_type' => $type],
                     [
                         'LEFT JOIN' => [
-                            'glpi_rules' => [
+                            'zentra_rules' => [
                                 'FKEY' => [
-                                    'glpi_rulecriterias' => 'rules_id',
-                                    'glpi_rules'         => 'id',
+                                    'zentra_rulecriterias' => 'rules_id',
+                                    'zentra_rules'         => 'id',
                                 ],
                             ],
                         ],

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use Document_Item;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasDocumentsCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasDocumentsCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use Toolbox;
 
@@ -46,13 +46,13 @@ class Document_ItemTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasDocumentsCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['itemdevices_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -65,11 +65,11 @@ class Document_ItemTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasDocumentsCapacity::class)]);
 
-        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['itemdevices_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -180,13 +180,13 @@ class Document_ItemTest extends DbTestCase
         $expected = [
             'SELECT'          => 'itemtype',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_documents_items',
+            'FROM'            => 'zentra_documents_items',
             'WHERE'           => [
                 'OR'  => [
-                    'glpi_documents_items.documents_id'  => 1,
+                    'zentra_documents_items.documents_id'  => 1,
                     [
-                        'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1,
+                        'zentra_documents_items.itemtype'  => 'Document',
+                        'zentra_documents_items.items_id'  => 1,
                     ],
                 ],
             ],
@@ -198,13 +198,13 @@ class Document_ItemTest extends DbTestCase
         $expected = [
             'SELECT'          => 'itemtype',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_documents_items',
+            'FROM'            => 'zentra_documents_items',
             'WHERE'           => [
                 'OR'  => [
-                    'glpi_documents_items.documents_id'  => 1,
+                    'zentra_documents_items.documents_id'  => 1,
                     [
-                        'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1,
+                        'zentra_documents_items.itemtype'  => 'Document',
+                        'zentra_documents_items.items_id'  => 1,
                     ],
                 ],
                 [
@@ -261,7 +261,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertSame('2020-01-01 00:00:00', $ticket->fields['date_mod']);
 
         //do change ticket modification date
-        $_SESSION["glpi_currenttime"] = '2021-01-01 00:00:01';
+        $_SESSION["zentra_currenttime"] = '2021-01-01 00:00:01';
         $doc = new \Document();
         $this->assertGreaterThan(
             0,

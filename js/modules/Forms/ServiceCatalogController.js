@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 /* global _, setupAdaptDropdown */
 
-export class GlpiFormServiceCatalogController
+export class ZentraFormServiceCatalogController
 {
     /**
      * @constructor
@@ -97,7 +97,7 @@ export class GlpiFormServiceCatalogController
         });
 
         // Initialize the sort select after the DOM is ready
-        const sortSelect = document.querySelector('[data-glpi-service-catalog-sort-strategy]');
+        const sortSelect = document.querySelector('[data-zentra-service-catalog-sort-strategy]');
         setTimeout(() => {
             setupAdaptDropdown(window.select2_configs[sortSelect.id])
                 .on('select2:select', (e) => {
@@ -132,7 +132,7 @@ export class GlpiFormServiceCatalogController
 
     async #loadItems(url_params)
     {
-        const url = `${CFG_GLPI.root_doc}/ServiceCatalog/Items`;
+        const url = `${CFG_ZENTRA.root_doc}/ServiceCatalog/Items`;
         let response = await fetch(`${url}?${url_params}`);
         if (!response.ok) { // We fallback the response to the root page
             response = await fetch(`${url}`);
@@ -227,12 +227,12 @@ export class GlpiFormServiceCatalogController
 
     #getFilterInput()
     {
-        return document.querySelector("[data-glpi-service-catalog-filter-items]");
+        return document.querySelector("[data-zentra-service-catalog-filter-items]");
     }
 
     #getFormsArea()
     {
-        return document.querySelector("[data-glpi-service-catalog-items]");
+        return document.querySelector("[data-zentra-service-catalog-items]");
     }
 
     getTemplateForSortSelect(data) {

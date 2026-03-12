@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Contract_Item Class
@@ -196,9 +196,9 @@ class Contract_Item extends CommonDBRelation
         return $items;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -209,13 +209,13 @@ class Contract_Item extends CommonDBRelation
             $nb = 0;
             switch ($item::class) {
                 case Contract::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                         $nb += countElementsInTable(Contract_User::getTable(), ['contracts_id' => $item->fields['id']]);
                     }
                     return self::createTabEntry(_n('Affected item', 'Affected items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
                 default:
-                    if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
+                    if (in_array($item::class, $CFG_ZENTRA["contract_types"], true)) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -224,9 +224,9 @@ class Contract_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -237,7 +237,7 @@ class Contract_Item extends CommonDBRelation
                 self::showForContract($item, $withtemplate);
                 break;
             default:
-                if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
+                if (in_array($item::class, $CFG_ZENTRA["contract_types"], true)) {
                     self::showForItem($item, $withtemplate);
                 }
                 break;
@@ -291,7 +291,7 @@ class Contract_Item extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             <div class="col-auto">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
@@ -326,7 +326,7 @@ TWIG, $twig_params);
             $entry['name'] = $con->getLink();
             if (!isset($entity_cache[$con->fields["entities_id"]])) {
                 $entity_cache[$con->fields["entities_id"]] = Dropdown::getDropdownName(
-                    "glpi_entities",
+                    "zentra_entities",
                     $con->fields["entities_id"]
                 );
             }
@@ -334,7 +334,7 @@ TWIG, $twig_params);
 
             if (!isset($type_cache[$con->fields["contracttypes_id"]])) {
                 $type_cache[$con->fields["contracttypes_id"]] = Dropdown::getDropdownName(
-                    "glpi_contracttypes",
+                    "zentra_contracttypes",
                     $con->fields["contracttypes_id"]
                 );
             }
@@ -400,7 +400,7 @@ TWIG, $twig_params);
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $instID = $contract->fields['id'];
 
@@ -432,12 +432,12 @@ TWIG, $twig_params);
                     'SELECT' => [
                         $itemtable . '.*',
                         self::getTable() . '.id AS linkid',
-                        'glpi_entities.id AS entity',
+                        'zentra_entities.id AS entity',
                     ],
-                    'FROM'   => 'glpi_contracts_items',
+                    'FROM'   => 'zentra_contracts_items',
                     'WHERE'  => [
-                        'glpi_contracts_items.itemtype'     => $itemtype,
-                        'glpi_contracts_items.contracts_id' => $instID,
+                        'zentra_contracts_items.itemtype'     => $itemtype,
+                        'zentra_contracts_items.contracts_id' => $instID,
                     ],
                 ];
 
@@ -458,10 +458,10 @@ TWIG, $twig_params);
                     ],
                 ];
                 if ($itemtype !== Entity::class) {
-                    $params['LEFT JOIN']['glpi_entities'] = [
+                    $params['LEFT JOIN']['zentra_entities'] = [
                         'FKEY' => [
                             $itemtable        => 'entities_id',
-                            'glpi_entities'   => 'id',
+                            'zentra_entities'   => 'id',
                         ],
                     ];
                 }
@@ -482,7 +482,7 @@ TWIG, $twig_params);
                     $params['WHERE'][] = [$itemtable . '.is_template' => 0];
                 }
                 $params['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', $item->maybeRecursive());
-                $params['ORDER'] = "glpi_entities.completename, $namefield";
+                $params['ORDER'] = "zentra_entities.completename, $namefield";
 
                 $iterator = $DB->request($params);
 
@@ -538,7 +538,7 @@ TWIG, $twig_params);
                 'link_itemtype' => self::class,
                 'source_itemtype' => $contract::class,
                 'source_items_id' => $instID,
-                'link_types' => array_merge($CFG_GLPI["contract_types"], [User::class]),
+                'link_types' => array_merge($CFG_ZENTRA["contract_types"], [User::class]),
                 'generic_target' => true,
                 'dropdown_options' => [
                     'entity'      => $contract->getEntityID(),
@@ -568,7 +568,7 @@ TWIG, $twig_params);
                 if (isset($objdata['entity'])) {
                     if (!isset($entity_cache[$objdata['entity']])) {
                         $entity_cache[$objdata['entity']] = Dropdown::getDropdownName(
-                            "glpi_entities",
+                            "zentra_entities",
                             $objdata['entity']
                         );
                     }
@@ -582,7 +582,7 @@ TWIG, $twig_params);
                 if (isset($objdata['states_id'])) {
                     if (!isset($state_cache[$objdata['states_id']])) {
                         $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
-                            "glpi_states",
+                            "zentra_states",
                             $objdata['states_id']
                         );
                     }
@@ -622,10 +622,10 @@ TWIG, $twig_params);
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-        $specificities['itemtypes'] = $CFG_GLPI['contract_types'];
+        $specificities['itemtypes'] = $CFG_ZENTRA['contract_types'];
 
         return $specificities;
     }

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,12 +94,12 @@ describe("Ticket Form", () => {
             }).then((group_id) => {
                 cy.createWithAPI('Group_User', {
                     groups_id: group_id,
-                    users_id: 2 // glpi user
+                    users_id: 2 // zentra user
                 });
                 cy.createWithAPI('ITILValidationTemplate_Target', {
                     itilvalidationtemplates_id: validationtemplates_id,
                     itemtype: 'User',
-                    items_id: 2, // glpi user
+                    items_id: 2, // zentra user
                     groups_id: group_id
                 });
             });
@@ -249,7 +249,7 @@ describe("Ticket Form", () => {
         cy.get('.ITILValidation.show').within(() => {
             cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`);
             cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
-            cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
+            cy.getDropdownByLabelText('Select a user').should('have.text', 'zentra');
             cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
         });
         cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
@@ -271,7 +271,7 @@ describe("Ticket Form", () => {
             // Select user validation template
             cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`);
             cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
-            cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
+            cy.getDropdownByLabelText('Select a user').should('have.text', 'zentra');
             cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
 
             // Switch to group validation template
@@ -284,7 +284,7 @@ describe("Ticket Form", () => {
             cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with group user ${rand}`);
             cy.getDropdownByLabelText('Approver type').should('have.text', 'Group user(s)');
             cy.getDropdownByLabelText('Select a group').should('have.text', `test group user ${rand}`);
-            cy.getDropdownByLabelText('Select users').should('have.text', '×glpi');
+            cy.getDropdownByLabelText('Select users').should('have.text', '×zentra');
             cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
 
             // Switch to no approver validation template

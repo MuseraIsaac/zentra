@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  */
 
 import { randomUUID } from "crypto";
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { FormPage } from '../../pages/FormPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
@@ -44,7 +44,7 @@ test('Can set the conditional validation of a question', async ({
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test validation strategies - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });
@@ -111,11 +111,11 @@ test('Can use the editor to add or delete conditions on a question', async ({
     await form.doInitValidationConfiguration(2);
     await form.doSetValidationStrategy('Valid if...');
     await form.doFillValidationCondition(
-        0, null, 'Match regular expression', '/^I love GLPI$/'
+        0, null, 'Match regular expression', '/^I love ZENTRA$/'
     );
     await form.doAddValidationCondition();
     await form.doFillValidationCondition(
-        1, 'Or', 'Match regular expression', '/^GLPI is great$/'
+        1, 'Or', 'Match regular expression', '/^ZENTRA is great$/'
     );
 
     await form.doSaveFormEditorAndReload();
@@ -125,20 +125,20 @@ test('Can use the editor to add or delete conditions on a question', async ({
     await expect(form.getValidationConditionValueOperator(conditions.nth(0)))
         .toHaveText('Match regular expression');
     await expect(form.getValidationConditionTextValue(conditions.nth(0)))
-        .toHaveValue('/^I love GLPI$/');
+        .toHaveValue('/^I love ZENTRA$/');
     await expect(form.getValidationConditionLogicOperator(conditions.nth(1)))
         .toHaveText('Or');
     await expect(form.getValidationConditionValueOperator(conditions.nth(1)))
         .toHaveText('Match regular expression');
     await expect(form.getValidationConditionTextValue(conditions.nth(1)))
-        .toHaveValue('/^GLPI is great$/');
+        .toHaveValue('/^ZENTRA is great$/');
 
     // Delete the first condition
     await form.doDeleteValidationCondition(0);
     await expect(form.getValidationConditionValueOperator(conditions.nth(0)))
         .toHaveText('Match regular expression');
     await expect(form.getValidationConditionTextValue(conditions.nth(0)))
-        .toHaveValue('/^GLPI is great$/');
+        .toHaveValue('/^ZENTRA is great$/');
     await expect(conditions).toHaveCount(1);
 
     // Save and reload, then verify only one condition remains
@@ -149,7 +149,7 @@ test('Can use the editor to add or delete conditions on a question', async ({
     await expect(form.getValidationConditionValueOperator(final_conditions.nth(0)))
         .toHaveText('Match regular expression');
     await expect(form.getValidationConditionTextValue(final_conditions.nth(0)))
-        .toHaveValue('/^GLPI is great$/');
+        .toHaveValue('/^ZENTRA is great$/');
     await expect(final_conditions).toHaveCount(1);
 });
 
@@ -162,7 +162,7 @@ test('Conditions are applied on questions', async ({
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test validation applied - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
         is_active: true,
@@ -188,7 +188,7 @@ test('Conditions are applied on questions', async ({
     await form.doInitValidationConfiguration(1);
     await form.doSetValidationStrategy('Valid if...');
     await form.doFillValidationCondition(
-        0, null, 'Match regular expression', '/^I love GLPI$/'
+        0, null, 'Match regular expression', '/^I love ZENTRA$/'
     );
     await form.doCloseValidationConditionEditor(1);
 
@@ -196,7 +196,7 @@ test('Conditions are applied on questions', async ({
     await form.doInitValidationConfiguration(2);
     await form.doSetValidationStrategy('Invalid if...');
     await form.doFillValidationCondition(
-        0, null, 'Match regular expression', '/^I love GLPI$/'
+        0, null, 'Match regular expression', '/^I love ZENTRA$/'
     );
     await form.doCloseValidationConditionEditor(2);
 
@@ -220,9 +220,9 @@ test('Conditions are applied on questions', async ({
     await expect(form.getValidationErrorMessage(textbox_q3)).toContainText('This field is mandatory');
 
     // Fill all questions with a value that does NOT match the regex
-    await textbox_q1.fill('GLPI is great');
-    await textbox_q2.fill('GLPI is great');
-    await textbox_q3.fill('GLPI is great');
+    await textbox_q1.fill('ZENTRA is great');
+    await textbox_q2.fill('ZENTRA is great');
+    await textbox_q3.fill('ZENTRA is great');
 
     // Submit the form again
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -235,8 +235,8 @@ test('Conditions are applied on questions', async ({
     await expect(form.getValidationErrorMessage(textbox_q2)).toContainText('The value must match the requested format');
 
     // Fill Q2 and Q3 with a value that matches the regex
-    await textbox_q2.fill('I love GLPI');
-    await textbox_q3.fill('I love GLPI');
+    await textbox_q2.fill('I love ZENTRA');
+    await textbox_q3.fill('I love ZENTRA');
 
     // Submit the form again
     await page.getByRole('button', { name: 'Submit' }).click();
@@ -257,7 +257,7 @@ test('Conditions count badge is updated when conditions are added or removed', a
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
-    const form_id = await api.createItem('Glpi\\Form\\Form', {
+    const form_id = await api.createItem('Zentra\\Form\\Form', {
         name: `Test validation count badge - ${randomUUID()}`,
         entities_id: getWorkerEntityId(),
     });

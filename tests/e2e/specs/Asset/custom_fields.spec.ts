@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { AssetDefinitionPage } from '../../pages/AssetDefinitionPage';
 import { Profiles } from '../../utils/Profiles';
 
@@ -40,14 +40,14 @@ test('Reordering fields', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
 
     const system_name = AssetDefinitionPage.generateAssetName();
-    const definition_id = await api.createItem('Glpi\\Asset\\AssetDefinition', {
+    const definition_id = await api.createItem('Zentra\\Asset\\AssetDefinition', {
         system_name: system_name,
         is_active: true,
         profiles: { [Profiles.SuperAdmin]: ALLSTANDARDRIGHT },
     });
 
     const asset_page = new AssetDefinitionPage(page);
-    await asset_page.goto(definition_id, 'Glpi\\Asset\\AssetDefinition$2');
+    await asset_page.goto(definition_id, 'Zentra\\Asset\\AssetDefinition$2');
 
     // Swap name and status
     const name_field = page.getByTestId('sortable-field-name');
@@ -72,13 +72,13 @@ test('Create custom fields', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
 
     const system_name = AssetDefinitionPage.generateAssetName();
-    const definition_id = await api.createItem('Glpi\\Asset\\AssetDefinition', {
+    const definition_id = await api.createItem('Zentra\\Asset\\AssetDefinition', {
         system_name: system_name,
         is_active: true,
     });
 
     const asset_page = new AssetDefinitionPage(page);
-    await asset_page.goto(definition_id, 'Glpi\\Asset\\AssetDefinition$2');
+    await asset_page.goto(definition_id, 'Zentra\\Asset\\AssetDefinition$2');
 
     await asset_page.doCreateField('Test String', 'String');
     await asset_page.doCreateField('Test Text', 'Text');
@@ -117,7 +117,7 @@ test('Edit core fields', async ({ page, profile, api }) => {
 
     // Create an asset definition
     const system_name = AssetDefinitionPage.generateAssetName();
-    const definition_id = await api.createItem('Glpi\\Asset\\AssetDefinition', {
+    const definition_id = await api.createItem('Zentra\\Asset\\AssetDefinition', {
         system_name: system_name,
         is_active: true,
     });
@@ -131,7 +131,7 @@ test('Edit core fields', async ({ page, profile, api }) => {
             body: JSON.stringify({ results: [] }),
         });
     }, { times: 1 });
-    await asset_page.goto(definition_id, 'Glpi\\Asset\\AssetDefinition$2');
+    await asset_page.goto(definition_id, 'Zentra\\Asset\\AssetDefinition$2');
 
     // Edit a field
     await page.getByTestId('sortable-field-name').hover();

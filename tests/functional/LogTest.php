@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@
 namespace tests\units;
 
 use Computer;
-use Glpi\Form\AccessControl\ControlType\DirectAccess;
-use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Zentra\Form\AccessControl\ControlType\DirectAccess;
+use Zentra\Form\AccessControl\ControlType\DirectAccessConfig;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\FormBuilder;
+use Zentra\Tests\FormTesterTrait;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -683,10 +683,10 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'users_names' => ['user1', 'glpi', 'noone'],
+                    'users_names' => ['user1', 'zentra', 'noone'],
                 ],
                 [
-                    'user_name' => ['user1', 'glpi', 'noone'],
+                    'user_name' => ['user1', 'zentra', 'noone'],
                 ],
             ],
             [
@@ -754,7 +754,7 @@ class LogTest extends DbTestCase
     #[DataProvider('userNameFormattingProvider')]
     public function testUserNameFormatting(string $username, string $password, string $expected_name)
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $this->login($username, $password);
         $rand = mt_rand(90000, 99999);
@@ -777,23 +777,23 @@ class LogTest extends DbTestCase
         $user_id = \Session::getLoginUserID();
 
         // ID should always be displayed regardless of user preferences or server default
-        $_SESSION['glpiis_ids_visible'] = false;
+        $_SESSION['zentrais_ids_visible'] = false;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $_SESSION['glpiis_ids_visible'] = true;
+        $_SESSION['zentrais_ids_visible'] = true;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $CFG_GLPI['is_ids_visible'] = false;
+        $CFG_ZENTRA['is_ids_visible'] = false;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $CFG_GLPI['is_ids_visible'] = true;
+        $CFG_ZENTRA['is_ids_visible'] = true;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
 
         // Name order should always be realname firstname regardless of user preferences or server default
-        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+        $_SESSION['zentranames_format'] = \User::FIRSTNAME_BEFORE;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+        $_SESSION['zentranames_format'] = \User::REALNAME_BEFORE;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $CFG_GLPI['names_format'] = \User::FIRSTNAME_BEFORE;
+        $CFG_ZENTRA['names_format'] = \User::FIRSTNAME_BEFORE;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
-        $CFG_GLPI['names_format'] = \User::REALNAME_BEFORE;
+        $CFG_ZENTRA['names_format'] = \User::REALNAME_BEFORE;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
     }
 
@@ -804,7 +804,7 @@ class LogTest extends DbTestCase
     public function testGetHistoryDataRawTimestamp()
     {
         $this->login();
-        $_SESSION['glpi_currenttime'] = '2023-11-01 00:00:00';
+        $_SESSION['zentra_currenttime'] = '2023-11-01 00:00:00';
         $computer = new Computer();
         $this->assertGreaterThan(
             0,
@@ -820,14 +820,14 @@ class LogTest extends DbTestCase
         }
 
         // Test DD-MM-YYYY format
-        $_SESSION["glpidate_format"] = 1;
+        $_SESSION["zentradate_format"] = 1;
         $data = Log::getHistoryData($computer);
         foreach ($data as $entry) {
             $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);
         }
 
         // Test MM-DD-YYYY format
-        $_SESSION["glpidate_format"] = 2;
+        $_SESSION["zentradate_format"] = 2;
         $data = Log::getHistoryData($computer);
         foreach ($data as $entry) {
             $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);

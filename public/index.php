@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ResourcesChecker;
-use Glpi\Kernel\Kernel;
+use Zentra\Application\ResourcesChecker;
+use Zentra\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
 // Check PHP version not to have trouble
@@ -45,7 +45,7 @@ if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '
 // Check the resources state before trying to instanciate the Kernel.
 // It must be done here as this check must be done even when the Kernel
 // cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+require_once dirname(__DIR__) . '/src/Zentra/Application/ResourcesChecker.php';
 (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';

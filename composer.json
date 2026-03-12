@@ -1,13 +1,13 @@
 {
-    "name": "glpi/glpi",
-    "description": "GLPI dependencies",
+    "name": "zentra/zentra",
+    "description": "ZENTRA dependencies",
     "license": "GPL-3.0-or-later",
     "type": "project",
-    "homepage": "https://www.glpi-project.org/",
+    "homepage": "https://www.zentra-project.org/",
     "support": {
-        "forum": "https://forum.glpi-project.org/",
-        "issues": "https://github.com/glpi-project/glpi/issues",
-        "docs": "https://github.com/glpi-project/doc"
+        "forum": "https://forum.zentra-project.org/",
+        "issues": "https://github.com/zentra-project/zentra/issues",
+        "docs": "https://github.com/zentra-project/doc"
     },
     "require": {
         "php": ">=8.2",
@@ -38,7 +38,7 @@
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.2",
         "gettext/languages": "^2.12",
-        "glpi-project/inventory_format": "^1.2",
+        "zentra-project/inventory_format": "^1.2",
         "guzzlehttp/guzzle": "^7.10",
         "guzzlehttp/psr7": "^2.8",
         "html2text/html2text": "^4.3",
@@ -110,7 +110,7 @@
         "brianium/paratest": "^7.8",
         "friendsofphp/php-cs-fixer": "^3.94",
         "friendsoftwig/twigcs": "^6.5",
-        "glpi-project/phpstan-glpi": "^1.1",
+        "zentra-project/phpstan-zentra": "^1.1",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.1",
@@ -173,7 +173,7 @@
     },
     "autoload": {
         "files": [
-            "src/autoload/CFG_GLPI.php",
+            "src/autoload/CFG_ZENTRA.php",
             "src/autoload/constants.php",
             "src/autoload/dbutils-aliases.php",
             "src/autoload/i18n.php",
@@ -181,14 +181,14 @@
             "src/autoload/misc-functions.php"
         ],
         "psr-4": {
-            "Glpi\\": "src/Glpi/",
+            "Zentra\\": "src/Zentra/",
             "": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Glpi\\Tools\\": "tools/src/",
-            "Glpi\\Tests\\": "tests/src/"
+            "Zentra\\Tools\\": "tools/src/",
+            "Zentra\\Tests\\": "tests/src/"
         },
         "files": ["tests/src/autoload/functions.php"]
     },

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiFormItemDropdownAdvancedConfig {
+export class ZentraFormItemDropdownAdvancedConfig {
     // Static instance for singleton pattern
     static instance = null;
 
@@ -40,15 +40,15 @@ export class GlpiFormItemDropdownAdvancedConfig {
      */
     constructor() {
         // Prevent multiple initializations
-        if (GlpiFormItemDropdownAdvancedConfig.instance !== null) {
-            return GlpiFormItemDropdownAdvancedConfig.instance;
+        if (ZentraFormItemDropdownAdvancedConfig.instance !== null) {
+            return ZentraFormItemDropdownAdvancedConfig.instance;
         }
 
         // Register event listener for question sub-type changes
         this.registerEventListeners();
 
         // Store instance
-        GlpiFormItemDropdownAdvancedConfig.instance = this;
+        ZentraFormItemDropdownAdvancedConfig.instance = this;
     }
 
     /**
@@ -59,7 +59,7 @@ export class GlpiFormItemDropdownAdvancedConfig {
      */
     findContainer(question) {
         const container = question.find(
-            `[data-glpi-form-editor-item-dropdown-advanced-configuration]`
+            `[data-zentra-form-editor-item-dropdown-advanced-configuration]`
         );
 
         return container.length > 0 ? container : null;
@@ -69,7 +69,7 @@ export class GlpiFormItemDropdownAdvancedConfig {
      * Register all necessary event listeners
      */
     registerEventListeners() {
-        $(document).on('glpi-form-editor-question-sub-type-changed',
+        $(document).on('zentra-form-editor-question-sub-type-changed',
             (event, question, sub_type) => {
                 const container = this.findContainer(question);
                 if (!container) {
@@ -90,11 +90,11 @@ export class GlpiFormItemDropdownAdvancedConfig {
      */
     updateFieldsVisibility(container, sub_type) {
         // Find all form fields with visibility rules
-        const formFields = container.find('[data-glpi-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype]');
+        const formFields = container.find('[data-zentra-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype]');
 
         formFields.each((index, element) => {
             const formField = $(element).closest('.form-field');
-            const visibleType = $(element).attr('data-glpi-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype');
+            const visibleType = $(element).attr('data-zentra-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype');
 
             // Show the field if current sub_type matches the visible type
             const isVisible = visibleType == sub_type;
@@ -110,7 +110,7 @@ export class GlpiFormItemDropdownAdvancedConfig {
      */
     updateRootItemsDropdown(question, sub_type) {
         const select = question.find(
-            '[name="extra_data[root_items_id]"], [data-glpi-form-editor-original-name="extra_data[root_items_id]"]'
+            '[name="extra_data[root_items_id]"], [data-zentra-form-editor-original-name="extra_data[root_items_id]"]'
         );
         const container = select.parent();
 
@@ -119,16 +119,16 @@ export class GlpiFormItemDropdownAdvancedConfig {
 
         // Load the new dropdown content via AJAX
         container.load(
-            `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
+            `${CFG_ZENTRA.root_doc}/ajax/dropdownAllItems.php`,
             {
                 'idtable': sub_type,
                 'width': '100%',
-                'name': select.data('glpi-form-editor-original-name') || select.attr('name'),
+                'name': select.data('zentra-form-editor-original-name') || select.attr('name'),
                 'aria-label': select.attr('aria-label'),
             },
             () => {
                 const new_select = question.find(
-                    '[name="extra_data[root_items_id]"], [data-glpi-form-editor-original-name="extra_data[root_items_id]"]'
+                    '[name="extra_data[root_items_id]"], [data-zentra-form-editor-original-name="extra_data[root_items_id]"]'
                 );
 
                 // Update old reference to the new select element

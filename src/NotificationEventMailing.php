@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class NotificationEventMailing extends NotificationEventAbstract
     /**
      * Mailer service.
      */
-    private static ?GLPIMailer $mailer = null;
+    private static ?ZENTRAMailer $mailer = null;
 
     public static function getTargetFieldName()
     {
@@ -86,11 +86,11 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function getAdminData()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $admin = Config::getAdminEmailSender();
         if ($admin['email'] !== null) {
-            $admin['language'] = $CFG_GLPI['language'];
+            $admin['language'] = $CFG_ZENTRA['language'];
 
             $user = new User();
             if ($user->getFromDBbyEmail($admin['email'])) {
@@ -106,11 +106,11 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function getEntityAdminsData($entity)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $admin = Config::getAdminEmailSender($entity);
         if ($admin['email'] !== null) {
-            $admin['language'] = $CFG_GLPI['language'];
+            $admin['language'] = $CFG_ZENTRA['language'];
 
             $user = new User();
             if ($user->getFromDBbyEmail($admin['email'])) {
@@ -125,16 +125,16 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function send(array $data)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $processed = [];
 
         // Init transport once to avoid login in to the smtp server for every mail
-        $transport = Transport::fromDsn(GLPIMailer::buildDsn(true));
+        $transport = Transport::fromDsn(ZENTRAMailer::buildDsn(true));
 
         foreach ($data as $row) {
             //make sure mailer is reset on each mail
-            $mmail = self::$mailer ?? new GLPIMailer($transport);
+            $mmail = self::$mailer ?? new ZENTRAMailer($transport);
             $mail = $mmail->getEmail();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
@@ -148,8 +148,8 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
 
                 if ($current->fields['event'] === null) {
-                    // Notifications that were pushed in queue before upgrade to GLPI 10.0.8+ have a `null` value in `event` field.
-                    // Build the `In-Reply-To` header as it was done before GLPI 10.0.8.
+                    // Notifications that were pushed in queue before upgrade to ZENTRA 10.0.8+ have a `null` value in `event` field.
+                    // Build the `In-Reply-To` header as it was done before ZENTRA 10.0.8.
                     $mail->getHeaders()->addTextHeader(
                         'In-Reply-To',
                         str_replace(
@@ -163,7 +163,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $current->fields['itemtype'],
                                 $current->fields['items_id'],
                             ],
-                            '<GLPI-%uuid-%itemtype-%items_id>'
+                            '<ZENTRA-%uuid-%itemtype-%items_id>'
                         )
                     );
                 } elseif (is_a($current->fields['itemtype'], CommonDBTM::class, true)) {
@@ -277,11 +277,11 @@ class NotificationEventMailing extends NotificationEventAbstract
                             )
                         ) {
                             // Make sure file still exists
-                            if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+                            if (!file_exists(ZENTRA_DOC_DIR . "/" . $doc->fields['filepath'])) {
                                 trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
                                 continue;
                             }
-                            $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                            $image_path = ZENTRA_DOC_DIR . "/" . $doc->fields['filepath'];
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
@@ -315,7 +315,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             }
 
                             // Make sure file still exists
-                            if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+                            if (!file_exists(ZENTRA_DOC_DIR . "/" . $doc->fields['filepath'])) {
                                 trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
                                 continue;
                             }
@@ -332,12 +332,12 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                             if ($custom_height === null && $custom_width === null) {
                                 // no custom size, use original file
-                                $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                                $image_path = ZENTRA_DOC_DIR . "/" . $doc->fields['filepath'];
                             } else {
                                 if ($custom_width === null || $custom_height === null) {
                                     // When either width or height is null, but the other is defined,
                                     // compute the missing dimension using a cross-multiplication.
-                                    $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+                                    $img_infos = getimagesize(ZENTRA_DOC_DIR . "/" . $doc->fields['filepath']);
 
                                     if (!$img_infos) {
                                         // Failure to read image size, skip to avoid a divide by zero exception
@@ -355,7 +355,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 }
 
                                 $image_path = Document::getResizedImagePath(
-                                    GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
+                                    ZENTRA_DOC_DIR . "/" . $doc->fields['filepath'],
                                     $custom_width,
                                     $custom_height
                                 );
@@ -379,7 +379,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // Symfony/Mime will then replace it by an auto-generated value
                                 // see Symfony\Mime\Email::prepareParts()
                                 'src="cid:' . $filename . '" style="max-width: 100%; height: auto;"',
-                                'href="' . htmlescape($CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
+                                'href="' . htmlescape($CFG_ZENTRA['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
                             ],
                             $current->fields['body_html']
                         );
@@ -392,10 +392,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                 self::attachDocuments($mail, $documents_to_attach);
 
                 $recipient = $current->getField('recipient');
-                if (defined('GLPI_FORCE_MAIL')) {
-                    Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
+                if (defined('ZENTRA_FORCE_MAIL')) {
+                    Toolbox::deprecated('Usage of the `ZENTRA_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
                     //force recipient to configured email address
-                    $recipient = GLPI_FORCE_MAIL;
+                    $recipient = ZENTRA_FORCE_MAIL;
                     //add original email address to message body
                     $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
                     $mail->text($mail->getTextBody() . "\n" . $text);
@@ -430,7 +430,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 );
                 $processed[] = $current->getID();
                 $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime'],
+                    'sent_time' => $_SESSION['zentra_currenttime'],
                 ]);
                 $current->delete(['id'        => $current->fields['id']]);
             }
@@ -451,12 +451,12 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $messageerror = __s('Error in sending the email');
         Session::addMessageAfterRedirect($messageerror . "<br/>" . htmlescape($error), true, ERROR);
 
-        $retries = $CFG_GLPI['smtp_max_retries'] - $notification->fields['sent_try'];
+        $retries = $CFG_ZENTRA['smtp_max_retries'] - $notification->fields['sent_try'];
         Toolbox::logInFile(
             "mail-error",
             sprintf(
@@ -491,8 +491,8 @@ class NotificationEventMailing extends NotificationEventAbstract
             'sent_try'  => $notification->fields['sent_try'] + 1,
         ];
 
-        if ($CFG_GLPI["smtp_retry_time"] > 0) {
-            $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+        if ($CFG_ZENTRA["smtp_retry_time"] > 0) {
+            $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_ZENTRA["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
         }
         $notification->update($input);
     }
@@ -514,7 +514,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 trigger_error(sprintf('Unable to load document %d.', $document_id), E_USER_WARNING);
                 continue;
             }
-            $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
+            $path = ZENTRA_DOC_DIR . "/" . $document->fields['filepath'];
             $mail->attachFromPath($path, $document->fields['filename']);
         }
     }
@@ -527,7 +527,7 @@ class NotificationEventMailing extends NotificationEventAbstract
         $params['template']->setSignature(Notification::getMailingSignature($entity));
     }
 
-    public static function setMailer(?GLPIMailer $mailer): void
+    public static function setMailer(?ZENTRAMailer $mailer): void
     {
         self::$mailer = $mailer;
     }

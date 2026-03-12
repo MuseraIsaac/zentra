@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form                         Glpi\Form #}
-{# @var question_types_manager       Glpi\Form\QuestionType\QuestionTypesManager #}
-{# @var question_type                Glpi\Form\QuestionType\QuestionTypeInterface #}
-{# @var question                     Glpi\Form\Question|null #}
-{# @var section                      Glpi\Form\Section|null #}
+{# @var form                         Zentra\Form #}
+{# @var question_types_manager       Zentra\Form\QuestionType\QuestionTypesManager #}
+{# @var question_type                Zentra\Form\QuestionType\QuestionTypeInterface #}
+{# @var question                     Zentra\Form\Question|null #}
+{# @var section                      Zentra\Form\Section|null #}
 {# @var can_update                   bool #}
 {# @var allow_unauthenticated_access bool #}
 
@@ -49,30 +49,30 @@
 <section
     role="option"
     class="d-flex"
-    data-glpi-form-editor-block
-    data-glpi-form-editor-question
-    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').QUESTION.value }}"
-    data-glpi-draggable-item
+    data-zentra-form-editor-block
+    data-zentra-form-editor-question
+    data-zentra-form-editor-condition-type="{{ enum('Zentra\\Form\\Condition\\Type').QUESTION.value }}"
+    data-zentra-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
     <section
-        data-glpi-form-editor-on-click="set-active"
-        data-glpi-form-editor-question-details
-        data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
+        data-zentra-form-editor-on-click="set-active"
+        data-zentra-form-editor-question-details
+        data-zentra-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
         class="card flex-grow-1"
         aria-label="{{ __("Question details") }}"
     >
         <div
             class="card-status-start bg-primary"
-            data-glpi-form-editor-active-question-status-indicator
+            data-zentra-form-editor-active-question-status-indicator
         ></div>
         <div class="card-body">
             <div class="d-flex">
                 <i
-                    class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
-                    data-glpi-form-editor-question-handle
+                    class="zentra-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                    data-zentra-form-editor-question-handle
                     draggable="true"
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-state-action
                     aria-label="{{ __('Move question') }}"
                 ></i>
             </div>
@@ -80,7 +80,7 @@
             <div class="d-flex mt-n1 align-items-center">
                 <i
                     class="ti ti-alert-triangle text-warning me-2 {{ allow_unauthenticated_access and not question_type.isAllowedForUnauthenticatedAccess() ? '' : 'd-none' }}"
-                    data-glpi-form-editor-blacklisted-question-type-warning
+                    data-zentra-form-editor-blacklisted-question-type-warning
                     data-bs-toggle="popover"
                     data-bs-trigger="hover"
                     data-bs-placement="top"
@@ -94,13 +94,13 @@
                     name="name"
                     value="{{ question is not null ? question.fields.name : '' }}"
                     placeholder="{{ __("New question") }}"
-                    data-glpi-form-editor-dynamic-input
-                    data-glpi-form-editor-question-details-name
+                    data-zentra-form-editor-dynamic-input
+                    data-zentra-form-editor-question-details-name
                     maxlength="255"
                 />
 
                 {% if question is null %}
-                    {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
+                    {% set question_strategy = enum('Zentra\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
                 {% else %}
                     {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
                 {% endif %}
@@ -110,13 +110,13 @@
                 {# Validation dropdown #}
                 {{ include('pages/admin/form/conditional_validation_dropdown.html.twig', {
                     'item': question,
-                    'type': "Glpi\\Form\\Question",
+                    'type': "Zentra\\Form\\Question",
                 }, with_context = false) }}
 
                 {# Visibility dropdown #}
                 {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                     'item': question,
-                    'type': "Glpi\\Form\\Question",
+                    'type': "Zentra\\Form\\Question",
                 }, with_context = false) }}
 
                 {# Duplicate question #}
@@ -126,9 +126,9 @@
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
-                    data-glpi-form-editor-on-click="duplicate-question"
-                    data-glpi-form-editor-question-extra-details
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-on-click="duplicate-question"
+                    data-zentra-form-editor-question-extra-details
+                    data-zentra-form-editor-state-action
                 ></i>
 
                 {# Delete question #}
@@ -139,9 +139,9 @@
                     data-bs-placement="top"
                     title="{{ __("Delete") }}"
                     aria-label="{{ __("Delete") }}"
-                    data-glpi-form-editor-on-click="delete-question"
-                    data-glpi-form-editor-question-extra-details
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-on-click="delete-question"
+                    data-zentra-form-editor-question-extra-details
+                    data-zentra-form-editor-state-action
                 ></i>
 
                 {# Extra actions #}
@@ -153,7 +153,7 @@
                         role="button"
                         title="{{ __('More actions') }}"
                         aria-label="{{ __('More actions') }}"
-                        data-glpi-form-editor-state-action
+                        data-zentra-form-editor-state-action
                     ></i>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
@@ -161,7 +161,7 @@
                                 aria-label="{{ __('Configure visibility') }}"
                                 type="button"
                                 class="dropdown-item"
-                                data-glpi-form-editor-on-click="show-visibility-dropdown"
+                                data-zentra-form-editor-on-click="show-visibility-dropdown"
                             >
                                 <i class="ti ti-eye-cog me-2"></i>
                                 <span>{{ __("Configure visibility") }}</span>
@@ -172,7 +172,7 @@
                                 aria-label="{{ __('Configure validation') }}"
                                 type="button"
                                 class="dropdown-item"
-                                data-glpi-form-editor-on-click="show-validation-dropdown"
+                                data-zentra-form-editor-on-click="show-validation-dropdown"
                             >
                                 <i class="ti ti-checks me-2"></i>
                                 <span>{{ __("Configure validation") }}</span>
@@ -182,7 +182,7 @@
                             <button
                                 type="button"
                                 class="dropdown-item"
-                                data-glpi-form-editor-on-click="copy-uuid"
+                                data-zentra-form-editor-on-click="copy-uuid"
                             >
                                 <i class="ti ti-id-badge me-2"></i>
                                 <span>{{ __("Copy uuid") }}</span>
@@ -195,9 +195,9 @@
             {# Display common fields #}
             <div
                 class="content-editable-tinymce mt-2"
-                data-glpi-form-editor-question-description
+                data-zentra-form-editor-question-description
                 {# Mark as secondary if empty #}
-                {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
+                {{ question is null or question.fields.description|length == 0 ? "data-zentra-form-editor-question-extra-details" : "" }}
             >
                 {{ fields.textareaField(
                     'description',
@@ -221,18 +221,18 @@
             {# Render the specific question type #}
             <div
                 class="mt-2 ms-1"
-                data-glpi-form-editor-question-type-specific
+                data-zentra-form-editor-question-type-specific
             >
                 {{ question_type.renderAdministrationTemplate(question)|raw }}
             </div>
 
             <div
                 class="d-flex flex-wrap align-items-center gap-2 mt-2 ms-1"
-                data-glpi-form-editor-question-extra-details
+                data-zentra-form-editor-question-extra-details
                 data-fix-dropdown-flex
             >
-                {# Setup "glpi-loaded" attribute for questions, not for the template #}
-                {% set base_attributes = question is null ? {} : {'glpi-loaded' : "false"} %}
+                {# Setup "zentra-loaded" attribute for questions, not for the template #}
+                {% set base_attributes = question is null ? {} : {'zentra-loaded' : "false"} %}
 
                 <div class="question-type-dropdown-group">
                     {{ fields.dropdownArrayField(
@@ -250,7 +250,7 @@
                             'dropdownCssClass'     : 'question-type-dropdown-group-dropdown-select',
                             'aria_label'           : __('Question type'),
                             'add_data_attributes'  : {
-                                'glpi-form-editor-on-change': 'change-question-type-category',
+                                'zentra-form-editor-on-change': 'change-question-type-category',
                             }|merge(base_attributes),
                             'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
                             'templateResult'       : question_types_manager.getTemplateResultForCategories(),
@@ -273,8 +273,8 @@
                             'width'                : 'auto',
                             'aria_label'           : __('Question sub type'),
                             'add_data_attributes'  : {
-                                'glpi-form-editor-on-change'             : 'change-question-type',
-                                'glpi-form-editor-question-type-selector': '',
+                                'zentra-form-editor-on-change'             : 'change-question-type',
+                                'zentra-form-editor-question-type-selector': '',
 
                             }|merge(base_attributes),
                             'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
@@ -298,16 +298,16 @@
                             'disabled'             : sub_types is empty,
                             'aria_label'           : question_type.getSubTypeFieldAriaLabel(),
                             'add_data_attributes'  : {
-                                'glpi-form-editor-on-change'                   : 'change-question-sub-type',
-                                'glpi-form-editor-question-sub-type-selector'  : '',
-                                'glpi-form-editor-specific-question-extra-data': '',
+                                'zentra-form-editor-on-change'                   : 'change-question-sub-type',
+                                'zentra-form-editor-question-sub-type-selector'  : '',
+                                'zentra-form-editor-specific-question-extra-data': '',
                             }|merge(base_attributes),
                         }
                     ) }}
                 </div>
 
                 {# Render the specific question options #}
-                <div class="ms-auto" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
+                <div class="ms-auto" data-zentra-form-editor-specific-question-options data-zentra-form-editor-question-extra-details>
                     {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
                 </div>
 
@@ -358,12 +358,12 @@
         />
     </section>
 
-    <div data-glpi-form-editor-question-extra-details>
+    <div data-zentra-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update'     : can_update,
             'form'           : form,
             'vertical_layout': true
         }, with_context = false) }}
     </div>
-    <div data-glpi-form-editor-question-drag-merge></div>
+    <div data-zentra-form-editor-question-drag-merge></div>
 </section>

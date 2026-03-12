@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI */
+/* global ZENTRA */
 
 import '/js/modules/Search/Table.js';
 import {jest} from '@jest/globals';
@@ -121,7 +121,7 @@ describe('Search Table', () => {
         </div>
     </div>
 `);
-    window.GLPI.Search.Table.prototype.getResultsView = jest.fn(() => {
+    window.ZENTRA.Search.Table.prototype.getResultsView = jest.fn(() => {
         return {
             setID(id) {
                 return id;
@@ -135,7 +135,7 @@ describe('Search Table', () => {
         };
     });
 
-    const real_table = new GLPI.Search.Table('massformComputer');
+    const real_table = new ZENTRA.Search.Table('massformComputer');
     $.fn.load = jest.fn().mockImplementation((url, data, callback) => {
         callback();
     });
@@ -159,9 +159,9 @@ describe('Search Table', () => {
     ctrl_click.ctrlKey = true;
 
     test('Class exists', () => {
-        expect(GLPI).toBeDefined();
-        expect(GLPI.Search).toBeDefined();
-        expect(GLPI.Search.Table).toBeDefined();
+        expect(ZENTRA).toBeDefined();
+        expect(ZENTRA.Search).toBeDefined();
+        expect(ZENTRA.Search.Table).toBeDefined();
     });
     test('getElement', () => {
         expect(real_table.getElement().length).toBe(1);
@@ -287,7 +287,7 @@ describe('Search Table', () => {
     test('AJAX refresh on limit change', async () => {
         const history_push_spy = jest.spyOn(window.history, 'pushState');
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
-            glpilist_limit: '10',
+            zentralist_limit: '10',
         }, () => {
             return $('div.ajax-container').html();
         }));

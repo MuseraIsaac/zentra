@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 <div class="col-12 col-sm-6 col-md-4 d-flex">
     <a
         class="card mx-2 my-2 flex-grow-1 border-0 rounded-4 hover-no-shadow hover-bg"
-        {% if child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
+        {% if child is instanceof("Zentra\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
             href="{{ child.getServiceCatalogLink() }}"
-        {% elseif child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
+        {% elseif child is instanceof("Zentra\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
             href="?{{ child.getChildrenUrlParameters() }}"
             data-children-url-parameters="{{ child.getChildrenUrlParameters() }}"
             data-composite-item

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -44,13 +44,13 @@
         <div id="manage_filter_ux" class="{{ filter_enabled ? "" : "d-none" }}">
 
             {# Display search UX #}
-            {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params + {is_criteria_filter: true}]) %}
+            {% do call('Zentra\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params + {is_criteria_filter: true}]) %}
 
             {# Display search results, hidden until a search is executed #}
             <div id="criteria_filter_preview" class="d-none">
                 <h2>{{ __("Preview") }}</h2>
                 {% set params = params|merge({'execute_search': false}) %}
-                {% do call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
+                {% do call('Zentra\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
             </div>
         </div>
 

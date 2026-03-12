@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 use function Safe\getimagesize;
 
@@ -114,12 +114,12 @@ class Notepad extends CommonDBChild
         return $input;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (Session::haveRight($item::$rightname, READNOTE) && $item instanceof CommonDBTM) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -127,7 +127,7 @@ class Notepad extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -147,7 +147,7 @@ class Notepad extends CommonDBChild
     {
 
         return countElementsInTable(
-            'glpi_notepads',
+            'zentra_notepads',
             ['itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
             ]
@@ -168,15 +168,15 @@ class Notepad extends CommonDBChild
         $data = [];
         $query = [
             'SELECT'    => [
-                'glpi_notepads.*',
-                'glpi_users.picture',
+                'zentra_notepads.*',
+                'zentra_users.picture',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         self::getTable()  => 'users_id_lastupdater',
-                        'glpi_users'      => 'id',
+                        'zentra_users'      => 'id',
                     ],
                 ],
             ],
@@ -203,7 +203,7 @@ class Notepad extends CommonDBChild
                 $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
 
-                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $docpath = ZENTRA_DOC_DIR . "/" . $item['filepath'];
                 $is_image = Document::isImage($docpath);
                 $sub_document = [
                     'type' => 'Document_Item',
@@ -235,7 +235,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => '200',
-            'table'              => 'glpi_notepads',
+            'table'              => 'zentra_notepads',
             'field'              => 'content',
             'name'               => $name,
             'datatype'           => 'text',
@@ -250,7 +250,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => '201',
-            'table'              => 'glpi_notepads',
+            'table'              => 'zentra_notepads',
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
@@ -263,7 +263,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => '202',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Writer'),
             'datatype'           => 'dropdown',
@@ -271,7 +271,7 @@ class Notepad extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_notepads',
+                    'table'              => 'zentra_notepads',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],
@@ -281,7 +281,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => '203',
-            'table'              => 'glpi_notepads',
+            'table'              => 'zentra_notepads',
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
@@ -294,7 +294,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => '204',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_lastupdater',
             'name'               => __('Last updater'),
@@ -303,7 +303,7 @@ class Notepad extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_notepads',
+                    'table'              => 'zentra_notepads',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],

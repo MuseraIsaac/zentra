@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         // Complex mode
         if (!$simple) {
             $restrict = ['changes_id' => $item->getField('id')];
-            $tickets  = getAllDataFromTable('glpi_changes_tickets', $restrict);
+            $tickets  = getAllDataFromTable('zentra_changes_tickets', $restrict);
 
             $data['tickets'] = [];
             if (count($tickets)) {
@@ -128,7 +128,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
             $data['##change.numberoftickets##'] = count($data['tickets']);
 
-            $problems = getAllDataFromTable('glpi_changes_problems', $restrict);
+            $problems = getAllDataFromTable('zentra_changes_problems', $restrict);
 
             $data['problems'] = [];
             if (count($problems)) {
@@ -157,7 +157,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
             $data['##change.numberofproblems##'] = count($data['problems']);
 
-            $items    = getAllDataFromTable('glpi_changes_items', $restrict);
+            $items    = getAllDataFromTable('zentra_changes_items', $restrict);
 
             $data['items'] = [];
             if (count($items)) {
@@ -180,7 +180,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                             if ($item2->getField('locations_id') != NOT_AVAILABLE) {
                                 $tmp['##item.location##']
                                  = Dropdown::getDropdownName(
-                                     'glpi_locations',
+                                     'zentra_locations',
                                      $item2->getField('locations_id')
                                  );
                             }
@@ -197,7 +197,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                             if ($item2->getField('groups_id')) {
                                 $tmp['##item.group##']
                                       = Dropdown::getDropdownName(
-                                          'glpi_groups',
+                                          'zentra_groups',
                                           $item2->getField('groups_id')
                                       );
                             }
@@ -219,11 +219,11 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
             //Validation infos
             if (isset($options['validation_id']) && $options['validation_id']) {
-                $restrict['glpi_changevalidations.id'] = $options['validation_id'];
+                $restrict['zentra_changevalidations.id'] = $options['validation_id'];
             }
 
             $validations = getAllDataFromTable(
-                'glpi_changevalidations',
+                'zentra_changevalidations',
                 [
                     'WHERE'  => $restrict,
                     'ORDER'  => ['submission_date DESC', 'id ASC'],

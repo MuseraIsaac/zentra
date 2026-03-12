@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class NetworkPort_Vlan extends CommonDBRelation
 {
@@ -102,16 +102,16 @@ class NetworkPort_Vlan extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_networkports_vlans.id as assocID',
-                'glpi_networkports_vlans.tagged',
-                'glpi_vlans.*',
+                'zentra_networkports_vlans.id as assocID',
+                'zentra_networkports_vlans.tagged',
+                'zentra_vlans.*',
             ],
-            'FROM'      => 'glpi_networkports_vlans',
+            'FROM'      => 'zentra_networkports_vlans',
             'LEFT JOIN' => [
-                'glpi_vlans'   => [
+                'zentra_vlans'   => [
                     'ON' => [
-                        'glpi_networkports_vlans'  => 'vlans_id',
-                        'glpi_vlans'               => 'id',
+                        'zentra_networkports_vlans'  => 'vlans_id',
+                        'zentra_vlans'               => 'id',
                     ],
                 ],
             ],
@@ -139,7 +139,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                     <form method="post" action="{{ 'NetworkPort_Vlan'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="networkports_id" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Vlan', 'vlans_id', 0, null, {
                                 no_label: true,
                                 used: used
@@ -161,7 +161,7 @@ TWIG, $twig_params);
             $vlan->getFromResultSet($data);
 
             if (!isset($entity_cache[$data['entities_id']])) {
-                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName("zentra_entities", $data["entities_id"]);
             }
             $entries[] = [
                 'itemtype'      => self::class,
@@ -215,16 +215,16 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_networkports_vlans.id as assocID',
-                'glpi_networkports_vlans.tagged',
-                'glpi_networkports.*',
+                'zentra_networkports_vlans.id as assocID',
+                'zentra_networkports_vlans.tagged',
+                'zentra_networkports.*',
             ],
-            'FROM'      => 'glpi_networkports_vlans',
+            'FROM'      => 'zentra_networkports_vlans',
             'LEFT JOIN' => [
-                'glpi_networkports'   => [
+                'zentra_networkports'   => [
                     'ON' => [
-                        'glpi_networkports_vlans'  => 'networkports_id',
-                        'glpi_networkports'        => 'id',
+                        'zentra_networkports_vlans'  => 'networkports_id',
+                        'zentra_networkports'        => 'id',
                     ],
                 ],
             ],
@@ -237,7 +237,7 @@ TWIG, $twig_params);
         foreach ($iterator as $data) {
             $netport->getFromResultSet($data);
             if (!isset($entity_cache[$data['entities_id']])) {
-                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName("zentra_entities", $data["entities_id"]);
             }
             $entries[] = [
                 'itemtype'      => self::class,
@@ -280,7 +280,7 @@ TWIG, $twig_params);
         $vlans = [];
         $iterator = $DB->request([
             'SELECT' => 'vlans_id',
-            'FROM'   => 'glpi_networkports_vlans',
+            'FROM'   => 'zentra_networkports_vlans',
             'WHERE'  => ['networkports_id' => $portID],
         ]);
 
@@ -291,13 +291,13 @@ TWIG, $twig_params);
         return $vlans;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case NetworkPort::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ["networkports_id" => $item->getID()]
@@ -305,7 +305,7 @@ TWIG, $twig_params);
                     }
                     return self::createTabEntry(Vlan::getTypeName(), $nb, $item::class);
                 case Vlan::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ["vlans_id" => $item->getID()]
@@ -317,7 +317,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         return match ($item::class) {
             NetworkPort::class => self::showForNetworkPort($item),

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,8 +90,8 @@ describe('Reservations', () => {
             can_reserve: false,
             now: '2024-06-10T12:00:00',
         });
-        window.CFG_GLPI.planning_begin = '08:00:00';
-        window.CFG_GLPI.planning_end = '18:00:00';
+        window.CFG_ZENTRA.planning_begin = '08:00:00';
+        window.CFG_ZENTRA.planning_end = '18:00:00';
         window.FullCalendarLocales = {
             'en-gb': {
                 code: "en-gb",

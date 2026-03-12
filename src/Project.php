@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Features\Clonable;
-use Glpi\Features\Kanban;
-use Glpi\Features\KanbanInterface;
-use Glpi\Features\Teamwork;
-use Glpi\Features\TeamworkInterface;
-use Glpi\Plugin\Hooks;
-use Glpi\RichText\RichText;
-use Glpi\Team\Team;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Features\Clonable;
+use Zentra\Features\Kanban;
+use Zentra\Features\KanbanInterface;
+use Zentra\Features\Teamwork;
+use Zentra\Features\TeamworkInterface;
+use Zentra\Plugin\Hooks;
+use Zentra\RichText\RichText;
+use Zentra\Team\Team;
 
 class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
@@ -139,14 +139,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return $values;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (static::canView() && !$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             [
@@ -164,7 +164,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case self::class:
@@ -256,7 +256,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->input = $this->addFiles($this->input, [
             'force_update'  => true,
@@ -278,7 +278,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             self::recalculatePercentDone($this->input['_old_projects_id']);
         }
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             // Read again project to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
@@ -287,7 +287,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->input = $this->addFiles($this->input, [
             'force_update'  => true,
@@ -299,7 +299,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             self::recalculatePercentDone($this->fields['projects_id']);
         }
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
@@ -342,9 +342,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function pre_deleteItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA['use_notifications']) {
             NotificationEvent::raiseEvent('delete', $this);
         }
         return true;
@@ -386,26 +386,26 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $join = [];
         $where = [];
 
-        $join['glpi_projectteams'] = [
+        $join['zentra_projectteams'] = [
             'ON' => [
-                'glpi_projectteams'  => 'projects_id',
-                'glpi_projects'      => 'id',
+                'zentra_projectteams'  => 'projects_id',
+                'zentra_projects'      => 'id',
             ],
         ];
 
-        $teamtable = 'glpi_projectteams';
+        $teamtable = 'zentra_projectteams';
         $ors = [
-            'glpi_projects.users_id'   => Session::getLoginUserID(),
+            'zentra_projects.users_id'   => Session::getLoginUserID(),
             [
                 "$teamtable.itemtype"   => 'User',
                 "$teamtable.items_id"   => Session::getLoginUserID(),
             ],
         ];
-        if (count($_SESSION['glpigroups'])) {
-            $ors['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
+        if (count($_SESSION['zentragroups'])) {
+            $ors['zentra_projects.groups_id'] = $_SESSION['zentragroups'];
             $ors[] = [
                 "$teamtable.itemtype"   => 'Group',
-                "$teamtable.items_id"   => $_SESSION['glpigroups'],
+                "$teamtable.items_id"   => $_SESSION['zentragroups'],
             ];
         }
 
@@ -437,10 +437,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         }
 
         if (
-            isset($_SESSION['glpigroups'], $this->team['Group'])
-            && count($_SESSION['glpigroups']) && count($this->team['Group'])
+            isset($_SESSION['zentragroups'], $this->team['Group'])
+            && count($_SESSION['zentragroups']) && count($this->team['Group'])
         ) {
-            foreach ($_SESSION['glpigroups'] as $groups_id) {
+            foreach ($_SESSION['zentragroups'] as $groups_id) {
                 foreach ($this->team['Group'] as $data) {
                     if ((int) $data['items_id'] === (int) $groups_id) {
                         return true;
@@ -459,10 +459,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public function isInTheManagerGroup()
     {
         if (
-            isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
+            isset($_SESSION['zentragroups']) && count($_SESSION['zentragroups'])
             && $this->fields['groups_id']
         ) {
-            foreach ($_SESSION['glpigroups'] as $groups_id) {
+            foreach ($_SESSION['zentragroups'] as $groups_id) {
                 if ((int) $this->fields['groups_id'] === (int) $groups_id) {
                     return true;
                 }
@@ -559,7 +559,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_projecttypes',
+            'table'              => 'zentra_projecttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -567,7 +567,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_projectstates',
+            'table'              => 'zentra_projectstates',
             'field'              => 'name',
             'name'               => _n('State', 'States', 1),
             'datatype'           => 'dropdown',
@@ -608,7 +608,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id',
             'name'               => _n('Manager', 'Managers', 1),
@@ -618,7 +618,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Manager group'),
@@ -721,7 +721,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -1168,7 +1168,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $item = new static();
         $state_iterator = $DB->request([
             'SELECT' => ['id', 'color'],
-            'FROM'   => 'glpi_projectstates',
+            'FROM'   => 'zentra_projectstates',
         ]);
         $state_colors = [];
         foreach ($state_iterator as $state) {
@@ -1185,20 +1185,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             $item->getFromDB($entry[$projects_id_field]);
             $entry['name'] = $item->getLink();
             $entry['status'] = [
-                'content' => Dropdown::getDropdownName('glpi_projectstates', $item->fields['projectstates_id']),
+                'content' => Dropdown::getDropdownName('zentra_projectstates', $item->fields['projectstates_id']),
                 'color' => $state_colors[$item->fields['projectstates_id']] ?? '',
             ];
             $entry['date'] = Html::convDateTime($item->fields['date']);
             $entry['date_mod'] = Html::convDateTime($item->fields['date_mod']);
             if (Session::isMultiEntitiesMode()) {
                 if (!isset($entities[$item->fields['entities_id']])) {
-                    $entities[$item->fields['entities_id']] = Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']);
+                    $entities[$item->fields['entities_id']] = Dropdown::getDropdownName('zentra_entities', $item->fields['entities_id']);
                 }
                 $entry['entity'] = $entities[$item->fields['entities_id']];
             }
             $entry['priority'] = [
                 'content' => CommonITILObject::getPriorityName($item->fields["priority"]),
-                'color' => $_SESSION["glpipriority_" . $item->fields["priority"]],
+                'color' => $_SESSION["zentrapriority_" . $item->fields["priority"]],
             ];
             if ($item->fields['users_id']) {
                 if (!isset($users[$item->fields['users_id']])) {
@@ -1221,9 +1221,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 if (!isset($groups[$item->fields['groups_id']])) {
                     $groups[$item->fields['groups_id']] = sprintf(
                         __s('%1$s %2$s'),
-                        htmlescape(Dropdown::getDropdownName('glpi_groups', $item->fields["groups_id"])),
+                        htmlescape(Dropdown::getDropdownName('zentra_groups', $item->fields["groups_id"])),
                         Html::showToolTip(
-                            Dropdown::getDropdownComments('glpi_groups', $item->fields["groups_id"]),
+                            Dropdown::getDropdownComments('zentra_groups', $item->fields["groups_id"]),
                             ['display' => false]
                         )
                     );
@@ -1428,7 +1428,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                     'itemtypes'       => ProjectTeam::$available_types,
                     'entity_restrict' => ($project->fields['is_recursive']
                         ? getSonsOf(
-                            'glpi_entities',
+                            'zentra_entities',
                             $project->fields['entities_id']
                         )
                         : $project->fields['entities_id']),
@@ -1441,7 +1441,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 <div class="mb-3">
                     <form method="post" action="{{ 'ProjectTeam'|itemtype_form_path }}">
                         <div class="d-flex">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="projects_id" value="{{ id }}">
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
@@ -1516,10 +1516,10 @@ TWIG, $twig_params);
                 ],
             ];
             $joins = [
-                'glpi_projectstates' => [
+                'zentra_projectstates' => [
                     'FKEY' => [
-                        'glpi_projectstates' => 'id',
-                        'glpi_projects'      => 'projectstates_id',
+                        'zentra_projectstates' => 'id',
+                        'zentra_projects'      => 'projectstates_id',
                     ],
                 ],
             ];
@@ -1527,13 +1527,13 @@ TWIG, $twig_params);
         $criteria += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
         $iterator = $DB->request(array_merge_recursive([
             'SELECT'   => [
-                'glpi_projects.id',
-                'glpi_projects.name',
-                'glpi_projects.is_deleted',
-                'glpi_projectstates.is_finished',
+                'zentra_projects.id',
+                'zentra_projects.name',
+                'zentra_projects.is_deleted',
+                'zentra_projectstates.is_finished',
             ],
             'DISTINCT' => true,
-            'FROM'     => 'glpi_projects',
+            'FROM'     => 'zentra_projects',
             'LEFT JOIN' => $joins,
             'WHERE'     => $criteria,
         ], self::getVisibilityCriteria()));
@@ -1545,10 +1545,10 @@ TWIG, $twig_params);
             // Current Kanban is not in the list yet
             $iterator = $DB->request([
                 'SELECT'   => [
-                    'glpi_projects.id',
-                    'glpi_projects.name',
+                    'zentra_projects.id',
+                    'zentra_projects.name',
                 ],
-                'FROM'     => 'glpi_projects',
+                'FROM'     => 'zentra_projects',
                 'WHERE'     => ['id' => $current_id],
             ]);
             if ($iterator->count()) {
@@ -1575,13 +1575,13 @@ TWIG, $twig_params);
             $ljoin = [];
             if (Session::haveTranslations(ProjectState::getType(), 'name')) {
                 $addselect[] = "namet2.value AS transname";
-                $ljoin['glpi_dropdowntranslations AS namet2'] = [
+                $ljoin['zentra_dropdowntranslations AS namet2'] = [
                     'ON' => [
                         'namet2' => 'items_id',
                         ProjectState::getTable()   => 'id', [
                             'AND' => [
                                 'namet2.itemtype' => ProjectState::getType(),
-                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.language' => $_SESSION['zentralanguage'],
                                 'namet2.field'    => 'name',
                             ],
                         ],
@@ -1637,14 +1637,14 @@ TWIG, $twig_params);
         ];
         $request = [
             'SELECT' => [
-                'glpi_projectstates.is_finished',
+                'zentra_projectstates.is_finished',
             ],
-            'FROM'   => 'glpi_projects',
+            'FROM'   => 'zentra_projects',
             'LEFT JOIN' => [
-                'glpi_projectstates' => [
+                'zentra_projectstates' => [
                     'FKEY' => [
-                        'glpi_projects'   => 'projectstates_id',
-                        'glpi_projectstates' => 'id',
+                        'zentra_projects'   => 'projectstates_id',
+                        'zentra_projectstates' => 'id',
                     ],
                 ],
             ] + $project_visibility['LEFT JOIN'],
@@ -1653,10 +1653,10 @@ TWIG, $twig_params);
             ],
         ];
         foreach ($required_project_fields as $field) {
-            $request['SELECT'][] = 'glpi_projects.' . $field;
+            $request['SELECT'][] = 'zentra_projects.' . $field;
         }
         if ($ID > 0) {
-            $request['WHERE']['glpi_projects.projects_id'] = $ID;
+            $request['WHERE']['zentra_projects.projects_id'] = $ID;
             $request['WHERE'] += $criteria;
         }
 
@@ -1988,11 +1988,11 @@ TWIG, $twig_params);
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID'],
+                    'value'        => $_SESSION['zentraID'],
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['zentraactive_entity'],
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
@@ -2038,7 +2038,7 @@ TWIG, $twig_params);
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['zentraactive_entity'],
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
@@ -2369,7 +2369,7 @@ TWIG, $twig_params);
                 $projects_id = self::getActiveProjectIDsForUser([Session::getLoginUserID()], false, true);
                 break;
             case 'Group':
-                $projects_id = self::getActiveProjectIDsForGroup($_SESSION['glpigroups']);
+                $projects_id = self::getActiveProjectIDsForGroup($_SESSION['zentragroups']);
                 break;
         }
 
@@ -2414,7 +2414,7 @@ TWIG, $twig_params);
             ];
         }
 
-        $displayed_row_count = min(count($projects_id), (int) $_SESSION['glpidisplay_count_on_home']);
+        $displayed_row_count = min(count($projects_id), (int) $_SESSION['zentradisplay_count_on_home']);
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ describe ('Import forms', () => {
         cy.findAllByRole('row').as('preview');
         cy.get("@preview").eq(1).within(() => {
             cy.findByText("Test form").should('exist');
-            cy.findByText("Unknown custom type: Glpi\\CustomAsset\\HammerAsset")
+            cy.findByText("Unknown custom type: Zentra\\CustomAsset\\HammerAsset")
                 .should('exist')
             ;
             cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');

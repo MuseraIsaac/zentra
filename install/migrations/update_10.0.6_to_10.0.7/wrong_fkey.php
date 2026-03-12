@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,20 +37,20 @@
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$migration->dropKey('glpi_items_devicecameras_imageformats', 'item_devicecameras_id');
+$migration->dropKey('zentra_items_devicecameras_imageformats', 'item_devicecameras_id');
 $migration->changeField(
-    'glpi_items_devicecameras_imageformats',
+    'zentra_items_devicecameras_imageformats',
     'item_devicecameras_id',
     'items_devicecameras_id',
     "int {$default_key_sign} NOT NULL DEFAULT '0'"
 );
-$migration->addKey('glpi_items_devicecameras_imageformats', 'items_devicecameras_id');
+$migration->addKey('zentra_items_devicecameras_imageformats', 'items_devicecameras_id');
 
-$migration->dropKey('glpi_items_devicecameras_imageresolutions', 'item_devicecameras_id');
+$migration->dropKey('zentra_items_devicecameras_imageresolutions', 'item_devicecameras_id');
 $migration->changeField(
-    'glpi_items_devicecameras_imageresolutions',
+    'zentra_items_devicecameras_imageresolutions',
     'item_devicecameras_id',
     'items_devicecameras_id',
     "int {$default_key_sign} NOT NULL DEFAULT '0'"
 );
-$migration->addKey('glpi_items_devicecameras_imageresolutions', 'items_devicecameras_id');
+$migration->addKey('zentra_items_devicecameras_imageresolutions', 'items_devicecameras_id');

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Session;
 use User;
 use UserEmail;
@@ -45,7 +45,7 @@ class UserEmailTest extends DbTestCase
     {
         $users_passwords = [
             TU_USER     => TU_PASS,
-            'glpi'      => 'glpi',
+            'zentra'      => 'zentra',
             'tech'      => 'tech',
             'normal'    => 'normal',
             'post-only' => 'postonly',
@@ -54,35 +54,35 @@ class UserEmailTest extends DbTestCase
         $users_matrix = [
             TU_USER => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
-            'glpi' => [
+            'zentra' => [
                 TU_USER     => true,
-                'glpi'      => true,
+                'zentra'      => true,
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
             'tech' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => true,
                 'normal'    => false, // has some more rights somewhere
                 'post-only' => true,
             ],
             'normal' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => true,
                 'post-only' => true,
             ],
             'post-only' => [
                 TU_USER     => false,
-                'glpi'      => false,
+                'zentra'      => false,
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,

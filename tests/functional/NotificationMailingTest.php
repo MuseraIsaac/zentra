@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use CronTask;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;
@@ -55,9 +55,9 @@ class NotificationMailingTest extends DbTestCase
         $this->assertFalse($instance->check('user'));
         $this->assertTrue($instance->check('user@localhost'));
         $this->assertTrue($instance->check('user@localhost.dot'));
-        if (!getenv('GLPI_SKIP_ONLINE')) {
+        if (!getenv('ZENTRA_SKIP_ONLINE')) {
             $this->assertFalse($instance->check('user@localhost.dot', ['checkdns' => true]));
-            $this->assertTrue($instance->check('user@glpi-project.org', ['checkdns' => true]));
+            $this->assertTrue($instance->check('user@zentra-project.org', ['checkdns' => true]));
         }
     }
 
@@ -76,13 +76,13 @@ class NotificationMailingTest extends DbTestCase
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => \Session::getLoginUserID(),
-            'from'                        => 'glpi@tests',
+            'from'                        => 'zentra@tests',
             'toname'                      => '',
             'event'                       => 'test_notification',
         ]);
         $this->assertTrue($res);
 
-        $data = getAllDataFromTable('glpi_queuednotifications');
+        $data = getAllDataFromTable('zentra_queuednotifications');
         $this->assertCount(1, $data);
 
         $row = array_pop($data);
@@ -100,7 +100,7 @@ class NotificationMailingTest extends DbTestCase
                 'sent_try'                 => 0,
                 'sent_time'                => null,
                 'name'                     => 'Test notification',
-                'sender'                   => 'glpi@tests',
+                'sender'                   => 'zentra@tests',
                 'sendername'               => 'TEST',
                 'recipient'                => (string) \Session::getLoginUserID(),
                 'recipientname'            => '',
@@ -175,7 +175,7 @@ class NotificationMailingTest extends DbTestCase
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => 'test@localhost',
-            'from'                        => 'glpi@tests',
+            'from'                        => 'zentra@tests',
             'toname'                      => '',
             'event'                       => $event,
         ]));
@@ -187,7 +187,7 @@ class NotificationMailingTest extends DbTestCase
 
         // the email should only be in the queue because we cannot send email in tests
         // to identify that it was attempted to be sent immediately, we check the sent_try field
-        $queued = getAllDataFromTable('glpi_queuednotifications');
+        $queued = getAllDataFromTable('zentra_queuednotifications');
         $this->assertCount(1, $queued);
         $queued = reset($queued);
         $this->assertEquals($expected ? 1 : 0, $queued['sent_try']);

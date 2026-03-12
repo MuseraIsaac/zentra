@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
         <td>
             {{ template['name']|raw }}
         </td>
-        {% if not add_mode and session('glpi_multientitiesmode')|default(false) %}
+        {% if not add_mode and session('zentra_multientitiesmode')|default(false) %}
             <td>{{ template['entity'] }}</td>
         {% endif %}
         {% if not add_mode %}
@@ -72,7 +72,7 @@
                         <thead>
                             <tr>
                                 <th>{{ _n('Template', 'Templates', 1) }}</th>
-                                {% if not add_mode and session('glpi_multientitiesmode')|default(false) %}
+                                {% if not add_mode and session('zentra_multientitiesmode')|default(false) %}
                                     <th>{{ 'Entity'|itemtype_name(1) }}</th>
                                 {% endif %}
                                 {% if not add_mode %}

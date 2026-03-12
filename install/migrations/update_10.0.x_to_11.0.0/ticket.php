@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ $migration->addRight('ticket', Ticket::READNEWTICKET, [
     'ticket' => Ticket::ASSIGN,
 ]);
 
-if (!$DB->fieldExists('glpi_tickets', 'externalid')) {
-    $migration->addField('glpi_tickets', 'externalid', 'string', [
+if (!$DB->fieldExists('zentra_tickets', 'externalid')) {
+    $migration->addField('zentra_tickets', 'externalid', 'string', [
         'null' => true,
     ]);
 }

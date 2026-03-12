@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,12 +139,12 @@ describe('Service catalog page', () => {
         // Enable expanded service catalog
         cy.updateWithAPI('Entity', 1, {'expand_service_catalog': true});
 
-        cy.createWithAPI('Glpi\\Form\\Category', {
+        cy.createWithAPI('Zentra\\Form\\Category', {
             'name': root_category_name,
             'description': "Root category description.",
         }).as('root_category_id');
         cy.get('@root_category_id').then(root_category_id => {
-            cy.createWithAPI('Glpi\\Form\\Category', {
+            cy.createWithAPI('Zentra\\Form\\Category', {
                 'name': child_category_name,
                 'description': "Child category description.",
                 'forms_categories_id': root_category_id,
@@ -192,7 +192,7 @@ describe('Service catalog page', () => {
 
         cy.changeProfile('Super-Admin');
 
-        cy.createWithAPI('Glpi\\Form\\Category', {
+        cy.createWithAPI('Zentra\\Form\\Category', {
             'name': category_name,
             'description': "Category for KB items",
         }).then(category_id => {
@@ -201,7 +201,7 @@ describe('Service catalog page', () => {
             });
             createKnowledgeBaseItem(kb_name_2);
 
-            cy.createWithAPI('Glpi\\Form\\Category', {
+            cy.createWithAPI('Zentra\\Form\\Category', {
                 'name': `Nested ${category_name}`,
                 'description': "Category for KB items",
                 'forms_categories_id': category_id,
@@ -276,7 +276,7 @@ describe('Service catalog page', () => {
 
     it('can navigate through the expanded service catalog using the breadcrumbs', () => {
         function createCategory(name, category_id = 0) {
-            return cy.createWithAPI('Glpi\\Form\\Category', {
+            return cy.createWithAPI('Zentra\\Form\\Category', {
                 'name': name,
                 'description': `${name} description.`,
                 'forms_categories_id': category_id,
@@ -580,10 +580,10 @@ describe('Service catalog page', () => {
         const uuid = Cypress._.uniqueId(Date.now().toString());
 
         // Arrange: Create categories, form and KB item
-        cy.createWithAPI('Glpi\\Form\\Category', {
+        cy.createWithAPI('Zentra\\Form\\Category', {
             'name': `Root Category ${uuid}`,
         }).then(category_id => {
-            cy.createWithAPI('Glpi\\Form\\Category', {
+            cy.createWithAPI('Zentra\\Form\\Category', {
                 'name': `Nested category ${uuid}`,
                 'forms_categories_id': category_id
             }).then(sub_category_id => {

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
                disabled="disabled" style="display: none;"
             {% endif %}
-            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}" data-glpi-popover-source="content{{ unique_id }}">
+            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}" data-zentra-popover-source="content{{ unique_id }}">
          {{ actor['title'] }}
       </option>
    {% endfor %}
@@ -82,7 +82,7 @@
         in the 'content' field, which is falsely identified as a potential XSS injection.
         This key is removed from the AJAX payload to avoid false positives.
 
-        Reference: https://github.com/glpi-project/glpi/pull/10300
+        Reference: https://github.com/zentra-project/zentra/pull/10300
     #}
     {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
     <script type="module" defer>
@@ -164,7 +164,7 @@
             if (is_selection && itemtype == "User") {
                 const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
                 $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
+                    url: `${CFG_ZENTRA.root_doc}/ajax/comments.php`,
                     type: 'POST',
                     data: {
                         'itemtype': 'User',
@@ -174,7 +174,7 @@
                     {# `result` is a safe HTML string #}
                     if (result) {
                         actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                        option_element.attr('data-zentra-popover-source', `content${unique_id}`);
                     }
                 });
             }
@@ -182,7 +182,7 @@
             if (is_selection && itemtype == "Group") {
                 const unique_id = "group_opt_" + actor_select.attr('data-actor-type') + "Group" + items_id;
                 $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
+                    url: `${CFG_ZENTRA.root_doc}/ajax/comments.php`,
                     type: 'POST',
                     data: {
                         'itemtype': 'Group',
@@ -192,7 +192,7 @@
                     {# `result` is a safe HTML string #}
                     if (result) {
                         actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                        option_element.attr('data-zentra-popover-source', `content${unique_id}`);
                     }
                 });
             }
@@ -200,7 +200,7 @@
             if (is_selection && itemtype == "Supplier") {
                 const unique_id = "supplier_opt_" + actor_select.attr('data-actor-type') + "Supplier" + items_id;
                 $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
+                    url: `${CFG_ZENTRA.root_doc}/ajax/comments.php`,
                     type: 'POST',
                     data: {
                         'itemtype': 'Supplier',
@@ -210,7 +210,7 @@
                     {# `result` is a safe HTML string #}
                     if (result) {
                         actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                        option_element.attr('data-zentra-popover-source', `content${unique_id}`);
                     }
                 });
             }
@@ -232,7 +232,7 @@
                 `);
                 option_element.append(existing_element);
 
-                $.get(`${CFG_GLPI.root_doc}/ajax/actorinformation.php`, {
+                $.get(`${CFG_ZENTRA.root_doc}/ajax/actorinformation.php`, {
                     [fk]: items_id,
                     only_number: true,
                 }).done((number) => {
@@ -279,7 +279,7 @@
                 }
             },
             ajax: {
-                url: `${CFG_GLPI.root_doc}/ajax/actors.php`,
+                url: `${CFG_ZENTRA.root_doc}/ajax/actors.php`,
                 datatype: 'json',
                 type: 'POST',
                 delay:250,
@@ -308,7 +308,7 @@
         });
 
         actor_select.parent().popover({
-            selector: '[data-glpi-popover-source]',
+            selector: '[data-zentra-popover-source]',
             container: actor_select.parent(),
             html: true,
             sanitize: false,
@@ -319,7 +319,7 @@
             content: (el) => {
                 // Close other popovers
                 $('.popover').popover('hide');
-                return $('#' + $(el).attr('data-glpi-popover-source')).html();
+                return $('#' + $(el).attr('data-zentra-popover-source')).html();
             }
         }).on('hide.bs.popover', () => {
             // prevent closing popover when user card is hover
@@ -345,7 +345,7 @@
 
             setTimeout(() => {
                 // Find the trigger element and hide its popover
-                const popover_element = $('[data-glpi-popover-source][aria-describedby="' + CSS.escape(popover.attr('id')) + '"]');
+                const popover_element = $('[data-zentra-popover-source][aria-describedby="' + CSS.escape(popover.attr('id')) + '"]');
                 if (popover_element.length > 0) {
                     const popover_instance = bootstrap.Popover.getInstance(popover_element[0]);
                     popover_instance.hide();

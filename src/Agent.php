@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Error\ErrorHandler;
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\Inventory;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Error\ErrorHandler;
+use Zentra\Inventory\Conf;
+use Zentra\Inventory\Inventory;
+use Zentra\Plugin\Hooks;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Safe\DateTime;
@@ -370,7 +370,7 @@ class Agent extends CommonDBTM
      */
     public function showForm($id, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!empty($id)) {
             $this->getFromDB($id);
@@ -386,7 +386,7 @@ class Agent extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/admin/inventory/agent.html.twig', [
             'item'           => $this,
             'params'         => $options,
-            'itemtypes'      => array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']),
+            'itemtypes'      => array_combine($CFG_ZENTRA['inventory_types'], $CFG_ZENTRA['inventory_types']),
             'versions_field' => $versions,
         ]);
         return true;
@@ -401,7 +401,7 @@ class Agent extends CommonDBTM
      */
     public function handleAgent($metadata)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $deviceid = $metadata['deviceid'];
 
@@ -467,7 +467,7 @@ class Agent extends CommonDBTM
         }
 
 
-        $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
+        $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_ZENTRA['agent_types']);
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
                 'items_id' => 0,
@@ -516,18 +516,18 @@ class Agent extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (isset($CFG_GLPI['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
+        if (isset($CFG_ZENTRA['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
             $input['threads_networkdiscovery'] = 0;
         }
-        if (isset($CFG_GLPI['threads_networkinventory']) && !isset($input['threads_networkinventory'])) {
+        if (isset($CFG_ZENTRA['threads_networkinventory']) && !isset($input['threads_networkinventory'])) {
             $input['threads_networkinventory'] = 0;
         }
-        if (isset($CFG_GLPI['timeout_networkdiscovery']) && !isset($input['timeout_networkdiscovery'])) {
+        if (isset($CFG_ZENTRA['timeout_networkdiscovery']) && !isset($input['timeout_networkdiscovery'])) {
             $input['timeout_networkdiscovery'] = 0;
         }
-        if (isset($CFG_GLPI['timeout_networkinventory']) && !isset($input['timeout_networkinventory'])) {
+        if (isset($CFG_ZENTRA['timeout_networkinventory']) && !isset($input['timeout_networkinventory'])) {
             $input['timeout_networkinventory'] = 0;
         }
 
@@ -695,7 +695,7 @@ class Agent extends CommonDBTM
      */
     public function requestAgent($endpoint): Response
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (self::$found_address !== false) {
             $addresses = [self::$found_address];
@@ -710,7 +710,7 @@ class Agent extends CommonDBTM
                 'base_uri'        => $address,
             ];
 
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            if (in_array(self::class, $CFG_ZENTRA['proxy_exclusions'])) {
                 $options['proxy_excluded'] = true;
             }
 

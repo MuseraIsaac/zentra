@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +34,14 @@
 
 namespace tests\units;
 
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\Converter;
-use Glpi\Inventory\Inventory;
-use Glpi\Tests\DbTestCase;
+use Zentra\Inventory\Conf;
+use Zentra\Inventory\Converter;
+use Zentra\Inventory\Inventory;
+use Zentra\Tests\DbTestCase;
 
 class AgentTest extends DbTestCase
 {
-    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/';
 
     public function testDefineTabs()
     {
@@ -58,7 +58,7 @@ class AgentTest extends DbTestCase
     public function testHandleAgent()
     {
         $metadata = [
-            'deviceid'  => 'glpixps-2018-07-09-09-07-13',
+            'deviceid'  => 'zentraxps-2018-07-09-09-07-13',
             'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
             'itemtype'  => 'Computer',
             'tag'       => '000005',
@@ -120,7 +120,7 @@ class AgentTest extends DbTestCase
     public function testHandleAgentOnUpdate()
     {
         $metadata = [
-            'deviceid'  => 'glpixps-2018-07-09-09-07-13',
+            'deviceid'  => 'zentraxps-2018-07-09-09-07-13',
             'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
             'itemtype'  => 'Computer',
             'tag'       => '000006',
@@ -179,7 +179,7 @@ class AgentTest extends DbTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $metadata['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $metadata['deviceid']);
         $this->assertSame('FusionInventory-Agent_v2.5.2-1.fc31', $metadata['version']);
         $this->assertSame('Computer', $metadata['itemtype']);
         $this->assertSame('inventory', $metadata['action']);
@@ -193,8 +193,8 @@ class AgentTest extends DbTestCase
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->assertCount(1, $agents);
         $current_agent = $agents->current();
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['deviceid']);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['name']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['name']);
         $this->assertSame('2.5.2-1.fc31', $current_agent['version']);
         $this->assertSame('Computer', $current_agent['itemtype']);
         $this->assertSame($agenttype['id'], $current_agent['agenttypes_id']);
@@ -207,7 +207,7 @@ class AgentTest extends DbTestCase
 
         $this->assertSame(
             [
-                'glpixps',
+                'zentraxps',
                 '192.168.1.142',
                 '[fe80::b283:4fa3:d3f2:96b1]',
                 '192.168.1.118',
@@ -219,13 +219,13 @@ class AgentTest extends DbTestCase
 
         $this->assertSame(
             [
-                'http://glpixps:62354',
+                'http://zentraxps:62354',
                 'http://192.168.1.142:62354',
                 'http://[fe80::b283:4fa3:d3f2:96b1]:62354',
                 'http://192.168.1.118:62354',
                 'http://[fe80::92a4:26c6:99dd:2d60]:62354',
                 'http://192.168.122.1:62354',
-                'https://glpixps:62354',
+                'https://zentraxps:62354',
                 'https://192.168.1.142:62354',
                 'https://[fe80::b283:4fa3:d3f2:96b1]:62354',
                 'https://192.168.1.118:62354',
@@ -238,7 +238,7 @@ class AgentTest extends DbTestCase
         //link a domain to item and see if adresses are still ok
         $domain = new \Domain();
         $did = $domain->add([
-            'name'   => 'glpi-project.org',
+            'name'   => 'zentra-project.org',
         ]);
         $this->assertGreaterThan(0, $did);
 
@@ -254,13 +254,13 @@ class AgentTest extends DbTestCase
 
         $this->assertSame(
             [
-                'glpixps',
+                'zentraxps',
                 '192.168.1.142',
                 '[fe80::b283:4fa3:d3f2:96b1]',
                 '192.168.1.118',
                 '[fe80::92a4:26c6:99dd:2d60]',
                 '192.168.122.1',
-                'glpixps.glpi-project.org',
+                'zentraxps.zentra-project.org',
             ],
             $agent->guessAddresses()
         );
@@ -283,7 +283,7 @@ class AgentTest extends DbTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $metadata['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $metadata['deviceid']);
         $this->assertSame('FusionInventory-Agent_v2.5.2-1.fc31', $metadata['version']);
         $this->assertSame('Computer', $metadata['itemtype']);
         $this->assertSame('inventory', $metadata['action']);
@@ -297,8 +297,8 @@ class AgentTest extends DbTestCase
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->assertCount(1, $agents);
         $current_agent = $agents->current();
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['deviceid']);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['name']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['name']);
         $this->assertSame('2.5.2-1.fc31', $current_agent['version']);
         $this->assertSame('Computer', $current_agent['itemtype']);
         $this->assertSame('000005', $current_agent['tag']);
@@ -315,12 +315,12 @@ class AgentTest extends DbTestCase
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
 
         //change agent and therefore deviceid
-        $json->content->versionclient = 'GLPI-Agent_v1';
-        $json->deviceid = 'glpixps-2022-01-17-11-36-53';
+        $json->content->versionclient = 'ZENTRA-Agent_v1';
+        $json->deviceid = 'zentraxps-2022-01-17-11-36-53';
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $CFG_ZENTRA["is_contact_autoupdate"] = 0;
         $inventory = new Inventory($json);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+        $CFG_ZENTRA["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -333,8 +333,8 @@ class AgentTest extends DbTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
-        $this->assertSame('glpixps-2022-01-17-11-36-53', $metadata['deviceid']);
-        $this->assertSame('GLPI-Agent_v1', $metadata['version']);
+        $this->assertSame('zentraxps-2022-01-17-11-36-53', $metadata['deviceid']);
+        $this->assertSame('ZENTRA-Agent_v1', $metadata['version']);
         $this->assertSame('Computer', $metadata['itemtype']);
         $this->assertSame('inventory', $metadata['action']);
         $this->assertNull($metadata['port']);
@@ -353,7 +353,7 @@ class AgentTest extends DbTestCase
 <REQUEST>
   <CONTENT>
     <HARDWARE>
-      <NAME>glpixps</NAME>
+      <NAME>zentraxps</NAME>
       <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
     </HARDWARE>
     <BIOS>
@@ -366,7 +366,7 @@ class AgentTest extends DbTestCase
     </ACCOUNTINFO>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
   </CONTENT>
-  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <DEVICEID>zentraxps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
@@ -420,7 +420,7 @@ class AgentTest extends DbTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $metadata['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $metadata['deviceid']);
         $this->assertSame('FusionInventory-Agent_v2.5.2-1.fc31', $metadata['version']);
         $this->assertSame('Computer', $metadata['itemtype']);
         $this->assertSame('inventory', $metadata['action']);
@@ -434,8 +434,8 @@ class AgentTest extends DbTestCase
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->assertCount(1, $agents);
         $current_agent = $agents->current();
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['deviceid']);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $current_agent['name']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $current_agent['name']);
         $this->assertSame('2.5.2-1.fc31', $current_agent['version']);
         $this->assertSame('Computer', $current_agent['itemtype']);
         $this->assertSame('000005', $current_agent['tag']);

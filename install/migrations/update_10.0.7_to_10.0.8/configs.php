@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,4 +38,4 @@
 $migration->addConfig([
     'use_flat_dropdowntree_on_search_result'   => 1,
 ]);
-$migration->addField('glpi_users', 'use_flat_dropdowntree_on_search_result', 'tinyint DEFAULT NULL');
+$migration->addField('zentra_users', 'use_flat_dropdowntree_on_search_result', 'tinyint DEFAULT NULL');

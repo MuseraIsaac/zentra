@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ class DevicePci extends CommonDevice
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_devicepcimodels',
+            'table'              => 'zentra_devicepcimodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -99,7 +99,7 @@ class DevicePci extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicepcis',
+                    'table'              => 'zentra_items_devicepcis',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -107,7 +107,7 @@ class DevicePci extends CommonDevice
 
         $tab[] = [
             'id'                 => '1332',
-            'table'              => 'glpi_items_devicepcis',
+            'table'              => 'zentra_items_devicepcis',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -119,7 +119,7 @@ class DevicePci extends CommonDevice
 
         $tab[] = [
             'id'                 => '1333',
-            'table'              => 'glpi_items_devicepcis',
+            'table'              => 'zentra_items_devicepcis',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Team\Team;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Team\Team;
 
 //!  ProjectTeam Class
 /**
@@ -89,14 +89,14 @@ class ProjectTeam extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (self::canView()) {
             $nb = 0;
             switch (get_class($item)) {
                 case Project::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
                     return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
@@ -106,7 +106,7 @@ class ProjectTeam extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -135,7 +135,7 @@ class ProjectTeam extends CommonDBRelation
                 'SELECT' => ['id', 'name', 'realname', 'firstname',
                     new QueryExpression('"User" AS itemtype'),
                 ],
-                'FROM' => 'glpi_users',
+                'FROM' => 'zentra_users',
                 'WHERE' => [
                     'id'           => $user_ids,
                 ],
@@ -151,7 +151,7 @@ class ProjectTeam extends CommonDBRelation
                     new QueryExpression('NULL AS firstname'),
                     new QueryExpression('"Group" AS itemtype'),
                 ],
-                'FROM' => 'glpi_groups',
+                'FROM' => 'zentra_groups',
                 'WHERE' => [
                     'id'           => $group_ids,
                 ],
@@ -167,7 +167,7 @@ class ProjectTeam extends CommonDBRelation
                     new QueryExpression('NULL AS firstname'),
                     new QueryExpression('"Supplier" AS itemtype'),
                 ],
-                'FROM' => 'glpi_suppliers',
+                'FROM' => 'zentra_suppliers',
                 'WHERE' => [
                     'id' => $supplier_ids,
                 ],
@@ -183,7 +183,7 @@ class ProjectTeam extends CommonDBRelation
                     new QueryExpression('NULL AS firstname'),
                     new QueryExpression('"Contact" AS itemtype'),
                 ],
-                'FROM' => 'glpi_contacts',
+                'FROM' => 'zentra_contacts',
                 'WHERE' => [
                     'id' => $contact_ids,
                 ],

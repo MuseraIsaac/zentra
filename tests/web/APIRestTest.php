@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Api;
+namespace tests\units\Zentra\Api;
 
 use APIClient;
 use Auth;
 use Computer;
 use Config;
-use Glpi\Form\Form;
-use Glpi\Form\FormTranslation;
-use Glpi\Form\Question;
-use Glpi\Form\Section;
-use Glpi\Helpdesk\HelpdeskTranslation;
-use Glpi\Helpdesk\Tile\GlpiPageTile;
-use Glpi\Tests\Api\Deprecated\Computer_Item;
-use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
-use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
-use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
-use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
-use Glpi\Tests\Api\Deprecated\TicketFollowup;
-use GLPIKey;
+use Zentra\Form\Form;
+use Zentra\Form\FormTranslation;
+use Zentra\Form\Question;
+use Zentra\Form\Section;
+use Zentra\Helpdesk\HelpdeskTranslation;
+use Zentra\Helpdesk\Tile\ZentraPageTile;
+use Zentra\Tests\Api\Deprecated\Computer_Item;
+use Zentra\Tests\Api\Deprecated\Computer_SoftwareLicense;
+use Zentra\Tests\Api\Deprecated\Computer_SoftwareVersion;
+use Zentra\Tests\Api\Deprecated\ComputerAntivirus;
+use Zentra\Tests\Api\Deprecated\ComputerVirtualMachine;
+use Zentra\Tests\Api\Deprecated\TicketFollowup;
+use ZENTRAKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -75,16 +75,16 @@ class APIRestTest extends TestCase
 
     public function setUp(): void
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
-        $GLPI_CACHE->clear();
+        $ZENTRA_CACHE->clear();
 
         // Empty log file
         $file_updated = file_put_contents($this->getLogFilePath(), "");
         $this->assertNotSame(false, $file_updated);
 
         $this->http_client = new GuzzleHttp\Client();
-        $this->base_uri    = trim(GLPI_URI, '/') . '/api.php/v1/';
+        $this->base_uri    = trim(ZENTRA_URI, '/') . '/api.php/v1/';
 
         $this->initSessionCredentials();
         parent::setUp();
@@ -99,20 +99,20 @@ class APIRestTest extends TestCase
 
     protected function getLogFilePath(): string
     {
-        return GLPI_LOG_DIR . "/php-errors.log";
+        return ZENTRA_LOG_DIR . "/php-errors.log";
     }
 
     public static function setUpBeforeClass(): void
     {
         // To bypass various right checks
         // This is mandatory to create/update/delete some items during tests.
-        $_SESSION['glpishowallentities'] = 1;
-        $_SESSION['glpiactive_entity']   = 0;
-        $_SESSION['glpiactiveentities']  = [0];
-        $_SESSION['glpiactiveentities_string'] = "'0'";
+        $_SESSION['zentrashowallentities'] = 1;
+        $_SESSION['zentraactive_entity']   = 0;
+        $_SESSION['zentraactiveentities']  = [0];
+        $_SESSION['zentraactiveentities_string'] = "'0'";
 
         // Force "cron" mode to prevent user related behaviors
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+        $_SESSION['zentracronuserrunning'] = "cron_phpunit";
 
         // enable api config
         $config = new Config();
@@ -141,7 +141,7 @@ class APIRestTest extends TestCase
         $encrypted_app_token = $apiclient->fields['app_token'];
         $this->assertNotEmpty($encrypted_app_token);
 
-        $app_token = (new GLPIKey())->decrypt($encrypted_app_token);
+        $app_token = (new ZENTRAKey())->decrypt($encrypted_app_token);
         $this->assertSame(40, strlen($app_token));
 
         // test valid app token -> expect ok session
@@ -291,10 +291,10 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('session', $data);
 
         $this->assertIsArray($data['session']);
-        $this->assertArrayHasKey('glpiID', $data['session']);
-        $this->assertArrayHasKey('glpiname', $data['session']);
-        $this->assertArrayHasKey('glpilanguage', $data['session']);
-        $this->assertArrayHasKey('glpilist_limit', $data['session']);
+        $this->assertArrayHasKey('zentraID', $data['session']);
+        $this->assertArrayHasKey('zentraname', $data['session']);
+        $this->assertArrayHasKey('zentralanguage', $data['session']);
+        $this->assertArrayHasKey('zentralist_limit', $data['session']);
     }
 
     public function testGetMultipleItems()
@@ -356,7 +356,7 @@ class APIRestTest extends TestCase
 
         $this->assertIsArray($data[1]);
         $this->assertSame('Name', $data[1]['name']);
-        $this->assertSame('glpi_computers', $data[1]['table']);
+        $this->assertSame('zentra_computers', $data[1]['table']);
         $this->assertSame('name', $data[1]['field']);
         $this->assertIsArray($data[1]['available_searchtypes']);
 
@@ -950,7 +950,7 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('id', $data[0]);
         $this->assertArrayHasKey('name', $data[0]);
 
-        $this->assertSame('glpi', $data[0]['name']);
+        $this->assertSame('zentra', $data[0]['name']);
 
         // Test only_id param
         $data = $this->query(
@@ -1014,7 +1014,7 @@ class APIRestTest extends TestCase
     }
 
     /**
-     * This function test https://github.com/glpi-project/glpi/issues/1103
+     * This function test https://github.com/zentra-project/zentra/issues/1103
      * A post-only user could retrieve tickets of others users when requesting itemtype
      * without first letter in uppercase
      */
@@ -1031,7 +1031,7 @@ class APIRestTest extends TestCase
             ]
         );
 
-        // create a ticket for another user (glpi - super-admin)
+        // create a ticket for another user (zentra - super-admin)
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
             'name'                => 'test post-only',
@@ -1147,7 +1147,7 @@ class APIRestTest extends TestCase
     public function testDeleteItem()
     {
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
-        $_SESSION['glpiactive_entity'] = $eid;
+        $_SESSION['zentraactive_entity'] = $eid;
         $computer = new Computer();
         $this->assertGreaterThan(
             0,
@@ -1257,7 +1257,7 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'    => [
                     'input' => [
-                        'name'        => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
+                        'name'        => "my computer', (SELECT `password` from `zentra_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
                         'otherserial' => "Not hacked",
                     ],
                 ],
@@ -1394,7 +1394,7 @@ class APIRestTest extends TestCase
 
         //drop update access on item_devicesimcard
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 2],
             [
                 'profiles_id'  => 4,
@@ -1409,7 +1409,7 @@ class APIRestTest extends TestCase
 
         //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 3],
             [
                 'profiles_id'  => 4,
@@ -1479,16 +1479,16 @@ class APIRestTest extends TestCase
         );
     }
 
-    public function testGetGlpiConfig()
+    public function testGetZentraConfig()
     {
         $data = $this->query(
-            'getGlpiConfig',
+            'getZentraConfig',
             ['headers'  => ['Session-Token' => $this->session_token]]
         );
 
         // Test a disclosed data
-        $this->assertArrayHasKey('cfg_glpi', $data);
-        $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
+        $this->assertArrayHasKey('cfg_zentra', $data);
+        $this->assertArrayHasKey('infocom_types', $data['cfg_zentra']);
     }
 
 
@@ -1521,14 +1521,14 @@ class APIRestTest extends TestCase
 
         // test specific cases
         // Config
-        $data = $this->query('getGlpiConfig', [
+        $data = $this->query('getZentraConfig', [
             'headers'  => ['Session-Token' => $this->session_token],
         ]);
 
         // Test undisclosed data are actually not disclosed
         $this->assertGreaterThan(0, count(Config::$undisclosedFields));
         foreach (Config::$undisclosedFields as $key) {
-            $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
+            $this->assertArrayNotHasKey($key, $data['cfg_zentra']);
         }
     }
 
@@ -1550,7 +1550,7 @@ class APIRestTest extends TestCase
 
     public function testLostPasswordRequest()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $user = getItemByTypeName('User', TU_USER);
         $email = $user->getDefaultEmail();
@@ -1635,7 +1635,7 @@ class APIRestTest extends TestCase
         $encrypted_token = $user->fields['password_forget_token'];
         $this->assertNotEmpty($encrypted_token);
 
-        $token = (new GLPIKey())->decrypt($encrypted_token);
+        $token = (new ZENTRAKey())->decrypt($encrypted_token);
 
         // Test reset password with a bad token
         $this->query(
@@ -1673,7 +1673,7 @@ class APIRestTest extends TestCase
         // Restore the initial password in the DB
         global $DB;
         $updateSuccess = $DB->update(
-            'glpi_users',
+            'zentra_users',
             ['password' => Auth::getPasswordHash(TU_PASS)],
             ['id'       => $user->getID()]
         );
@@ -1912,9 +1912,9 @@ class APIRestTest extends TestCase
         global $DB;
         $token = User::getUniqueToken('api_token');
         $updated = $DB->update(
-            'glpi_users',
+            'zentra_users',
             [
-                'api_token' => (new GLPIKey())->encrypt($token),
+                'api_token' => (new ZENTRAKey())->encrypt($token),
             ],
             ['id' => $uid]
         );
@@ -1938,7 +1938,7 @@ class APIRestTest extends TestCase
         $this->assertIsArray($data);
         $this->assertArrayHasKey('session_token', $data);
         $this->assertArrayHasKey('session', $data);
-        $this->assertEquals($uid, $data['session']['glpiID']);
+        $this->assertEquals($uid, $data['session']['zentraID']);
     }
 
     public function testBadEndpoint()
@@ -2245,7 +2245,7 @@ class APIRestTest extends TestCase
     {
         $pic = "test_picture.png";
         $params = ['headers' => ['Session-Token' => $this->session_token]];
-        $id = getItemByTypeName('User', 'glpi', true);
+        $id = getItemByTypeName('User', 'zentra', true);
         $user = new User();
 
         /**
@@ -2253,9 +2253,9 @@ class APIRestTest extends TestCase
          */
 
         // Copy pic to tmp folder so it can be set to a user
-        copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
+        copy("tests/$pic", ZENTRA_TMP_DIR . "/$pic");
 
-        // Load GLPI user
+        // Load ZENTRA user
         $this->assertTrue($user->getFromDB($id));
 
         // Set a pic URL
@@ -2270,13 +2270,13 @@ class APIRestTest extends TestCase
         $this->assertNotEmpty($pic);
 
         // Check pic was moved correctly into _picture folder
-        $this->assertTrue(file_exists(GLPI_PICTURE_DIR . "/$pic"));
-        $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
+        $this->assertTrue(file_exists(ZENTRA_PICTURE_DIR . "/$pic"));
+        $file_content = file_get_contents(ZENTRA_PICTURE_DIR . "/$pic");
         $this->assertNotEmpty($file_content);
 
         // Request
         $response = $this->query("User/$id/Picture", $params, 200, '', true);
-        $this->assertEquals($file_content, $response->__toString(), sprintf("File %s doesn't match", GLPI_PICTURE_DIR . "/$pic"));
+        $this->assertEquals($file_content, $response->__toString(), sprintf("File %s doesn't match", ZENTRA_PICTURE_DIR . "/$pic"));
 
         /**
          * Case 2: user doesn't exist
@@ -2596,7 +2596,7 @@ class APIRestTest extends TestCase
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
-                    ["key" => "Glpi\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
+                    ["key" => "Zentra\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
                     ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
                     ["key" => "Item_SoftwareLicense:add",        "label" => "Add a license"],
                     ["key" => "Domain:add_item",                 "label" => "Add a domain"],
@@ -2642,7 +2642,7 @@ class APIRestTest extends TestCase
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
-                    ["key" => "Glpi\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
+                    ["key" => "Zentra\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
                     ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
                     ["key" => "Item_SoftwareLicense:add",        "label" => "Add a license"],
                     ["key" => "Domain:add_item",                 "label" => "Add a domain"],
@@ -2761,7 +2761,7 @@ class APIRestTest extends TestCase
                 'response' => [],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Glpi\\Asset\\Asset_PeripheralAsset:add',
+                'url' => 'getMassiveActionParameters/Computer/Zentra\\Asset\\Asset_PeripheralAsset:add',
                 'status' => 200,
                 'response' => [
                     ["name" => "peer_itemtype_peripheral", "type" => "dropdown"],
@@ -3278,13 +3278,13 @@ class APIRestTest extends TestCase
             200
         );
 
-        // need to be GLPI to access the root entity notifications
+        // need to be ZENTRA to access the root entity notifications
         $data = $this->query(
             'initSession',
             [
                 'query' => [
-                    'login'    => 'glpi',
-                    'password' => 'glpi',
+                    'login'    => 'zentra',
+                    'password' => 'zentra',
                 ],
             ]
         );
@@ -3310,7 +3310,7 @@ class APIRestTest extends TestCase
 
         $notifications = \array_filter(
             $result,
-            fn($notification) => $notification['name'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['name'] === '[ZENTRA] Forgotten password?'
         );
 
         $this->assertNotEmpty($notifications);
@@ -3353,7 +3353,7 @@ class APIRestTest extends TestCase
 
         $notifications = \array_filter(
             $result['data'],
-            fn($notification) => $notification['1'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['1'] === '[ZENTRA] Forgotten password?'
         );
 
         foreach ($notifications as $notification) {
@@ -3492,13 +3492,13 @@ class APIRestTest extends TestCase
     public static function systemSQLCriteriaProvider()
     {
         yield [
-            'type' => 'Glpi\\CustomAsset\\Test01Asset',
+            'type' => 'Zentra\\CustomAsset\\Test01Asset',
             'field' => 'name',
             'expected' => ['TestA', 'TestB'],
             'not_expected' => ['Test02 A', 'Test02 B'],
         ];
         yield [
-            'type' => 'Glpi\\CustomAsset\\Test02Asset',
+            'type' => 'Zentra\\CustomAsset\\Test02Asset',
             'field' => 'name',
             'expected' => ['Test02 A', 'Test02 B'],
             'not_expected' => ['TestA', 'TestB'],
@@ -3513,7 +3513,7 @@ class APIRestTest extends TestCase
                 Question::class,
             ],
             'not_expected' => [
-                GlpiPageTile::class,
+                ZentraPageTile::class,
             ],
         ];
 
@@ -3521,7 +3521,7 @@ class APIRestTest extends TestCase
             'type' => HelpdeskTranslation::class,
             'field' => 'itemtype',
             'expected' => [
-                GlpiPageTile::class,
+                ZentraPageTile::class,
             ],
             'not_expected' => [
                 Form::class,

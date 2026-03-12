@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\Inventoriable;
-use Glpi\Inventory\Inventory;
-use Glpi\Inventory\Request;
-use Glpi\Search\DefaultSearchRequestInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\Inventoriable;
+use Zentra\Inventory\Inventory;
+use Zentra\Inventory\Request;
+use Zentra\Search\DefaultSearchRequestInterface;
 
 /**
  * Equipments refused from inventory
@@ -175,7 +175,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initForm($ID, $options);
         $this->showFormHeader($options);
@@ -215,7 +215,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
         );
         Ajax::createIframeModalWindow(
             'allruletest' . $rand,
-            $CFG_GLPI['root_doc'] . "/front/rulesengine.test.php?" . "sub_type=" . RuleImportAsset::getType() . "&refusedequipments_id=" . $this->fields['id'],
+            $CFG_ZENTRA['root_doc'] . "/front/rulesengine.test.php?" . "sub_type=" . RuleImportAsset::getType() . "&refusedequipments_id=" . $this->fields['id'],
             ['title' => __('Test rules engine')]
         );
 

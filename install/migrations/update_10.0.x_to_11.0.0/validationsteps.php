@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\DBAL\QuerySubQuery;
 
 /**
  * @var DBmysql $DB
  * @var Migration $migration
  **/
-$validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
-$itil_tables = ['glpi_tickets', 'glpi_changes'];
+$validation_tables = ['zentra_ticketvalidations', 'zentra_changevalidations'];
+$itil_tables = ['zentra_tickets', 'zentra_changes'];
 
 // new object : ValidationStep
 create_validation_steps_table($migration, $DB);
@@ -62,7 +62,7 @@ return;
 
 function create_validation_steps_table(Migration $migration, DBmysql $DB): void
 {
-    if ($DB->tableExists('glpi_validationsteps')) {
+    if ($DB->tableExists('zentra_validationsteps')) {
         return;
     }
 
@@ -70,7 +70,7 @@ function create_validation_steps_table(Migration $migration, DBmysql $DB): void
     $collation = DBConnection::getDefaultCollation();
     $pk_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-    $DB->doQuery("CREATE TABLE IF NOT EXISTS `glpi_validationsteps` (
+    $DB->doQuery("CREATE TABLE IF NOT EXISTS `zentra_validationsteps` (
         `id`                                  int {$pk_sign}     NOT NULL AUTO_INCREMENT,
         `name`                                varchar(255)       DEFAULT NULL,
         `minimal_required_validation_percent` tinyint unsigned   NOT NULL DEFAULT '100',
@@ -87,12 +87,12 @@ function create_validation_steps_table(Migration $migration, DBmysql $DB): void
 
 function insert_validation_steps_defaults(Migration $migration, DBmysql $DB): void
 {
-    if (countElementsInTable('glpi_validationsteps') > 0) {
+    if (countElementsInTable('zentra_validationsteps') > 0) {
         return;
     }
 
     $migration->insertInTable(
-        'glpi_validationsteps',
+        'zentra_validationsteps',
         [
             'id' => 1,
             'name' => _n('Approval', 'Approvals', 1),
@@ -107,7 +107,7 @@ function insert_validation_steps_defaults(Migration $migration, DBmysql $DB): vo
 
 function create_itils_validationsteps_table(Migration $migration, DBmysql $DB): void
 {
-    if ($DB->tableExists('glpi_itils_validationsteps')) {
+    if ($DB->tableExists('zentra_itils_validationsteps')) {
         return;
     }
 
@@ -115,7 +115,7 @@ function create_itils_validationsteps_table(Migration $migration, DBmysql $DB): 
     $collation = DBConnection::getDefaultCollation();
     $pk_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-    $DB->doQuery("CREATE TABLE `glpi_itils_validationsteps` (
+    $DB->doQuery("CREATE TABLE `zentra_itils_validationsteps` (
         `id`                                    int {$pk_sign}        NOT NULL AUTO_INCREMENT,
         `minimal_required_validation_percent`   tinyint unsigned      NOT NULL,
         `validationsteps_id`                    int {$pk_sign}        NOT NULL DEFAULT '0',
@@ -155,7 +155,7 @@ function add_validation_steps_in_validations_tables(Migration $migration, array 
 function add_approval_status_to_ticket_templates(Migration $migration): void
 {
     $migration->changeField(
-        'glpi_tickettemplates',
+        'zentra_tickettemplates',
         'allowed_statuses',
         'allowed_statuses',
         'string',
@@ -174,14 +174,14 @@ function add_validation_steps_in_itilvalidationtemplates(Migration $migration): 
 {
     $validationsteps_foreign_key = 'validationsteps_id';
     $migration->addField(
-        'glpi_itilvalidationtemplates',
+        'zentra_itilvalidationtemplates',
         $validationsteps_foreign_key,
         'fkey',
         [
             'after' => 'is_recursive',
         ]
     );
-    $migration->addKey('glpi_itilvalidationtemplates', $validationsteps_foreign_key);
+    $migration->addKey('zentra_itilvalidationtemplates', $validationsteps_foreign_key);
 }
 
 /**
@@ -193,13 +193,13 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, DBmys
 {
     foreach ($validation_tables as $validation_table) {
         $itil_class = match ($validation_table) {
-            'glpi_ticketvalidations' => 'Ticket',
-            'glpi_changevalidations' => 'Change',
+            'zentra_ticketvalidations' => 'Ticket',
+            'zentra_changevalidations' => 'Change',
             default => throw new RuntimeException('Unexpected validation table: ' . $validation_table),
         };
         $itil_table = match ($itil_class) {
-            'Ticket' => 'glpi_tickets',
-            'Change' => 'glpi_changes',
+            'Ticket' => 'zentra_tickets',
+            'Change' => 'zentra_changes',
         };
         $itil_fk = match ($itil_class) {
             'Ticket' => 'tickets_id',
@@ -213,7 +213,7 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, DBmys
 
         $default_validation_step_id = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_validationsteps',
+            'FROM'   => 'zentra_validationsteps',
             'WHERE'  => ['is_default' => 1],
         ])->current()['id'];
 
@@ -231,7 +231,7 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, DBmys
         foreach ($itils_iterator as $itil) {
             // create itils_validationsteps
             $itils_validationstep_id = $migration->insertInTable(
-                'glpi_itils_validationsteps',
+                'zentra_itils_validationsteps',
                 [
                     'itemtype' => $itil_class,
                     'items_id' => $itil['id'],
@@ -261,8 +261,8 @@ function remove_validation_percent_on_itils(Migration $migration, array $itil_ta
         $migration->dropField($table, 'validation_percent');
 
         $itil_class = match ($table) {
-            'glpi_tickets' => 'Ticket',
-            'glpi_changes' => 'Change',
+            'zentra_tickets' => 'Ticket',
+            'zentra_changes' => 'Change',
             default => throw new RuntimeException('Unexpected ITIL table: ' . $table),
         };
         $migration->removeSearchOption($itil_class, 51); // 51 = validation_percent
@@ -277,7 +277,7 @@ function migrate_validation_rules(DBmysql $DB, Migration $migration): void
     // Validation threshold now applies to a specific step
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_ruleactions',
+            'zentra_ruleactions',
             ['action_type' => 'validationsteps_threshold'],
             ['action_type' => 'validation_percent']
         )
@@ -286,7 +286,7 @@ function migrate_validation_rules(DBmysql $DB, Migration $migration): void
     // Drop `global_validation` assignment action, not supported anymore
     $migration->addPostQuery(
         $DB->buildDelete(
-            'glpi_ruleactions',
+            'zentra_ruleactions',
             ['action_type' => 'global_validation']
         )
     );

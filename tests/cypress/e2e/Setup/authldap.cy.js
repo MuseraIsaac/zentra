@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@
 
 describe('LDAP Integration', () => {
     before(() => {
-        cy.glpiAPIRequest({
+        cy.zentraAPIRequest({
             method: 'DELETE',
             endpoint: 'Administration/User/username/walid?force=1',
             allow_failure: true,
-            username: 'glpi', // Need access to root entity
+            username: 'zentra', // Need access to root entity
         });
         cy.initApi().updateWithAPI('AuthLDAP', 1,{
             'is_default': 1,

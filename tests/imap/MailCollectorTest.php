@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Config;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;
@@ -117,7 +117,7 @@ class MailCollectorTest extends DbTestCase
 
     public function testPrepareInput()
     {
-        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+        $_SESSION['zentracronuserrunning'] = 'cron_phpunit';
         $instance = new \MailCollector();
 
         $oinput = [
@@ -197,7 +197,7 @@ class MailCollectorTest extends DbTestCase
             $instance->prepareInputForUpdate($oinput)
         );
 
-        unset($_SESSION['glpicronuserrunning']);
+        unset($_SESSION['zentracronuserrunning']);
         $this->assertFalse($instance->prepareInput(['mail_server' => '', 'server_type' => '/imap']));
         $this->hasSessionMessages(ERROR, [
             'Mandatory fields are not filled. Please correct: Server',
@@ -216,7 +216,7 @@ class MailCollectorTest extends DbTestCase
 
     public function testCounts()
     {
-        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+        $_SESSION['zentracronuserrunning'] = 'cron_phpunit';
         $instance = new \MailCollector();
 
         $this->assertEquals(0, $instance->countActiveCollectors());
@@ -264,8 +264,8 @@ class MailCollectorTest extends DbTestCase
             'values'                    => null,
         ];
 
-        yield 'GLPI < 10.0.0 ticket notification' => [
-            'message_id'                => "GLPI-150.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA < 10.0.0 ticket notification' => [
+            'message_id'                => "ZENTRA-150.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => true,
             'values'                    => [
                 'uuid'     => null,
@@ -275,8 +275,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI < 10.0.0 software licence notification' => [
-            'message_id'                => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA < 10.0.0 software licence notification' => [
+            'message_id'                => "ZENTRA-SoftwareLicence-1.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => null,
@@ -286,8 +286,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI < 10.0.0 notification with no object relation' => [
-            'message_id'                => "GLPI.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA < 10.0.0 notification with no object relation' => [
+            'message_id'                => "ZENTRA.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => null,
@@ -297,8 +297,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.0 < 10.0.7 ticket notification' => [
-            'message_id'                => "GLPI_{$uuid}-Ticket-12.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA >= 10.0.0 < 10.0.7 ticket notification' => [
+            'message_id'                => "ZENTRA_{$uuid}-Ticket-12.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => true,
             'values'                    => [
                 'uuid'     => $uuid,
@@ -308,8 +308,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.0 < 10.0.7 ticket notification from another GLPI instance' => [
-            'message_id'                => "GLPI_notmyuuid-Ticket-12.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA >= 10.0.0 < 10.0.7 ticket notification from another ZENTRA instance' => [
+            'message_id'                => "ZENTRA_notmyuuid-Ticket-12.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => 'notmyuuid',
@@ -319,8 +319,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.0 < 10.0.7 software licence notification' => [
-            'message_id'                => "GLPI_{$uuid}-SoftwareLicense-23.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA >= 10.0.0 < 10.0.7 software licence notification' => [
+            'message_id'                => "ZENTRA_{$uuid}-SoftwareLicense-23.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => $uuid,
@@ -330,8 +330,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.0 < 10.0.7 notification with no object relation' => [
-            'message_id'                => "GLPI_{$uuid}.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA >= 10.0.0 < 10.0.7 notification with no object relation' => [
+            'message_id'                => "ZENTRA_{$uuid}.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => $uuid,
@@ -341,7 +341,7 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.7 ticket notification' => [
+        yield 'ZENTRA >= 10.0.7 ticket notification' => [
             'message_id'                => (new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01')))->getMessageID(),
             'is_self_itil_notification' => true,
             'values'                    => [
@@ -352,8 +352,8 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.7 ticket notification from another GLPI instance' => [
-            'message_id'                => "GLPI_notmyuuid-Ticket-1/new.{$time}.{$rand}@{$uname}",
+        yield 'ZENTRA >= 10.0.7 ticket notification from another ZENTRA instance' => [
+            'message_id'                => "ZENTRA_notmyuuid-Ticket-1/new.{$time}.{$rand}@{$uname}",
             'is_self_itil_notification' => false,
             'values'                    => [
                 'uuid'     => 'notmyuuid',
@@ -363,7 +363,7 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.7 software licence notification' => [
+        yield 'ZENTRA >= 10.0.7 software licence notification' => [
             'message_id'                => (new NotificationTargetSoftwareLicense($root_ent_id, 'myevent', getItemByTypeName('SoftwareLicense', '_test_softlic_1')))->getMessageID(),
             'is_self_itil_notification' => false,
             'values'                    => [
@@ -374,7 +374,7 @@ class MailCollectorTest extends DbTestCase
             ],
         ];
 
-        yield 'GLPI >= 10.0.7 base notification' => [
+        yield 'ZENTRA >= 10.0.7 base notification' => [
             'message_id'                => (new NotificationTarget())->getMessageID(),
             'is_self_itil_notification' => false,
             'values'                    => [
@@ -426,7 +426,7 @@ class MailCollectorTest extends DbTestCase
         $rand1 = rand();
         $rand2 = rand();
         $uname1 = 'localhost';
-        $uname2 = 'mail.glpi-project.org';
+        $uname2 = 'mail.zentra-project.org';
 
         return [
             // invalid headers
@@ -439,10 +439,10 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI < 10.0.0 - found item
+            // Message-Id generated by ZENTRA < 10.0.0 - found item
             [
                 'headers'           => [
-                    'in-reply-to' => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
+                    'in-reply-to' => "ZENTRA-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
@@ -450,49 +450,49 @@ class MailCollectorTest extends DbTestCase
             ],
             [
                 'headers'           => [
-                    'references'  => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+                    'references'  => "ZENTRA-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI < 10.0.0 - invalid items_id
+            // Message-Id generated by ZENTRA < 10.0.0 - invalid items_id
             [
                 'headers'           => [
-                    'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
+                    'in-reply-to' => "ZENTRA-9999999.{$time2}.{$rand2}@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI < 10.0.0 - found item
+            // Message-Id generated by ZENTRA < 10.0.0 - found item
             [
                 'headers'           => [
-                    'in-reply-to' => "GLPI-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
+                    'in-reply-to' => "ZENTRA-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
                 ],
                 'expected_itemtype' => SoftwareLicense::class,
                 'expected_items_id' => $soft_id,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI < 10.0.0 - invalid itemtype
+            // Message-Id generated by ZENTRA < 10.0.0 - invalid itemtype
             [
                 'headers'           => [
-                    'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+                    'references'  => "ZENTRA-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI < 10.0.0 - invalid items_id
+            // Message-Id generated by ZENTRA < 10.0.0 - invalid items_id
             [
                 'headers'           => [
-                    'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+                    'references'  => "ZENTRA-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI >= 10.0.0 < 10.0.7 - found item
+            // Message-Id generated by ZENTRA >= 10.0.0 < 10.0.7 - found item
             [
                 'headers'           => [
                     'in-reply-to' => $ticket_notif->getMessageID(),
@@ -527,81 +527,81 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => $soft_id,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI >= 10.0.0 < 10.0.7 - invalid itemtype
+            // Message-Id generated by ZENTRA >= 10.0.0 < 10.0.7 - invalid itemtype
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                    'references'  => "ZENTRA_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI >= 10.0.0 < 10.0.7 - invalid items_id
+            // Message-Id generated by ZENTRA >= 10.0.0 < 10.0.7 - invalid items_id
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
+                    'references'  => "ZENTRA_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // Message-Id generated by GLPI >= 10.0.0 < 10.0.7 - uuid from another GLPI instance
+            // Message-Id generated by ZENTRA >= 10.0.0 < 10.0.7 - uuid from another ZENTRA instance
             [
                 'headers'           => [
-                    'in-reply-to' => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
-                ],
-                'expected_itemtype' => null,
-                'expected_items_id' => null,
-                'accepted'          => false,
-            ],
-            [
-                'headers'           => [
-                    'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                    'in-reply-to' => "ZENTRA_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => false,
             ],
-            // References generated by GLPI 10.0.7+ - found item, reference event
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-Ticket-{$ticket_id}/new@{$uname1}",
+                    'references'  => "ZENTRA_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                ],
+                'expected_itemtype' => null,
+                'expected_items_id' => null,
+                'accepted'          => false,
+            ],
+            // References generated by ZENTRA 10.0.7+ - found item, reference event
+            [
+                'headers'           => [
+                    'references'  => "ZENTRA_{$uuid}-Ticket-{$ticket_id}/new@{$uname1}",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
                 'accepted'          => true,
             ],
-            // References generated by GLPI 10.0.7+ - found item, other event
+            // References generated by ZENTRA 10.0.7+ - found item, other event
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-Ticket-{$ticket_id}/update.{$time1}.{$rand1}@{$uname1}",
+                    'references'  => "ZENTRA_{$uuid}-Ticket-{$ticket_id}/update.{$time1}.{$rand1}@{$uname1}",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
                 'accepted'          => true,
             ],
-            // References generated by GLPI 10.0.7+ - invalid itemtype
+            // References generated by ZENTRA 10.0.7+ - invalid itemtype
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}/update@{$uname1}",
+                    'references'  => "ZENTRA_{$uuid}-UnknownType-{$ticket_id}/update@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // References generated by GLPI 10.0.7+ - invalid items_id
+            // References generated by ZENTRA 10.0.7+ - invalid items_id
             [
                 'headers'           => [
-                    'references'  => "GLPI_{$uuid}-Ticket-9999999/new@{$uname1}",
+                    'references'  => "ZENTRA_{$uuid}-Ticket-9999999/new@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => true,
             ],
-            // References generated by GLPI 10.0.7+ - uuid from another GLPI instance
+            // References generated by ZENTRA 10.0.7+ - uuid from another ZENTRA instance
             [
                 'headers'           => [
-                    'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+                    'references'  => "ZENTRA_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
                 ],
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
@@ -637,7 +637,7 @@ class MailCollectorTest extends DbTestCase
     }
 
     #[DataProvider('itemReferenceHeaderProvider')]
-    public function testIsResponseToMessageSentByAnotherGlpi(
+    public function testIsResponseToMessageSentByAnotherZentra(
         array $headers,
         ?string $expected_itemtype,
         ?int $expected_items_id,
@@ -652,7 +652,7 @@ class MailCollectorTest extends DbTestCase
             ]
         );
 
-        $this->assertEquals(!$accepted, $instance->isResponseToMessageSentByAnotherGlpi($message));
+        $this->assertEquals(!$accepted, $instance->isResponseToMessageSentByAnotherZentra($message));
     }
 
     private function doConnect()
@@ -691,7 +691,7 @@ class MailCollectorTest extends DbTestCase
     public function testCollect()
     {
         global $DB;
-        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+        $_SESSION['zentracronuserrunning'] = 'cron_phpunit';
 
         // Force notification_uuid
         Config::setConfigurationValues('core', ['notification_uuid' => 't3StN0t1f1c4tiOnUUID']);
@@ -704,7 +704,7 @@ class MailCollectorTest extends DbTestCase
             (int) $uemail->add([
                 'users_id'     => $nuid,
                 'is_default'   => 1,
-                'email'        => 'normal@glpi-project.org',
+                'email'        => 'normal@zentra-project.org',
             ])
         );
         $tuid = getItemByTypeName('User', 'tech', true);
@@ -713,7 +713,7 @@ class MailCollectorTest extends DbTestCase
             (int) $uemail->add([
                 'users_id'     => $tuid,
                 'is_default'   => 1,
-                'email'        => 'tech@glpi-project.org',
+                'email'        => 'tech@zentra-project.org',
             ])
         );
 
@@ -730,7 +730,7 @@ class MailCollectorTest extends DbTestCase
         // Create supplier for 51-supplier-reply.eml test and assign to existing ticket 100
         $supplier_id = $this->createItem(\Supplier::class, [
             'name' => 'Test Supplier',
-            'email' => 'supplier@glpi-project.org',
+            'email' => 'supplier@zentra-project.org',
             'entities_id' => 0,
         ])->getID();
 
@@ -760,12 +760,12 @@ class MailCollectorTest extends DbTestCase
             'Invalid address "{{{"' => LogLevel::WARNING,
         ];
 
-        // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+        // Check error log and clean it (to prevent test failure, see ZENTRATestCase::afterTestMethod()).
         foreach ($expected_logged_errors as $error_message => $error_level) {
             $this->hasPhpLogRecordThatContains($error_message, $error_level);
         }
 
-        $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
+        $total_count                     = count(glob(ZENTRA_ROOT . '/tests/emails-tests/*.eml'));
         $expected_refused_count          = 14;
         $expected_error_count            = 1;
         $expected_blacklist_count        = 1;
@@ -788,14 +788,14 @@ class MailCollectorTest extends DbTestCase
         $not_imported_specs = [
             [
                 'subject' => 'Have a problem, can you help me?',
-                'from'    => 'unknown@glpi-project.org',
-                'to'      => 'unittests@glpi-project.org',
+                'from'    => 'unknown@zentra-project.org',
+                'to'      => 'unittests@zentra-project.org',
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
             [
                 'subject' => 'Test\'ed issue',
-                'from'    => 'unknown@glpi-project.org',
-                'to'      => 'unittests@glpi-project.org',
+                'from'    => 'unknown@zentra-project.org',
+                'to'      => 'unittests@zentra-project.org',
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
             [
@@ -807,7 +807,7 @@ class MailCollectorTest extends DbTestCase
             [
                 // Email without 'To:' header that is refused should not crash
                 'subject' => 'Test email without To header that should be refused',
-                'from'    => 'unknown@glpi-project.org',
+                'from'    => 'unknown@zentra-project.org',
                 'to'      => '', // Empty string, not NULL
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
@@ -815,7 +815,7 @@ class MailCollectorTest extends DbTestCase
                 // 50-all-invalid-addresses.eml - All addresses (From and CC) are invalid
                 'subject' => '50 - Message with all invalid addresses',
                 'from'    => '', // Empty string, From address is invalid
-                'to'      => 'unittests@glpi-project.org',
+                'to'      => 'unittests@zentra-project.org',
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
         ];
@@ -845,10 +845,10 @@ class MailCollectorTest extends DbTestCase
                 'tickets_names' => [
                     'PHP fatal error',
                     'Ticket with observer',
-                    'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
+                    'Re: [ZENTRA #0038927] Update - Issues with new Windows 10 machine',
                     'A message without to header',
                     'Ticket with multiple to',
-                    'Re: [GLPI #0000001] Ticket from another GLPI',
+                    'Re: [ZENTRA #0000001] Ticket from another ZENTRA',
                     'Message with multiple message IDs',
                 ],
             ],
@@ -875,7 +875,7 @@ class MailCollectorTest extends DbTestCase
                     '25 - Test attachment with invalid chars for OS',
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
-                    '30 - <GLPI> Special & chars',
+                    '30 - <ZENTRA> Special & chars',
                     '31 - HTML message without body',
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
@@ -923,7 +923,7 @@ PLAINTEXT,
             // Email without charset parameter (47-missing-charset.eml) - tests ISO-8859-1 to UTF-8 fallback
             '47 - Missing charset parameter' => 'ATTENTION: Ne cliquez pas sur les liens ou n\'ouvrez pas les pièces jointes si vous n\'êtes pas sûr du contenu.',
             // HTML on multi-part email
-            'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
+            'Re: [ZENTRA #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
 <p>This message have reply to header, requester should be get from this header.</p>
 HTML,
             'Mono-part HTML message' => <<<HTML
@@ -990,7 +990,7 @@ PLAINTEXT,
     </div>
 HTML,
             '39 - Link in content' => <<<PLAINTEXT
-This HTML message has a link  <https://glpi-project.org>.
+This HTML message has a link  <https://zentra-project.org>.
 PLAINTEXT,
             '40.1 - Empty content (multipart)' => '',
             '40.2 - Empty content (html)' => '',
@@ -1023,7 +1023,7 @@ PLAINTEXT,
 PLAINTEXT,
             '44 - Hebrew encoding issue' => <<<PLAINTEXT
 <div class="WordSection1">
-<p class="MsoNormal"><span lang="EN-US">Testing at the request of glpi support</span></p>
+<p class="MsoNormal"><span lang="EN-US">Testing at the request of zentra support</span></p>
 <p class="MsoNormal" dir="RTL" style="text-align:right;direction:rtl;unicode-bidi:embed">
 <span lang="HE" style="font-family:&quot;Arial&quot;,sans-serif">בדיקה של מייל עם עברית ואנגלית</span></p>
 </div>
@@ -1098,7 +1098,7 @@ PLAINTEXT,
                             [
                                 'AND' => [
                                     'd_item.itemtype'      => 'Ticket',
-                                    'd_item.date_creation' => $_SESSION["glpi_currenttime"],
+                                    'd_item.date_creation' => $_SESSION["zentra_currenttime"],
                                 ],
                             ],
                         ],
@@ -1149,7 +1149,7 @@ PLAINTEXT,
                 'users_id' => $tuid,
                 'content'  => '<p dir="ltr">Reply from Proton Android client</p>' . "\n"
                     . '<p dir="ltr">Sent from Proton Mail for Android</p>' . "\n"
-                    . '<div class="protonmail_quote"><br><br>-------- Original message --------<br> 08/09/2025 16:42, TECH <tech@glpi-project.org> has written :<br><blockquote class="protonmail_quote">' . "\r\n"
+                    . '<div class="protonmail_quote"><br><br>-------- Original message --------<br> 08/09/2025 16:42, TECH <tech@zentra-project.org> has written :<br><blockquote class="protonmail_quote">' . "\r\n"
                     . '<br><br></blockquote></div>',
             ],
             [
@@ -1202,7 +1202,7 @@ PLAINTEXT,
                 // 51-supplier-reply.eml - Supplier reply to ticket 100
                 'items_id' => 100,
                 'users_id' => 0,
-                'content'  => 'From supplier@glpi-project.org' . "\r\n\r\n"
+                'content'  => 'From supplier@zentra-project.org' . "\r\n\r\n"
                     . 'This is a reply from the assigned supplier.' . "\r\n"
                     . 'The supplier should be able to add a followup to this ticket.',
             ],
@@ -1545,7 +1545,7 @@ PLAINTEXT,
     public function testBlacklistedDocumentNotImportedFromMail()
     {
         // Use existing test fixture files
-        $png_file = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
+        $png_file = ZENTRA_ROOT . '/tests/fixtures/uploads/foo.png';
 
         // Calculate SHA1 from existing files
         $png_sha1 = sha1_file($png_file);
@@ -1563,7 +1563,7 @@ PLAINTEXT,
         );
 
         // Test 1: Auto-import (mail collector) should be blocked
-        \Safe\copy($png_file, GLPI_TMP_DIR . '/foo.png');
+        \Safe\copy($png_file, ZENTRA_TMP_DIR . '/foo.png');
 
         $ticket = $this->createItem(
             Ticket::class,
@@ -1585,9 +1585,9 @@ PLAINTEXT,
         $this->assertCount(0, $doc_items_auto, 'No documents should be attached when auto-imported');
 
         // Test 2: Manual upload should work (not blocked)
-        $png_file_manual = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $png_file_manual = ZENTRA_ROOT . '/tests/fixtures/uploads/bar.png';
 
-        \Safe\copy($png_file_manual, GLPI_TMP_DIR . '/bar.png');
+        \Safe\copy($png_file_manual, ZENTRA_TMP_DIR . '/bar.png');
 
         $ticket = $this->createItem(
             Ticket::class,
@@ -1608,7 +1608,7 @@ PLAINTEXT,
         $this->assertCount(1, $doc_items_manual, 'Documents should be attached when manually uploaded');
 
         // Cleanup temporary copies only
-        \Safe\unlink(GLPI_TMP_DIR . '/foo.png');
-        \Safe\unlink(GLPI_TMP_DIR . '/bar.png');
+        \Safe\unlink(ZENTRA_TMP_DIR . '/foo.png');
+        \Safe\unlink(ZENTRA_TMP_DIR . '/bar.png');
     }
 }

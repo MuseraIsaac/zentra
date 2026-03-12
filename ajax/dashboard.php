@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Dashboard\Dashboard;
-use Glpi\Dashboard\Grid;
-use Glpi\Debug\Profiler;
-use Glpi\Error\ErrorHandler;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Dashboard\Dashboard;
+use Zentra\Dashboard\Grid;
+use Zentra\Debug\Profiler;
+use Zentra\Error\ErrorHandler;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -57,7 +57,7 @@ if (
     && (bool) $request_data['embed']
 ) {
     // Session check is disabled for this script when "embed" mode is used.
-    // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
+    // Indeed, it is declared as stateless by `\Zentra\Http\SessionManager::isResourceStateless()`,
     // to prevent using the session cookie for embed dashboards.
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();

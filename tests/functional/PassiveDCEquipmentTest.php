@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/passiveDCEquipment.class.php */
 
@@ -109,7 +109,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         ;
         $this->assertEquals(0, $obj->isDeleted());
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('zentra_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
         // DeleteByCriteria without history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 0));
@@ -117,7 +117,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('zentra_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
         $this->assertSame($nb_after, $nb_after);
 
         // Restore
@@ -126,7 +126,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         $this->assertEquals(0, $obj->isDeleted());
 
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('zentra_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
         // DeleteByCriteria with history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 1));
@@ -134,7 +134,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('zentra_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
         $this->assertSame($nb_before + 1, $nb_after);
     }
 }

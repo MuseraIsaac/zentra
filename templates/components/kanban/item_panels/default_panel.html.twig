@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -57,14 +57,14 @@
                <hr>
             {% endif %}
          {% endmacro %}
-         {{ _self.print_hook_section(constant('Glpi\\Plugin\\Hooks::PRE_KANBAN_PANEL_CONTENT'), itemtype, item_fields.id) }}
-         {{ _self.print_hook_section(constant('Glpi\\Plugin\\Hooks::PRE_KANBAN_PANEL_MAIN_CONTENT'), itemtype, item_fields.id) }}
+         {{ _self.print_hook_section(constant('Zentra\\Plugin\\Hooks::PRE_KANBAN_PANEL_CONTENT'), itemtype, item_fields.id) }}
+         {{ _self.print_hook_section(constant('Zentra\\Plugin\\Hooks::PRE_KANBAN_PANEL_MAIN_CONTENT'), itemtype, item_fields.id) }}
 
          {% set content = item_fields.content|safe_html %}
          {% set preview = content|length > 1000 ? content|slice(0, 1000) ~ ' (...)' : content %}
          <div class="col-12 mb-3 rich_text_container">{{ preview|safe_html }}</div>
 
-         {{ _self.print_hook_section(constant('Glpi\\Plugin\\Hooks::POST_KANBAN_PANEL_MAIN_CONTENT'), itemtype, item_fields.id) }}
+         {{ _self.print_hook_section(constant('Zentra\\Plugin\\Hooks::POST_KANBAN_PANEL_MAIN_CONTENT'), itemtype, item_fields.id) }}
 
          <h5 class="d-flex justify-content-between">
             <span>{{ __('Team') }}</span>
@@ -72,7 +72,7 @@
          </h5>
          {% if team is not empty %}
             {% set item = itemtype|itemtype_class %}
-            {% if item is instanceof('Glpi\\Features\\TeamworkInterface') %}
+            {% if item is instanceof('Zentra\\Features\\TeamworkInterface') %}
                {% for team_role in item.getTeamRoles() %}
                   {% set role_members = team|filter(m => m.role == team_role) %}
                   {% if role_members|length > 0 %}
@@ -96,7 +96,7 @@
          {% endif %}
          <hr>
 
-         {{ _self.print_hook_section(constant('Glpi\\Plugin\\Hooks::POST_KANBAN_PANEL_CONTENT'), itemtype, item_fields.id) }}
+         {{ _self.print_hook_section(constant('Zentra\\Plugin\\Hooks::POST_KANBAN_PANEL_CONTENT'), itemtype, item_fields.id) }}
       </div>
       <div class="card-footer border-top flex-shrink-0 text-center p-3">
          <a class="btn btn-outline w-100" target="_blank" rel="noopener" href="{{ itemtype|itemtype_form_path(item_fields.id) }}">

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,7 +238,7 @@ class Fieldblacklist extends CommonDropdown
      **/
     public function showItemtype()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->fields['id'] > 0) {
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
@@ -248,7 +248,7 @@ class Fieldblacklist extends CommonDropdown
         } else {
             //Add criteria : display dropdown
             $options = [];
-            foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
+            foreach ($CFG_ZENTRA['unicity_types'] as $itemtype) {
                 if ($item = getItemForItemtype($itemtype)) {
                     if ($item->can(-1, READ)) {
                         $options[$itemtype] = $item->getTypeName(1);
@@ -270,7 +270,7 @@ class Fieldblacklist extends CommonDropdown
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
                 "span_fields",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownFieldsBlacklist.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownFieldsBlacklist.php",
                 $params
             );
         }
@@ -282,7 +282,7 @@ class Fieldblacklist extends CommonDropdown
      */
     public function selectCriterias()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         echo "<span id='span_fields' name='span_fields'>";
 
@@ -292,7 +292,7 @@ class Fieldblacklist extends CommonDropdown
         }
 
         if (!isset($this->fields['entities_id'])) {
-            $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+            $this->fields['entities_id'] = $_SESSION['zentraactive_entity'];
         }
 
         if (
@@ -308,7 +308,7 @@ class Fieldblacklist extends CommonDropdown
             Ajax::updateItemOnSelectEvent(
                 "dropdown_field$rand",
                 "span_values",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownValuesBlacklist.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownValuesBlacklist.php",
                 $params
             );
         }
@@ -407,12 +407,12 @@ class Fieldblacklist extends CommonDropdown
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_fieldblacklists',
+            'FROM'   => 'zentra_fieldblacklists',
             'WHERE'  => [
                 'itemtype'  => $itemtype,
                 'field'     => $field,
                 'value'     => $value,
-            ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true),
+            ] + getEntitiesRestrictCriteria('zentra_fieldblacklists', 'entities_id', $entities_id, true),
         ])->current();
         return $result['cpt'] > 0;
     }

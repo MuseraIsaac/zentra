@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Features\State;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Features\State;
+use Zentra\Features\StateInterface;
 
 /**
  * @since 0.84
@@ -261,7 +261,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -286,10 +286,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      */
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $options = [];
-        $device_types = $CFG_GLPI['device_types'];
+        $device_types = $CFG_ZENTRA['device_types'];
 
         $main_joinparams = [
             'jointype'           => 'itemtype_item',
@@ -304,8 +304,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 $cfg_key = strtolower('plugin' . $plug['plugin'] . 'item' . $plug['class']) . '_types';
             }
 
-            if (isset($CFG_GLPI[$cfg_key])) {
-                $itemtypes = $CFG_GLPI[$cfg_key];
+            if (isset($CFG_ZENTRA[$cfg_key])) {
+                $itemtypes = $CFG_ZENTRA[$cfg_key];
                 if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                     if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
                         /** @var class-string $device_type */
@@ -438,7 +438,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Get the items on which this Item_Device can be attached. For instance, a computer can have
      * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
-     * A configuration entry is automatically checked in $CFG_GLPI (must be the name of
+     * A configuration entry is automatically checked in $CFG_ZENTRA (must be the name of
      * the class, lowercase, without "_" with extra "_types" at the end; for example
      * "itemdevicesoundcard_types").
      *
@@ -450,11 +450,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function itemAffinity()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
 
-        return $CFG_GLPI[$conf_param] ?? $CFG_GLPI["itemdevices_itemaffinity"];
+        return $CFG_ZENTRA[$conf_param] ?? $CFG_ZENTRA["itemdevices_itemaffinity"];
     }
 
 
@@ -488,9 +488,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function getItemAffinities($itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!in_array($itemtype, $CFG_GLPI['itemdevices_types'], true)) {
+        if (!in_array($itemtype, $CFG_ZENTRA['itemdevices_types'], true)) {
             // Itemtype does not support devices.
             return [];
         }
@@ -522,13 +522,13 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function getConcernedItems()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $itemtypes = $CFG_GLPI['itemdevices_types'];
+        $itemtypes = $CFG_ZENTRA['itemdevices_types'];
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
-        if (isset($CFG_GLPI[$conf_param]) && !in_array('*', $CFG_GLPI[$conf_param])) {
-            $itemtypes = array_intersect($itemtypes, $CFG_GLPI[$conf_param]);
+        if (isset($CFG_ZENTRA[$conf_param]) && !in_array('*', $CFG_ZENTRA[$conf_param])) {
+            $itemtypes = array_intersect($itemtypes, $CFG_ZENTRA[$conf_param]);
         }
 
         return $itemtypes;
@@ -596,13 +596,13 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
             if (in_array($item->getType(), self::getConcernedItems())) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     foreach (self::getItemAffinities($item->getType()) as $link_type) {
                         $nb   += countElementsInTable(
                             $link_type::getTable(),
@@ -620,7 +620,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 );
             }
             if ($item instanceof CommonDevice) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $deviceClass     = $item->getType();
                     $linkClass       = $deviceClass::getItem_DeviceType();
                     $table           = $linkClass::getTable();
@@ -639,7 +639,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForItem($item, $withtemplate);
@@ -647,13 +647,13 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
     /**
-     * @param CommonGLPI $item
+     * @param CommonZENTRA $item
      * @param int $withtemplate
      * @return false|void
      */
-    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
+    public static function showForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $is_device = ($item instanceof CommonDevice);
 
@@ -786,7 +786,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                     'items_id_name'       => 'devices_id',
                     'itemtypes'           => $devtypes,
                     'entity_restrict'     => $item->getEntityID(),
-                    'showItemSpecificity' => $CFG_GLPI['root_doc']
+                    'showItemSpecificity' => $CFG_ZENTRA['root_doc']
                                                                  . '/ajax/selectUnaffectedOrNewItem_Device.php',
                 ]);
             }
@@ -816,7 +816,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         echo "</div>";
         // Force disable selected items
-        $_SESSION['glpimassiveactionselected'] = [];
+        $_SESSION['zentramassiveactionselected'] = [];
     }
 
     /**
@@ -1132,7 +1132,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             }
 
             if (
-                countElementsInTable('glpi_infocoms', ['itemtype' => $this->getType(),
+                countElementsInTable('zentra_infocoms', ['itemtype' => $this->getType(),
                     'items_id' => $link['id'],
                 ])
             ) {
@@ -1149,7 +1149,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             // The order is to be sure that specific documents appear first
             $doc_iterator = $DB->request([
                 'SELECT' => 'documents_id',
-                'FROM'   => 'glpi_documents_items',
+                'FROM'   => 'zentra_documents_items',
                 'WHERE'  => [
                     'OR' => [
                         [
@@ -1578,7 +1578,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public function prepareInputForAdd($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
             Session::addMessageAfterRedirect(
@@ -1655,9 +1655,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
         $itemtype = static::class;
         $link = "$dir/front/item_device.php?itemtype=$itemtype";
 

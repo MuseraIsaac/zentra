@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,16 +106,16 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         switch ($ma->getAction()) {
             case 'add':
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id_2',
                     'itemtype_name'   => 'itemtype_2',
-                    'itemtypes'       => $CFG_GLPI['itil_types'],
+                    'itemtypes'       => $CFG_ZENTRA['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity'],
+                    'entity_restrict' => $_SESSION['zentraactive_entity'],
                 ]);
                 self::dropdownLinks('link');
                 echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -124,9 +124,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id_2',
                     'itemtype_name'   => 'itemtype_2',
-                    'itemtypes'       => $CFG_GLPI['itil_types'],
+                    'itemtypes'       => $CFG_ZENTRA['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity'],
+                    'entity_restrict' => $_SESSION['zentraactive_entity'],
                 ]);
                 echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 return true;

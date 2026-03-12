@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ use CommonITILObject;
 use Contract;
 use ContractType;
 use Entity;
-use Glpi\Tests\RuleBuilder;
-use Glpi\Tests\RuleCommonITILObjectTest;
+use Zentra\Tests\RuleBuilder;
+use Zentra\Tests\RuleCommonITILObjectTest;
 use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
@@ -74,7 +74,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertSame(
             1,
             countElementsInTable(
-                'glpi_rules',
+                'zentra_rules',
                 [
                     'name' => 'Ticket location from item',
                     'is_active' => 0,
@@ -84,7 +84,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertSame(
             0,
             countElementsInTable(
-                'glpi_rules',
+                'zentra_rules',
                 [
                     'name' => 'Ticket location from use',
                     'is_active' => 1,
@@ -111,7 +111,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
-            'name'         => 'test associate contract with  : glpi',
+            'name'         => 'test associate contract with  : zentra',
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -484,7 +484,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'content'          => 'test',
             '_users_id_requester' => $user->fields['id'],
         ]);
-        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
+        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in zentra_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
 
         //locations_id must be set to 0
@@ -980,7 +980,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
     public function testSLACriterion()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $ruleticket = new \RuleTicket();
         $rulecrit   = new RuleCriteria();
@@ -1253,7 +1253,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
     public function testDoNotComputeStatusFollowupWithRule()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $followuptemplate = new ITILFollowupTemplate();
         $templateid = $followuptemplate->add($templateinput = [
@@ -1302,7 +1302,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $act2_id, $act2_input);
 
         $user1 = new \User();
-        $user1->getFromDBbyName('glpi');
+        $user1->getFromDBbyName('zentra');
         $this->assertGreaterThan(0, $user1->getID());
 
         $user2 = new \User();
@@ -1357,7 +1357,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      */
     public function testDoNotComputeTakeIntoAccountWithFollowupTemplateWithRule()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         // Create followup template
         $followuptemplate = new ITILFollowupTemplate();
@@ -1410,9 +1410,9 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->checkInput($ruleaction, $act3_id, $act3_input);
 
-        // Load user glpi
+        // Load user zentra
         $user1 = new \User();
-        $user1->getFromDBbyName('glpi');
+        $user1->getFromDBbyName('zentra');
         $this->assertGreaterThan(0, $user1->getID());
 
         // Create ticket
@@ -1618,8 +1618,8 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      */
     #[TestWith(['field' => 'time_to_resolve'])] // $field is both the rule action field and the ticket field.
     #[TestWith(['field' => 'time_to_own'])]
-    #[TestWith(['field' => 'internal_time_to_resolve'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
-    #[TestWith(['field' => 'internal_time_to_own'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
+    #[TestWith(['field' => 'internal_time_to_resolve'])] // to remove when PR is merged - https://github.com/zentra-project/zentra/pull/19593
+    #[TestWith(['field' => 'internal_time_to_own'])] // to remove when PR is merged - https://github.com/zentra-project/zentra/pull/19593
     public function testDeleteLevelAgreementValuesAction(string $field): void
     {
         $this->login();

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Socket;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Socket;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -60,7 +60,7 @@ switch ($action) {
             $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
                 'rand'                => $_POST['dom_rand'],
                 'display_emptychoice' => true,
-                'display_dc_position' => in_array($_POST['itemtype'], $CFG_GLPI['rackable_types']),
+                'display_dc_position' => in_array($_POST['itemtype'], $CFG_ZENTRA['rackable_types']),
                 'width'               => '100%',
             ]);
         }

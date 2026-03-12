@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,9 @@ $default_charset   = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_forms_categories')) {
+if (!$DB->tableExists('zentra_forms_categories')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_categories` (
+        "CREATE TABLE `zentra_forms_categories` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
@@ -67,9 +67,9 @@ if (!$DB->tableExists('glpi_forms_categories')) {
 }
 
 // Create tables
-if (!$DB->tableExists('glpi_forms_forms')) {
+if (!$DB->tableExists('zentra_forms_forms')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_forms` (
+        "CREATE TABLE `zentra_forms_forms` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `uuid` varchar(255) NOT NULL DEFAULT '',
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -102,9 +102,9 @@ if (!$DB->tableExists('glpi_forms_forms')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_sections')) {
+if (!$DB->tableExists('zentra_forms_sections')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_sections` (
+        "CREATE TABLE `zentra_forms_sections` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -120,9 +120,9 @@ if (!$DB->tableExists('glpi_forms_sections')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_questions')) {
+if (!$DB->tableExists('zentra_forms_questions')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_questions` (
+        "CREATE TABLE `zentra_forms_questions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -145,9 +145,9 @@ if (!$DB->tableExists('glpi_forms_questions')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_comments')) {
+if (!$DB->tableExists('zentra_forms_comments')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_comments` (
+        "CREATE TABLE `zentra_forms_comments` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -166,9 +166,9 @@ if (!$DB->tableExists('glpi_forms_comments')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_answerssets')) {
+if (!$DB->tableExists('zentra_forms_answerssets')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_answerssets` (
+        "CREATE TABLE `zentra_forms_answerssets` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -188,9 +188,9 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems')) {
+if (!$DB->tableExists('zentra_forms_destinations_answerssets_formdestinationitems')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_destinations_answerssets_formdestinationitems` (
+        "CREATE TABLE `zentra_forms_destinations_answerssets_formdestinationitems` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_answerssets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `itemtype` varchar(255) NOT NULL,
@@ -201,9 +201,9 @@ if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems'
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
+if (!$DB->tableExists('zentra_forms_destinations_formdestinations')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_destinations_formdestinations` (
+        "CREATE TABLE `zentra_forms_destinations_formdestinations` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `itemtype` varchar(255) NOT NULL,
@@ -218,9 +218,9 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
+if (!$DB->tableExists('zentra_forms_accesscontrols_formaccesscontrols')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_forms_accesscontrols_formaccesscontrols` (
+        "CREATE TABLE `zentra_forms_accesscontrols_formaccesscontrols` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `strategy` varchar(255) NOT NULL,
@@ -232,9 +232,9 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_items_tiles')) {
+if (!$DB->tableExists('zentra_helpdesks_tiles_items_tiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_items_tiles` (
+        "CREATE TABLE `zentra_helpdesks_tiles_items_tiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `itemtype_item` varchar(255) DEFAULT NULL,
             `items_id_item` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -248,9 +248,9 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_items_tiles')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
+if (!$DB->tableExists('zentra_helpdesks_tiles_formtiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
+        "CREATE TABLE `zentra_helpdesks_tiles_formtiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
@@ -258,9 +258,9 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
+if (!$DB->tableExists('zentra_helpdesks_tiles_zentrapagetiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
+        "CREATE TABLE `zentra_helpdesks_tiles_zentrapagetiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` text DEFAULT null,
@@ -272,15 +272,15 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
 } else {
     // Fix a bad type, description was created as varchar(255) when it should have been a text field.
     $migration->changeField(
-        'glpi_helpdesks_tiles_glpipagetiles',
+        'zentra_helpdesks_tiles_zentrapagetiles',
         'description',
         'description',
         'text',
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
+if (!$DB->tableExists('zentra_helpdesks_tiles_externalpagetiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
+        "CREATE TABLE `zentra_helpdesks_tiles_externalpagetiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` text DEFAULT null,
@@ -292,7 +292,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
 } else {
     // Fix a bad type, description was created as varchar(255) when it should have been a text field.
     $migration->changeField(
-        'glpi_helpdesks_tiles_externalpagetiles',
+        'zentra_helpdesks_tiles_externalpagetiles',
         'description',
         'description',
         'text',
@@ -300,15 +300,15 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
 }
 
 $field = 'show_tickets_properties_on_helpdesk';
-if (!$DB->fieldExists("glpi_entities", $field)) {
+if (!$DB->fieldExists("zentra_entities", $field)) {
     $migration->addField(
-        'glpi_entities',
+        'zentra_entities',
         $field,
         "int NOT NULL DEFAULT '-2'"
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_entities',
+            'zentra_entities',
             [$field => 1], // Ticket details shown by default for upgraded installations to maintain previous behavior
             ['id' => 0]
         )
@@ -317,15 +317,15 @@ if (!$DB->fieldExists("glpi_entities", $field)) {
 
 $fields = ['custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right', 'custom_helpdesk_home_title'];
 foreach ($fields as $field) {
-    if (!$DB->fieldExists("glpi_entities", $field)) {
+    if (!$DB->fieldExists("zentra_entities", $field)) {
         $migration->addField(
-            'glpi_entities',
+            'zentra_entities',
             $field,
             "varchar(255) NOT NULL DEFAULT '-2'"
         );
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_entities',
+                'zentra_entities',
                 [$field => ''],
                 ['id' => 0]
             )
@@ -339,15 +339,15 @@ $fields = [
     'expand_service_catalog'          => 0,
 ];
 foreach ($fields as $field => $default_value) {
-    if (!$DB->fieldExists("glpi_entities", $field)) {
+    if (!$DB->fieldExists("zentra_entities", $field)) {
         $migration->addField(
-            'glpi_entities',
+            'zentra_entities',
             $field,
             "tinyint NOT NULL DEFAULT -2"
         );
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_entities',
+                'zentra_entities',
                 [$field => $default_value],
                 ['id' => 0]
             )
@@ -355,9 +355,9 @@ foreach ($fields as $field => $default_value) {
     }
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
+if (!$DB->fieldExists('zentra_forms_forms', 'uuid')) {
     $migration->addField(
-        'glpi_forms_forms',
+        'zentra_forms_forms',
         'uuid',
         "varchar(255) NOT NULL DEFAULT ''",
         [
@@ -366,16 +366,16 @@ if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
         ]
     );
     $migration->addKey(
-        'glpi_forms_forms',
+        'zentra_forms_forms',
         'uuid',
         'uuid',
         'UNIQUE KEY'
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_visibility_strategy')) {
+if (!$DB->fieldExists('zentra_forms_forms', 'submit_button_visibility_strategy')) {
     $migration->addField(
-        'glpi_forms_forms',
+        'zentra_forms_forms',
         'submit_button_visibility_strategy',
         "varchar(30) NOT NULL DEFAULT ''",
         [
@@ -384,9 +384,9 @@ if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_visibility_strategy')) 
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
+if (!$DB->fieldExists('zentra_forms_forms', 'submit_button_conditions')) {
     $migration->addField(
-        'glpi_forms_forms',
+        'zentra_forms_forms',
         'submit_button_conditions',
         "JSON NOT NULL",
         [
@@ -395,9 +395,9 @@ if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_questions', 'validation_strategy')) {
+if (!$DB->fieldExists('zentra_forms_questions', 'validation_strategy')) {
     $migration->addField(
-        'glpi_forms_questions',
+        'zentra_forms_questions',
         'validation_strategy',
         "varchar(30) NOT NULL DEFAULT ''",
         [
@@ -406,9 +406,9 @@ if (!$DB->fieldExists('glpi_forms_questions', 'validation_strategy')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
+if (!$DB->fieldExists('zentra_forms_questions', 'validation_conditions')) {
     $migration->addField(
-        'glpi_forms_questions',
+        'zentra_forms_questions',
         'validation_conditions',
         "JSON NOT NULL",
         [
@@ -417,9 +417,9 @@ if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'render_layout')) {
+if (!$DB->fieldExists('zentra_forms_forms', 'render_layout')) {
     $migration->addField(
-        'glpi_forms_forms',
+        'zentra_forms_forms',
         'render_layout',
         "varchar(30) NOT NULL DEFAULT ''",
         [
@@ -428,9 +428,9 @@ if (!$DB->fieldExists('glpi_forms_forms', 'render_layout')) {
     );
 }
 
-// Change the type of the 'answers' field in glpi_forms_answerssets
+// Change the type of the 'answers' field in zentra_forms_answerssets
 $migration->changeField(
-    'glpi_forms_answerssets',
+    'zentra_forms_answerssets',
     'answers',
     'answers',
     "json COMMENT 'JSON - Answers for each questions of the parent form'",
@@ -440,25 +440,25 @@ $migration->changeField(
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
 // New config values
-$migration->addConfig(['glpi_11_form_migration' => 0]);
+$migration->addConfig(['zentra_11_form_migration' => 0]);
 
 // Name (forced), Entities (forced), Child entities, Active, Last update
-$ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
-$ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
+$ADDTODISPLAYPREF['Zentra\Form\Form'] = [1, 80, 86, 3, 4];
+$ADDTODISPLAYPREF['Zentra\Form\AnswersSet'] = [1, 3, 4];
 
 $migration->addCrontask(
-    'Glpi\Form\Form',
+    'Zentra\Form\Form',
     'purgedraftforms',
     DAY_TIMESTAMP,
     param: 7
 );
 
 // Data format for ValidationField has changed
-if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
-    $iterator = $DB->request(['FROM' => 'glpi_forms_destinations_formdestinations']);
+if ($DB->tableExists('zentra_forms_destinations_formdestinations')) {
+    $iterator = $DB->request(['FROM' => 'zentra_forms_destinations_formdestinations']);
     foreach ($iterator as $data) {
         $config = json_decode($data['config'] ?? '[]', true) ?? [];
-        $validation_field_key = 'glpi-form-destination-commonitilfield-validationfield';
+        $validation_field_key = 'zentra-form-destination-commonitilfield-validationfield';
 
         // If 'strategies' key is not set, skip this entry
         // We probably already migrated it
@@ -498,7 +498,7 @@ if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
 
         // Update the config field
         $DB->update(
-            'glpi_forms_destinations_formdestinations',
+            'zentra_forms_destinations_formdestinations',
             ['config' => json_encode($config)],
             ['id' => $data['id']]
         );

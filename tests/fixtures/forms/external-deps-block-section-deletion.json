@@ -68,7 +68,7 @@
                     "id": 1,
                     "uuid": "d1e2f3a4-b5c6-7890-abcd-depA00000100",
                     "name": "My first question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -85,7 +85,7 @@
                     "id": 2,
                     "uuid": "d1e2f3a4-b5c6-7890-abcd-depA00000200",
                     "name": "Question in section",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -102,7 +102,7 @@
                     "id": 3,
                     "uuid": "d1e2f3a4-b5c6-7890-abcd-depA00000400",
                     "name": "Question in another section",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -126,7 +126,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": ["all"],
                         "group_ids": [],
@@ -135,7 +135,7 @@
                     "is_active": true
                 },
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\DirectAccess",
                     "config": {
                         "token": "depAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "allow_unauthenticated": false
@@ -146,7 +146,7 @@
             "destinations": [
                 {
                     "id": 1,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "created_if",

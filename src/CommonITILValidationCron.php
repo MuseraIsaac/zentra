@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryFunction;
 
 /**
  * Cron task for approval reminder
@@ -63,11 +63,11 @@ class CommonITILValidationCron extends CommonDBTM
      */
     public static function cronApprovalReminder(CronTask $task)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $cron_status = 1;
 
-        if ($CFG_GLPI["use_notifications"]) {
+        if ($CFG_ZENTRA["use_notifications"]) {
             // Concrete classes for which approval reminders can be created
             $targets = [
                 TicketValidation::class,
@@ -125,7 +125,7 @@ class CommonITILValidationCron extends CommonDBTM
                         if (NotificationEvent::raiseEvent('validation_reminder', $item, $options, $validation)) {
                             $validation->update([
                                 'id'            => $validation->getID(),
-                                'last_reminder_date' => $_SESSION["glpi_currenttime"],
+                                'last_reminder_date' => $_SESSION["zentra_currenttime"],
                             ]);
                             $task->addVolume(1);
                         }

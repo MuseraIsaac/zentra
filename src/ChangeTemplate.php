@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 /**
  * Chang Template class
@@ -86,12 +86,12 @@ class ChangeTemplate extends ITILTemplate
     {
         $change = new Change();
         return [
-            $change->getSearchOptionIDByField('field', 'time_to_resolve', 'glpi_changes') => 'time_to_resolve',
-            $change->getSearchOptionIDByField('field', 'impactcontent', 'glpi_changes')      => 'impactcontent',
-            $change->getSearchOptionIDByField('field', 'controlistcontent', 'glpi_changes')  => 'controlistcontent',
-            $change->getSearchOptionIDByField('field', 'rolloutplancontent', 'glpi_changes') => 'rolloutplancontent',
-            $change->getSearchOptionIDByField('field', 'backoutplancontent', 'glpi_changes') => 'backoutplancontent',
-            $change->getSearchOptionIDByField('field', 'checklistcontent', 'glpi_changes')   => 'checklistcontent',
+            $change->getSearchOptionIDByField('field', 'time_to_resolve', 'zentra_changes') => 'time_to_resolve',
+            $change->getSearchOptionIDByField('field', 'impactcontent', 'zentra_changes')      => 'impactcontent',
+            $change->getSearchOptionIDByField('field', 'controlistcontent', 'zentra_changes')  => 'controlistcontent',
+            $change->getSearchOptionIDByField('field', 'rolloutplancontent', 'zentra_changes') => 'rolloutplancontent',
+            $change->getSearchOptionIDByField('field', 'backoutplancontent', 'zentra_changes') => 'backoutplancontent',
+            $change->getSearchOptionIDByField('field', 'checklistcontent', 'zentra_changes')   => 'checklistcontent',
         ];
     }
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 {
@@ -48,10 +48,10 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return _nx('camera', 'Resolution', 'Resolutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $nb = 0;
-        if ($item instanceof CommonDBTM && $_SESSION['glpishow_count_on_tabs']) {
+        if ($item instanceof CommonDBTM && $_SESSION['zentrashow_count_on_tabs']) {
             $nb = countElementsInTable(
                 self::getTable(),
                 [
@@ -62,7 +62,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof DeviceCamera) {
             return false;
@@ -146,7 +146,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);

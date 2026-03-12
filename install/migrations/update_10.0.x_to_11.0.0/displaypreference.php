@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,12 +52,12 @@ foreach (
 ) {
     $num = $dpref['num'] < 1408 ? 1400 : 1401;
 
-    $migration->addPostQuery($DB->buildDelete('glpi_displaypreferences', [
+    $migration->addPostQuery($DB->buildDelete('zentra_displaypreferences', [
         'id' => $dpref['id'],
     ]));
     if (!isset($appliedPreferences[$dpref['users_id']][$num])) {
         $migration->addPostQuery($DB->buildInsert(
-            'glpi_displaypreferences',
+            'zentra_displaypreferences',
             [
                 'users_id' => $dpref['users_id'],
                 'itemtype' => 'Printer',
@@ -69,8 +69,8 @@ foreach (
     }
 }
 
-// Add new 'interface' column to glpi_displaypreferences
-$table = "glpi_displaypreferences";
+// Add new 'interface' column to zentra_displaypreferences
+$table = "zentra_displaypreferences";
 if (!$DB->fieldExists($table, 'interface')) {
     $migration->addField($table, 'interface', 'string', [
         'value' => 'central',

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QueryUnion;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QueryUnion;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -96,7 +96,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $obj = getItemForItemtype(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
-            'date_mod'      => $_SESSION["glpi_currenttime"],
+            'date_mod'      => $_SESSION["zentra_currenttime"],
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -116,7 +116,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $obj = getItemForItemtype(static::$itemtype_1);
         $input = [
             'id'            => $this->fields[static::$items_id_1],
-            'date_mod'      => $_SESSION["glpi_currenttime"],
+            'date_mod'      => $_SESSION["zentra_currenttime"],
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -433,7 +433,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     <form method="post" action="{{ link_class|itemtype_form_path }}">
                         <div class="d-flex w-100 flex-column">
                             <input type="hidden" name="{{ itil_object|itemtype_foreign_key }}" value="{{ itil_object.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {% if requester_id > 0 %}
                                 {% do call([link_class, 'dropdownMyDevices'], [requester_id, itil_object.getEntityID(), null, 0, {(itil_object|itemtype_foreign_key): itil_object.getID()}]) %}
                             {% endif %}
@@ -456,7 +456,7 @@ TWIG, $twig_params);
         $entries = [];
         foreach ($types_iterator as $row) {
             $itemtype = $row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype)) || !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"], true)) {
+            if (!($item = getItemForItemtype($itemtype)) || !in_array($itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"], true)) {
                 continue;
             }
 
@@ -480,15 +480,15 @@ TWIG, $twig_params);
                     'model'  => $model,
                     'serial'  => $data["serial"] ?? "-",
                     'otherserial' => $data["otherserial"] ?? "-",
-                    'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
-                    'state' => isset($data['states_id']) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : "",
-                    'location' => isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : "",
+                    'entity' => Dropdown::getDropdownName("zentra_entities", $data['entity']),
+                    'state' => isset($data['states_id']) ? Dropdown::getDropdownName("zentra_states", $data['states_id']) : "",
+                    'location' => isset($data['locations_id']) ? Dropdown::getDropdownName("zentra_locations", $data['locations_id']) : "",
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
                 $name = htmlescape($data["name"]);
                 if (
-                    $_SESSION["glpiis_ids_visible"]
+                    $_SESSION["zentrais_ids_visible"]
                     || empty($data["name"])
                 ) {
                     $name = sprintf(__s('%1$s (%2$s)'), $name, (int) $data["id"]);
@@ -534,9 +534,9 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$withtemplate) {
             if (!($item instanceof CommonDBTM)) {
@@ -544,31 +544,31 @@ TWIG, $twig_params);
             }
 
             // This tab might be hidden on assets
-            if (in_array($item::class, $CFG_GLPI['asset_types'], true) && !$this->shouldDisplayTabForAsset($item)) {
+            if (in_array($item::class, $CFG_ZENTRA['asset_types'], true) && !$this->shouldDisplayTabForAsset($item)) {
                 return '';
             }
 
             $nb = 0;
 
             if ($item::class === static::$itemtype_1) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0
+                if ($_SESSION['zentrashow_count_on_tabs']) {
+                    $nb = count($_SESSION["zentraactiveprofile"]["helpdesk_item_type"]) > 0
                         ? static::countForMainItem(
                             $item,
                             [
-                                'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"],
+                                'itemtype' => $_SESSION["zentraactiveprofile"]["helpdesk_item_type"],
                             ]
                         )
                         : 0;
                 }
                 return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
-            } elseif ($_SESSION['glpishow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
+            } elseif ($_SESSION['zentrashow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
                 if (in_array($item::class, static::$itemtype_1::getTeamItemtypes(), true)) {
                     $nb = static::countForActor($item);
                 } elseif (Session::haveRight(static::$itemtype_1::$rightname, CommonITILObject::READALL)) {
                     $nb = static::countForItemAndLinked($item);
                 }
-            } elseif ($_SESSION['glpishow_count_on_tabs']) {
+            } elseif ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = static::countForItem($item);
             }
             return static::createTabEntry(static::$itemtype_1::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -648,7 +648,7 @@ TWIG, $twig_params);
         return $result['cpt'] ?? 0;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -738,12 +738,12 @@ TWIG, $twig_params);
             $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $profile_criteria['LEFT JOIN'] ?? []);
         }
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
-        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = (int) $_SESSION['zentralist_limit'];
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
         $colspan = 12;
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count($_SESSION["zentraactiveentities"]) > 1) {
             $colspan++;
         }
 
@@ -820,7 +820,7 @@ TWIG, $twig_params);
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $params = [
             static::$items_id_1 => 0,
@@ -842,7 +842,7 @@ TWIG, $twig_params);
         $rand        = (int) $params['rand'];
 
         if (
-            $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
+            $_SESSION["zentraactiveprofile"]["helpdesk_hardware"]
             & 2 ** CommonITILObject::HELPDESK_MY_HARDWARE
         ) {
             echo "<div id='tracking_my_devices' class='input-group mb-1'>";
@@ -862,7 +862,7 @@ TWIG, $twig_params);
             echo Html::jsAjaxDropdown(
                 'my_items',
                 $field_id,
-                $CFG_GLPI["root_doc"] . "/ajax/getDropdownMyDevices.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/getDropdownMyDevices.php",
                 $ajax_params
             );
 
@@ -875,7 +875,7 @@ TWIG, $twig_params);
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_my_items$rand",
                     "item_selection_information$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/ticketiteminformation.php",
                     $params
                 );
             }
@@ -908,7 +908,7 @@ TWIG, $twig_params);
         foreach ($devices as $itemtype => $items) {
             foreach ($items as $data) {
                 $output = $data[$itemtype::getNameField()];
-                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
                 $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
@@ -930,7 +930,7 @@ TWIG, $twig_params);
             foreach ($devices as $itemtype => $items) {
                 foreach ($items as $data) {
                     $output = $data[$itemtype::getNameField()];
-                    if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                    if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                         $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                     }
                     $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
@@ -954,7 +954,7 @@ TWIG, $twig_params);
                 $output,
                 sprintf(__('%1$s: %2$s'), __('version'), $data["version"])
             );
-            if ($_SESSION["glpiis_ids_visible"]) {
+            if ($_SESSION["zentrais_ids_visible"]) {
                 $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
             }
             $my_devices[__('Installed software')]["Software_" . $data["id"]] = $output;
@@ -965,7 +965,7 @@ TWIG, $twig_params);
         foreach ($linked_items as $itemtype => $items) {
             foreach ($items as $data) {
                 $output = $data[$itemtype::getNameField()];
-                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
                 $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
@@ -990,11 +990,11 @@ TWIG, $twig_params);
      */
     private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $devices = [];
 
-        foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["assignable_types"] as $itemtype) {
             if (
                 ($item = getItemForItemtype($itemtype))
                 && CommonITILObject::isPossibleToAssignType($itemtype)
@@ -1016,7 +1016,7 @@ TWIG, $twig_params);
                 if ($item->maybeTemplate()) {
                     $criteria['WHERE']['is_template'] = 0;
                 }
-                if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
+                if (in_array($itemtype, $CFG_ZENTRA["helpdesk_visible_types"])) {
                     $criteria['WHERE']['is_helpdesk_visible'] = 1;
                 }
 
@@ -1044,38 +1044,38 @@ TWIG, $twig_params);
      */
     private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $devices = [];
         $groups  = [];
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_groups_users.groups_id',
-                'glpi_groups.name',
+                'zentra_groups_users.groups_id',
+                'zentra_groups.name',
             ],
-            'FROM'      => 'glpi_groups_users',
+            'FROM'      => 'zentra_groups_users',
             'LEFT JOIN' => [
-                'glpi_groups'  => [
+                'zentra_groups'  => [
                     'ON' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
+                        'zentra_groups_users'  => 'groups_id',
+                        'zentra_groups'        => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_groups_users.users_id'  => $userID,
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true),
+                'zentra_groups_users.users_id'  => $userID,
+            ] + getEntitiesRestrictCriteria('zentra_groups', '', $entity_restrict, true),
         ]);
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                $a_groups                     = getAncestorsOf("zentra_groups", $data["groups_id"]);
                 $a_groups[$data["groups_id"]] = $data["groups_id"];
                 $groups = array_merge($groups, $a_groups);
             }
 
-            foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
+            foreach ($CFG_ZENTRA["assignable_types"] as $itemtype) {
                 if (
                     ($item = getItemForItemtype($itemtype))
                     && CommonITILObject::isPossibleToAssignType($itemtype)
@@ -1142,42 +1142,42 @@ TWIG, $twig_params);
      */
     private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $software = [];
 
-        if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
+        if (in_array('Software', $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])) {
+            $software_helpdesk_types = array_intersect($CFG_ZENTRA['software_types'], $_SESSION["zentraactiveprofile"]["helpdesk_item_type"]);
             foreach ($software_helpdesk_types as $itemtype) {
                 if (isset($devices[$itemtype]) && count($devices[$itemtype])) {
                     $iterator = $DB->request([
                         'SELECT'          => [
-                            'glpi_softwareversions.name AS version',
-                            'glpi_softwares.name AS name',
-                            'glpi_softwares.id',
+                            'zentra_softwareversions.name AS version',
+                            'zentra_softwares.name AS name',
+                            'zentra_softwares.id',
                         ],
                         'DISTINCT'        => true,
-                        'FROM'            => 'glpi_items_softwareversions',
+                        'FROM'            => 'zentra_items_softwareversions',
                         'LEFT JOIN'       => [
-                            'glpi_softwareversions'  => [
+                            'zentra_softwareversions'  => [
                                 'ON' => [
-                                    'glpi_items_softwareversions' => 'softwareversions_id',
-                                    'glpi_softwareversions'       => 'id',
+                                    'zentra_items_softwareversions' => 'softwareversions_id',
+                                    'zentra_softwareversions'       => 'id',
                                 ],
                             ],
-                            'glpi_softwares'        => [
+                            'zentra_softwares'        => [
                                 'ON' => [
-                                    'glpi_softwareversions' => 'softwares_id',
-                                    'glpi_softwares'        => 'id',
+                                    'zentra_softwareversions' => 'softwares_id',
+                                    'zentra_softwares'        => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'        => [
-                            'glpi_items_softwareversions.items_id' => $devices[$itemtype],
-                            'glpi_items_softwareversions.itemtype' => $itemtype,
-                            'glpi_softwares.is_helpdesk_visible'   => 1,
-                        ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                        'ORDERBY'      => 'glpi_softwares.name',
+                            'zentra_items_softwareversions.items_id' => $devices[$itemtype],
+                            'zentra_items_softwareversions.itemtype' => $itemtype,
+                            'zentra_softwares.is_helpdesk_visible'   => 1,
+                        ] + getEntitiesRestrictCriteria('zentra_softwares', '', $entity_restrict),
+                        'ORDERBY'      => 'zentra_softwares.name',
                     ]);
 
                     if (count($iterator)) {
@@ -1209,15 +1209,15 @@ TWIG, $twig_params);
      */
     private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $linked_items = [];
 
         foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
             if (isset($devices[$peripheralhost_itemtype]) && count($devices[$peripheralhost_itemtype])) {
-                foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
+                foreach ($CFG_ZENTRA['directconnect_types'] as $peripheral_itemtype) {
                     if (
-                        in_array($peripheral_itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                        in_array($peripheral_itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
                         && ($item = getItemForItemtype($peripheral_itemtype))
                     ) {
                         $itemtable = getTableForItemType($peripheral_itemtype);
@@ -1270,7 +1270,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Make a select box with all glpi items
+     * Make a select box with all zentra items
      *
      * @param array<string,mixed> $options array of possible options:
      *    - name         : string / name of the select (default is users_id)
@@ -1378,14 +1378,14 @@ TWIG, $twig_params);
      **/
     public static function showFormMassiveAction($ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $dropdown_params = [
             'items_id_name'   => 'items_id',
             'itemtype_name'   => 'item_itemtype',
-            'itemtypes'       => $CFG_GLPI['ticket_types'],
+            'itemtypes'       => $CFG_ZENTRA['ticket_types'],
             'checkright'      => true,
-            'entity_restrict' => $_SESSION['glpiactive_entity'],
+            'entity_restrict' => $_SESSION['zentraactive_entity'],
         ];
         Dropdown::showSelectItemFromItemtypes($dropdown_params);
         switch ($ma->getAction()) {
@@ -1675,7 +1675,7 @@ TWIG, $twig_params);
         $entity_restrict = -1,
         $options = []
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params = [static::$items_id_1 => 0,
             'used'       => [],
@@ -1689,19 +1689,19 @@ TWIG, $twig_params);
 
         $rand = (int) $params['rand'];
 
-        if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
+        if ($_SESSION["zentraactiveprofile"]["helpdesk_hardware"] == 0) {
             echo "<input type='hidden' name='" . htmlescape($myname) . "' value=''>";
             echo "<input type='hidden' name='items_id' value='0'>";
         } else {
             echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
             // KEEP Ticket::HELPDESK_ALL_HARDWARE because it is only define on ticket level
             if (
-                $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_ALL_HARDWARE)
+                $_SESSION["zentraactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_ALL_HARDWARE)
             ) {
                 // Display a message if view my hardware
                 if (
                     $users_id
-                    && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_MY_HARDWARE))
+                    && ($_SESSION["zentraactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_MY_HARDWARE))
                 ) {
                     echo "<span class='input-group-text'>" . __s('Or complete search') . "</span>";
                 }
@@ -1746,7 +1746,7 @@ TWIG, $twig_params);
                 Ajax::updateItemOnSelectEvent(
                     Html::cleanId("dropdown_$myname$rand"),
                     Html::cleanId("results_$myname$rand"),
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
                 echo "<span id='" . htmlescape(Html::cleanId("results_" . $myname . "$rand")) . "' class='d-flex align-items-center'>\n";
@@ -1772,7 +1772,7 @@ TWIG, $twig_params);
                         $p['itemtype'] = $itemtype;
                         echo Ajax::updateItem(
                             "results_" . $myname . "$rand",
-                            $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
+                            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                             $p
                         );
                     }
@@ -1800,7 +1800,7 @@ TWIG, $twig_params);
         if (
             in_array(
                 $asset::class,
-                $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] ?? []
+                $_SESSION["zentraactiveprofile"]["helpdesk_item_type"] ?? []
             )
         ) {
             return true;

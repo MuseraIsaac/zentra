@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form                   Glpi\Form #}
-{# @var comment                Glpi\Form\Comment|null #}
-{# @var section                Glpi\Form\Section|null #}
+{# @var form                   Zentra\Form #}
+{# @var comment                Zentra\Form\Comment|null #}
+{# @var section                Zentra\Form\Section|null #}
 {# @var can_update             bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -47,29 +47,29 @@
 <section
     role="option"
     class="d-flex"
-    data-glpi-form-editor-block
-    data-glpi-form-editor-comment
-    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').COMMENT.value }}"
-    data-glpi-draggable-item
+    data-zentra-form-editor-block
+    data-zentra-form-editor-comment
+    data-zentra-form-editor-condition-type="{{ enum('Zentra\\Form\\Condition\\Type').COMMENT.value }}"
+    data-zentra-draggable-item
     aria-label="{{ comment is not null ? comment.fields.name : __('New comment') }}"
 >
     <section
-        data-glpi-form-editor-on-click="set-active"
-        data-glpi-form-editor-comment-details
+        data-zentra-form-editor-on-click="set-active"
+        data-zentra-form-editor-comment-details
         class="card flex-grow-1"
         aria-label="{{ __("Comment details") }}"
     >
         <div
             class="card-status-start bg-primary"
-            data-glpi-form-editor-active-comment-status-indicator
+            data-zentra-form-editor-active-comment-status-indicator
         ></div>
         <div class="card-body">
             <div class="d-flex">
                 <i
-                    class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
-                    data-glpi-form-editor-question-handle
+                    class="zentra-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                    data-zentra-form-editor-question-handle
                     draggable="true"
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-state-action
                 ></i>
             </div>
             {# Display comment's title #}
@@ -81,8 +81,8 @@
                     value="{{ comment is not null ? comment.fields.name : '' }}"
                     placeholder="{{ __("New comment") }}"
                     aria-label="{{ __("Comment title") }}"
-                    data-glpi-form-editor-dynamic-input
-                    data-glpi-form-editor-comment-details-name
+                    data-zentra-form-editor-dynamic-input
+                    data-zentra-form-editor-comment-details-name
                     maxlength="255"
                 />
 
@@ -91,7 +91,7 @@
                 {# Visibility dropdown #}
                 {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                     'item': comment,
-                    'type': "Glpi\\Form\\Comment",
+                    'type': "Zentra\\Form\\Comment",
                 }, with_context = false) }}
 
                 {# Duplicate comment #}
@@ -101,9 +101,9 @@
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate comment") }}"
-                    data-glpi-form-editor-on-click="duplicate-comment"
-                    data-glpi-form-editor-comment-extra-details
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-on-click="duplicate-comment"
+                    data-zentra-form-editor-comment-extra-details
+                    data-zentra-form-editor-state-action
                 ></i>
 
                 {# Delete comment #}
@@ -114,9 +114,9 @@
                     data-bs-placement="top"
                     title="{{ __("Delete") }}"
                     aria-label="{{ __("Delete") }}"
-                    data-glpi-form-editor-on-click="delete-comment"
-                    data-glpi-form-editor-comment-extra-details
-                    data-glpi-form-editor-state-action
+                    data-zentra-form-editor-on-click="delete-comment"
+                    data-zentra-form-editor-comment-extra-details
+                    data-zentra-form-editor-state-action
                 ></i>
 
                 {# Extra actions #}
@@ -128,7 +128,7 @@
                         role="button"
                         title="{{ __('More actions') }}"
                         aria-label="{{ __('More actions') }}"
-                        data-glpi-form-editor-state-action
+                        data-zentra-form-editor-state-action
                     ></i>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
@@ -136,7 +136,7 @@
                                 type="button"
                                 class="dropdown-item"
                                 aria-label="{{ __('Configure visibility') }}"
-                                data-glpi-form-editor-on-click="show-visibility-dropdown"
+                                data-zentra-form-editor-on-click="show-visibility-dropdown"
                             >
                                 <i class="ti ti-eye-cog me-2"></i>
                                 <span>{{ __("Configure visibility") }}</span>
@@ -149,9 +149,9 @@
             {# Display common fields #}
             <div
                 class="content-editable-tinymce"
-                data-glpi-form-editor-comment-description
+                data-zentra-form-editor-comment-description
                 {# Mark as secondary if empty #}
-                {{ comment is null or comment.fields.description|length == 0 ? "data-glpi-form-editor-active-comment-extra-details" : "" }}
+                {{ comment is null or comment.fields.description|length == 0 ? "data-zentra-form-editor-active-comment-extra-details" : "" }}
             >
                 {{ fields.textareaField(
                     'description',
@@ -196,12 +196,12 @@
         />
     </section>
 
-    <div data-glpi-form-editor-comment-extra-details>
+    <div data-zentra-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update'     : can_update,
             'form'           : form,
             'vertical_layout': true
         }, with_context = false) }}
     </div>
-    <div data-glpi-form-editor-question-drag-merge></div>
+    <div data-zentra-form-editor-question-drag-merge></div>
 </section>

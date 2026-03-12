@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\Environment;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
+use Zentra\Application\Environment;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
 use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
@@ -61,11 +61,11 @@ final class DbUtils
      *
      * @return string|''
      *      field name used for a foreign key to the parameter table,
-     *      or an empty string if the table name does match the GLPI table name pattern
+     *      or an empty string if the table name does match the ZENTRA table name pattern
      */
     public function getForeignKeyFieldForTable($table)
     {
-        if (!str_starts_with($table, 'glpi_')) {
+        if (!str_starts_with($table, 'zentra_')) {
             return "";
         }
         return substr($table, 5) . "_id";
@@ -93,7 +93,7 @@ final class DbUtils
      *
      * @return string|''
      *      table name corresponding to a foreign key name
-     *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
+     *      or an empty string if the foreign key name does match the ZENTRA foreign key name pattern
      */
     public function getTableNameForForeignKeyField($fkname)
     {
@@ -106,7 +106,7 @@ final class DbUtils
             $fkname = substr($fkname, 1);
         }
 
-        return "glpi_" . preg_replace("/_id.*/", "", $fkname);
+        return "zentra_" . preg_replace("/_id.*/", "", $fkname);
     }
 
     /**
@@ -203,18 +203,18 @@ final class DbUtils
      */
     public function getTableForItemType($itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+        if (!isset($CFG_ZENTRA['zentratablesitemtype'][$itemtype])) {
             $table = is_a($itemtype, CommonDBTM::class, true)
                 ? $itemtype::getTable()
                 : $this->getExpectedTableNameForClass($itemtype);
 
-            $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
-            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
+            $CFG_ZENTRA['zentratablesitemtype'][$itemtype] = $table;
+            $CFG_ZENTRA['zentraitemtypetables'][$table]    = $itemtype;
         }
 
-        return $CFG_GLPI['glpitablesitemtype'][$itemtype];
+        return $CFG_ZENTRA['zentratablesitemtype'][$itemtype];
     }
 
     /**
@@ -235,17 +235,17 @@ final class DbUtils
         // Force singular for itemtype : States case
         $singular = $dbu->getSingular($classname);
 
-        $prefix = "glpi_";
+        $prefix = "zentra_";
 
         if ($plug = isPluginItemType($singular)) {
-            /* PluginFooBar   => glpi_plugin_foos_bars */
-            /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
+            /* PluginFooBar   => zentra_plugin_foos_bars */
+            /* ZentraPlugin\Foo\Bar => zentra_plugin_foos_bars */
             $prefix .= "plugin_" . strtolower($plug['plugin']) . "_";
             $table   = strtolower($plug['class']);
         } else {
             $table = strtolower($singular);
-            if (str_starts_with($singular, NS_GLPI)) {
-                $table = substr($table, \strlen(NS_GLPI));
+            if (str_starts_with($singular, NS_ZENTRA)) {
+                $table = substr($table, \strlen(NS_ZENTRA));
             }
         }
 
@@ -282,15 +282,15 @@ final class DbUtils
      */
     public function getItemTypeForTable($table)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
-            return $CFG_GLPI['glpiitemtypetables'][$table];
+        if (isset($CFG_ZENTRA['zentraitemtypetables'][$table])) {
+            return $CFG_ZENTRA['zentraitemtypetables'][$table];
         } else {
             $inittable = $table;
-            $table     = str_replace("glpi_", "", $table);
+            $table     = str_replace("zentra_", "", $table);
             $prefix    = "";
-            $pref2     = NS_GLPI;
+            $pref2     = NS_ZENTRA;
             $is_plugin = false;
 
             $matches = [];
@@ -317,12 +317,12 @@ final class DbUtils
             $itemtype = null;
             if (class_exists($base_itemtype)) {
                 $class_file = (new ReflectionClass($base_itemtype))->getFileName();
-                $is_glpi_class = $class_file !== false && (
-                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
+                $is_zentra_class = $class_file !== false && (
+                    str_starts_with(realpath($class_file), realpath(ZENTRA_ROOT))
+                    || str_starts_with(realpath($class_file), realpath(ZENTRA_MARKETPLACE_DIR))
+                    || str_starts_with(realpath($class_file), realpath(ZENTRA_PLUGIN_DOC_DIR))
                 );
-                if ($is_glpi_class) {
+                if ($is_zentra_class) {
                     $itemtype = $base_itemtype;
                 }
             }
@@ -337,13 +337,13 @@ final class DbUtils
                     // Handle namespace + db relation
                     // On the previous step we converted all '_' into '\'
                     // However some '_' must be kept in case of an item relation
-                    // For example, with the `glpi_namespace1_namespace2_items_filters` table
-                    // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
-                    // NOT Glpi\Namespace1\Namespace2\Item\Filter
+                    // For example, with the `zentra_namespace1_namespace2_items_filters` table
+                    // the expected itemtype is Zentra\Namespace1\Namespace2\Item_Filter
+                    // NOT Zentra\Namespace1\Namespace2\Item\Filter
                     // To avoid this, we can revert the last '_' and check if the itemtype exists
                     $check_alternative = $is_plugin
-                        ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
-                        : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
+                        ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (ZentraPlugin\\PluginName\\)
+                        : substr_count($table, '_') > 0 // for ZENTRA classes, always keep the first namespace level (Zentra\\)
                     ;
                     if ($check_alternative) {
                         $last_backslash_position = strrpos($namespaced_itemtype, "\\");
@@ -364,8 +364,8 @@ final class DbUtils
             }
 
             if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
-                $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
+                $CFG_ZENTRA['zentraitemtypetables'][$inittable] = $classname;
+                $CFG_ZENTRA['zentratablesitemtype'][$classname] = $inittable;
                 return $itemtype;
             }
 
@@ -397,9 +397,9 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
+    public function fixItemtypeCase(string $itemtype, $root_dir = ZENTRA_ROOT, array $plugins_dirs = ZENTRA_PLUGINS_DIRECTORIES)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
         $matches = preg_grep('/^' . preg_quote($itemtype, '/') . '$/i', get_declared_classes());
@@ -410,7 +410,7 @@ final class DbUtils
         static $mapping = []; // Mappings already retrieved in current request
         static $already_scanned = []; // Directories already scanned directories in current request
 
-        $context = 'glpi-core';
+        $context = 'zentra-core';
         $plugin_matches = [];
         if (preg_match('/^Plugin(?<plugin>[A-Z][a-z]+)(?<class>[A-Z][a-z]+)/', $itemtype, $plugin_matches)) {
             // Nota: plugin classes that does not use any namespace cannot be completely case insensitive
@@ -422,7 +422,7 @@ final class DbUtils
         }
 
         // Our cache key must take into account the requested directories
-        if ($context == 'glpi-core') {
+        if ($context == 'zentra-core') {
             // Only $root_dir will be used, we don't need to take plugins directories into account
             // The "root=" prefix make sure we don't have any collision if $root_dir and $plugins_dirs are equals
             $unique_key = crc32($context . 'root=' . $root_dir);
@@ -432,12 +432,12 @@ final class DbUtils
             $unique_key = crc32($context . 'plugins=' . implode(',', $plugins_dirs));
         }
 
-        $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
+        $namespace      = $context === 'zentra-core' ? NS_ZENTRA : NS_PLUG . ucfirst($context) . '\\';
         $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
 
         $replacements = [];
-        if ($context !== 'glpi-core') {
-            // Strip the `GlpiPlugin\\MyPlugin` prefix that is not present in plugins classes path
+        if ($context !== 'zentra-core') {
+            // Strip the `ZentraPlugin\\MyPlugin` prefix that is not present in plugins classes path
             $replacements[$namespace] = '';
         }
         $replacements['\\'] = DIRECTORY_SEPARATOR;
@@ -447,12 +447,12 @@ final class DbUtils
 
         if (!array_key_exists($unique_key, $mapping)) {
             // Initialize mapping from persistent cache if it has not been done yet in current request
-            $mapping[$unique_key] = $GLPI_CACHE->get($cache_key);
+            $mapping[$unique_key] = $ZENTRA_CACHE->get($cache_key);
         }
 
         if ($mapping[$unique_key] !== null && array_key_exists($expected_lc_path, $mapping[$unique_key])) {
             // Return known value, if any
-            return ($context !== 'glpi-core' && $uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path];
+            return ($context !== 'zentra-core' && $uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path];
         }
 
         if (
@@ -473,11 +473,11 @@ final class DbUtils
             return $itemtype;
         }
 
-        // Fetch filenames from "src" directory of context (GLPI core or given plugin).
+        // Fetch filenames from "src" directory of context (ZENTRA core or given plugin).
         $mapping[$unique_key] = [];
 
         $srcdirs = [];
-        if ($context === 'glpi-core') {
+        if ($context === 'zentra-core') {
             $srcdirs[] = $root_dir . '/src';
         } else {
             foreach ($plugins_dirs as $plugins_dir) {
@@ -511,10 +511,10 @@ final class DbUtils
 
         $already_scanned[] = $unique_key;
 
-        $GLPI_CACHE->set($cache_key, $mapping[$unique_key]);
+        $ZENTRA_CACHE->set($cache_key, $mapping[$unique_key]);
 
         return array_key_exists($expected_lc_path, $mapping[$unique_key])
-            ? ($context !== 'glpi-core' && $uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path]
+            ? ($context !== 'zentra-core' && $uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path]
             : $itemtype;
     }
 
@@ -524,7 +524,7 @@ final class DbUtils
      *
      * @param string $itemtype itemtype
      *
-     * @return class-string<CommonGLPI>|null
+     * @return class-string<CommonZENTRA>|null
      */
     public function getClassForItemtype(string $itemtype): ?string
     {
@@ -534,8 +534,8 @@ final class DbUtils
 
         $classname = $this->fixItemtypeCase($itemtype);
 
-        if (!is_subclass_of($classname, CommonGLPI::class, true)) {
-            // Only CommonGLPI sublasses are valid itemtypes
+        if (!is_subclass_of($classname, CommonZENTRA::class, true)) {
+            // Only CommonZENTRA sublasses are valid itemtypes
             return null;
         }
 
@@ -557,7 +557,7 @@ final class DbUtils
             return false;
         }
 
-        if (!is_a($classname, CommonGLPI::class, true)) {
+        if (!is_a($classname, CommonZENTRA::class, true)) {
             return false;
         }
 
@@ -570,7 +570,7 @@ final class DbUtils
             return false;
         }
 
-        // @phpstan-ignore return.type (Template should be `of CommonGLPI`, but it result in about 1000 errors due to usage of `CommonDBTM` properties and methods on the result without checking it is a `CommonDBTM`)
+        // @phpstan-ignore return.type (Template should be `of CommonZENTRA`, but it result in about 1000 errors due to usage of `CommonDBTM` properties and methods on the result without checking it is a `CommonDBTM`)
         return new $classname();
     }
 
@@ -642,7 +642,7 @@ final class DbUtils
      *
      * @return int Number of elements in table
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
@@ -789,7 +789,7 @@ final class DbUtils
      * @param string        $separator        separator in the begin of the request (default AND)
      * @param string        $table            table where apply the limit (if needed, multiple tables queries)
      * @param string        $field            field where apply the limit (id != entities_id)
-     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['zentraactiveentities_string'])
      * @param bool          $is_recursive     need to use recursive process to find item
      *                                        (field need to be named recursive)
      * @param bool          $complete_request need to use a complete request and not a simple one
@@ -797,7 +797,7 @@ final class DbUtils
      *
      * @return string the WHERE clause to restrict
      *
-     * @TODO Deprecate this method in GLPI 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
+     * @TODO Deprecate this method in ZENTRA 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
@@ -816,8 +816,8 @@ final class DbUtils
             !$complete_request
             && ($value != '0')
             && empty($value)
-            && isset($_SESSION['glpishowallentities'])
-            && $_SESSION['glpishowallentities']
+            && isset($_SESSION['zentrashowallentities'])
+            && $_SESSION['zentrashowallentities']
         ) {
             // Not ADD "AND 1" if not needed
             if (trim($separator) == "AND") {
@@ -827,7 +827,7 @@ final class DbUtils
         }
 
         if (empty($field)) {
-            if ($table == 'glpi_entities') {
+            if ($table == 'zentra_entities') {
                 $field = "id";
             } else {
                 $field = "entities_id";
@@ -844,12 +844,12 @@ final class DbUtils
         if (is_array($value)) {
             $query .= " IN ('" . implode("','", $value) . "') ";
         } else {
-            if (strlen($value) == 0 && !isset($_SESSION['glpiactiveentities_string'])) {
+            if (strlen($value) == 0 && !isset($_SESSION['zentraactiveentities_string'])) {
                 //set root entity if not set
                 $value = 0;
             }
             if (strlen($value) == 0) {
-                $query .= " IN (" . $_SESSION['glpiactiveentities_string'] . ") ";
+                $query .= " IN (" . $_SESSION['zentraactiveentities_string'] . ") ";
             } else {
                 $query .= " = '$value' ";
             }
@@ -858,24 +858,24 @@ final class DbUtils
         if ($is_recursive) {
             $ancestors = [];
             if (
-                isset($_SESSION['glpiactiveentities'])
-                && isset($_SESSION['glpiparententities'])
-                && $value == $_SESSION['glpiactiveentities']
+                isset($_SESSION['zentraactiveentities'])
+                && isset($_SESSION['zentraparententities'])
+                && $value == $_SESSION['zentraactiveentities']
             ) {
-                $ancestors = $_SESSION['glpiparententities'];
+                $ancestors = $_SESSION['zentraparententities'];
             } else {
                 if (is_array($value)) {
-                    $ancestors = $this->getAncestorsOf("glpi_entities", $value);
+                    $ancestors = $this->getAncestorsOf("zentra_entities", $value);
                     $ancestors = array_diff($ancestors, $value);
-                } elseif (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
-                    $ancestors = $_SESSION['glpiparententities'];
+                } elseif (strlen($value) == 0 && isset($_SESSION['zentraparententities'])) {
+                    $ancestors = $_SESSION['zentraparententities'];
                 } else {
-                    $ancestors = $this->getAncestorsOf("glpi_entities", $value);
+                    $ancestors = $this->getAncestorsOf("zentra_entities", $value);
                 }
             }
 
             if (count($ancestors)) {
-                if ($table == 'glpi_entities') {
+                if ($table == 'zentra_entities') {
                     $query .= " OR $field IN ('" . implode("','", $ancestors) . "')";
                 } else {
                     $recur = $DB->quoteName((empty($table) ? 'is_recursive' : "$table.is_recursive"));
@@ -895,7 +895,7 @@ final class DbUtils
      *
      * @param string        $table            table where apply the limit (if needed, multiple tables queries)
      * @param string        $field            field where apply the limit (id != entities_id)
-     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['zentraactiveentities'])
      * @param bool|'auto'   $is_recursive     need to use recursive process to find item
      *                                        (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
      * @param bool          $complete_request need to use a complete request and not a simple one
@@ -916,8 +916,8 @@ final class DbUtils
             !$complete_request
             && ($value != '0')
             && empty($value)
-            && isset($_SESSION['glpishowallentities'])
-            && $_SESSION['glpishowallentities']
+            && isset($_SESSION['zentrashowallentities'])
+            && $_SESSION['zentrashowallentities']
         ) {
             return [new QueryExpression('true')];
         } elseif ($value === []) {
@@ -925,7 +925,7 @@ final class DbUtils
         }
 
         if (empty($field)) {
-            if ($table == 'glpi_entities') {
+            if ($table == 'zentra_entities') {
                 $field = "id";
             } else {
                 $field = "entities_id";
@@ -936,8 +936,8 @@ final class DbUtils
         }
 
         if (!is_array($value) && strlen($value) == 0) {
-            if (isset($_SESSION['glpiactiveentities'])) {
-                $value = $_SESSION['glpiactiveentities'];
+            if (isset($_SESSION['zentraactiveentities'])) {
+                $value = $_SESSION['zentraactiveentities'];
             } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
             }
@@ -945,7 +945,7 @@ final class DbUtils
 
         $crit = [$field => $value];
 
-        if ($is_recursive === 'auto' && !empty($table) && $table != 'glpi_entities') {
+        if ($is_recursive === 'auto' && !empty($table) && $table != 'zentra_entities') {
             $item = $this->getItemForItemtype($this->getItemTypeForTable($table));
             if ($item !== false) {
                 $is_recursive = $item->maybeRecursive();
@@ -955,16 +955,16 @@ final class DbUtils
         if ($is_recursive) {
             $ancestors = [];
             if (is_array($value)) {
-                $ancestors = $this->getAncestorsOf("glpi_entities", $value);
+                $ancestors = $this->getAncestorsOf("zentra_entities", $value);
                 $ancestors = array_diff($ancestors, $value);
             } elseif (strlen($value) == 0) {
-                $ancestors = $_SESSION['glpiparententities'] ?? [];
+                $ancestors = $_SESSION['zentraparententities'] ?? [];
             } else {
-                $ancestors = $this->getAncestorsOf('glpi_entities', $value);
+                $ancestors = $this->getAncestorsOf('zentra_entities', $value);
             }
 
             if (count($ancestors)) {
-                if ($table == 'glpi_entities') {
+                if ($table == 'zentra_entities') {
                     if (!is_array($value)) {
                         $value = [$value => $value];
                     }
@@ -993,11 +993,11 @@ final class DbUtils
      */
     public function getSonsOf($table, $IDf)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $ckey = 'sons_cache_' . $table . '_' . $IDf;
 
-        $sons = $GLPI_CACHE->get($ckey);
+        $sons = $ZENTRA_CACHE->get($ckey);
         if ($sons !== null) {
             return $sons;
         }
@@ -1086,7 +1086,7 @@ final class DbUtils
             }
         }
 
-        $GLPI_CACHE->set($ckey, $sons);
+        $ZENTRA_CACHE->set($ckey, $sons);
 
         return $sons;
     }
@@ -1103,7 +1103,7 @@ final class DbUtils
      */
     public function getAncestorsOf($table, $items_id)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         if ($items_id === null) {
             return [];
@@ -1121,7 +1121,7 @@ final class DbUtils
             }
         }
 
-        $lowest_valid_id = $table === 'glpi_entities' ? 0 : 1;
+        $lowest_valid_id = $table === 'zentra_entities' ? 0 : 1;
         if (!is_array($items_id)) {
             if ($items_id <= $lowest_valid_id) {
                 // Impossible for there to be any valid ancestors, so we already know the result
@@ -1141,12 +1141,12 @@ final class DbUtils
         }
         $ids_needed_to_fetch = array_map(static fn($id) => (int) $id, $items_id);
 
-        if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
+        if ($ckey !== null && ($ancestors = $ZENTRA_CACHE->get($ckey)) !== null) {
             // If we only need to get ancestors for a single item, we can use the cached values if they exist
             return $ancestors;
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
-            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
+            $from_cache = $ZENTRA_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
@@ -1249,7 +1249,7 @@ final class DbUtils
             if (!isset($ancestors_by_id[$to_get])) {
                 $ancestors_by_id[$to_get] = [];
             }
-            $GLPI_CACHE->set($ckey, $ancestors_by_id[$to_get]);
+            $ZENTRA_CACHE->set($ckey, $ancestors_by_id[$to_get]);
         } else {
             // Save the results to the cache for each requested item ID
             $to_cache = [];
@@ -1259,7 +1259,7 @@ final class DbUtils
                 }
                 $to_cache["ancestors_cache_{$table}_{$id}"] = $ancestors_by_id[$id];
             }
-            $GLPI_CACHE->setMultiple($to_cache);
+            $ZENTRA_CACHE->setMultiple($to_cache);
         }
 
         // Combine the results for all requested item IDs
@@ -1317,13 +1317,13 @@ final class DbUtils
         if ($translate) {
             if (Session::haveTranslations($this->getItemTypeForTable($table), 'name')) {
                 $SELECTNAME = 'namet.value AS transname';
-                $JOINS['glpi_dropdowntranslations AS namet'] = [
+                $JOINS['zentra_dropdowntranslations AS namet'] = [
                     'ON' => [
                         'namet'  => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => $_SESSION['zentralanguage'],
                                 'namet.field'     => 'name',
                             ],
                         ],
@@ -1332,13 +1332,13 @@ final class DbUtils
             }
             if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
                 $SELECTCOMMENT = 'namec.value AS transcomment';
-                $JOINS['glpi_dropdowntranslations AS namec'] = [
+                $JOINS['zentra_dropdowntranslations AS namec'] = [
                     'ON' => [
                         'namec'  => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namec.itemtype'  => $this->getItemTypeForTable($table),
-                                'namec.language'  => $_SESSION['glpilanguage'],
+                                'namec.language'  => $_SESSION['zentralanguage'],
                                 'namec.field'     => 'comment',
                             ],
                         ],
@@ -1423,13 +1423,13 @@ final class DbUtils
         if ($translate) {
             if (Session::haveTranslations($this->getItemTypeForTable($table), 'completename')) {
                 $SELECTNAME = 'namet.value AS transname';
-                $JOINS['glpi_dropdowntranslations AS namet'] = [
+                $JOINS['zentra_dropdowntranslations AS namet'] = [
                     'ON' => [
                         'namet'  => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => $_SESSION['zentralanguage'],
                                 'namet.field'     => 'completename',
                             ],
                         ],
@@ -1512,7 +1512,7 @@ final class DbUtils
      *
      * @return array{0: string, 1:int}
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -1552,7 +1552,7 @@ final class DbUtils
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function getTreeForItem($table, $IDf)
     {
@@ -1616,7 +1616,7 @@ final class DbUtils
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function constructTreeFromList($list, $root)
     {
@@ -1640,7 +1640,7 @@ final class DbUtils
      *
      * @return array<int, int> list of items in the tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function constructListFromTree($tree, $parent = 0)
     {
@@ -1689,16 +1689,16 @@ final class DbUtils
             return $this->formatUserLink($ID, $login, $realname, $firstname);
         }
 
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $order = $CFG_GLPI["names_format"] ?? User::REALNAME_BEFORE;
-        if (isset($_SESSION["glpinames_format"]) && !$force_config) {
-            $order = $_SESSION["glpinames_format"];
+        $order = $CFG_ZENTRA["names_format"] ?? User::REALNAME_BEFORE;
+        if (isset($_SESSION["zentranames_format"]) && !$force_config) {
+            $order = $_SESSION["zentranames_format"];
         }
 
-        $id_visible = $CFG_GLPI["is_ids_visible"] ?? 0;
-        if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
-            $id_visible = $_SESSION["glpiis_ids_visible"];
+        $id_visible = $CFG_ZENTRA["is_ids_visible"] ?? 0;
+        if (isset($_SESSION["zentrais_ids_visible"]) && !$force_config) {
+            $id_visible = $_SESSION["zentrais_ids_visible"];
         }
 
         if ((string) $realname !== '') {
@@ -1785,7 +1785,7 @@ final class DbUtils
         } elseif ($ID === 'requester_manager') {
             $username = __("Requester's manager");
         } elseif ($ID) {
-            $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+            $anon_name = !$disable_anon && $ID != ($_SESSION['zentraID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
             if ($anon_name !== null) {
                 $username = $anon_name;
             } elseif ($valid_user = $user->getFromDB($ID)) {
@@ -1849,7 +1849,7 @@ final class DbUtils
      */
     public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!$isTemplate) {
             return $objectName;
@@ -1921,7 +1921,7 @@ final class DbUtils
                 ];
 
                 if (
-                    $CFG_GLPI["use_autoname_by_entity"]
+                    $CFG_ZENTRA["use_autoname_by_entity"]
                     && ($entities_id >= 0)
                 ) {
                     $criteria['WHERE']['entities_id'] = $entities_id;
@@ -1961,7 +1961,7 @@ final class DbUtils
                 $criteria['WHERE']['is_template'] = 0;
 
                 if (
-                    $CFG_GLPI["use_autoname_by_entity"]
+                    $CFG_ZENTRA["use_autoname_by_entity"]
                     && ($entities_id >= 0)
                 ) {
                     $criteria['WHERE']['entities_id'] = $entities_id;
@@ -2089,7 +2089,7 @@ final class DbUtils
      *
      * @return string
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in ZENTRA 11.1.
      */
     public function getHourFromSql($time)
     {
@@ -2108,7 +2108,7 @@ final class DbUtils
     {
         $RELATION = []; // Redefined inside /inc/relation.constant.php
 
-        include(GLPI_ROOT . "/inc/relation.constant.php");
+        include(ZENTRA_ROOT . "/inc/relation.constant.php");
 
         // Add plugins relations
         $plug_rel = Plugin::getDatabaseRelations();
@@ -2154,7 +2154,7 @@ final class DbUtils
                         && count(preg_grep('/^items_id/', $target_fields)) === 1
                     )
                     || (
-                        // glpi_ipaddresses relationship that does not respect naming conventions
+                        // zentra_ipaddresses relationship that does not respect naming conventions
                         count($target_fields) === 2
                         && count(array_filter($target_fields, 'is_array')) === 0 // ensure array elements are only strings
                         && in_array('mainitemtype', $target_fields)
@@ -2199,8 +2199,8 @@ final class DbUtils
                         }
 
                         if (
-                            in_array($source_table, ['glpi_authldaps', 'glpi_authmails'])
-                            && $target_table === 'glpi_users'
+                            in_array($source_table, ['zentra_authldaps', 'zentra_authmails'])
+                            && $target_table === 'zentra_users'
                             && $target_field === 'auths_id'
                         ) {
                             // Ignore this specific case.
@@ -2208,8 +2208,8 @@ final class DbUtils
                             continue;
                         }
                         if (
-                            $source_table === 'glpi_requesttypes'
-                            && $target_table === 'glpi_users'
+                            $source_table === 'zentra_requesttypes'
+                            && $target_table === 'zentra_users'
                             && $target_field === 'default_requesttypes_id'
                         ) {
                             // Ignore this specific case.
@@ -2217,8 +2217,8 @@ final class DbUtils
                             continue;
                         }
                         if (
-                            $source_table === 'glpi_knowbaseitems_comments'
-                            && $target_table === 'glpi_knowbaseitems_comments'
+                            $source_table === 'zentra_knowbaseitems_comments'
+                            && $target_table === 'zentra_knowbaseitems_comments'
                             && $target_field === 'parent_comment_id'
                         ) {
                             // Ignore this specific case.
@@ -2264,7 +2264,7 @@ final class DbUtils
                             && count(preg_grep('/^itemtype/', $target_field)) === 1
                             && count(preg_grep('/^items_id/', $target_field)) === 1;
                         $is_ipaddress_relation = $is_array
-                            && $target_table === 'glpi_ipaddresses'
+                            && $target_table === 'zentra_ipaddresses'
                             && count($target_field) === 2
                             && in_array('mainitemtype', $target_field)
                             && in_array('mainitems_id', $target_field);

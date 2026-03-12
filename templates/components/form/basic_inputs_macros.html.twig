@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -359,7 +359,7 @@
             'full': true,
             'users': [],
         },
-        'entities_id': session('glpiactive_entity'),
+        'entities_id': session('zentraactive_entity'),
         'readonly': false,
         'disabled': false,
         'required': false,
@@ -425,7 +425,7 @@
    {% if options.enable_form_tags %}
         <script>
             $(function() {
-                const form_tags = new GLPI.RichText.FormTags(
+                const form_tags = new ZENTRA.RichText.FormTags(
                     tinymce.get('{{ options.id|e('js') }}'),
                     {{ options.form_tags_form_id|json_encode|raw }},
                 );
@@ -437,7 +437,7 @@
     {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
         <script>
             $(function() {
-                const user_mention = new GLPI.RichText.UserMention(
+                const user_mention = new ZENTRA.RichText.UserMention(
                     tinymce.get('{{ options.id|e('js') }}'),
                     {{ options.entities_id|json_encode|raw }},
                     '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id|json_encode|raw}) }}',

@@ -30,7 +30,7 @@
                     "id": 134,
                     "uuid": "f44122d7-c20e-48c8-a288-fa15f93a22d4",
                     "name": "What is your name?",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -46,7 +46,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -57,7 +57,7 @@
                     "is_active": true
                 },
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\DirectAccess",
                     "config": {
                         "token": "4OAg6W10fFtvsPXUh9uQ2WAGRgqAvj3f8Blg1RUZ",
                         "allow_unauthenticated": false
@@ -68,7 +68,7 @@
             "destinations": [
                 {
                     "id": 19,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

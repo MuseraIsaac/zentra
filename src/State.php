@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\Clonable;
 
 /**
  * State Class
@@ -110,7 +110,7 @@ class State extends CommonTreeDropdown
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'name'],
-            'FROM'   => 'glpi_states',
+            'FROM'   => 'zentra_states',
             'ORDER'  => 'name',
         ]);
 
@@ -143,9 +143,9 @@ class State extends CommonTreeDropdown
      */
     public static function showSummary()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $state_type = $CFG_GLPI["state_types"];
+        $state_type = $CFG_ZENTRA["state_types"];
         $states     = [];
 
         foreach ($state_type as $key => $itemtype) {
@@ -199,8 +199,8 @@ class State extends CommonTreeDropdown
         }
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_states',
-            'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
+            'FROM'   => 'zentra_states',
+            'WHERE'  => getEntitiesRestrictCriteria('zentra_states', '', '', true),
             'ORDER'  => 'completename',
         ]);
 
@@ -805,9 +805,9 @@ class State extends CommonTreeDropdown
      */
     protected function getvisibilityFields(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $fields = [];
-        foreach ($CFG_GLPI['state_types'] as $type) {
+        foreach ($CFG_ZENTRA['state_types'] as $type) {
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
         return $fields;

@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,23 +31,23 @@
  * ---------------------------------------------------------------------
  */
 
-html:not([data-glpi-theme-dark="1"]) {
+html:not([data-zentra-theme-dark="1"]) {
     .netport {
-        --glpi-cotrunk-bg: silver;
-        --glpi-hub-bg: lightsalmon;
-        --glpi-trunk-bg: mediumaquamarine;
-        --glpi-aggregated-bg: darkturquoise;
-        --glpi-network-color: var(--tblr-dark);
+        --zentra-cotrunk-bg: silver;
+        --zentra-hub-bg: lightsalmon;
+        --zentra-trunk-bg: mediumaquamarine;
+        --zentra-aggregated-bg: darkturquoise;
+        --zentra-network-color: var(--tblr-dark);
     }
 }
 
-html[data-glpi-theme-dark="1"] {
+html[data-zentra-theme-dark="1"] {
     .netport {
-        --glpi-cotrunk-bg: dimgray;
-        --glpi-hub-bg: indianred;
-        --glpi-trunk-bg: seagreen;
-        --glpi-aggregated-bg: teal;
-        --glpi-network-color: white;
+        --zentra-cotrunk-bg: dimgray;
+        --zentra-hub-bg: indianred;
+        --zentra-trunk-bg: seagreen;
+        --zentra-aggregated-bg: teal;
+        --zentra-network-color: white;
 
         a {
             color: white;
@@ -80,24 +80,24 @@ html[data-glpi-theme-dark="1"] {
     }
 
     &.trunk {
-        background-color: var(--glpi-trunk-bg);
-        color: var(--glpi-network-color);
+        background-color: var(--zentra-trunk-bg);
+        color: var(--zentra-network-color);
     }
 
     &.hub {
-        background-color: var(--glpi-hub-bg);
-        color: var(--glpi-network-color);
+        background-color: var(--zentra-hub-bg);
+        color: var(--zentra-network-color);
     }
 
     &.cotrunk {
-        background-color: var(--glpi-cotrunk-bg);
-        color: var(--glpi-network-color);
+        background-color: var(--zentra-cotrunk-bg);
+        color: var(--zentra-network-color);
     }
 
     &.aggregated,
     .aggregated {
-        background-color: var(--glpi-aggregated-bg);
-        color: var(--glpi-network-color);
+        background-color: var(--zentra-aggregated-bg);
+        color: var(--zentra-network-color);
         padding-left: 2em;
     }
 

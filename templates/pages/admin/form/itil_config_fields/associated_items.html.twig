@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -35,17 +35,17 @@
 {% set rand = random() %}
 
 <div
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
-    data-glpi-associated-items-specific-values-extra-field="{{ rand }}"
+    data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
+    data-zentra-associated-items-specific-values-extra-field="{{ rand }}"
     class="form-field col-12 d-none"
 >
     {% set remove_button %}
-        <button type="button" class="btn btn-icon btn-outline rounded-0" data-glpi-remove-associated-item-button aria-label="{{ __('Remove item') }}">
+        <button type="button" class="btn btn-icon btn-outline rounded-0" data-zentra-remove-associated-item-button aria-label="{{ __('Remove item') }}">
             <i class="ti ti-x"></i>
         </button>
     {% endset %}
 
-    <section data-glpi-associated-items-specific-values-extra-field-container>
+    <section data-zentra-associated-items-specific-values-extra-field-container>
         {% for itemtype, items_ids in specific_values_extra_field.associated_items %}
             {% for items_id in items_ids %}
                 {{ fields.dropdownItemsFromItemtypes(
@@ -65,12 +65,12 @@
                         'mb'                 : '',
                         'add_field_html'     : remove_button,
                         'add_field_attribs'  : {
-                            'data-glpi-associated-items-specific-values-extra-field-item': ''
+                            'data-zentra-associated-items-specific-values-extra-field-item': ''
                         },
                         'aria_label'         : specific_values_extra_field.itemtype_aria_label,
                         'specific_tags_items_id_dropdown': {
                             'aria-label': specific_values_extra_field.items_id_aria_label,
-                            'data-glpi-associated-items-items-id-dropdown': ''
+                            'data-zentra-associated-items-items-id-dropdown': ''
                         }
                     }
                 ) }}
@@ -93,18 +93,18 @@
                 'mb'                 : '',
                 'add_field_html'     : remove_button,
                 'add_field_attribs'  : {
-                    'data-glpi-associated-items-specific-values-extra-field-item': ''
+                    'data-zentra-associated-items-specific-values-extra-field-item': ''
                 },
                 'aria_label'         : specific_values_extra_field.itemtype_aria_label,
                 'specific_tags_items_id_dropdown': {
                     'aria-label': specific_values_extra_field.items_id_aria_label,
-                    'data-glpi-associated-items-items-id-dropdown': ''
+                    'data-zentra-associated-items-items-id-dropdown': ''
                 }
             }
         ) }}
     </section>
 
-    <template class="d-none" data-glpi-associated-items-specific-values-extra-field-template>
+    <template class="d-none" data-zentra-associated-items-specific-values-extra-field-template>
         {{ fields.dropdownItemsFromItemtypes(
             specific_values_extra_field.input_name,
             '',
@@ -121,12 +121,12 @@
                 'mb'                 : '',
                 'add_field_html'     : remove_button,
                 'add_field_attribs'  : {
-                    'data-glpi-associated-items-specific-values-extra-field-item': ''
+                    'data-zentra-associated-items-specific-values-extra-field-item': ''
                 },
                 'aria_label'         : specific_values_extra_field.itemtype_aria_label,
                 'specific_tags_items_id_dropdown': {
                     'aria-label': specific_values_extra_field.items_id_aria_label,
-                    'data-glpi-associated-items-items-id-dropdown': ''
+                    'data-zentra-associated-items-items-id-dropdown': ''
                 },
                 'disabled'                       : true
             }
@@ -136,7 +136,7 @@
 
 <div
     class="d-none"
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+    data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
 >
 	{{ fields.dropdownArrayField(
         specific_answer_extra_field.input_name,
@@ -157,8 +157,8 @@
 
 <script>
     import("/js/modules/Forms/FieldDestinationAssociatedItem.js").then((m) => {
-        new m.GlpiFormFieldDestinationAssociatedItem(
-            $('[data-glpi-associated-items-specific-values-extra-field="{{ rand }}"]'),
+        new m.ZentraFormFieldDestinationAssociatedItem(
+            $('[data-zentra-associated-items-specific-values-extra-field="{{ rand }}"]'),
             '{{ specific_values_extra_field.input_name ~ "[itemtype][]" }}',
             '{{ specific_values_extra_field.input_name ~ "[items_id][]" }}'
         );

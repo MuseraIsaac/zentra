@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\Inventoriable;
+use Zentra\Features\StateInterface;
 
 class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
@@ -320,7 +320,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -374,9 +374,9 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      */
     public static function getTypes($all = false): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $types = $CFG_GLPI['databaseinstance_types'];
+        $types = $CFG_ZENTRA['databaseinstance_types'];
 
         foreach ($types as $key => $type) {
             if (!class_exists($type)) {
@@ -407,7 +407,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)
@@ -415,7 +415,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             && in_array($item->getType(), self::getTypes(true))
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -423,7 +423,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

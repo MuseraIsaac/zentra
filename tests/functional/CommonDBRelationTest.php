@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use CommonDBRelation;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\ItemLinkException;
-use Glpi\Tests\DbTestCase;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\ItemLinkException;
+use Zentra\Tests\DbTestCase;
 
 class CommonDBRelationTest extends DbTestCase
 {
@@ -163,7 +163,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `zentra_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK
@@ -172,7 +172,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `zentra_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK - try with a real object
@@ -276,7 +276,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `zentra_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK
@@ -285,7 +285,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `zentra_commondbrelation', $e->getMessage());
         }
         /** /both specific, none attached */
 
@@ -375,7 +375,7 @@ class CommonDBRelationTest extends DbTestCase
 
             public static function getTable($classname = null)
             {
-                return 'glpi_knowbaseitems_items'; // ensure using a table with expected fields, some backend code rely on table columns
+                return 'zentra_knowbaseitems_items'; // ensure using a table with expected fields, some backend code rely on table columns
             }
         };
 

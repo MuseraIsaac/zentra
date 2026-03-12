@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,86 +56,86 @@
     --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
     --tblr-box-shadow-input: none;
     --tblr-spacer: var(--tblr-spacer-3);
-    --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
-    --glpi-tabs-fg: var(--tblr-muted);
-    --glpi-tabs-border-color: var(--tblr-border-color);
-    --glpi-tabs-active-bg: var(--tblr-bg-surface);
-    --glpi-tabs-active-fg: var(--tblr-body-color);
-    --glpi-tabs-active-border-color: var(--glpi-tabs-border-color);
-    --glpi-logo-light: url("../pics/logos/logo-GLPI-100-white.png");
-    --glpi-logo-light-reduced: url("../pics/logos/logo-G-100-white.png");
-    --glpi-logo-dark: url("../pics/logos/logo-GLPI-100-black.png");
-    --glpi-logo-dark-reduced: url("../pics/logos/logo-G-100-black.png");
-    --glpi-logo-dark-login: url("../pics/logos/logo-GLPI-250-black.png");
-    --glpi-logo-light-login: url("../pics/logos/logo-GLPI-250-white.png");
-    --glpi-logo: var(--glpi-logo-light);
-    --glpi-logo-reduced: var(--glpi-logo-light-reduced);
-    --glpi-mainmenu-bg: #2f3f64; // hsl(222, 36%, 29%)
-    --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-mainmenu-fg-muted: #f4f6fa99;
-    --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
-    --glpi-search-bg: var(--tblr-bg-surface-tertiary);
-    --glpi-search-fg: var(--tblr-body-color);
-    --glpi-search-border-color: var(--tblr-border-color);
-    --glpi-fg-secondary: #f4f6fa;
-    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-light) 91%);
-    --glpi-badge-fg: var(--tblr-link-color);
-    --glpi-form-header-fg: #055cad;
-    --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
-    --glpi-form-header-border-color: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 75%);
-    --glpi-form-header-danger-fg: var(--tblr-danger);
-    --glpi-form-header-danger-bg: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 90%);
-    --glpi-form-header-danger-border-color: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 75%);
-    --glpi-topbar-height: 79px;
-    --glpi-contextbar-height: 56px;
-    --glpi-content-margin: 24px;
-    --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 20%);
-    --glpi-scrollbar-track-color: transparent;
-    --glpi-itil-secondary-bg: #f5f5f5;
-    --glpi-timeline-itil-content-bg: #e2f2e3;
-    --glpi-timeline-itil-content-fg: #155210;
-    --glpi-timeline-itil-content-border-color: #87aa8a;
-    --glpi-timeline-fup-bg: #ececec;
-    --glpi-timeline-fup-fg: #535353;
-    --glpi-timeline-fup-border-color: #b3b3b3;
-    --glpi-timeline-task-bg: #ffe8b9;
-    --glpi-timeline-task-fg: #38301f;
-    --glpi-timeline-task-border-color: #e5c88c;
-    --glpi-timeline-solution-bg: #9fd6ed;
-    --glpi-timeline-solution-fg: #27363b;
-    --glpi-timeline-solution-border-color: #90c2d8;
-    --glpi-timeline-document-bg: #80cead;
-    --glpi-timeline-document-fg: #21352c;
-    --glpi-timeline-document-border-color: #68b997;
-    --glpi-timeline-log-bg: #cacaca21;
-    --glpi-timeline-badge-bg: rgb(97, 97, 97, 15%);
-    --glpi-timeline-badge-fg: rgb(43, 43, 43, 80%);
-    --glpi-hover-bg: rgb(var(--tblr-secondary-rgb), .08);
+    --zentra-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
+    --zentra-tabs-fg: var(--tblr-muted);
+    --zentra-tabs-border-color: var(--tblr-border-color);
+    --zentra-tabs-active-bg: var(--tblr-bg-surface);
+    --zentra-tabs-active-fg: var(--tblr-body-color);
+    --zentra-tabs-active-border-color: var(--zentra-tabs-border-color);
+    --zentra-logo-light: url("../pics/logos/logo-ZENTRA-100-white.png");
+    --zentra-logo-light-reduced: url("../pics/logos/logo-G-100-white.png");
+    --zentra-logo-dark: url("../pics/logos/logo-ZENTRA-100-black.png");
+    --zentra-logo-dark-reduced: url("../pics/logos/logo-G-100-black.png");
+    --zentra-logo-dark-login: url("../pics/logos/logo-ZENTRA-250-black.png");
+    --zentra-logo-light-login: url("../pics/logos/logo-ZENTRA-250-white.png");
+    --zentra-logo: var(--zentra-logo-light);
+    --zentra-logo-reduced: var(--zentra-logo-light-reduced);
+    --zentra-mainmenu-bg: #2f3f64; // hsl(222, 36%, 29%)
+    --zentra-mainmenu-fg: #f4f6fa;
+    --zentra-mainmenu-fg-muted: #f4f6fa99;
+    --zentra-mainmenu-active-bg: color-mix(in srgb, var(--zentra-mainmenu-bg), white 45%);
+    --zentra-search-bg: var(--tblr-bg-surface-tertiary);
+    --zentra-search-fg: var(--tblr-body-color);
+    --zentra-search-border-color: var(--tblr-border-color);
+    --zentra-fg-secondary: #f4f6fa;
+    --zentra-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-light) 91%);
+    --zentra-badge-fg: var(--tblr-link-color);
+    --zentra-form-header-fg: #055cad;
+    --zentra-form-header-bg: color-mix(in srgb, var(--zentra-form-header-fg), var(--tblr-bg-surface) 90%);
+    --zentra-form-header-border-color: color-mix(in srgb, var(--zentra-form-header-fg), var(--tblr-bg-surface) 75%);
+    --zentra-form-header-danger-fg: var(--tblr-danger);
+    --zentra-form-header-danger-bg: color-mix(in srgb, var(--zentra-form-header-danger-fg), var(--tblr-bg-surface) 90%);
+    --zentra-form-header-danger-border-color: color-mix(in srgb, var(--zentra-form-header-danger-fg), var(--tblr-bg-surface) 75%);
+    --zentra-topbar-height: 79px;
+    --zentra-contextbar-height: 56px;
+    --zentra-content-margin: 24px;
+    --zentra-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 20%);
+    --zentra-scrollbar-track-color: transparent;
+    --zentra-itil-secondary-bg: #f5f5f5;
+    --zentra-timeline-itil-content-bg: #e2f2e3;
+    --zentra-timeline-itil-content-fg: #155210;
+    --zentra-timeline-itil-content-border-color: #87aa8a;
+    --zentra-timeline-fup-bg: #ececec;
+    --zentra-timeline-fup-fg: #535353;
+    --zentra-timeline-fup-border-color: #b3b3b3;
+    --zentra-timeline-task-bg: #ffe8b9;
+    --zentra-timeline-task-fg: #38301f;
+    --zentra-timeline-task-border-color: #e5c88c;
+    --zentra-timeline-solution-bg: #9fd6ed;
+    --zentra-timeline-solution-fg: #27363b;
+    --zentra-timeline-solution-border-color: #90c2d8;
+    --zentra-timeline-document-bg: #80cead;
+    --zentra-timeline-document-fg: #21352c;
+    --zentra-timeline-document-border-color: #68b997;
+    --zentra-timeline-log-bg: #cacaca21;
+    --zentra-timeline-badge-bg: rgb(97, 97, 97, 15%);
+    --zentra-timeline-badge-fg: rgb(43, 43, 43, 80%);
+    --zentra-hover-bg: rgb(var(--tblr-secondary-rgb), .08);
     --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
-    --glpi-zindex-dropdown: #{$zindex-dropdown};
-    --glpi-zindex-sticky: #{$zindex-sticky};
-    --glpi-zindex-fixed: #{$zindex-fixed};
-    --glpi-zindex-offcanvas-backdrop: #{$zindex-offcanvas-backdrop};
-    --glpi-zindex-offcanvas: #{$zindex-offcanvas};
-    --glpi-zindex-modal-backdrop: #{$zindex-modal-backdrop};
-    --glpi-zindex-modal: #{$zindex-modal};
-    --glpi-zindex-popover: #{$zindex-popover};
-    --glpi-zindex-tooltip: #{$zindex-tooltip};
-    --glpi-zindex-toast: #{$zindex-toast};
+    --zentra-zindex-dropdown: #{$zindex-dropdown};
+    --zentra-zindex-sticky: #{$zindex-sticky};
+    --zentra-zindex-fixed: #{$zindex-fixed};
+    --zentra-zindex-offcanvas-backdrop: #{$zindex-offcanvas-backdrop};
+    --zentra-zindex-offcanvas: #{$zindex-offcanvas};
+    --zentra-zindex-modal-backdrop: #{$zindex-modal-backdrop};
+    --zentra-zindex-modal: #{$zindex-modal};
+    --zentra-zindex-popover: #{$zindex-popover};
+    --zentra-zindex-tooltip: #{$zindex-tooltip};
+    --zentra-zindex-toast: #{$zindex-toast};
 
     // helpdesk portal
-    --glpi-helpdesk-header: hsl(from var(--glpi-mainmenu-bg) h s 80);
-    --glpi-helpdesk-tiles-section-bg: #f6f8fb;
-    --glpi-helpdesk-tabs-section-bg: #fff;
+    --zentra-helpdesk-header: hsl(from var(--zentra-mainmenu-bg) h s 80);
+    --zentra-helpdesk-tiles-section-bg: #f6f8fb;
+    --zentra-helpdesk-tabs-section-bg: #fff;
 
-    // Variables for @glpi-project/illustrations
-    --glpi-illustrations-background: white;
-    --glpi-illustrations-header-dark: var(--glpi-mainmenu-bg);
-    --glpi-illustrations-header-light: var(--glpi-helpdesk-header);
-    --glpi-illustrations-primary: var(--tblr-primary);
-    --glpi-illustrations-gradient-1: hsl(from var(--glpi-mainmenu-bg) h s 92);
-    --glpi-illustrations-gradient-2: hsl(from var(--glpi-mainmenu-bg) h s 72);
-    --glpi-illustrations-gradient-3: hsl(from var(--glpi-mainmenu-bg) h s 45);
+    // Variables for @zentra-project/illustrations
+    --zentra-illustrations-background: white;
+    --zentra-illustrations-header-dark: var(--zentra-mainmenu-bg);
+    --zentra-illustrations-header-light: var(--zentra-helpdesk-header);
+    --zentra-illustrations-primary: var(--tblr-primary);
+    --zentra-illustrations-gradient-1: hsl(from var(--zentra-mainmenu-bg) h s 92);
+    --zentra-illustrations-gradient-2: hsl(from var(--zentra-mainmenu-bg) h s 72);
+    --zentra-illustrations-gradient-3: hsl(from var(--zentra-mainmenu-bg) h s 45);
 
     // Variables for Altcha
     // See: https://altcha.org/docs/v2/widget-customization/
@@ -164,8 +164,8 @@ body.in_modal {
 }
 
 .page {
-    .glpi-logo {
-        background: var(--glpi-logo) no-repeat;
+    .zentra-logo {
+        background: var(--zentra-logo) no-repeat;
         height: 55px;
         width: 100px;
     }
@@ -329,8 +329,8 @@ body.in_modal {
 }
 
 .page-anonymous {
-    .glpi-logo {
-        --logo: var(--glpi-logo-dark-login);
+    .zentra-logo {
+        --logo: var(--zentra-logo-dark-login);
 
         content: var(--logo);
         width: 200px;
@@ -367,13 +367,13 @@ table {
     }
 }
 
-.glpi-badge {
+.zentra-badge {
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background: var(--glpi-badge-bg);
-    color: var(--glpi-badge-fg) !important;
+    background: var(--zentra-badge-bg);
+    color: var(--zentra-badge-fg) !important;
     padding: calc(0.25rem - 1px) 0.25rem;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -381,8 +381,8 @@ table {
 }
 
 .badge {
-    background: var(--glpi-badge-bg);
-    color: var(--glpi-badge-fg);
+    background: var(--zentra-badge-bg);
+    color: var(--zentra-badge-fg);
 }
 
 .entity_tree {
@@ -491,7 +491,7 @@ body pre {
     color: var(--tblr-body-color);
 }
 
-.col-12.glpi-full-width {
+.col-12.zentra-full-width {
     .col-form-label {
         width: calc(-4px + 20.8333%);
     }
@@ -501,7 +501,7 @@ body pre {
     }
 }
 
-.modal-lg .col-12.glpi-full-width {
+.modal-lg .col-12.zentra-full-width {
     .col-form-label {
         width: calc(-4px + 25.8333%);
     }
@@ -511,7 +511,7 @@ body pre {
     }
 }
 
-.itil-object-fields .col-12.glpi-full-width {
+.itil-object-fields .col-12.zentra-full-width {
     .col-form-label {
         width: 28%;
     }
@@ -525,7 +525,7 @@ body pre {
 // background color.
 .horizontal-layout  {
     .text-muted-menu {
-        color: var(--glpi-mainmenu-fg-muted) !important;
+        color: var(--zentra-mainmenu-fg-muted) !important;
     }
 }
 

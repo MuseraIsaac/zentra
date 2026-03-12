@@ -3,9 +3,9 @@
 #
 # ---------------------------------------------------------------------
 #
-# GLPI - Gestionnaire Libre de Parc Informatique
+# ZENTRA - Gestionnaire Libre de Parc Informatique
 #
-# http://glpi-project.org
+# http://zentra-project.org
 #
 # @copyright 2015-2026 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
 #
 # LICENSE
 #
-# This file is part of GLPI.
+# This file is part of ZENTRA.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ if [ ! "$#" -eq 2 ]
 then
     echo "This script builds a release archive based on Git index of given directory."
     echo ""
-    echo "Usage $0 [-y] /path/to/glpi-git-dir release-name"
+    echo "Usage $0 [-y] /path/to/zentra-git-dir release-name"
     echo ""
     echo "Options:"
     echo "y     Automatic yes to prompts; assume "yes" as answer to all prompts and run non-interactively."
@@ -68,8 +68,8 @@ fi
 
 SOURCE_DIR=$(readlink -f $1)
 RELEASE=$2
-WORKING_DIR=/tmp/glpi-$RELEASE
-TARBALL_PATH=/tmp/glpi-$RELEASE.tgz
+WORKING_DIR=/tmp/zentra-$RELEASE
+TARBALL_PATH=/tmp/zentra-$RELEASE.tgz
 
 if [ ! -e $SOURCE_DIR ] || [ ! -e $SOURCE_DIR/.git ]
 then
@@ -92,11 +92,11 @@ if [ -e $WORKING_DIR ]
 then
     rm -rf $WORKING_DIR
 fi
-git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
+git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/zentra/"
 
 if [[ ! $ASSUME_YES = 1 ]]
 then
-    FOUND_VERSION=$(grep -Eo "define\('GLPI_VERSION', '[^']+'\);" $WORKING_DIR/glpi/src/autoload/constants.php | sed "s/define('GLPI_VERSION', '\([^)]*\)');/\1/")
+    FOUND_VERSION=$(grep -Eo "define\('ZENTRA_VERSION', '[^']+'\);" $WORKING_DIR/zentra/src/autoload/constants.php | sed "s/define('ZENTRA_VERSION', '\([^)]*\)');/\1/")
     if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]
     then
         read -p "$RELEASE does not match version $FOUND_VERSION declared in src/autoload/constants.php. Do you want to continue? [Y/n] " -n 1 -r
@@ -109,10 +109,10 @@ then
 fi
 
 echo "Building application..."
-$WORKING_DIR/glpi/tools/build_glpi.sh
+$WORKING_DIR/zentra/tools/build_zentra.sh
 
 echo "Creating tarball..."
-tar -c -z -f $TARBALL_PATH -C $WORKING_DIR glpi
+tar -c -z -f $TARBALL_PATH -C $WORKING_DIR zentra
 
 echo "Deleting temp directory..."
 rm -rf $WORKING_DIR

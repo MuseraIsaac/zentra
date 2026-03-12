@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { FormPage } from '../../pages/FormPage';
 import { Profiles } from '../../utils/Profiles';
 
@@ -53,7 +53,7 @@ test(`Set conditional visibility of the submit button`, async ({
         "AND",
         "What is your name?",
         "Is equal to",
-        "GLPI"
+        "ZENTRA"
     );
 
     // Reload the page and validate that the condition is saved
@@ -62,7 +62,7 @@ test(`Set conditional visibility of the submit button`, async ({
     const condition = form.getVisibleConditions();
     await expect(form.getConditionTarget(condition)).toHaveText("Questions - What is your name?");
     await expect(form.getConditionValueOperator(condition)).toHaveText("Is equal to");
-    await expect(form.getTextConditionValue(condition)).toHaveValue("GLPI");
+    await expect(form.getTextConditionValue(condition)).toHaveValue("ZENTRA");
 });
 
 test(`Dynamic label for submit button visiblity`, async ({
@@ -141,11 +141,11 @@ test(`Can use the editor to add or delete conditions on a question`, async ({
     await form.doInitVisibilityConditionsDropdown(2);
     await form.doSetVisibilityStrategy("Visible if...");
     await form.doFillStringCondition(
-        0, "And", "My second question", "Is not equal to", "I love GLPI"
+        0, "And", "My second question", "Is not equal to", "I love ZENTRA"
     );
     await form.doAddNewCondition();
     await form.doFillStringCondition(
-        1, "Or", "My first question", "Contains", "GLPI is great"
+        1, "Or", "My first question", "Contains", "ZENTRA is great"
     );
 
     // Save and reload, then verify both conditions are persisted
@@ -158,7 +158,7 @@ test(`Can use the editor to add or delete conditions on a question`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Is not equal to");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("I love GLPI");
+        .toHaveValue("I love ZENTRA");
 
     await expect(form.getConditionLogicOperator(conditions.nth(1)))
         .toHaveText("Or");
@@ -167,7 +167,7 @@ test(`Can use the editor to add or delete conditions on a question`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(1)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
 
     // Delete the first condition
     await form.doDeleteCondition(0);
@@ -176,7 +176,7 @@ test(`Can use the editor to add or delete conditions on a question`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(conditions).toHaveCount(1);
 
     // Save and reload, then verify only one condition remains
@@ -189,7 +189,7 @@ test(`Can use the editor to add or delete conditions on a question`, async ({
     await expect(form.getConditionValueOperator(final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(final_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(final_conditions).toHaveCount(1);
 });
 
@@ -199,7 +199,7 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     formImporter,
 }) => {
     // Repeat the same process as the previous test but skip the saveAndReload
-    // step to see how GLPI's handle conditions on unsaved questions.
+    // step to see how ZENTRA's handle conditions on unsaved questions.
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
     const info = await formImporter.importForm("three-short-text-questions.json");
@@ -209,11 +209,11 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     await form.doInitVisibilityConditionsDropdown(2);
     await form.doSetVisibilityStrategy("Visible if...");
     await form.doFillStringCondition(
-        0, "And", "My second question", "Is not equal to", "I love GLPI"
+        0, "And", "My second question", "Is not equal to", "I love ZENTRA"
     );
     await form.doAddNewCondition();
     await form.doFillStringCondition(
-        1, "Or", "My first question", "Contains", "GLPI is great"
+        1, "Or", "My first question", "Contains", "ZENTRA is great"
     );
 
     const conditions = form.getVisibleConditions();
@@ -222,7 +222,7 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Is not equal to");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("I love GLPI");
+        .toHaveValue("I love ZENTRA");
 
     await expect(form.getConditionLogicOperator(conditions.nth(1)))
         .toHaveText("Or");
@@ -231,7 +231,7 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     await expect(form.getConditionValueOperator(conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(1)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
 
     // Delete the first condition
     await form.doDeleteCondition(0);
@@ -240,7 +240,7 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(conditions).toHaveCount(1);
 
     // Save and reload, then verify only one condition remains
@@ -253,7 +253,7 @@ test(`Can use the editor to add or delete conditions on a question (unsaved form
     await expect(form.getConditionValueOperator(unsaved_final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(unsaved_final_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(unsaved_final_conditions).toHaveCount(1);
 });
 
@@ -271,11 +271,11 @@ test(`Can use the editor to add or delete conditions on a comment`, async ({
     await form.doInitCommentVisibilityConditionsDropdown(0);
     await form.doSetVisibilityStrategy("Visible if...");
     await form.doFillStringCondition(
-        0, "And", "My second question", "Contains", "I love GLPI"
+        0, "And", "My second question", "Contains", "I love ZENTRA"
     );
     await form.doAddNewCondition();
     await form.doFillStringCondition(
-        1, "Or", "My first question", "Contains", "GLPI is great"
+        1, "Or", "My first question", "Contains", "ZENTRA is great"
     );
 
     // Save and reload, then verify both conditions are persisted
@@ -288,7 +288,7 @@ test(`Can use the editor to add or delete conditions on a comment`, async ({
     await expect(form.getConditionValueOperator(comment_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(comment_conditions.nth(0)))
-        .toHaveValue("I love GLPI");
+        .toHaveValue("I love ZENTRA");
 
     await expect(form.getConditionLogicOperator(comment_conditions.nth(1)))
         .toHaveText("Or");
@@ -297,7 +297,7 @@ test(`Can use the editor to add or delete conditions on a comment`, async ({
     await expect(form.getConditionValueOperator(comment_conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(comment_conditions.nth(1)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
 
     // Delete the first condition
     await form.doDeleteCondition(0);
@@ -306,7 +306,7 @@ test(`Can use the editor to add or delete conditions on a comment`, async ({
     await expect(form.getConditionValueOperator(comment_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(comment_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(comment_conditions).toHaveCount(1);
 
     // Save and reload, then verify only one condition remains
@@ -319,7 +319,7 @@ test(`Can use the editor to add or delete conditions on a comment`, async ({
     await expect(form.getConditionValueOperator(comment_final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(comment_final_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(comment_final_conditions).toHaveCount(1);
 });
 
@@ -337,11 +337,11 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await form.doInitSectionVisibilityConditionsDropdown(1);
     await form.doSetVisibilityStrategy("Visible if...");
     await form.doFillStringCondition(
-        0, "And", "My second question", "Do not contains", "I love GLPI"
+        0, "And", "My second question", "Do not contains", "I love ZENTRA"
     );
     await form.doAddNewCondition();
     await form.doFillStringCondition(
-        1, "Or", "My first question", "Contains", "GLPI is great"
+        1, "Or", "My first question", "Contains", "ZENTRA is great"
     );
 
     // Save and reload, then verify both conditions are persisted
@@ -354,7 +354,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Do not contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("I love GLPI");
+        .toHaveValue("I love ZENTRA");
 
     await expect(form.getConditionLogicOperator(conditions.nth(1)))
         .toHaveText("Or");
@@ -363,7 +363,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(1)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
 
     // Delete the first condition
     await form.doDeleteCondition(0);
@@ -372,7 +372,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(conditions).toHaveCount(1);
 
     // Save and reload, then verify only one condition remains
@@ -385,7 +385,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await expect(form.getConditionValueOperator(final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(final_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(final_conditions).toHaveCount(1);
 });
 
@@ -405,11 +405,11 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await form.doOpenDestinationConditionEditor();
     await form.doSetVisibilityStrategy("Created if...");
     await form.doFillStringCondition(
-        0, "And", "My second question", "Is not equal to", "I love GLPI"
+        0, "And", "My second question", "Is not equal to", "I love ZENTRA"
     );
     await form.doAddNewCondition();
     await form.doFillStringCondition(
-        1, "Or", "My first question", "Contains", "GLPI is great"
+        1, "Or", "My first question", "Contains", "ZENTRA is great"
     );
 
     // Save destination and reopen condition editor
@@ -423,7 +423,7 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Is not equal to");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("I love GLPI");
+        .toHaveValue("I love ZENTRA");
 
     await expect(form.getConditionLogicOperator(conditions.nth(1)))
         .toHaveText("Or");
@@ -432,7 +432,7 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(1)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
 
     // Delete the first condition
     await form.doDeleteCondition(0);
@@ -441,7 +441,7 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(conditions).toHaveCount(1);
 
     // Save destination, reopen and verify only one condition remains
@@ -454,7 +454,7 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await expect(form.getConditionValueOperator(dest_final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(dest_final_conditions.nth(0)))
-        .toHaveValue("GLPI is great");
+        .toHaveValue("ZENTRA is great");
     await expect(dest_final_conditions).toHaveCount(1);
 });
 

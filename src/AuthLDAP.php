@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Error\ErrorHandler;
-use Glpi\Toolbox\Filesystem;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Error\ErrorHandler;
+use Zentra\Toolbox\Filesystem;
 use LDAP\Connection;
 use LDAP\Result;
 use Safe\Exceptions\DatetimeException;
@@ -138,7 +138,7 @@ class AuthLDAP extends CommonDBTM
     public const DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL = 2;
 
     /**
-     * Restored user strategy: Make no change to GLPI user
+     * Restored user strategy: Make no change to ZENTRA user
      * @var int
      * @since 10.0.0
      */
@@ -335,7 +335,7 @@ class AuthLDAP extends CommonDBTM
             if (empty($input["rootdn_passwd"])) {
                 unset($input["rootdn_passwd"]);
             } else {
-                $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
+                $input["rootdn_passwd"] = (new ZENTRAKey())->encrypt($input["rootdn_passwd"]);
             }
         }
 
@@ -425,7 +425,7 @@ class AuthLDAP extends CommonDBTM
                         if (isset($input["ldap_import_entities"][$id])) {
                             $entity = (int) $input["ldap_import_entities"][$id];
                         } else {
-                            $entity = $_SESSION["glpiactive_entity"];
+                            $entity = $_SESSION["zentraactive_entity"];
                         }
                         // Is recursive is in the main form and thus, don't pass through
                         // zero_on_empty mechanism inside massive action form ...
@@ -444,7 +444,7 @@ class AuthLDAP extends CommonDBTM
                         }
                     }
                     // Clean history as id does not correspond to group
-                    $_SESSION['glpimassiveactionselected'] = [];
+                    $_SESSION['zentramassiveactionselected'] = [];
                 }
                 return;
 
@@ -485,9 +485,9 @@ class AuthLDAP extends CommonDBTM
         }
 
         // warning and no form if can't read keyfile
-        $glpi_encryption_key = new GLPIKey();
-        if ($glpi_encryption_key->hasReadErrors()) {
-            $glpi_encryption_key->showReadErrors();
+        $zentra_encryption_key = new ZENTRAKey();
+        if ($zentra_encryption_key->hasReadErrors()) {
+            $zentra_encryption_key->showReadErrors();
 
             return false;
         }
@@ -527,7 +527,7 @@ class AuthLDAP extends CommonDBTM
             $twig_params = [
                 'missing_ext' => sprintf(__('%s extension is missing'), 'LDAP'),
                 'impossible_to_use_ldap' => __('Impossible to use LDAP as external source of connection'),
-                'support_promote_message' => GLPINetwork::getSupportPromoteMessage(),
+                'support_promote_message' => ZENTRANetwork::getSupportPromoteMessage(),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -553,9 +553,9 @@ TWIG, $twig_params);
     public function showFormAdvancedConfig()
     {
         // warning and no form if can't read keyfile
-        $glpi_encryption_key = new GLPIKey();
-        if ($glpi_encryption_key->hasReadErrors()) {
-            $glpi_encryption_key->showReadErrors();
+        $zentra_encryption_key = new ZENTRAKey();
+        if ($zentra_encryption_key->hasReadErrors()) {
+            $zentra_encryption_key->showReadErrors();
 
             return;
         }
@@ -586,7 +586,7 @@ TWIG, $twig_params);
         AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_authldapreplicates',
+            'FROM'   => 'zentra_authldapreplicates',
             'WHERE'  => [
                 'authldaps_id' => $ID,
             ],
@@ -1217,7 +1217,7 @@ TWIG, ['authldaps_id' => $ID]);
     }
 
     /**
-     * Get LDAP fields to sync to GLPI data from a glpi_authldaps array
+     * Get LDAP fields to sync to ZENTRA data from a zentra_authldaps array
      *
      * @param array $authtype_array Authentication method config array (from table)
      *
@@ -1268,7 +1268,7 @@ TWIG, ['authldaps_id' => $ID]);
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Check if timestamp is well format, otherwise return ''
         if (!preg_match("/[\d]{14}(\.[\d]{0,4})*Z/", $ldapstamp)) {
@@ -1282,7 +1282,7 @@ TWIG, ['authldaps_id' => $ID]);
         $minute  = (int) substr($ldapstamp, 10, 2);
         $seconds = (int) substr($ldapstamp, 12, 2);
         $stamp   = gmmktime($hour, $minute, $seconds, $month, $day, $year);
-        $stamp  += $CFG_GLPI["time_offset"] - $ldap_time_offset;
+        $stamp  += $CFG_ZENTRA["time_offset"] - $ldap_time_offset;
 
         return $stamp;
     }
@@ -1394,7 +1394,7 @@ TWIG, ['authldaps_id' => $ID]);
             $host,
             $port,
             $config_ldap->fields['rootdn'],
-            (new GLPIKey())->decrypt($config_ldap->fields['rootdn_passwd']),
+            (new ZENTRAKey())->decrypt($config_ldap->fields['rootdn_passwd']),
             $config_ldap->fields['use_tls'],
             $config_ldap->fields['deref_option'],
             $config_ldap->fields['tls_certfile'],
@@ -1508,7 +1508,7 @@ TWIG, ['authldaps_id' => $ID]);
                 $this->fields['host'],
                 $this->fields['port'],
                 $this->fields['rootdn'],
-                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                (new ZENTRAKey())->decrypt($this->fields['rootdn_passwd']),
                 $this->fields['use_tls'],
                 $this->fields['deref_option'],
                 $this->fields['tls_certfile'],
@@ -1552,7 +1552,7 @@ TWIG, ['authldaps_id' => $ID]);
                 $this->fields['host'],
                 $this->fields['port'],
                 $this->fields['rootdn'],
-                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                (new ZENTRAKey())->decrypt($this->fields['rootdn_passwd']),
                 $this->fields['use_tls'],
                 $this->fields['deref_option'],
                 $this->fields['tls_certfile'],
@@ -1651,7 +1651,7 @@ TWIG, $twig_params);
         self::displaySizeLimitWarning($limitexceeded);
 
         // delete end
-        array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
+        array_splice($ldap_users, $values['start'] + $_SESSION['zentralist_limit']);
         // delete begin
         if ($values['start'] > 0) {
             array_splice($ldap_users, 0, $values['start']);
@@ -1698,14 +1698,14 @@ TWIG, $twig_params);
             $columns['sync_field'] = __('Synchronization field');
         }
         $columns['user'] = User::getTypeName(1);
-        $columns['date_mod'] = $values['mode'] ? __('Last update in GLPI') : __('Last update in the LDAP directory');
+        $columns['date_mod'] = $values['mode'] ? __('Last update in ZENTRA') : __('Last update in the LDAP directory');
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => false,
             'nofilter' => true,
             'nosort' => true,
             'start' => $values['start'],
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
@@ -1981,7 +1981,7 @@ TWIG, $twig_params);
             return false;
         }
 
-        $glpi_users = [];
+        $zentra_users = [];
 
         $select = [
             'FROM'   => User::getTable(),
@@ -2002,13 +2002,13 @@ TWIG, $twig_params);
 
             //Ldap add : fill the array with the login of the user
             if ($values['mode'] === self::ACTION_IMPORT) {
-                $glpi_users[$user['name']] = $user['name'];
+                $zentra_users[$user['name']] = $user['name'];
             } else {
                 //Ldap synchronisation : look if the user exists in the directory
-                //and compares the modifications dates (ldap and glpi db)
+                //and compares the modifications dates (ldap and zentra db)
                 $userfound = self::dnExistsInLdap($user_infos, $user['user_dn']);
                 if (!empty($ldap_users[$user[$field_for_db]]) || $userfound) {
-                    // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
+                    // userfound seems that user dn is present in ZENTRA DB but do not correspond to an ZENTRA user
                     // -> renaming case
                     if ($userfound) {
                         //Get user in DB with this dn
@@ -2018,7 +2018,7 @@ TWIG, $twig_params);
                             //Just skip user synchronization to avoid errors
                             continue;
                         }
-                        $glpi_users[] = ['id'         => $user['id'],
+                        $zentra_users[] = ['id'         => $user['id'],
                             'user'       => $userfound['name'],
                             $field_for_sync => ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL'),
                             'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
@@ -2030,7 +2030,7 @@ TWIG, $twig_params);
                           || (($ldap_users[$user[$field_for_db]] - strtotime($user['date_sync'])) > 0)
                     ) {
                         //If entry was modified or if script should synchronize all the users
-                        $glpi_users[] = ['id'         => $user['id'],
+                        $zentra_users[] = ['id'         => $user['id'],
                             'user'       => $user['name'],
                             $field_for_sync => $user['sync_field'],
                             'timestamp'  => $user_infos[$user[$field_for_db]]['timestamp'],
@@ -2057,9 +2057,9 @@ TWIG, $twig_params);
             }
         }
 
-        // If add, do the difference between ldap users and glpi users
+        // If add, do the difference between ldap users and zentra users
         if ($values['mode'] === self::ACTION_IMPORT) {
-            $diff    = array_diff_ukey($ldap_users, $glpi_users, 'strcasecmp');
+            $diff    = array_diff_ukey($ldap_users, $zentra_users, 'strcasecmp');
             $list    = [];
             $tmpuser = new User();
 
@@ -2084,7 +2084,7 @@ TWIG, $twig_params);
 
             return $list;
         }
-        return $glpi_users;
+        return $zentra_users;
     }
 
     /**
@@ -2143,7 +2143,7 @@ TWIG, $twig_params);
         self::displaySizeLimitWarning($limitexceeded);
 
         // delete end
-        array_splice($ldap_groups, $start + $_SESSION['glpilist_limit']);
+        array_splice($ldap_groups, $start + $_SESSION['zentralist_limit']);
         // delete begin
         if ($start > 0) {
             array_splice($ldap_groups, 0, $start);
@@ -2162,16 +2162,16 @@ TWIG, $twig_params);
             $group_cell = '';
             $group_cell .= Html::hidden("dn[$dn_index]", [
                 'value'                 => $group_dn,
-                'data-glpicore-ma-tags' => 'common',
+                'data-zentracore-ma-tags' => 'common',
             ]);
             $group_cell .= Html::hidden("ldap_import_type[$dn_index]", [
                 'value'                 => $search_type,
-                'data-glpicore-ma-tags' => 'common',
+                'data-zentracore-ma-tags' => 'common',
             ]);
             if (Session::isMultiEntitiesMode()) {
                 $group_cell .= Html::hidden("ldap_import_recursive[$dn_index]", [
                     'value'                 => 0,
-                    'data-glpicore-ma-tags' => 'common',
+                    'data-zentracore-ma-tags' => 'common',
                 ]);
             }
             $group_cell .= htmlescape($group);
@@ -2181,13 +2181,13 @@ TWIG, $twig_params);
                 $entry['entity'] = Entity::dropdown([
                     'value'         => $entity,
                     'name'          => "ldap_import_entities[$dn_index]",
-                    'specific_tags' => ['data-glpicore-ma-tags' => 'common'],
+                    'specific_tags' => ['data-zentracore-ma-tags' => 'common'],
                     'display'       => false,
                 ]);
                 $entry['child_entities'] = Html::getCheckbox([
                     'name'          => "ldap_import_recursive[$dn_index]",
                     'massive_tags' => 'select_item_child_entities',
-                    'specific_tags' => ['data-glpicore-ma-tags' => 'common'],
+                    'specific_tags' => ['data-zentracore-ma-tags' => 'common'],
                 ]);
             }
             $entries[] = $entry;
@@ -2215,7 +2215,7 @@ TWIG, $twig_params);
             'nofilter' => true,
             'nosort' => true,
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'columns' => $columns,
             'formatters' => [
                 'group' => 'raw_html', // Raw because there are some hidden inputs added here. The Group itself is pre-sanitized.
@@ -2322,13 +2322,13 @@ TWIG, $twig_params);
                     break;
             }
             if (!empty($infos)) {
-                $glpi_groups = [];
+                $zentra_groups = [];
 
-                //Get all groups from GLPI DB for the current entity and the subentities
+                //Get all groups from ZENTRA DB for the current entity and the subentities
                 $iterator = $DB->request([
                     'SELECT' => ['ldap_group_dn','ldap_value'],
-                    'FROM'   => 'glpi_groups',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_groups'),
+                    'FROM'   => 'zentra_groups',
+                    'WHERE'  => getEntitiesRestrictCriteria('zentra_groups'),
                 ]);
 
                 //If the group exists in DB -> unset it from the LDAP groups
@@ -2337,16 +2337,16 @@ TWIG, $twig_params);
                     //depending on the type of search when groups are imported
                     //the DN may be in two separate fields
                     if (!empty($group["ldap_group_dn"])) {
-                        $glpi_groups[$group["ldap_group_dn"]] = 1;
+                        $zentra_groups[$group["ldap_group_dn"]] = 1;
                     } elseif (!empty($group["ldap_value"])) {
-                        $glpi_groups[$group["ldap_value"]] = 1;
+                        $zentra_groups[$group["ldap_value"]] = 1;
                     }
                 }
                 $ligne = 0;
 
                 foreach ($infos as $dn => $info) {
                     //reconcile by DN
-                    if (!isset($glpi_groups[$dn])) {
+                    if (!isset($zentra_groups[$dn])) {
                         $groups[$ligne]["dn"]          = $dn;
                         $groups[$ligne]["cn"]          = $info["cn"];
                         $groups[$ligne]["search_type"] = $info["search_type"];
@@ -2537,7 +2537,7 @@ TWIG, $twig_params);
                             ) {
                                 $iterator = $DB->request([
                                     'SELECT' => ['ldap_value'],
-                                    'FROM'   => 'glpi_groups',
+                                    'FROM'   => 'zentra_groups',
                                     'WHERE'  => [
                                         'ldap_group_dn' => $ou,
                                     ],
@@ -2720,7 +2720,7 @@ TWIG, $twig_params);
 
                         // Add the auth method
                         // Force date sync
-                        $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
+                        $user->fields["date_sync"] = $_SESSION["zentra_currenttime"];
                         $user->fields['is_deleted_ldap'] = 0;
 
                         //Save information in database !
@@ -2836,7 +2836,7 @@ TWIG, $twig_params);
             $this->fields['host'],
             $this->fields['port'],
             $this->fields['rootdn'],
-            (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+            (new ZENTRAKey())->decrypt($this->fields['rootdn_passwd']),
             $this->fields['use_tls'],
             $this->fields['deref_option'],
             $this->fields['tls_certfile'],
@@ -3057,7 +3057,7 @@ TWIG, $twig_params);
             $ldap_method['host'],
             $ldap_method['port'],
             $ldap_method['rootdn'],
-            (new GLPIKey())->decrypt($ldap_method['rootdn_passwd']),
+            (new ZENTRAKey())->decrypt($ldap_method['rootdn_passwd']),
             $ldap_method['use_tls'],
             $ldap_method['deref_option'],
             $ldap_method['tls_certfile'] ?? '',
@@ -3099,7 +3099,7 @@ TWIG, $twig_params);
                     $replicate["host"],
                     $replicate["port"],
                     $ldap_method['rootdn'],
-                    (new GLPIKey())->decrypt($ldap_method['rootdn_passwd']),
+                    (new ZENTRAKey())->decrypt($ldap_method['rootdn_passwd']),
                     $ldap_method['use_tls'],
                     $ldap_method['deref_option'],
                     $ldap_method['tls_certfile'] ?? '',
@@ -3151,7 +3151,7 @@ TWIG, $twig_params);
         if ($active_only) {
             $criteria['is_active'] = 1;
         }
-        return getAllDataFromTable('glpi_authldaps', $criteria);
+        return getAllDataFromTable('zentra_authldaps', $criteria);
     }
 
     /**
@@ -3161,7 +3161,7 @@ TWIG, $twig_params);
      */
     public static function useAuthLdap()
     {
-        return (countElementsInTable('glpi_authldaps', ['is_active' => 1]) > 0);
+        return (countElementsInTable('zentra_authldaps', ['is_active' => 1]) > 0);
     }
 
     /**
@@ -3169,7 +3169,7 @@ TWIG, $twig_params);
      * Check all the directories. When the user is found, then import it
      *
      * @param array $options array containing condition:
-     *                 array('name'=>'glpi') or array('email' => 'test at test.com')
+     *                 array('name'=>'zentra') or array('email' => 'test at test.com')
      *
      * @return array|bool false if fail
      * @throws SodiumException
@@ -3241,7 +3241,7 @@ TWIG, $twig_params);
         // Get another fresh connection using the root credentials.
         // This connection may permit to retrieve more information (especially groups info)
         // than a connection explicitely bound to the user DN.
-        // See https://github.com/glpi-project/glpi/issues/17492.
+        // See https://github.com/zentra-project/zentra/issues/17492.
         //
         // Use an empty login to only try a connection with configured root credentials.
         $root_ldap_connection = self::tryToConnectToServer($ldap_method, '', '');
@@ -3312,7 +3312,7 @@ TWIG, $twig_params);
             // Sort servers to first try on known servers for given login.
             // It is necessary to still necessary to try to connect on all servers to handle following cases:
             //  - there are multiple users having same login on different LDAP servers,
-            //  - a user has been migrated from a LDAP server to another one, but GLPI is not yet aware of this.
+            //  - a user has been migrated from a LDAP server to another one, but ZENTRA is not yet aware of this.
             // Caveat: if user uses a wrong password, a login attempt will still be done on all active LDAP servers.
             $known_servers = $DB->request(
                 [
@@ -3574,7 +3574,7 @@ TWIG, $twig_params);
             if (!isset($_REQUEST['authldaps_id']) || (int) $_REQUEST['authldaps_id'] <= 0) {
                 // Use default from the current entity or global default
                 $entity = new Entity();
-                $entity->getFromDB($_SESSION['glpiactive_entity']);
+                $entity->getFromDB($_SESSION['zentraactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
                     $defaultAuth = Auth::getDefaultAuth();
@@ -3612,7 +3612,7 @@ TWIG, $twig_params);
 
         $_REQUEST['mode'] = (int) ($_REQUEST['mode'] ?? self::ACTION_IMPORT);
 
-        $_REQUEST['entities_id'] ??= $_SESSION['glpiactive_entity'];
+        $_REQUEST['entities_id'] ??= $_SESSION['zentraactive_entity'];
         if (isset($_REQUEST['toprocess'])) {
             $_REQUEST['action'] = 'process';
         }
@@ -3775,7 +3775,7 @@ TWIG, $twig_params);
      */
     public static function getNumberOfServers()
     {
-        return countElementsInTable('glpi_authldaps', ['is_active' => 1]);
+        return countElementsInTable('zentra_authldaps', ['is_active' => 1]);
     }
 
     /**
@@ -3865,7 +3865,7 @@ TWIG, $twig_params);
                 $authldap->fields['host'],
                 $authldap->fields['port'],
                 $authldap->fields['rootdn'],
-                (new GLPIKey())->decrypt($authldap->fields['rootdn_passwd']),
+                (new ZENTRAKey())->decrypt($authldap->fields['rootdn_passwd']),
                 $authldap->fields['use_tls'],
                 $authldap->fields['deref_option'],
                 $authldap->fields['tls_certfile'],
@@ -3909,7 +3909,7 @@ TWIG, $twig_params);
         }
 
         if (!empty($input["rootdn_passwd"])) {
-            $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
+            $input["rootdn_passwd"] = (new ZENTRAKey())->encrypt($input["rootdn_passwd"]);
         }
 
         $this->checkFilesExist($input);
@@ -3988,7 +3988,7 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT' => ['id'],
-            'FROM'  => 'glpi_authldaps',
+            'FROM'  => 'zentra_authldaps',
             'WHERE' => [
                 'is_active' => 1,
                 'OR'        => [
@@ -4011,7 +4011,7 @@ TWIG, $twig_params);
         Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (
@@ -4030,7 +4030,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var AuthLDAP $item */
         switch ($tabnum) {
@@ -4094,7 +4094,7 @@ TWIG, $twig_params);
         $replicates = [];
         $criteria = [
             'SELECT' => ['id', 'host', 'port'],
-            'FROM'   => 'glpi_authldapreplicates',
+            'FROM'   => 'zentra_authldapreplicates',
             'WHERE'  => ['authldaps_id' => $master_id],
         ];
         foreach ($DB->request($criteria) as $replicate) {
@@ -4165,7 +4165,7 @@ TWIG, $twig_params);
             return false;
         }
         $count = countElementsInTable(
-            'glpi_users',
+            'zentra_users',
             [
                 'auths_id'  => $this->getID(),
                 'NOT'       => ['sync_field' => null],

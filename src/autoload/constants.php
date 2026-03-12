@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,30 +37,30 @@ use function Safe\define;
 use function Safe\preg_replace;
 use function Safe\sha1_file;
 
-define('GLPI_ROOT', dirname(__DIR__, 2));
+define('ZENTRA_ROOT', dirname(__DIR__, 2));
 
-// Current version of GLPI
-define('GLPI_VERSION', '11.0.7-dev');
+// Current version of ZENTRA
+define('ZENTRA_VERSION', '11.0.7-dev');
 
-$schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
+$schema_file = sprintf('%s/install/mysql/zentra-empty.sql', ZENTRA_ROOT);
 define(
-    "GLPI_SCHEMA_VERSION",
-    GLPI_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
+    "ZENTRA_SCHEMA_VERSION",
+    ZENTRA_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
 );
 
-$version_file = sprintf('%s/version/%s', GLPI_ROOT, preg_replace('/^(\d+\.\d+\.\d+)(-.*)?$/', '$1', GLPI_VERSION));
+$version_file = sprintf('%s/version/%s', ZENTRA_ROOT, preg_replace('/^(\d+\.\d+\.\d+)(-.*)?$/', '$1', ZENTRA_VERSION));
 define(
-    "GLPI_FILES_VERSION",
-    GLPI_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
+    "ZENTRA_FILES_VERSION",
+    ZENTRA_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
 );
 
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
-define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
-define('GLPI_YEAR', '2026');
+define('ZENTRA_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
+define('ZENTRA_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
+define('ZENTRA_YEAR', '2026');
 
 // namespaces
-define('NS_GLPI', 'Glpi\\');
-define('NS_PLUG', 'GlpiPlugin\\');
+define('NS_ZENTRA', 'Zentra\\');
+define('NS_PLUG', 'ZentraPlugin\\');
 
 // rights
 define("READ", 1);
@@ -82,7 +82,7 @@ define("NOT_AVAILABLE", 'N/A');
 // key used to crypt passwords in DB for external access : proxy / smtp / ldap /  mailcollectors
 // This key is not used to crypt user's passwords
 // If you hav to define passwords again
-define("GLPIKEY", "GLPI£i'snarss'ç");
+define("ZENTRAKEY", "ZENTRA£i'snarss'ç");
 
 // TIMES
 define("MINUTE_TIMESTAMP", 60);
@@ -115,4 +115,4 @@ define("ERROR_ON_ACTION", 4);
 define("ERROR_ALREADY_DEFINED", 5);
 
 // Directory constants
-define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
+define('ZENTRA_I18N_DIR', ZENTRA_ROOT . "/locales");

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ $config = Config::getConfigurationValues('inventory');
 if (isset($config['stale_agents_action']) && is_numeric($config['stale_agents_action'])) {
     //convert stale_agents_action to an array
     $DB->update(
-        'glpi_configs',
+        'zentra_configs',
         [
             'value' => exportArrayToDB([$config['stale_agents_action']]),
         ],

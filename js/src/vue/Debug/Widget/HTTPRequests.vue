@@ -233,19 +233,19 @@
                     <ul class="nav nav-tabs" data-bs-toggle="tabs">
                         <li class="nav-item">
                             <button @click="switchSubwidget('request_summary')"
-                                    class="nav-link active" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
+                                    class="nav-link active" data-bs-toggle="tab" data-zentra-debug-widget-id="request_summary">Summary</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('sql')"
-                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">SQL</button>
+                                    class="nav-link" data-bs-toggle="tab" data-zentra-debug-widget-id="sql">SQL</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('globals')"
-                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
+                                    class="nav-link" data-bs-toggle="tab" data-zentra-debug-widget-id="globals">Globals</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('profiler')"
-                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
+                                    class="nav-link" data-bs-toggle="tab" data-zentra-debug-widget-id="profiler">Profiler</button>
                         </li>
                     </ul>
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/NetworkPortMetrics.class.php */
 
@@ -83,8 +83,8 @@ class NetworkPortMetricsTest extends DbTestCase
             'ifoutbytes'   => 2179528910,
             'date' => $value['date'],
             'id' => $value['id'],
-            'date_creation' => $_SESSION['glpi_currenttime'],
-            'date_mod' => $_SESSION['glpi_currenttime'],
+            'date_creation' => $_SESSION['zentra_currenttime'],
+            'date_mod' => $_SESSION['zentra_currenttime'],
         ];
         $this->assertEquals($expected, $value);
 
@@ -109,8 +109,8 @@ class NetworkPortMetricsTest extends DbTestCase
             'ifoutbytes'   => 2159528910,
             'date' => $value['date'],
             'id' => $value['id'],
-            'date_creation' => $_SESSION['glpi_currenttime'],
-            'date_mod' => $_SESSION['glpi_currenttime'],
+            'date_creation' => $_SESSION['zentra_currenttime'],
+            'date_mod' => $_SESSION['zentra_currenttime'],
         ];
         $this->assertEquals($expected, $updated_value);
 

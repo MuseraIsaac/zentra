@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Common DataBase visibility for items
@@ -90,11 +90,11 @@ abstract class CommonDBVisible extends CommonDBTM
         // Groups
         if (
             count($this->groups)
-            && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
+            && isset($_SESSION["zentragroups"]) && count($_SESSION["zentragroups"])
         ) {
             foreach ($this->groups as $data) {
                 foreach ($data as $group) {
-                    if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
+                    if (in_array($group['groups_id'], $_SESSION["zentragroups"])) {
                         // All the group
                         if ($group['no_entity_restriction']) {
                             return true;
@@ -111,7 +111,7 @@ abstract class CommonDBVisible extends CommonDBTM
         // Entities
         if (
             count($this->entities)
-            && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
+            && isset($_SESSION["zentraactiveentities"]) && count($_SESSION["zentraactiveentities"])
         ) {
             foreach ($this->entities as $data) {
                 foreach ($data as $entity) {
@@ -125,11 +125,11 @@ abstract class CommonDBVisible extends CommonDBTM
         // Profiles
         if (
             count($this->profiles)
-            && isset($_SESSION["glpiactiveprofile"])
-            && isset($_SESSION["glpiactiveprofile"]['id'])
+            && isset($_SESSION["zentraactiveprofile"])
+            && isset($_SESSION["zentraactiveprofile"]['id'])
         ) {
-            if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
-                foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
+            if (isset($this->profiles[$_SESSION["zentraactiveprofile"]['id']])) {
+                foreach ($this->profiles[$_SESSION["zentraactiveprofile"]['id']] as $profile) {
                     // All the profile
                     if ($profile['no_entity_restriction']) {
                         return true;
@@ -200,8 +200,8 @@ abstract class CommonDBVisible extends CommonDBTM
 
         foreach ($this->groups as $val) {
             foreach ($val as $data) {
-                $name    = Dropdown::getDropdownName('glpi_groups', $data['groups_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_groups', (int) $data['groups_id']);
+                $name    = Dropdown::getDropdownName('zentra_groups', $data['groups_id']);
+                $tooltip = Dropdown::getDropdownComments('zentra_groups', (int) $data['groups_id']);
                 $recipient = sprintf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
@@ -213,7 +213,7 @@ abstract class CommonDBVisible extends CommonDBTM
                         $recipient,
                         htmlescape(
                             Dropdown::getDropdownName(
-                                'glpi_entities',
+                                'zentra_entities',
                                 $data['entities_id']
                             )
                         )
@@ -237,8 +237,8 @@ abstract class CommonDBVisible extends CommonDBTM
 
         foreach ($this->entities as $val) {
             foreach ($val as $data) {
-                $name    = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_entities', (int) $data['entities_id']);
+                $name    = Dropdown::getDropdownName('zentra_entities', $data['entities_id']);
+                $tooltip = Dropdown::getDropdownComments('zentra_entities', (int) $data['entities_id']);
                 $recipient = sprintf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
@@ -262,8 +262,8 @@ abstract class CommonDBVisible extends CommonDBTM
 
         foreach ($this->profiles as $val) {
             foreach ($val as $data) {
-                $name    = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_profiles', (int) $data['profiles_id']);
+                $name    = Dropdown::getDropdownName('zentra_profiles', $data['profiles_id']);
+                $tooltip = Dropdown::getDropdownComments('zentra_profiles', (int) $data['profiles_id']);
                 $recipient = sprintf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
@@ -275,7 +275,7 @@ abstract class CommonDBVisible extends CommonDBTM
                         $recipient,
                         htmlescape(
                             Dropdown::getDropdownName(
-                                'glpi_entities',
+                                'zentra_entities',
                                 $data['entities_id']
                             )
                         )

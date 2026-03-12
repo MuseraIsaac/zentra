@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 describe('Form destination', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Test form for the destination form suite',
         }).as('form_id');
 
@@ -40,7 +40,7 @@ describe('Form destination', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
+            const tab = 'Zentra\\Form\\Destination\\FormDestination$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
     });
@@ -154,7 +154,7 @@ describe('Form destination', () => {
         cy.findByRole('combobox', {name: '-----'}).as('second_strategy_dropdown');
         cy.get('@second_strategy_dropdown').selectDropdownValue('Specific actors');
         cy.get('@requesters_config').getDropdownByLabelText('Select actors...').as('second_strategy_actors_dropdown');
-        cy.get('@second_strategy_actors_dropdown').selectDropdownValue('glpi');
+        cy.get('@second_strategy_actors_dropdown').selectDropdownValue('zentra');
 
         // Add a third strategy
         cy.get('@add_strategy_button').click();
@@ -170,7 +170,7 @@ describe('Form destination', () => {
         cy.get('@requesters_config').within(() => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
-            cy.findByRole('listitem', {name: 'glpi'}).should('exist');
+            cy.findByRole('listitem', {name: 'zentra'}).should('exist');
             cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
         });
 
@@ -188,7 +188,7 @@ describe('Form destination', () => {
         cy.get('@requesters_config').within(() => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
-            cy.findByRole('listitem', {name: 'glpi'}).should('exist');
+            cy.findByRole('listitem', {name: 'zentra'}).should('exist');
             cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
             cy.findByRole('combobox', {name: 'User who filled the form'}).should('exist');
         });

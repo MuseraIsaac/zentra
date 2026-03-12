@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
-use Glpi\Console\AbstractCommand;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\Console\AbstractCommand;
+use Zentra\DBAL\QuerySubQuery;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -64,7 +64,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
 
         if (!$input->getOption('no-interaction') && !$input->getOption('dry-run')) {
             // Ask for confirmation (unless --no-interaction)
-            $output->writeln(__('You are about to delete orphan logs of GLPI log table (glpi_logs).'));
+            $output->writeln(__('You are about to delete orphan logs of ZENTRA log table (zentra_logs).'));
 
             $this->askForConfirmation(false);
         }
@@ -85,7 +85,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
             $result = $this->db->request(
                 [
                     'SELECT' => ['id', 'items_id'],
-                    'FROM' => 'glpi_logs',
+                    'FROM' => 'zentra_logs',
                     'WHERE' => [
                         ['NOT' => ['items_id' => new QuerySubQuery(['SELECT' => 'id', 'FROM' => $tablename])]],
                         'itemtype' => $itemtype,
@@ -108,7 +108,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
                         $i++;
                         $total++;
                         if ($i % 1000 == 0 || count($result) === $total) {
-                            $this->db->delete('glpi_logs', ['id' => $ids]);
+                            $this->db->delete('zentra_logs', ['id' => $ids]);
                             $progress_bar->advance($i);
                             //reset
                             $ids = [];
@@ -124,7 +124,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
 
         if (!$globalCount) {
             $output->writeln(
-                '<info>' . __('No orphans found in the glpi_logs table.') . '</info>',
+                '<info>' . __('No orphans found in the zentra_logs table.') . '</info>',
                 OutputInterface::VERBOSITY_QUIET
             );
         } elseif (!$dry_run) {
@@ -134,7 +134,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
             );
         } else {
             $msg = sprintf(
-                __('Found %s orphan(s) in the glpi_logs table. Launch the command without the --dry-run option to delete them.'),
+                __('Found %s orphan(s) in the zentra_logs table. Launch the command without the --dry-run option to delete them.'),
                 $globalCount
             );
             $output->writeln(

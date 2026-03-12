@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonITILObject;
 use Computer;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 
@@ -93,7 +93,7 @@ class ProblemTest extends DbTestCase
 
     public function testAssignFromCategory()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $entity = new \Entity();
         $entityId = $entity->import([
             'name' => 'an entity configured to check problem auto assignation of user ad group',
@@ -107,7 +107,7 @@ class ProblemTest extends DbTestCase
         $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to access the new entity
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $success = \Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
@@ -447,7 +447,7 @@ class ProblemTest extends DbTestCase
 
         foreach ($profilerights as $right => $value) {
             $this->assertTrue($DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => $value],
                 [
                     'profiles_id'  => 4,
@@ -478,10 +478,10 @@ class ProblemTest extends DbTestCase
 
     public function testClosedProblemWithObserverStatus()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $tech_user = getItemByTypeName(\User::class, 'tech');
-        $glpi_user = getItemByTypeName(\User::class, 'glpi');
+        $zentra_user = getItemByTypeName(\User::class, 'zentra');
 
         $problem = $this->createItem(
             Problem::class,
@@ -492,7 +492,7 @@ class ProblemTest extends DbTestCase
                 '_actors' => [
                     'requester' => [
                         [
-                            'items_id' => $glpi_user->getID(),
+                            'items_id' => $zentra_user->getID(),
                             'itemtype' => 'User',
                         ],
                     ],
@@ -510,7 +510,7 @@ class ProblemTest extends DbTestCase
         $this->assertTrue(
             $user_problem->getFromDBByCrit([
                 'problems_id' => $problem->getID(),
-                'users_id' => $glpi_user->getID(),
+                'users_id' => $zentra_user->getID(),
                 'type' => \CommonITILActor::REQUESTER,
             ])
         );

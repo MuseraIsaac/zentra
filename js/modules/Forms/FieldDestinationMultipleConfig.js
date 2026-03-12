@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* global getUUID, setupAjaxDropdown, setupAdaptDropdown */
 
-export class GlpiFormFieldDestinationMultipleConfig {
+export class ZentraFormFieldDestinationMultipleConfig {
     /** @type {jQuery<HTMLElement>} */
     #container;
 
@@ -51,19 +51,19 @@ export class GlpiFormFieldDestinationMultipleConfig {
 
     constructor(container, reusable_strategies = new Set()) {
         this.#container = container;
-        this.#template = container.find('[data-glpi-itildestination-field-config-template]');
-        this.#add_button = container.find('[data-glpi-itildestination-add-field-config]');
+        this.#template = container.find('[data-zentra-itildestination-field-config-template]');
+        this.#add_button = container.find('[data-zentra-itildestination-add-field-config]');
         this.#reusable_strategies = reusable_strategies instanceof Set ? reusable_strategies : new Set(reusable_strategies);
 
         // Register events
-        this.#container.find('[data-glpi-itildestination-remove-field-config]')
-            .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-glpi-itildestination-field-config]')));
+        this.#container.find('[data-zentra-itildestination-remove-field-config]')
+            .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-zentra-itildestination-field-config]')));
         this.#add_button.on('click', () => this.#addFieldConfig());
-        this.#container.find('[data-glpi-itildestination-field-config]')
+        this.#container.find('[data-zentra-itildestination-field-config]')
             .each((index, field) => this.#getStrategySelect(field).on('change', (e) => this.#handleStrategyChange(e)));
 
         // Trigger change event to initialize the display
-        this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
+        this.#container.find('[data-zentra-itildestination-field-config]').each((index, field) => {
             this.#getStrategySelect(field).trigger('change');
         });
 
@@ -84,7 +84,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
      */
     #addFieldConfig() {
         const selected_strategies = [];
-        this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
+        this.#container.find('[data-zentra-itildestination-field-config]').each((index, field) => {
             const strategy = this.#getStrategySelect(field).find('option').filter(':selected').val();
             // Only add to selected_strategies if it's not reusable
             if (!this.isStrategyReusable(strategy)) {
@@ -98,7 +98,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
         const temp_container = $('<div>').html(template_html);
 
         // Replace __INDEX__ placeholders with actual index
-        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length;
+        const current_index = this.#container.find('[data-zentra-itildestination-field-config]').length;
 
         // Process scripts in place to replace __INDEX__ before inserting
         temp_container.find('script').each((index, script) => {
@@ -123,8 +123,8 @@ export class GlpiFormFieldDestinationMultipleConfig {
             }
         });
 
-        new_config_field.find('[data-glpi-itildestination-remove-field-config]')
-            .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-glpi-itildestination-field-config]')));
+        new_config_field.find('[data-zentra-itildestination-remove-field-config]')
+            .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-zentra-itildestination-field-config]')));
 
         new_config_field.find('select').find('option').each((index, option) => {
             if ($(option).val() != 0 && selected_strategies.includes($(option).val())) {
@@ -178,7 +178,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
             }
         });
 
-        field.find('[data-glpi-items-from-itemtypes-dropdown]').each((_index, dropdown) => {
+        field.find('[data-zentra-items-from-itemtypes-dropdown]').each((_index, dropdown) => {
             const id = this.#last_used_dropdown_index++;
             const itemtype_select = $(dropdown).find('select').first();
 
@@ -217,9 +217,9 @@ export class GlpiFormFieldDestinationMultipleConfig {
             return;
         }
 
-        const count_options = this.#container.find('[data-glpi-itildestination-field-config]')
-            .find('select[data-glpi-itildestination-strategy-select]').first().find('option').length;
-        const count_field_configs = this.#container.find('[data-glpi-itildestination-field-config]').length;
+        const count_options = this.#container.find('[data-zentra-itildestination-field-config]')
+            .find('select[data-zentra-itildestination-strategy-select]').first().find('option').length;
+        const count_field_configs = this.#container.find('[data-zentra-itildestination-field-config]').length;
 
         this.#add_button.toggleClass('d-none', count_field_configs >= count_options);
     }
@@ -230,7 +230,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
      */
     #handleStrategyChange(event = null) {
         const selected_strategies = [];
-        this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
+        this.#container.find('[data-zentra-itildestination-field-config]').each((index, field) => {
             const strategy = this.#getStrategySelect(field).find('option').filter(':selected').val();
             // Only add to selected_strategies if it's not reusable
             if (!this.isStrategyReusable(strategy)) {
@@ -238,7 +238,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
             }
         });
 
-        this.#container.find('select[data-glpi-itildestination-strategy-select]').find('option').each((index, option) => {
+        this.#container.find('select[data-zentra-itildestination-strategy-select]').find('option').each((index, option) => {
             const optionValue = $(option).val();
             $(option).prop(
                 'disabled',
@@ -250,15 +250,15 @@ export class GlpiFormFieldDestinationMultipleConfig {
             const selected_value = $(event.target).val();
 
             // Compute display conditions
-            $(event.target).closest('[data-glpi-itildestination-field-config]')
-                .find(`[data-glpi-itildestination-field-config-display-condition]`)
+            $(event.target).closest('[data-zentra-itildestination-field-config]')
+                .find(`[data-zentra-itildestination-field-config-display-condition]`)
                 .toggleClass('d-none', true)
-                .filter(`[data-glpi-itildestination-field-config-display-condition="${CSS.escape(selected_value)}"]`)
+                .filter(`[data-zentra-itildestination-field-config-display-condition="${CSS.escape(selected_value)}"]`)
                 .toggleClass('d-none', false);
 
             // Compute disabled state of the fields
-            $(event.target).closest('[data-glpi-itildestination-field-config]')
-                .find(`[data-glpi-itildestination-field-config-display-condition]`).each((index, field) => {
+            $(event.target).closest('[data-zentra-itildestination-field-config]')
+                .find(`[data-zentra-itildestination-field-config-display-condition]`).each((index, field) => {
                     $(field).find(':input').prop('disabled', $(field).hasClass('d-none'));
                 });
         }
@@ -270,6 +270,6 @@ export class GlpiFormFieldDestinationMultipleConfig {
      * @returns {jQuery<HTMLElement>}
      */
     #getStrategySelect(field) {
-        return $(field).find('select[data-glpi-itildestination-strategy-select]');
+        return $(field).find('select[data-zentra-itildestination-strategy-select]');
     }
 }

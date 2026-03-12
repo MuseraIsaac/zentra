@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ $default_charset   = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_itemtranslations_itemtranslations')) {
+if (!$DB->tableExists('zentra_itemtranslations_itemtranslations')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_itemtranslations_itemtranslations` (
+        "CREATE TABLE `zentra_itemtranslations_itemtranslations` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `items_id` int unsigned NOT NULL DEFAULT '0',
             `itemtype` varchar(100) NOT NULL,
@@ -57,5 +57,5 @@ if (!$DB->tableExists('glpi_itemtranslations_itemtranslations')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 } else {
-    $migration->changeField('glpi_itemtranslations_itemtranslations', 'language', 'language', 'varchar(10) NOT NULL');
+    $migration->changeField('zentra_itemtranslations_itemtranslations', 'language', 'language', 'varchar(10) NOT NULL');
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -108,7 +108,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     echo  Html::jsAjaxDropdown(
         $_POST["name"],
         $field_id,
-        $CFG_GLPI['root_doc'] . "/ajax/" . $link,
+        $CFG_ZENTRA['root_doc'] . "/ajax/" . $link,
         $p
     );
 

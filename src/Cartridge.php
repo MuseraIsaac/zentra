@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\Clonable;
 
 use function Safe\mktime;
 
@@ -566,7 +566,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $row = $DB->request([
             'SELECT' => ['id'],
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_cartridges',
+            'FROM'   => 'zentra_cartridges',
             'WHERE'  => [
                 'cartridgeitems_id'  => $tID,
                 'date_out'           => null,
@@ -754,22 +754,22 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
 
         $canedit = $cartitem->can($tID, UPDATE);
 
-        $where = ['glpi_cartridges.cartridgeitems_id' => $tID];
+        $where = ['zentra_cartridges.cartridgeitems_id' => $tID];
         $order = [
-            'glpi_cartridges.date_use ASC',
-            'glpi_cartridges.date_out DESC',
-            'glpi_cartridges.date_in',
+            'zentra_cartridges.date_use ASC',
+            'zentra_cartridges.date_out DESC',
+            'zentra_cartridges.date_in',
         ];
 
         if (!$show_old) { // NEW
-            $where['glpi_cartridges.date_out'] = null;
+            $where['zentra_cartridges.date_out'] = null;
             $order = [
-                'glpi_cartridges.date_out ASC',
-                'glpi_cartridges.date_use ASC',
-                'glpi_cartridges.date_in',
+                'zentra_cartridges.date_out ASC',
+                'zentra_cartridges.date_use ASC',
+                'zentra_cartridges.date_in',
             ];
         } else { //OLD
-            $where['NOT'] = ['glpi_cartridges.date_out' => null];
+            $where['NOT'] = ['zentra_cartridges.date_out' => null];
         }
 
         $stock_time       = 0;
@@ -779,24 +779,24 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_cartridges.*',
-                'glpi_printers.id AS printID',
-                'glpi_printers.name AS printname',
-                'glpi_printers.init_pages_counter',
+                'zentra_cartridges.*',
+                'zentra_printers.id AS printID',
+                'zentra_printers.name AS printname',
+                'zentra_printers.init_pages_counter',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_printers'   => [
+                'zentra_printers'   => [
                     'FKEY'   => [
                         self::getTable()  => 'printers_id',
-                        'glpi_printers'   => 'id',
+                        'zentra_printers'   => 'id',
                     ],
                 ],
             ],
             'WHERE'     => $where,
             'ORDER'     => $order,
             'START'     => (int) $start,
-            'LIMIT'     => (int) $_SESSION['glpilist_limit'],
+            'LIMIT'     => (int) $_SESSION['zentralist_limit'],
         ]);
 
         $number = count($iterator);
@@ -814,7 +814,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __s('Back to stock');
             }
         }
-        $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+        $massiveactionparams = ['num_displayed'    => min($_SESSION['zentralist_limit'], $number),
             'specific_actions' => $actions,
             'container'        => 'mass' . self::class . $rand,
             'rand'             => $rand,
@@ -830,7 +830,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             if (!is_null($data["date_use"])) {
                 if ($data["printID"] > 0) {
                     $printname = $data["printname"];
-                    if ($_SESSION['glpiis_ids_visible'] || empty($printname)) {
+                    if ($_SESSION['zentrais_ids_visible'] || empty($printname)) {
                         $printname = sprintf(__('%1$s (%2$s)'), $printname, $data["printID"]);
                     }
                     $printer_link = "<a href='" . htmlescape(Printer::getFormURLWithID($data["printID"])) . "'><span class='fw-bold'>" . htmlescape($printname) . "</span></a>";
@@ -965,7 +965,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                             {% set btn %}
                                 <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
                                 <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
                                 no_label: true,
@@ -1000,45 +1000,45 @@ TWIG, $twig_params);
         $canedit = Session::haveRight("cartridge", UPDATE);
         $rand    = mt_rand();
 
-        $where = ['glpi_cartridges.printers_id' => $instID];
+        $where = ['zentra_cartridges.printers_id' => $instID];
         if ($old) {
-            $where['NOT'] = ['glpi_cartridges.date_out' => null];
+            $where['NOT'] = ['zentra_cartridges.date_out' => null];
         } else {
-            $where['glpi_cartridges.date_out'] = null;
+            $where['zentra_cartridges.date_out'] = null;
         }
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_cartridgeitems.id AS tID',
-                'glpi_cartridgeitems.is_deleted',
-                'glpi_cartridgeitems.ref AS ref',
-                'glpi_cartridgeitems.name AS type',
-                'glpi_cartridges.id',
-                'glpi_cartridges.pages AS pages',
-                'glpi_cartridges.date_use AS date_use',
-                'glpi_cartridges.date_out AS date_out',
-                'glpi_cartridges.date_in AS date_in',
-                'glpi_cartridgeitemtypes.name AS typename',
+                'zentra_cartridgeitems.id AS tID',
+                'zentra_cartridgeitems.is_deleted',
+                'zentra_cartridgeitems.ref AS ref',
+                'zentra_cartridgeitems.name AS type',
+                'zentra_cartridges.id',
+                'zentra_cartridges.pages AS pages',
+                'zentra_cartridges.date_use AS date_use',
+                'zentra_cartridges.date_out AS date_out',
+                'zentra_cartridges.date_in AS date_in',
+                'zentra_cartridgeitemtypes.name AS typename',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_cartridgeitems'      => [
+                'zentra_cartridgeitems'      => [
                     'FKEY'   => [
                         self::getTable()        => 'cartridgeitems_id',
-                        'glpi_cartridgeitems'   => 'id',
+                        'zentra_cartridgeitems'   => 'id',
                     ],
                 ],
-                'glpi_cartridgeitemtypes'  => [
+                'zentra_cartridgeitemtypes'  => [
                     'FKEY'   => [
-                        'glpi_cartridgeitems'      => 'cartridgeitemtypes_id',
-                        'glpi_cartridgeitemtypes'  => 'id',
+                        'zentra_cartridgeitems'      => 'cartridgeitemtypes_id',
+                        'zentra_cartridgeitemtypes'  => 'id',
                     ],
                 ],
             ],
             'WHERE'     => $where,
             'ORDER'     => [
-                'glpi_cartridges.date_out ASC',
-                'glpi_cartridges.date_use DESC',
-                'glpi_cartridges.date_in',
+                'zentra_cartridges.date_out ASC',
+                'zentra_cartridges.date_use DESC',
+                'zentra_cartridges.date_in',
             ],
         ]);
 
@@ -1072,7 +1072,7 @@ TWIG, $twig_params);
                                 {% set btn_install %}
                                     <input type="hidden" name="printers_id" value="{{ printer.getID() }}">
                                     <input type="submit" name="install" value="{{ install_label }}" class="btn btn-primary">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                                 {% endset %}
                                 {{ fields.htmlField('', btn_install, null, {
                                     no_label: true,
@@ -1251,19 +1251,19 @@ TWIG, ['printer_id' => $printer->getID()]);
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case Printer::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForPrinter($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
                 case CartridgeItem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForCartridgeItem($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -1279,7 +1279,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      */
     public static function countForCartridgeItem(CartridgeItem $item)
     {
-        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
+        return countElementsInTable(['zentra_cartridges'], ['zentra_cartridges.cartridgeitems_id' => $item->getField('id')]);
     }
 
     /**
@@ -1289,10 +1289,10 @@ TWIG, ['printer_id' => $printer->getID()]);
      */
     public static function countForPrinter(Printer $item)
     {
-        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
+        return countElementsInTable(['zentra_cartridges'], ['zentra_cartridges.printers_id' => $item->getField('id')]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case Printer::class:

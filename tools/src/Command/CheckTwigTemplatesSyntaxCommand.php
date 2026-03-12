@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
 use FilesystemIterator;
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
@@ -68,10 +68,10 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
 
         $error_messages = [];
 
-        $tpl_dir = realpath(GLPI_ROOT . '/templates');
+        $tpl_dir = realpath(ZENTRA_ROOT . '/templates');
         $tpl_files_iterator = new RegexIterator(
             new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(GLPI_ROOT . '/templates', FilesystemIterator::UNIX_PATHS)
+                new RecursiveDirectoryIterator(ZENTRA_ROOT . '/templates', FilesystemIterator::UNIX_PATHS)
             ),
             '/\.twig$/i'
         );

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Search\SearchOption;
-use Glpi\Tests\DbTestCase;
+use Zentra\Api\HL\Controller\AbstractController;
+use Zentra\Search\SearchOption;
+use Zentra\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use Webhook;
 
@@ -81,7 +81,7 @@ class WebhookTest extends DbTestCase
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
             'externalid' => 'ext1234',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
         ]);
         $this->assertEquals('ext1234', $ticket->fields['externalid']);
 
@@ -100,7 +100,7 @@ JSON;
 
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => 'ITILFollowup',
             'event' => 'new',
@@ -137,7 +137,7 @@ JSON;
         $ticket = $this->createItem('Ticket', [
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'externalid' => 'ext1234',
         ]);
 
@@ -149,7 +149,7 @@ JSON;
 
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost/{{ parent_item.external_id }}/{{ event }}/{{ item.id }}',
             'itemtype' => 'ITILFollowup',
             'event' => 'new',
@@ -178,7 +178,7 @@ JSON;
         $ticket = $this->createItem('Ticket', [
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'externalid' => 'ext1234',
         ]);
 
@@ -199,7 +199,7 @@ JSON;
 
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => 'ITILFollowup',
             'event' => 'new',
@@ -233,7 +233,7 @@ JSON;
         /** @var Webhook $webhook */
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => 'User',
             'event' => 'new',
@@ -272,7 +272,7 @@ JSON;
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertEquals('/Assets/Computer/' . $computer->getID(), $webhook->getAPIPath($computer));
 
-        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
+        $custom_asset = getItemByTypeName('Zentra\\CustomAsset\\Test01Asset', 'TestA');
         $this->assertEquals('/Assets/Custom/Test01/' . $custom_asset->getID(), $webhook->getAPIPath($custom_asset));
     }
 
@@ -282,13 +282,13 @@ JSON;
      */
     public function testWithHLAPIDisabled(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $this->login();
-        $CFG_GLPI['enable_hlapi'] = 0;
+        $CFG_ZENTRA['enable_hlapi'] = 0;
         /** @var Webhook $webhook */
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => 'User',
             'event' => 'new',
@@ -320,7 +320,7 @@ JSON;
 
         $this->createItem(Webhook::class, [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => \Agent::class,
             'event' => 'new',
@@ -334,7 +334,7 @@ JSON;
             ->getMock();
         $DB->beginTransaction();
         $DB->method('tableExists')->willReturnCallback(function ($table) {
-            if ($table === 'glpi_webhooks') {
+            if ($table === 'zentra_webhooks') {
                 throw new \Exception("Simulated failure");
             }
             return true;
@@ -368,7 +368,7 @@ JSON;
         $this->login();
         $this->assertContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
         $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
-        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $_SESSION['zentraactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
         $this->assertNotContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
         $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
     }
@@ -378,7 +378,7 @@ JSON;
         $this->login();
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $_SESSION['zentraactive_entity'],
             'url' => 'http://localhost',
             'itemtype' => 'Computer',
             'event' => 'new',
@@ -386,7 +386,7 @@ JSON;
             'use_default_payload' => 1,
         ]);
         $this->assertTrue($webhook->canUpdateItem());
-        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $_SESSION['zentraactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
         $this->assertFalse($webhook->canUpdateItem());
 
         $this->assertFalse($webhook->canCreateItem());

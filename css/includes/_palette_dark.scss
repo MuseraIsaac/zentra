@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-:root[data-glpi-theme-dark="1"] {
+:root[data-zentra-theme-dark="1"] {
     --tblr-dark: #000;
     --tblr-light: #e6e6e6;
     --tblr-info: #5885c0;
@@ -50,30 +50,30 @@
     --tblr-gray-800: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 84%);
     --tblr-gray-900: var(--tblr-light);
     --tblr-gray-50: var(--tblr-gray-300);
-    --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
-    --glpi-tabs-border-color: transparent;
-    --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
-    --glpi-timeline-itil-content-bg: #212221d3;
-    --glpi-timeline-itil-content-fg: #85bd81;
-    --glpi-timeline-itil-content-border-color: #1d201db4;
-    --glpi-timeline-fup-bg: #222;
-    --glpi-timeline-fup-fg: #acacac;
-    --glpi-timeline-fup-border-color: #3b3b3b;
-    --glpi-timeline-task-bg: #2722172f;
-    --glpi-timeline-task-fg: #ccb686;
-    --glpi-timeline-task-border-color: #363532;
-    --glpi-timeline-solution-bg: #3a4d55;
-    --glpi-timeline-solution-fg: #89bfd3;
-    --glpi-timeline-solution-border-color: #435963;
-    --glpi-timeline-document-bg: #2b4137;
-    --glpi-timeline-document-fg: #68b997;
-    --glpi-timeline-badge-bg: rgb(104, 104, 104, 15%);
-    --glpi-timeline-badge-fg: rgb(236, 236, 236, 80%);
-    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-dark) 85%);
-    --glpi-illustrations-background: rgb(204, 204, 204);
-    --glpi-illustrations-primary: hsl(from var(--tblr-primary) h s 65);
-    --glpi-illustrations-header-dark: hsl(from var(--glpi-illustrations-background) h s 30);
-    --glpi-illustrations-header-light: hsl(from var(--glpi-illustrations-background) h s 50);
+    --zentra-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
+    --zentra-tabs-border-color: transparent;
+    --zentra-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
+    --zentra-timeline-itil-content-bg: #212221d3;
+    --zentra-timeline-itil-content-fg: #85bd81;
+    --zentra-timeline-itil-content-border-color: #1d201db4;
+    --zentra-timeline-fup-bg: #222;
+    --zentra-timeline-fup-fg: #acacac;
+    --zentra-timeline-fup-border-color: #3b3b3b;
+    --zentra-timeline-task-bg: #2722172f;
+    --zentra-timeline-task-fg: #ccb686;
+    --zentra-timeline-task-border-color: #363532;
+    --zentra-timeline-solution-bg: #3a4d55;
+    --zentra-timeline-solution-fg: #89bfd3;
+    --zentra-timeline-solution-border-color: #435963;
+    --zentra-timeline-document-bg: #2b4137;
+    --zentra-timeline-document-fg: #68b997;
+    --zentra-timeline-badge-bg: rgb(104, 104, 104, 15%);
+    --zentra-timeline-badge-fg: rgb(236, 236, 236, 80%);
+    --zentra-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-dark) 85%);
+    --zentra-illustrations-background: rgb(204, 204, 204);
+    --zentra-illustrations-primary: hsl(from var(--tblr-primary) h s 65);
+    --zentra-illustrations-header-dark: hsl(from var(--zentra-illustrations-background) h s 30);
+    --zentra-illustrations-header-light: hsl(from var(--zentra-illustrations-background) h s 50);
 
     .navbar-nav.user-menu .bg-red-lt {
         background-color: rgb(214, 57, 57, 20%) !important
@@ -121,7 +121,7 @@
                 .nav-link {
                     & + .dropdown-menu {
                         background-color: var(--tblr-bg-surface) !important;
-                        color: var(--glpi-mainmenu-fg) !important;
+                        color: var(--zentra-mainmenu-fg) !important;
                     }
                 }
             }
@@ -129,8 +129,8 @@
     }
 
     .page-anonymous {
-        .glpi-logo {
-            --logo: var(--glpi-logo-light-login) !important;
+        .zentra-logo {
+            --logo: var(--zentra-logo-light-login) !important;
         }
     }
 

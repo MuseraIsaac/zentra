@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/rulesoftwarecategorycollection.class.php */
 
@@ -94,8 +94,8 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         ];
 
         $rules = getAllDataFromTable(
-            'glpi_rules',
-            ['uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool']
+            'zentra_rules',
+            ['uuid' => 'zentra_rule_rule_software_category_import_category_from_inventory_tool']
         );
         $this->assertCount(1, $rules);
 
@@ -177,7 +177,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $this->assertSame(
             2,
-            countElementsInTable('glpi_rules', ['sub_type' => 'RuleSoftwareCategory'])
+            countElementsInTable('zentra_rules', ['sub_type' => 'RuleSoftwareCategory'])
         );
 
         //Test that a software category can be assigned
@@ -239,7 +239,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             2,
             countElementsInTable(
-                'glpi_rules',
+                'zentra_rules',
                 ['sub_type' => 'RuleSoftwareCategory']
             )
         );
@@ -247,7 +247,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             1,
             countElementsInTable(
-                'glpi_rules',
+                'zentra_rules',
                 ['sub_type' => 'RuleSoftwareCategory', 'is_active' => 1]
             )
         );

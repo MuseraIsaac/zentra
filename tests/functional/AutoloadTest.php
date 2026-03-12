@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
@@ -46,13 +46,13 @@ class AutoloadTest extends DbTestCase
     {
         return [
             ['Computer',                         false, false],
-            ['Glpi\\Event',                      false, false],
+            ['Zentra\\Event',                      false, false],
             ['PluginFooBar',                     'Foo', 'Bar'],
-            ['GlpiPlugin\\Foo\\Bar',             'Foo', 'Bar'],
-            ['GlpiPlugin\\Foo\\Bar\\More',       'Foo', 'Bar\\More'],
+            ['ZentraPlugin\\Foo\\Bar',             'Foo', 'Bar'],
+            ['ZentraPlugin\\Foo\\Bar\\More',       'Foo', 'Bar\\More'],
             ['PluginFooBar\Invalid',             false, false],
-            ['Glpi\Api\Deprecated\PluginFooBar', false, false],
-            ['Invalid\GlpiPlugin\Foo\Bar',       false, false],
+            ['Zentra\Api\Deprecated\PluginFooBar', false, false],
+            ['Invalid\ZentraPlugin\Foo\Bar',       false, false],
         ];
     }
 
@@ -77,7 +77,7 @@ class AutoloadTest extends DbTestCase
     public function testPluginAutoloading()
     {
         // PSR4 autoloader (registered during plugins initialization)
-        $this->assertTrue(class_exists('GlpiPlugin\\Tester\\MyPsr4Class'));
+        $this->assertTrue(class_exists('ZentraPlugin\\Tester\\MyPsr4Class'));
 
         // Pseudo-PSR4 class with no namespace
         $this->assertTrue(class_exists('PluginTesterMyPseudoPsr4Class'));

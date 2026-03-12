@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Error\ErrorHandler;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Error\ErrorHandler;
+use Zentra\Plugin\Hooks;
 
 /**
  * Saved search alerts
@@ -67,7 +67,7 @@ class SavedSearch_Alert extends CommonDBChild
         return 'ti ti-bell';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         // can exists for template
         if (
@@ -75,7 +75,7 @@ class SavedSearch_Alert extends CommonDBChild
             && SavedSearch::canView()
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     $this->getTable(),
                     ['savedsearches_id' => $item->getID()]
@@ -86,7 +86,7 @@ class SavedSearch_Alert extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof SavedSearch) {
             return false;
@@ -182,7 +182,7 @@ class SavedSearch_Alert extends CommonDBChild
             'WHERE'  => ['savedsearches_id' => $ID],
             'ORDER'  => ["$sort $order"],
             'START'  => $start,
-            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'LIMIT'  => $_SESSION['zentralist_limit'],
         ]);
 
         $alert = new self();
@@ -266,33 +266,33 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Summary of saveContext
      *
-     * Save $_SESSION and $CFG_GLPI into the returned array
+     * Save $_SESSION and $CFG_ZENTRA into the returned array
      *
-     * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
+     * @return array[] which contains a copy of $_SESSION and $CFG_ZENTRA
      */
     private static function saveContext(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $context = [];
         $context['$_SESSION'] = $_SESSION;
-        $context['$CFG_GLPI'] = $CFG_GLPI;
+        $context['$CFG_ZENTRA'] = $CFG_ZENTRA;
         return $context;
     }
 
     /**
      * Summary of restoreContext
      *
-     * restore former $_SESSION and $CFG_GLPI
-     * to be sure that logs will be in GLPI default datetime and language
+     * restore former $_SESSION and $CFG_ZENTRA
+     * to be sure that logs will be in ZENTRA default datetime and language
      * and that session is restored for the next crontaskaction
      *
      * @param array $context is the array returned by saveContext
      */
     private static function restoreContext(array $context): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $_SESSION = $context['$_SESSION'];
-        $CFG_GLPI = $context['$CFG_GLPI'];
+        $CFG_ZENTRA = $context['$CFG_ZENTRA'];
         Session::loadLanguage();
         Plugin::doHook(Hooks::INIT_SESSION);
     }
@@ -310,32 +310,32 @@ class SavedSearch_Alert extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_savedsearches_alerts.*',
+                'zentra_savedsearches_alerts.*',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_alerts' => [
+                'zentra_alerts' => [
                     'FKEY'   => [
-                        'glpi_alerts'                => 'items_id',
-                        'glpi_savedsearches_alerts'  => 'id',
+                        'zentra_alerts'                => 'items_id',
+                        'zentra_savedsearches_alerts'  => 'id',
                         [
                             'AND' => [
-                                'glpi_alerts.itemtype' => SavedSearch_Alert::class,
-                                'glpi_alerts.type'     => Alert::PERIODICITY,
+                                'zentra_alerts.itemtype' => SavedSearch_Alert::class,
+                                'zentra_alerts.type'     => Alert::PERIODICITY,
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_savedsearches_alerts.is_active' => true,
+                'zentra_savedsearches_alerts.is_active' => true,
                 'OR' => [
-                    ['glpi_alerts.date' => null],
+                    ['zentra_alerts.date' => null],
                     [
-                        'glpi_alerts.date' => ['<',
+                        'zentra_alerts.date' => ['<',
                             QueryFunction::dateSub(
                                 date: QueryFunction::now(),
-                                interval: new QueryExpression($DB::quoteName('glpi_savedsearches_alerts.frequency')),
+                                interval: new QueryExpression($DB::quoteName('zentra_savedsearches_alerts.frequency')),
                                 interval_unit: 'SECOND'
                             ),
                         ],
@@ -347,12 +347,12 @@ class SavedSearch_Alert extends CommonDBChild
         if ($iterator->numrows()) {
             $savedsearch = new SavedSearch();
 
-            if (!isset($_SESSION['glpiname'])) {
+            if (!isset($_SESSION['zentraname'])) {
                 //required from search class
-                $_SESSION['glpiname'] = 'crontab';
+                $_SESSION['zentraname'] = 'crontab';
             }
 
-            // Will save $_SESSION and $CFG_GLPI cron context into an array
+            // Will save $_SESSION and $CFG_ZENTRA cron context into an array
             $context = self::saveContext();
 
             foreach ($iterator as $row) {
@@ -419,10 +419,10 @@ class SavedSearch_Alert extends CommonDBChild
                         $value
                     );
 
-                    // Will restore previously saved $_SESSION and $CFG_GLPI:
-                    //  To be sure that logs will be in GLPI with default datetime and language
-                    //  and that notifications are sent even if $_SESSION['glpinotification_to_myself'] is false
-                    //  and to restore default cron $_SESSION and $CFG_GLPI global variables for next cron task
+                    // Will restore previously saved $_SESSION and $CFG_ZENTRA:
+                    //  To be sure that logs will be in ZENTRA with default datetime and language
+                    //  and that notifications are sent even if $_SESSION['zentranotification_to_myself'] is false
+                    //  and to restore default cron $_SESSION and $CFG_ZENTRA global variables for next cron task
                     self::restoreContext($context);
 
                     if ($notify) {

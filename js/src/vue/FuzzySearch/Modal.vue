@@ -63,7 +63,7 @@
     const trigger_fuzzy = () => {
         if (all_menus.value.length === 0) {
             $.ajax({
-                url: CFG_GLPI.root_doc + '/ajax/fuzzysearch.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/fuzzysearch.php',
                 method: 'GET',
                 dataType: 'json'
             }).then((response) => {

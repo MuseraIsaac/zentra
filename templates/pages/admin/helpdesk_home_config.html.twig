@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set container_id = "glpi-helpdesk-config-container-" ~ random() %}
+{% set container_id = "zentra-helpdesk-config-container-" ~ random() %}
 {% set header_id = "config-tiles-header-" ~ random() %}
 
 <div id="{{ container_id }}">
-    <div data-glpi-helpdesk-config-default-view>
+    <div data-zentra-helpdesk-config-default-view>
         <section
             class="container-xl ms-0 mt-2"
             aria-labelledby="{{ header_id }}"
@@ -53,7 +53,7 @@
                 {{ __("Home tiles configuration") }}
             </h1>
 
-            <div class="row ms-n2 me-n2 mb-3" data-glpi-helpdesk-config-tiles>
+            <div class="row ms-n2 me-n2 mb-3" data-zentra-helpdesk-config-tiles>
                 {# The tiles have their own templates as they will be reloaded using AJAX #}
                 {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
                     'tiles_manager': tiles_manager,
@@ -63,10 +63,10 @@
             </div>
 
             {% if editable %}
-                <div class="d-flex mb-3" data-glpi-helpdesk-config-actions>
+                <div class="d-flex mb-3" data-zentra-helpdesk-config-actions>
                     <button
                         class="btn btn-primary ms-2 w-auto d-flex align-items-center ms-auto"
-                        data-glpi-helpdesk-config-reorder-action-save
+                        data-zentra-helpdesk-config-reorder-action-save
                         aria-label="{{ __("Save tiles order") }}"
                     >
                         <i class="ti ti-device-floppy me-1"></i>
@@ -84,7 +84,7 @@
                         <h3
                             id="tile-form-offcanvas-label"
                             class="offcanvas-title"
-                            data-glpi-helpdesk-config-tile-form-title
+                            data-zentra-helpdesk-config-tile-form-title
                         ></h3>
                         <button
                             type="button"
@@ -95,7 +95,7 @@
                     </div>
                     <div
                         class="offcanvas-body d-flex"
-                        data-glpi-helpdesk-config-tile-form-loading
+                        data-zentra-helpdesk-config-tile-form-loading
                     >
                         <span
                             class="spinner-border me-auto ms-auto mt-5 mb-5"
@@ -104,7 +104,7 @@
                     </div>
                     <div
                         class="offcanvas-body d-none"
-                        data-glpi-helpdesk-config-tile-form
+                        data-zentra-helpdesk-config-tile-form
                     ></div>
                 </div>
             {% endif %}
@@ -119,7 +119,7 @@
             const module = await import(
                 "/js/modules/Helpdesk/HelpdeskConfigController.js"
             );
-            new module.GlpiHelpdeskConfigController(
+            new module.ZentraHelpdeskConfigController(
                 document.getElementById("{{ container_id }}"),
                 "{{ itemtype_item|escape('js') }}",
                 {{ items_id_item }},

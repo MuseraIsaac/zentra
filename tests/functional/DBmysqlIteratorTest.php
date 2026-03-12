@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -730,7 +730,7 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => 'id=1']);
         $this->assertSame('SELECT * FROM `foo` WHERE id=1', $it->getSql());
-        // Uncomment in GLPI 11.1
+        // Uncomment in ZENTRA 11.1
         // $this->hasPhpLogRecordThatContains(
         //    'Passing SQL request criteria as strings is deprecated for security reasons.',
         //    LogLevel::INFO
@@ -772,9 +772,9 @@ class DBmysqlIteratorTest extends DbTestCase
         foreach ([false, 0, '0'] as $false) {
             $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$false]]);
             $this->assertSame('SELECT * FROM `foo` WHERE false', $it->getSql());
-            // Uncomment in GLPI 11.1
+            // Uncomment in ZENTRA 11.1
             // $this->hasPhpLogRecordThatContains(
-            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("false");`',
+            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Zentra\DBAL\QueryExpression("false");`',
             //     LogLevel::INFO
             // );
         }
@@ -782,9 +782,9 @@ class DBmysqlIteratorTest extends DbTestCase
         foreach ([true, 1, '1'] as $true) {
             $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$true]]);
             $this->assertSame('SELECT * FROM `foo` WHERE true', $it->getSql());
-            // Uncomment in GLPI 11.1
+            // Uncomment in ZENTRA 11.1
             // $this->hasPhpLogRecordThatContains(
-            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`',
+            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Zentra\DBAL\QueryExpression("true");`',
             //     LogLevel::INFO
             // );
         }
@@ -993,14 +993,14 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertCount(0, $it);
         $this->assertNull($it->current());
 
-        $it = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core', 'name' => 'version']]);
+        $it = $DB->request(['FROM' => 'zentra_configs', 'WHERE' => ['context' => 'core', 'name' => 'version']]);
         $this->assertSame(1, $it->numrows());
         $this->assertCount(1, $it);
         $row = $it->current();
         $key = $it->key();
         $this->assertSame($key, $row['id']);
 
-        $it = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core']]);
+        $it = $DB->request(['FROM' => 'zentra_configs', 'WHERE' => ['context' => 'core']]);
         $this->assertGreaterThan(100, $it->numrows());
         $this->assertGreaterThan(100, count($it));
         $this->assertTrue($it->numrows() == count($it));
@@ -1152,8 +1152,8 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $fk = \Ticket::getForeignKeyField();
         $users_table = \User::getTable();
-        $users_table = 'glpi_ticket_users';
-        $groups_table = 'glpi_groups_tickets';
+        $users_table = 'zentra_ticket_users';
+        $groups_table = 'zentra_groups_tickets';
 
         $subquery1 = new QuerySubQuery([
             'SELECT'    => [
@@ -1201,13 +1201,13 @@ class DBmysqlIteratorTest extends DbTestCase
         $raw_query = "SELECT DISTINCT `users_id`, `type`"
                      . " FROM ((SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
                      . " FROM `$users_table` AS `tu`"
-                     . " LEFT JOIN `glpi_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
+                     . " LEFT JOIN `zentra_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
                      . " WHERE `tu`.`$fk` = '42')"
                      . " UNION ALL"
                      . " (SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
                      . " FROM `$groups_table` AS `gt`"
-                     . " LEFT JOIN `glpi_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
-                     . " LEFT JOIN `glpi_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
+                     . " LEFT JOIN `zentra_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
+                     . " LEFT JOIN `zentra_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
                      . " WHERE `gt`.`$fk` = '42')"
                      . ") AS `allactors`";
 
@@ -1225,12 +1225,12 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testComplexUnionQueryAgain()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         //Old build way
         $queries = [];
 
-        foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
             $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
                                  `ADDR`.`binary_1` AS `binary_1`,
@@ -1240,21 +1240,21 @@ class DBmysqlIteratorTest extends DbTestCase
                                  `ADDR`.`id` AS `id`,
                                  `ADDR`.`itemtype` AS `addr_item_type`,
                                  `ADDR`.`items_id` AS `addr_item_id`,
-                                 `glpi_entities`.`completename` AS `entity`,
+                                 `zentra_entities`.`completename` AS `entity`,
                                  `NAME`.`id` AS `name_id`,
                                  `PORT`.`id` AS `port_id`,
                                  `ITEM`.`id` AS `item_id`,
                                  '$itemtype' AS `item_type`
-                        FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
-                        INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                        FROM `zentra_ipaddresses_ipnetworks` AS `LINK`
+                        INNER JOIN `zentra_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
                                                             AND `ADDR`.`itemtype` = 'NetworkName'
                                                             AND `ADDR`.`is_deleted` = '0')
-                        INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                        INNER JOIN `zentra_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
                                                                AND `NAME`.`itemtype` = 'NetworkPort')
-                        INNER JOIN `glpi_networkports` AS `PORT` ON (`NAME`.`items_id` = `PORT`.`id`
+                        INNER JOIN `zentra_networkports` AS `PORT` ON (`NAME`.`items_id` = `PORT`.`id`
                                                                AND `PORT`.`itemtype` = '$itemtype')
                         INNER JOIN `$table` AS `ITEM` ON (`ITEM`.`id` = `PORT`.`items_id`)
-                        LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                        LEFT JOIN `zentra_entities` ON (`ADDR`.`entities_id` = `zentra_entities`.`id`)
                         WHERE `LINK`.`ipnetworks_id` = '42')";
         }
 
@@ -1266,22 +1266,22 @@ class DBmysqlIteratorTest extends DbTestCase
                               `ADDR`.`id` AS `id`,
                               `ADDR`.`itemtype` AS `addr_item_type`,
                               `ADDR`.`items_id` AS `addr_item_id`,
-                              `glpi_entities`.`completename` AS `entity`,
+                              `zentra_entities`.`completename` AS `entity`,
                               `NAME`.`id` AS `name_id`,
                               `PORT`.`id` AS `port_id`,
                               NULL AS `item_id`,
                               NULL AS `item_type`
-                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
-                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                     FROM `zentra_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `zentra_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
                                                          AND `ADDR`.`itemtype` = 'NetworkName'
                                                          AND `ADDR`.`is_deleted` = '0')
-                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                     INNER JOIN `zentra_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
                                                             AND `NAME`.`itemtype` = 'NetworkPort')
-                     INNER JOIN `glpi_networkports` AS `PORT`
+                     INNER JOIN `zentra_networkports` AS `PORT`
                         ON (`NAME`.`items_id` = `PORT`.`id`
                              AND NOT (`PORT`.`itemtype`
-                                      IN ('" . implode("', '", $CFG_GLPI["networkport_types"]) . "')))
-                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                                      IN ('" . implode("', '", $CFG_ZENTRA["networkport_types"]) . "')))
+                     LEFT JOIN `zentra_entities` ON (`ADDR`.`entities_id` = `zentra_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = '42')";
 
         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
@@ -1292,18 +1292,18 @@ class DBmysqlIteratorTest extends DbTestCase
                               `ADDR`.`id` AS `id`,
                               `ADDR`.`itemtype` AS `addr_item_type`,
                               `ADDR`.`items_id` AS `addr_item_id`,
-                              `glpi_entities`.`completename` AS `entity`,
+                              `zentra_entities`.`completename` AS `entity`,
                               `NAME`.`id` AS `name_id`,
                               NULL AS `port_id`,
                               NULL AS `item_id`,
                               NULL AS `item_type`
-                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
-                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                     FROM `zentra_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `zentra_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
                                                          AND `ADDR`.`itemtype` = 'NetworkName'
                                                          AND `ADDR`.`is_deleted` = '0')
-                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                     INNER JOIN `zentra_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
                                                             AND `NAME`.`itemtype` != 'NetworkPort')
-                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     LEFT JOIN `zentra_entities` ON (`ADDR`.`entities_id` = `zentra_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = '42')";
 
         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
@@ -1314,16 +1314,16 @@ class DBmysqlIteratorTest extends DbTestCase
                               `ADDR`.`id` AS `id`,
                               `ADDR`.`itemtype` AS `addr_item_type`,
                               `ADDR`.`items_id` AS `addr_item_id`,
-                              `glpi_entities`.`completename` AS `entity`,
+                              `zentra_entities`.`completename` AS `entity`,
                               NULL AS `name_id`,
                               NULL AS `port_id`,
                               NULL AS `item_id`,
                               NULL AS `item_type`
-                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
-                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                     FROM `zentra_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `zentra_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
                                                          AND `ADDR`.`itemtype` != 'NetworkName'
                                                          AND `ADDR`.`is_deleted` = '0')
-                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     LEFT JOIN `zentra_entities` ON (`ADDR`.`entities_id` = `zentra_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = '42')";
 
         $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
@@ -1341,11 +1341,11 @@ class DBmysqlIteratorTest extends DbTestCase
                 'ADDR.id AS id',
                 'ADDR.itemtype AS addr_item_type',
                 'ADDR.items_id AS addr_item_id',
-                'glpi_entities.completename AS entity',
+                'zentra_entities.completename AS entity',
             ],
-            'FROM'         => 'glpi_ipaddresses_ipnetworks AS LINK',
+            'FROM'         => 'zentra_ipaddresses_ipnetworks AS LINK',
             'INNER JOIN'   => [
-                'glpi_ipaddresses AS ADDR' => [
+                'zentra_ipaddresses AS ADDR' => [
                     'ON' => [
                         'ADDR'   => 'id',
                         'LINK'   => 'ipaddresses_id', [
@@ -1358,10 +1358,10 @@ class DBmysqlIteratorTest extends DbTestCase
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_entities'             => [
+                'zentra_entities'             => [
                     'ON' => [
                         'ADDR'            => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
             ],
@@ -1370,7 +1370,7 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
 
-        foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
             $criteria = $main_criteria;
             $criteria['SELECT'] = array_merge($criteria['SELECT'], [
@@ -1380,7 +1380,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 new QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type')),
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
-                'glpi_networknames AS NAME'   => [
+                'zentra_networknames AS NAME'   => [
                     'ON' => [
                         'NAME'   => 'id',
                         'ADDR'   => 'items_id', [
@@ -1390,7 +1390,7 @@ class DBmysqlIteratorTest extends DbTestCase
                         ],
                     ],
                 ],
-                'glpi_networkports AS PORT'   => [
+                'zentra_networkports AS PORT'   => [
                     'ON' => [
                         'NAME'   => 'items_id',
                         'PORT'   => 'id', [
@@ -1418,7 +1418,7 @@ class DBmysqlIteratorTest extends DbTestCase
             new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
-            'glpi_networknames AS NAME'   => [
+            'zentra_networknames AS NAME'   => [
                 'ON' => [
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
@@ -1428,13 +1428,13 @@ class DBmysqlIteratorTest extends DbTestCase
                     ],
                 ],
             ],
-            'glpi_networkports AS PORT'   => [
+            'zentra_networkports AS PORT'   => [
                 'ON' => [
                     'NAME'   => 'items_id',
                     'PORT'   => 'id', [
                         'AND' => [
                             'NOT' => [
-                                'PORT.itemtype' => $CFG_GLPI['networkport_types'],
+                                'PORT.itemtype' => $CFG_ZENTRA['networkport_types'],
                             ],
                         ],
                     ],
@@ -1451,7 +1451,7 @@ class DBmysqlIteratorTest extends DbTestCase
             new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
-            'glpi_networknames AS NAME'   => [
+            'zentra_networknames AS NAME'   => [
                 'ON' => [
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
@@ -1471,7 +1471,7 @@ class DBmysqlIteratorTest extends DbTestCase
             new QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
             new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
-        $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
+        $criteria['INNER JOIN']['zentra_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
 
         $union = new QueryUnion($queries);
@@ -1487,12 +1487,12 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         $crit = [new QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
-            'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')],
+            'FROM'   => 'zentra_groups_users',
+            'WHERE'  => ['groups_id' => new QueryExpression('zentra_groups.id')],
         ]),
         ];
         $this->assertSame(
-            "(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)",
+            "(SELECT COUNT(`users_id`) FROM `zentra_groups_users` WHERE `groups_id` = zentra_groups.id)",
             $this->it->analyseCrit($crit)
         );
     }
@@ -1697,7 +1697,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public static function resultProvider(): iterable
     {
-        // Data from GLPI 9.5- (autosanitized)
+        // Data from ZENTRA 9.5- (autosanitized)
         // `&` was not encoded, `<` and `>` were encoded to `&lt;` and `&gt;`
         yield [
             'db_data' => [
@@ -1724,7 +1724,7 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
 
-        // Data from GLPI 10.0.x (autosanitized)
+        // Data from ZENTRA 10.0.x (autosanitized)
         // `&`, `<` and `>` were encoded to `&#38;`, `&#60;` and `&#62;`
         yield [
             'db_data' => [
@@ -1751,7 +1751,7 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
 
-        // Data from GLPI 11.0+ (not autosanitized)
+        // Data from ZENTRA 11.0+ (not autosanitized)
         yield [
             'db_data' => [
                 'id'      => 1,
@@ -1795,21 +1795,21 @@ class DBmysqlIteratorTest extends DbTestCase
 
         // Check result with active unsanitization
         $db->setMustUnsanitizeData(true);
-        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+        $iterator = $db->request(['FROM' => 'zentra_mocks']);
         $this->assertEquals($result, $iterator->current());
 
         // Check result with deactivated unsanitization
         $db->setMustUnsanitizeData(false);
-        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+        $iterator = $db->request(['FROM' => 'zentra_mocks']);
         $this->assertEquals($db_data, $iterator->current());
     }
 
     public function testRawFKeyCondition()
     {
         $this->assertEquals(
-            "glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)",
+            "zentra_tickets.id=(CASE WHEN zentra_tickets_tickets.tickets_id_1=103 THEN zentra_tickets_tickets.tickets_id_2 ELSE zentra_tickets_tickets.tickets_id_1 END)",
             $this->it->analyseCrit([
-                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
+                'ON' => new QueryExpression("zentra_tickets.id=(CASE WHEN zentra_tickets_tickets.tickets_id_1=103 THEN zentra_tickets_tickets.tickets_id_2 ELSE zentra_tickets_tickets.tickets_id_1 END)"),
             ])
         );
     }
@@ -1818,49 +1818,49 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         // Table name as first param, default value for criteria argument
         yield [
-            'params'   => ['glpi_computers', ''],
+            'params'   => ['zentra_computers', ''],
             'expected' => [
-                'FROM' => 'glpi_computers',
+                'FROM' => 'zentra_computers',
             ],
-            'sql'      => 'SELECT * FROM `glpi_computers`',
+            'sql'      => 'SELECT * FROM `zentra_computers`',
         ];
 
         // Table name as first param, criteria as a string
         yield [
-            'params'   => ['glpi_computers', 'is_deleted = 0'],
+            'params'   => ['zentra_computers', 'is_deleted = 0'],
             'expected' => [
-                'FROM'  => 'glpi_computers',
+                'FROM'  => 'zentra_computers',
                 'WHERE' => [new QueryExpression('is_deleted = 0')],
             ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
+            'sql'      => 'SELECT * FROM `zentra_computers` WHERE is_deleted = 0',
         ];
 
         // Table name as first param, criteria as an array
         yield [
-            'params'   => ['glpi_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
+            'params'   => ['zentra_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
             'expected' => [
-                'FROM'  => 'glpi_computers',
+                'FROM'  => 'zentra_computers',
                 'WHERE' => ['is_deleted' => 0],
                 'ORDER' => 'id DESC',
             ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
+            'sql'      => 'SELECT * FROM `zentra_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
         ];
 
         // Table name as first param, criteria as an array but not encapsulated inside a `WHERE` key
         yield [
-            'params'   => ['glpi_computers', ['is_deleted' => 1]],
+            'params'   => ['zentra_computers', ['is_deleted' => 1]],
             'expected' => [
-                'FROM'  => 'glpi_computers',
+                'FROM'  => 'zentra_computers',
                 'is_deleted' => 1,
             ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
+            'sql'      => 'SELECT * FROM `zentra_computers` WHERE `is_deleted` = \'1\'',
         ];
 
         // First argument is a QueryUnion
         $union = new QueryUnion(
             [
-                ['SELECT' => 'serial', 'FROM' => 'glpi_computers'],
-                ['SELECT' => 'serial', 'FROM' => 'glpi_printers'],
+                ['SELECT' => 'serial', 'FROM' => 'zentra_computers'],
+                ['SELECT' => 'serial', 'FROM' => 'zentra_printers'],
             ],
             false,
             'testalias'
@@ -1870,7 +1870,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'expected' => [
                 'FROM'  => $union,
             ],
-            'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `glpi_computers`) UNION ALL (SELECT `serial` FROM `glpi_printers`)) AS `testalias`',
+            'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `zentra_computers`) UNION ALL (SELECT `serial` FROM `zentra_printers`)) AS `testalias`',
         ];
     }
 
@@ -1917,7 +1917,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $iterator = new \DBmysqlIterator($db);
         $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
-        $iterator->execute('SELECT * FROM `glpi_computers`');
+        $iterator->execute('SELECT * FROM `zentra_computers`');
     }
 
     #[DataProvider('requestArgsProvider')]
@@ -1948,6 +1948,6 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $iterator = new \DBmysqlIterator($db);
         $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
-        $iterator->buildQuery('SELECT * FROM `glpi_computers`');
+        $iterator->buildQuery('SELECT * FROM `zentra_computers`');
     }
 }

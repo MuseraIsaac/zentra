@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Cache\CacheManager;
+use Zentra\Cache\CacheManager;
 
 Session::checkRight("config", READ);
 
@@ -67,7 +67,7 @@ if (!empty($_POST['reset_core_cache'])) {
     $config->checkGlobal(UPDATE);
     $cache_manager = new CacheManager();
     if ($cache_manager->getCoreCacheInstance()->clear()) {
-        Session::addMessageAfterRedirect(__s('GLPI cache reset successful'));
+        Session::addMessageAfterRedirect(__s('ZENTRA cache reset successful'));
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }

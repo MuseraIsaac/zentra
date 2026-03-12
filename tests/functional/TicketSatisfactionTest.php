@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use CommonITILObject;
 use CommonITILSatisfaction;
 use Entity;
-use Glpi\Tests\CommonITILSatisfactionTest;
+use Zentra\Tests\CommonITILSatisfactionTest;
 use Search;
 use Ticket;
 use TicketSatisfaction;
@@ -53,10 +53,10 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
      */
     public function testSatisfactionSurveyInheritsParentEntityConfig()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $entity_root_id = getItemByTypeName('Entity', '_test_root_entity', true);
-        $user_id = $_SESSION['glpiID'];
+        $user_id = $_SESSION['zentraID'];
 
         // Configure root entity with satisfaction survey enabled and specific duration
         $this->updateItem(Entity::class, $entity_root_id, [
@@ -95,7 +95,7 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
                 'entities_id' => $entity_root_id,
                 'name' => __FUNCTION__ . ' - root entity',
                 'content' => 'Ticket in root entity',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -103,7 +103,7 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
                 'entities_id' => $child_entity_id,
                 'name' => __FUNCTION__ . ' - child inherit',
                 'content' => 'Ticket in child entity with inherited config',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -111,7 +111,7 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
                 'entities_id' => $grandchild_entity_id,
                 'name' => __FUNCTION__ . ' - grandchild inherit',
                 'content' => 'Ticket in grandchild entity with inherited config',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -119,7 +119,7 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
                 'entities_id' => $child_local_entity_id,
                 'name' => __FUNCTION__ . ' - child local config',
                 'content' => 'Ticket in child entity with local config',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -130,22 +130,22 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
             [
                 'tickets_id' => $tickets[0]->getID(),
                 'type' => CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[1]->getID(),
                 'type' => CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[2]->getID(),
                 'type' => CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[3]->getID(),
                 'type' => CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
         ]);
 
@@ -177,8 +177,8 @@ class TicketSatisfactionTest extends CommonITILSatisfactionTest
             $results[$row['raw']['ITEM_Ticket_2']] = $row['raw']['ITEM_Ticket_75'];
         }
 
-        $expected_root_end_date = date('Y-m-d H:i:s', strtotime('+7 days', strtotime($_SESSION['glpi_currenttime'])));
-        $expected_local_end_date = date('Y-m-d H:i:s', strtotime('+3 days', strtotime($_SESSION['glpi_currenttime'])));
+        $expected_root_end_date = date('Y-m-d H:i:s', strtotime('+7 days', strtotime($_SESSION['zentra_currenttime'])));
+        $expected_local_end_date = date('Y-m-d H:i:s', strtotime('+3 days', strtotime($_SESSION['zentra_currenttime'])));
 
         // Root entity ticket: should use root's 7 days duration
         $this->assertEquals(

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@
 /* global bootstrap */
 /* global L */
 /* global fuzzy */
-/* global glpi_html_dialog */
-/* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
+/* global zentra_html_dialog */
+/* global zentra_toast_info, zentra_toast_warning, zentra_toast_error */
 /* global _ */
 /* global uploaded_images */
 
@@ -512,11 +512,11 @@ if ($(window).width() <= 700) {
 }
 
 /**
- * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
+ * @todo Remove? The 'fold_menu' field/$_SESSION['zentrafold_menu'] seem unused.
  */
 var switchFoldMenu = function() {
     $.ajax({
-        url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
+        url: CFG_ZENTRA.root_doc + '/ajax/switchfoldmenu.php',
         type: 'POST',
         datatype: "json",
         success: function(data) {
@@ -630,9 +630,9 @@ var isImage = function(file) {
  * @return {string}   an image html tag
  */
 var getExtIcon = function(ext) {
-    var url = CFG_GLPI.root_doc+'/pics/icones/'+ext+'-dist.png';
+    var url = CFG_ZENTRA.root_doc+'/pics/icones/'+ext+'-dist.png';
     if (!urlExists(url)) {
-        url = CFG_GLPI.root_doc+'/pics/icones/defaut-dist.png';
+        url = CFG_ZENTRA.root_doc+'/pics/icones/defaut-dist.png';
     }
 
     return '<img src="' + _.escape(url) + '" title="' + _.escape(ext) + '">';
@@ -768,7 +768,7 @@ var showMapForLocation = function(elt) {
         return;
     }
 
-    glpi_html_dialog({
+    zentra_html_dialog({
         title: __("Display on map"),
         body: "<div id='location_map_dialog'/>",
         dialogclass: "modal-xl",
@@ -780,14 +780,14 @@ var showMapForLocation = function(elt) {
             $.ajax({
                 dataType: 'json',
                 method: 'POST',
-                url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
+                url: CFG_ZENTRA.root_doc + '/ajax/getMapPoint.php',
                 data: {
                     itemtype: 'Location',
                     items_id: $('#' + CSS.escape(_id)).val()
                 }
             }).done(function(data) {
                 if (data.success === false) {
-                    glpi_html_dialog({
+                    zentra_html_dialog({
                         body: data.message
                     });
                 } else {
@@ -1001,7 +1001,7 @@ var templateItilPriority = function(option) {
     }
 
     var priority = option.id || 0;
-    var priority_color = CFG_GLPI['priority_'+priority] || "";
+    var priority_color = CFG_ZENTRA['priority_'+priority] || "";
     var color_badge = "";
 
     if (priority_color.length > 0) {
@@ -1036,7 +1036,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    // TODO in GLPI 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+    // TODO in ZENTRA 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
 
     if (typeof(text) !== 'string') {
         return text;
@@ -1099,14 +1099,14 @@ function getUuidV4() {
 }
 
 function setHasUnsavedChanges(has_unsaved_changes) {
-    window.glpiUnsavedFormChanges = has_unsaved_changes;
-    document.dispatchEvent(new CustomEvent("glpiFormChangeEvent", {
+    window.zentraUnsavedFormChanges = has_unsaved_changes;
+    document.dispatchEvent(new CustomEvent("zentraFormChangeEvent", {
         has_unsaved_changes: has_unsaved_changes
     }));
 }
 
 function hasUnsavedChanges() {
-    return window.glpiUnsavedFormChanges;
+    return window.zentraUnsavedFormChanges;
 }
 
 /** Track input changes and warn the user of unsaved changes if they try to navigate away */
@@ -1309,7 +1309,7 @@ $(document).ajaxSend(
             return;
         }
 
-        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
+        xhr.setRequestHeader('X-Zentra-Csrf-Token', getAjaxCsrfToken());
     }
 );
 
@@ -1319,7 +1319,7 @@ $(document).ajaxSend(
  * @returns {string|null}
  */
 function getAjaxCsrfToken() {
-    const meta  = document.querySelector('meta[property="glpi:csrf_token"]');
+    const meta  = document.querySelector('meta[property="zentra:csrf_token"]');
     return meta !== null ? meta.getAttribute('content') : null;
 }
 
@@ -1511,8 +1511,8 @@ $(() => {
 
     // General "copy to clipboard" handler.
     // TODO: refactorate existing code to use this unique handler.
-    $(document).on('click', '[data-glpi-clipboard-text]', function() {
-        const text = $(this).data('glpi-clipboard-text');
+    $(document).on('click', '[data-zentra-clipboard-text]', function() {
+        const text = $(this).data('zentra-clipboard-text');
         if (navigator.clipboard === undefined) {
             // The clipboard is not available in non secure environements.
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
@@ -1520,10 +1520,10 @@ $(() => {
             // This rarely happens in production but we can still add a specific
             // error message to identify this issue in our support and/or help
             // system administrator fix it themselves.
-            glpi_toast_error(__("Unable to copy to clipboard (insecure context)."));
+            zentra_toast_error(__("Unable to copy to clipboard (insecure context)."));
         } else {
             navigator.clipboard.writeText(text);
-            glpi_toast_info(__("Copied to clipboard"));
+            zentra_toast_info(__("Copied to clipboard"));
         }
     });
 });
@@ -1702,9 +1702,9 @@ function getUUID() {
 }
 
 // Init the AJAX controller
-/* global GlpiCommonAjaxController */
-if (typeof GlpiCommonAjaxController == "function") {
-    new GlpiCommonAjaxController();
+/* global ZentraCommonAjaxController */
+if (typeof ZentraCommonAjaxController == "function") {
+    new ZentraCommonAjaxController();
 }
 
 function setupAjaxDropdown(config) {
@@ -2023,7 +2023,7 @@ function setupFileUpload(config) {
 window.displaySessionMessages = () => {
     $.ajax({
         method: 'GET',
-        url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
+        url: (CFG_ZENTRA.root_doc + "/ajax/displayMessageAfterRedirect.php"),
         data: {
             'get_raw': true
         }
@@ -2032,13 +2032,13 @@ window.displaySessionMessages = () => {
             $.each(level_messages, (index, message) => {
                 switch (parseInt(level)) {
                     case 1:
-                        glpi_toast_error(message);
+                        zentra_toast_error(message);
                         break;
                     case 2:
-                        glpi_toast_warning(message);
+                        zentra_toast_warning(message);
                         break;
                     default:
-                        glpi_toast_info(message);
+                        zentra_toast_info(message);
                 }
             });
         });
@@ -2064,9 +2064,9 @@ document.addEventListener('hidden.bs.modal', (e) => {
 });
 
 // Tinymce on click loading
-$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
+$(document).on('click', 'div[data-zentra-tinymce-init-on-demand-render]', function() {
     const $container = $(this);
-    const $textarea = $("#" + CSS.escape($container.attr('data-glpi-tinymce-init-on-demand-render')));
+    const $textarea = $("#" + CSS.escape($container.attr('data-zentra-tinymce-init-on-demand-render')));
     initTinyMCEOnDemand($textarea, $container);
 });
 
@@ -2076,10 +2076,10 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
  * @param {HTMLElement} container The container element that triggered the initialization
  */
 function initTinyMCEOnDemand($textarea, $container) {
-    $container.removeAttr('data-glpi-tinymce-init-on-demand-render');
+    $container.removeAttr('data-zentra-tinymce-init-on-demand-render');
 
     const loadingOverlay = $(`
-        <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+        <div class="zentra-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
             <div class="spinner-border spinner-border-sm text-secondary" role="status">
                 <span class="visually-hidden">${__('Loading...')}</span>
             </div>

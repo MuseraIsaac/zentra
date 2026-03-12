@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\AssetImage;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\StateInterface;
 
 /**
  * SoftwareLicense Class
@@ -49,7 +49,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 {
     /** @use Clonable<static> */
     use Clonable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssetImage;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -266,8 +266,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             $soft                         = new Software();
             if (
                 $soft->getFromDB($softwares_id)
-                && in_array($_SESSION['glpiactive_entity'], getAncestorsOf(
-                    'glpi_entities',
+                && in_array($_SESSION['zentraactive_entity'], getAncestorsOf(
+                    'zentra_entities',
                     $soft->getEntityID()
                 ))
             ) {
@@ -496,7 +496,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -536,7 +536,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -698,7 +698,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_softwarelicenses',
+                    'table'              => 'zentra_softwarelicenses',
                     'joinparams'         => $licjoinexpire,
                 ],
             ],
@@ -764,11 +764,11 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      **/
     public static function cronSoftware($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $cron_status = 1;
 
-        if (!$CFG_GLPI['use_notifications']) {
+        if (!$CFG_ZENTRA['use_notifications']) {
             return 0;
         }
 
@@ -779,42 +779,42 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             // Check licenses
             $criteria = [
                 'SELECT' => [
-                    'glpi_softwarelicenses.*',
-                    'glpi_softwares.name AS softname',
+                    'zentra_softwarelicenses.*',
+                    'zentra_softwares.name AS softname',
                 ],
-                'FROM'   => 'glpi_softwarelicenses',
+                'FROM'   => 'zentra_softwarelicenses',
                 'INNER JOIN'   => [
-                    'glpi_softwares'  => [
+                    'zentra_softwares'  => [
                         'ON'  => [
-                            'glpi_softwarelicenses' => 'softwares_id',
-                            'glpi_softwares'        => 'id',
+                            'zentra_softwarelicenses' => 'softwares_id',
+                            'zentra_softwares'        => 'id',
                         ],
                     ],
                 ],
                 'LEFT JOIN'    => [
-                    'glpi_alerts'  => [
+                    'zentra_alerts'  => [
                         'ON'  => [
-                            'glpi_softwarelicenses' => 'id',
-                            'glpi_alerts'           => 'items_id', [
+                            'zentra_softwarelicenses' => 'id',
+                            'zentra_alerts'           => 'items_id', [
                                 'AND' => [
-                                    'glpi_alerts.itemtype'  => 'SoftwareLicense',
+                                    'zentra_alerts.itemtype'  => 'SoftwareLicense',
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_alerts.date'   => null,
-                    'NOT'                => ['glpi_softwarelicenses.expire' => null],
+                    'zentra_alerts.date'   => null,
+                    'NOT'                => ['zentra_softwarelicenses.expire' => null],
                     new QueryExpression(
                         QueryFunction::datediff(
-                            expression1: $DB::quoteName('glpi_softwarelicenses.expire'),
+                            expression1: $DB::quoteName('zentra_softwarelicenses.expire'),
                             expression2: QueryFunction::curdate()
                         )
                     ) . ' < ' . $before,
-                    'glpi_softwares.is_template'  => 0,
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.entities_id'  => $entity,
+                    'zentra_softwares.is_template'  => 0,
+                    'zentra_softwares.is_deleted'   => 0,
+                    'zentra_softwares.entities_id'  => $entity,
                 ],
             ];
             $iterator = $DB->request($criteria);
@@ -891,10 +891,10 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_softwarelicenses',
+            'FROM'   => 'zentra_softwarelicenses',
             'WHERE'  => [
                 'softwareversions_id_buy'  => $softwareversions_id,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', $entity),
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', '', $entity),
         ])->current();
 
         return $result['cpt'];
@@ -913,12 +913,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
         $iterator = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_softwarelicenses',
+            'FROM'   => 'zentra_softwarelicenses',
             'WHERE'  => [
                 'softwares_id' => $softwares_id,
                 'is_template'  => 0,
                 'number'       => -1,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', '', '', true),
         ]);
 
         if ($line = $iterator->current()) {
@@ -930,12 +930,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
         $result = $DB->request([
             'SELECT' => ['SUM' => 'number AS numsum'],
-            'FROM'   => 'glpi_softwarelicenses',
+            'FROM'   => 'zentra_softwarelicenses',
             'WHERE'  => [
                 'softwares_id' => $softwares_id,
                 'is_template'  => 0,
                 'number'       => ['>', 0],
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', '', '', true),
         ])->current();
         return $result['numsum'] ?: 0;
     }
@@ -1029,11 +1029,11 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
         // Total Number of events
         $number = countElementsInTable(
-            "glpi_softwarelicenses",
+            "zentra_softwarelicenses",
             [
-                'glpi_softwarelicenses.softwares_id' => $softwares_id,
-                'glpi_softwarelicenses.is_template'  => 0,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
+                'zentra_softwarelicenses.softwares_id' => $softwares_id,
+                'zentra_softwarelicenses.is_template'  => 0,
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', '', '', true)
         );
 
         if ($canedit) {
@@ -1051,53 +1051,53 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_softwarelicenses.*',
+                'zentra_softwarelicenses.*',
                 'buyvers.name AS buyname',
                 'usevers.name AS usename',
-                'glpi_entities.completename AS entity',
-                'glpi_softwarelicensetypes.name AS typename',
-                'glpi_states.name AS statename',
+                'zentra_entities.completename AS entity',
+                'zentra_softwarelicensetypes.name AS typename',
+                'zentra_states.name AS statename',
             ],
-            'FROM'      => 'glpi_softwarelicenses',
+            'FROM'      => 'zentra_softwarelicenses',
             'LEFT JOIN' => [
-                'glpi_softwareversions AS buyvers'  => [
+                'zentra_softwareversions AS buyvers'  => [
                     'ON' => [
-                        'glpi_softwarelicenses' => 'softwareversions_id_buy',
+                        'zentra_softwarelicenses' => 'softwareversions_id_buy',
                         'buyvers'               => 'id',
                     ],
                 ],
-                'glpi_softwareversions AS usevers'  => [
+                'zentra_softwareversions AS usevers'  => [
                     'ON' => [
-                        'glpi_softwarelicenses' => 'softwareversions_id_use',
+                        'zentra_softwarelicenses' => 'softwareversions_id_use',
                         'usevers'               => 'id',
                     ],
                 ],
-                'glpi_entities'                     => [
+                'zentra_entities'                     => [
                     'ON' => [
-                        'glpi_entities'         => 'id',
-                        'glpi_softwarelicenses' => 'entities_id',
+                        'zentra_entities'         => 'id',
+                        'zentra_softwarelicenses' => 'entities_id',
                     ],
                 ],
-                'glpi_softwarelicensetypes'         => [
+                'zentra_softwarelicensetypes'         => [
                     'ON' => [
-                        'glpi_softwarelicensetypes'   => 'id',
-                        'glpi_softwarelicenses'       => 'softwarelicensetypes_id',
+                        'zentra_softwarelicensetypes'   => 'id',
+                        'zentra_softwarelicenses'       => 'softwarelicensetypes_id',
                     ],
                 ],
-                'glpi_states'                       => [
+                'zentra_states'                       => [
                     'ON' => [
-                        'glpi_softwarelicenses' => 'states_id',
-                        'glpi_states'           => 'id',
+                        'zentra_softwarelicenses' => 'states_id',
+                        'zentra_states'           => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_softwarelicenses.softwares_id'   => $softwares_id,
-                'glpi_softwarelicenses.is_template'    => 0,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
+                'zentra_softwarelicenses.softwares_id'   => $softwares_id,
+                'zentra_softwarelicenses.is_template'    => 0,
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', '', '', true),
             'ORDERBY'   => "$sort $order",
             'START'     => $start,
-            'LIMIT'     => (int) $_SESSION['glpilist_limit'],
+            'LIMIT'     => (int) $_SESSION['zentralist_limit'],
         ]);
 
         $tot_assoc = 0;
@@ -1146,7 +1146,7 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'start' => $start,
-            'limit' => $_SESSION["glpilist_limit"],
+            'limit' => $_SESSION["zentralist_limit"],
             'sort' => $sort,
             'order' => $order,
             'nofilter' => true,
@@ -1169,10 +1169,10 @@ TWIG, $twig_params);
                 'container'     => 'mass' . static::class . mt_rand(),
                 'extraparams' => [
                     'options' => [
-                        'glpi_softwareversions.name' => [
-                            'condition' => ["glpi_softwareversions.softwares_id" => $softwares_id],
+                        'zentra_softwareversions.name' => [
+                            'condition' => ["zentra_softwareversions.softwares_id" => $softwares_id],
                         ],
-                        'glpi_softwarelicenses.name' => ['itemlink_as_string' => true],
+                        'zentra_softwarelicenses.name' => ['itemlink_as_string' => true],
                     ],
                 ],
             ],
@@ -1194,7 +1194,7 @@ TWIG, $twig_params);
         ];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -1203,7 +1203,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForSoftware($item->getID());
                     }
                     return self::createTabEntry(
@@ -1216,7 +1216,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ['softwarelicenses_id' => $item->getID()]
@@ -1232,7 +1232,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === Software::class && self::canView()) {
             self::showForSoftware($item);

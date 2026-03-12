@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
 
 /**
  * Profile class
@@ -90,9 +90,9 @@ class ProfileRight extends CommonDBChild
      */
     public static function getAllPossibleRights()
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
-        $rights = $GLPI_CACHE->get('all_possible_rights', []);
+        $rights = $ZENTRA_CACHE->get('all_possible_rights', []);
 
         if (count($rights) == 0) {
             $iterator = $DB->request([
@@ -104,7 +104,7 @@ class ProfileRight extends CommonDBChild
                 // By default, all rights are NULL ...
                 $rights[$right['name']] = '';
             }
-            $GLPI_CACHE->set('all_possible_rights', $rights);
+            $ZENTRA_CACHE->set('all_possible_rights', $rights);
         }
 
         return $rights;
@@ -116,8 +116,8 @@ class ProfileRight extends CommonDBChild
      */
     public static function cleanAllPossibleRights()
     {
-        global $GLPI_CACHE;
-        $GLPI_CACHE->delete('all_possible_rights');
+        global $ZENTRA_CACHE;
+        $ZENTRA_CACHE->delete('all_possible_rights');
     }
 
     /**
@@ -131,7 +131,7 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         $query = [
-            'FROM'   => 'glpi_profilerights',
+            'FROM'   => 'zentra_profilerights',
             'WHERE'  => ['profiles_id' => $profiles_id],
         ];
         if (count($rights) > 0) {
@@ -153,10 +153,10 @@ class ProfileRight extends CommonDBChild
      **/
     public static function addProfileRights(array $rights)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $ok = true;
-        $GLPI_CACHE->set('all_possible_rights', []);
+        $ZENTRA_CACHE->set('all_possible_rights', []);
 
         $iterator = $DB->request([
             'SELECT'   => ['id'],
@@ -189,9 +189,9 @@ class ProfileRight extends CommonDBChild
      **/
     public static function deleteProfileRights(array $rights)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
-        $GLPI_CACHE->set('all_possible_rights', []);
+        $ZENTRA_CACHE->set('all_possible_rights', []);
         $ok = true;
         foreach ($rights as $name) {
             $result = $DB->delete(
@@ -217,7 +217,7 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         $subq = new QuerySubQuery([
-            'FROM'   => 'glpi_profilerights AS CURRENT',
+            'FROM'   => 'zentra_profilerights AS CURRENT',
             'WHERE'  => [
                 'CURRENT.profiles_id'   => $profiles_id,
                 'CURRENT.NAME'          => new QueryExpression('POSSIBLE.NAME'),
@@ -228,7 +228,7 @@ class ProfileRight extends CommonDBChild
         $iterator = $DB->request([
             'SELECT'          => 'POSSIBLE.name AS NAME',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_profilerights AS POSSIBLE',
+            'FROM'            => 'zentra_profilerights AS POSSIBLE',
             'WHERE'           => [
                 new QueryExpression($expr),
             ],

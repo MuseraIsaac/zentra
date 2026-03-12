@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
       <div class="col-auto">
          {% set dropdown_name = "criteria" ~ prefix ~ "[" ~ num ~ "][link]" %}
          {% set dropdown_value = metacriteria['link'] is defined ? metacriteria['link'] : '' %}
-         {{ fields.dropdownArrayField(dropdown_name, dropdown_value, call('Glpi\\Search\\SearchEngine::getLogicalOperators'), '', {
+         {{ fields.dropdownArrayField(dropdown_name, dropdown_value, call('Zentra\\Search\\SearchEngine::getLogicalOperators'), '', {
             full_width: true,
             input_class: 'col-12',
             no_label: true,
@@ -89,7 +89,7 @@
             {% if metacriteria['itemtype'] is defined and metacriteria['itemtype'] is not empty %}
                {% set params = params|merge({itemtype: metacriteria['itemtype']}) %}
 
-               {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [params]) }}
+               {{ call("Zentra\\Search\\Input\\QueryBuilder::displayCriteria", [params]) }}
             {% endif %}
          </div>
       </div>

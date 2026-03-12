@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Notifications settings configuration class
@@ -43,7 +43,7 @@ class NotificationSettingConfig extends CommonDBTM
     /**
      * @var string
      */
-    public $table           = 'glpi_configs';
+    public $table           = 'zentra_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
@@ -95,7 +95,7 @@ class NotificationSettingConfig extends CommonDBTM
      */
     public function showConfigForm($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!isset($options['display'])) {
             $options['display'] = true;
@@ -107,7 +107,7 @@ class NotificationSettingConfig extends CommonDBTM
             $settings = getItemForItemtype($settings_class);
             $mode['label']          = $settings->getEnableLabel();
             $mode['label_settings'] = $settings->getTypeName();
-            $mode['is_active']      = (bool) $CFG_GLPI["notifications_$mode_key"];
+            $mode['is_active']      = (bool) $CFG_ZENTRA["notifications_$mode_key"];
             $mode['setting_url']    = $settings->getFormURL();
             $mode['icon']           = $settings::getIcon();
         }
@@ -115,7 +115,7 @@ class NotificationSettingConfig extends CommonDBTM
         $out = TemplateRenderer::getInstance()->render(
             'pages/setup/setup_notifications.html.twig',
             [
-                'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
+                'use_notifications' => (bool) $CFG_ZENTRA['use_notifications'],
                 'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
                 'can_update_config' => Session::haveRight("config", UPDATE) > 0,
                 'modes'             => $modes,

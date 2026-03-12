@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\TemplateManager;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\ContentTemplates\TemplateManager;
 
 /**
  * ITILSolution Class
@@ -58,7 +58,7 @@ class ITILSolution extends CommonDBChild
         return _n('Solution', 'Solutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
             return '';
@@ -69,7 +69,7 @@ class ITILSolution extends CommonDBChild
         ) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countFor($item->getType(), $item->getID());
             }
             return self::createTabEntry($title, $nb, $item::getType());
@@ -79,8 +79,8 @@ class ITILSolution extends CommonDBChild
 
     public static function canView(): bool
     {
-        global $CFG_GLPI;
-        $itil_types = $CFG_GLPI['itil_types'];
+        global $CFG_ZENTRA;
+        $itil_types = $CFG_ZENTRA['itil_types'];
         /** @var class-string<CommonITILObject> $type */
         foreach ($itil_types as $type) {
             if ($type::canView()) {
@@ -266,7 +266,7 @@ class ITILSolution extends CommonDBChild
             //Accepted; store user and date
             if ($status == CommonITILValidation::ACCEPTED) {
                 $input['users_id_approval'] = Session::getLoginUserID();
-                $input['date_approval'] = $_SESSION["glpi_currenttime"];
+                $input['date_approval'] = $_SESSION["zentra_currenttime"];
             }
 
             $input['status'] = $status;
@@ -340,7 +340,7 @@ class ITILSolution extends CommonDBChild
 
         if (
             $this->input["itemtype"] == Ticket::class
-            && $_SESSION['glpiset_solution_tech']
+            && $_SESSION['zentraset_solution_tech']
             && ($this->input['_disable_auto_assign'] ?? false) === false
         ) {
             Ticket::assignToMe($this->input["items_id"], $this->input["users_id"]);
@@ -480,7 +480,7 @@ class ITILSolution extends CommonDBChild
 
         $tab[] = [
             'id'                 => 3,
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',

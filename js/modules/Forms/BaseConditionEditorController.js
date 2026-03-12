@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ export class BaseConditionEditorController {
 
     constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments, editorEndpoint) {
         this.#container = container;
-        if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
+        if (this.#container.dataset.zentraConditionsEditorContainer === undefined) {
             console.error(this.#container); // Help debugging by printing the node.
             throw new Error("Invalid container");
         }
@@ -90,10 +90,10 @@ export class BaseConditionEditorController {
 
         // Enable actions
         const disabled_items = this.#container.querySelectorAll(
-            '[data-glpi-conditions-editor-enable-on-ready]'
+            '[data-zentra-conditions-editor-enable-on-ready]'
         );
         for (const disabled_item of disabled_items) {
-            disabled_item.removeAttribute('data-glpi-conditions-editor-disabled');
+            disabled_item.removeAttribute('data-zentra-conditions-editor-disabled');
         }
     }
 
@@ -136,7 +136,7 @@ export class BaseConditionEditorController {
         });
 
         // Note: must use `$().html` to make sure we trigger scripts
-        $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+        $(this.#container.querySelector('[data-zentra-conditions-editor]')).html(content);
 
         // The number of conditions may have changed, notify
         this.#notifyConditionsCountChanged(
@@ -150,17 +150,17 @@ export class BaseConditionEditorController {
             const target = e.target;
 
             // Available buttons
-            const add_condition = '[data-glpi-condition-editor-add-condition]';
-            const delete_condition = '[data-glpi-condition-editor-delete-condition]';
+            const add_condition = '[data-zentra-condition-editor-add-condition]';
+            const delete_condition = '[data-zentra-condition-editor-delete-condition]';
 
             if (target.closest(add_condition) !== null) {
                 this.#addNewEmptyCondition();
                 return;
             } else if (target.closest(delete_condition) !== null) {
                 const index = target
-                    .closest('[data-glpi-conditions-editor-condition]')
+                    .closest('[data-zentra-conditions-editor-condition]')
                     .dataset
-                    .glpiConditionsEditorConditionIndex
+                    .zentraConditionsEditorConditionIndex
                 ;
                 this.#deleteCondition(index);
             }
@@ -170,22 +170,22 @@ export class BaseConditionEditorController {
         // Note: need to be jquery else select2 wont work
         $(this.#container).on(
             'change',
-            '[data-glpi-conditions-editor-item], [data-glpi-conditions-editor-value-operator]',
+            '[data-zentra-conditions-editor-item], [data-zentra-conditions-editor-value-operator]',
             () => this.renderEditor()
         );
 
         // Handle strategy changes
         const strategy_inputs = this.#container.querySelectorAll(
-            '[data-glpi-conditions-editor-strategy]'
+            '[data-zentra-conditions-editor-strategy]'
         );
         for (const strategy_input of strategy_inputs) {
             strategy_input.addEventListener('change', (e) => {
                 const value = e.target.value;
                 const should_displayed_editor = (this.#container
-                    .querySelector(`[data-glpi-conditions-editor-display-for-${CSS.escape(value)}]`)
+                    .querySelector(`[data-zentra-conditions-editor-display-for-${CSS.escape(value)}]`)
                 ) !== null;
                 this.#container
-                    .querySelector(`[data-glpi-conditions-editor]`)
+                    .querySelector(`[data-zentra-conditions-editor]`)
                     .classList
                     .toggle('d-none', !should_displayed_editor)
                 ;
@@ -228,7 +228,7 @@ export class BaseConditionEditorController {
     #computeDefinedConditions() {
         const conditions_data = [];
         const conditions = this.#container.querySelectorAll(
-            '[data-glpi-conditions-editor-condition]'
+            '[data-zentra-conditions-editor-condition]'
         );
 
         for (const condition of conditions) {
@@ -236,7 +236,7 @@ export class BaseConditionEditorController {
 
             // Try to find a selected logic operator
             const condition_logic_operator = $(condition).find(
-                '[data-glpi-conditions-editor-logic-operator]'
+                '[data-zentra-conditions-editor-logic-operator]'
             );
             if (condition_logic_operator.length > 0) {
                 condition_data.logic_operator = condition_logic_operator.val();
@@ -244,7 +244,7 @@ export class BaseConditionEditorController {
 
             // Try to find a selected item
             const condition_item = $(condition).find(
-                '[data-glpi-conditions-editor-item]'
+                '[data-zentra-conditions-editor-item]'
             );
             if (condition_item.length > 0) {
                 condition_data.item = condition_item.val();
@@ -252,7 +252,7 @@ export class BaseConditionEditorController {
 
             // Try to find a selected value operator
             const condition_value_operator = $(condition).find(
-                '[data-glpi-conditions-editor-value-operator]'
+                '[data-zentra-conditions-editor-value-operator]'
             );
             if (condition_value_operator.length > 0) {
                 condition_data.value_operator = condition_value_operator.val();
@@ -260,7 +260,7 @@ export class BaseConditionEditorController {
 
             // Try to find a selected value
             const condition_value = $(condition).find(
-                '[data-glpi-conditions-editor-value]'
+                '[data-zentra-conditions-editor-value]'
             );
             if (condition_value.length === 1) {
                 condition_data.value = condition_value.val();

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Search\SearchOption;
 
 use function Safe\preg_replace;
 
@@ -324,7 +324,7 @@ abstract class ITILTemplate extends CommonDropdown
                 $itil_object->getSearchOptionIDByField(
                     'field',
                     'name',
-                    'glpi_suppliers'
+                    'zentra_suppliers'
                 ) => '_suppliers_id_assign',
 
                 66                => '_users_id_observer',
@@ -336,7 +336,7 @@ abstract class ITILTemplate extends CommonDropdown
                 [$itil_object->getSearchOptionIDByField(
                     'field',
                     'completename',
-                    'glpi_itilcategories'
+                    'zentra_itilcategories'
                 )]  = 'itilcategories_id';
             }
 
@@ -364,7 +364,7 @@ abstract class ITILTemplate extends CommonDropdown
                [$itil_object->getSearchOptionIDByField(
                    'field',
                    'name',
-                   'glpi_documents'
+                   'zentra_documents'
                )] = '_documents_id';
 
             // Add ITILTask (from task templates)
@@ -380,7 +380,7 @@ abstract class ITILTemplate extends CommonDropdown
                 [$itil_object->getSearchOptionIDByField(
                     'field',
                     'completename',
-                    'glpi_locations'
+                    'zentra_locations'
                 )] = 'locations_id';
 
             //add specific itil type fields
@@ -458,7 +458,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate && $tabnum === 1) {
             return $item->showCentralPreview($item);
@@ -467,7 +467,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (Session::haveRight(static::$rightname, READ)) {
@@ -603,7 +603,7 @@ abstract class ITILTemplate extends CommonDropdown
         if (
             $isadmin
             &&  $this->maybeRecursive()
-            && (count($_SESSION['glpiactiveentities']) > 1)
+            && (count($_SESSION['zentraactiveentities']) > 1)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
         }
@@ -617,7 +617,7 @@ abstract class ITILTemplate extends CommonDropdown
 
         switch ($ma->getAction()) {
             case 'merge':
-                echo "&nbsp;" . htmlescape($_SESSION['glpiactive_entity_shortname']);
+                echo "&nbsp;" . htmlescape($_SESSION['zentraactive_entity_shortname']);
                 echo "<br><br>" . Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
                 return true;
         }
@@ -639,7 +639,7 @@ abstract class ITILTemplate extends CommonDropdown
                         ($item instanceof ITILTemplate)
                         && $item->can($key, UPDATE)
                     ) {
-                        if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($item->getEntityID() == $_SESSION['zentraactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,
                                     'is_recursive' => 1,
@@ -653,7 +653,7 @@ abstract class ITILTemplate extends CommonDropdown
                         } else {
                             $input2 = $item->fields;
                             // Change entity
-                            $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                            $input2['entities_id']  = $_SESSION['zentraactive_entity'];
                             $input2['is_recursive'] = 1;
 
                             if (!$item->import($input2)) {
@@ -695,7 +695,7 @@ abstract class ITILTemplate extends CommonDropdown
         foreach ($to_merge as $merge) {
             $source[$merge] = $this->formatFieldsToMerge(
                 getAllDataFromTable(
-                    'glpi_' . $itiltype . 'template' . $merge,
+                    'zentra_' . $itiltype . 'template' . $merge,
                     [$itiltype . 'templates_id' => $source_id]
                 )
             );
@@ -706,7 +706,7 @@ abstract class ITILTemplate extends CommonDropdown
         foreach ($to_merge as $merge) {
             $target[$merge] = $this->formatFieldsToMerge(
                 getAllDataFromTable(
-                    'glpi_' . $itiltype . 'template' . $merge,
+                    'zentra_' . $itiltype . 'template' . $merge,
                     [$itiltype . 'templates_id' => $target_id]
                 )
             );
@@ -717,7 +717,7 @@ abstract class ITILTemplate extends CommonDropdown
             foreach ($data as $key => $val) {
                 if (!array_key_exists($key, $target[$merge])) {
                     $DB->update(
-                        'glpi_' . $itiltype . 'template' . $merge,
+                        'zentra_' . $itiltype . 'template' . $merge,
                         [
                             $itiltype . 'templates_id' => $target_id,
                         ],
@@ -756,13 +756,13 @@ abstract class ITILTemplate extends CommonDropdown
         // Source categories
         $source = [];
         foreach ($to_merge as $merge) {
-            $source[$merge] = getAllDataFromTable('glpi_itilcategories', [$merge => $source_id]);
+            $source[$merge] = getAllDataFromTable('zentra_itilcategories', [$merge => $source_id]);
         }
 
         // Target categories
         $target = [];
         foreach ($to_merge as $merge) {
-            $target[$merge] = getAllDataFromTable('glpi_itilcategories', [$merge => $target_id]);
+            $target[$merge] = getAllDataFromTable('zentra_itilcategories', [$merge => $target_id]);
         }
 
         // Merge
@@ -772,10 +772,10 @@ abstract class ITILTemplate extends CommonDropdown
                 $template->getFromDB($target_id);
                 if (
                     !array_key_exists($key, $target[$merge])
-                    && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])
+                    && in_array($val['entities_id'], $_SESSION['zentraactiveentities'])
                 ) {
                     $DB->update(
-                        'glpi_itilcategories',
+                        'zentra_itilcategories',
                         [
                             $merge => $target_id,
                         ],

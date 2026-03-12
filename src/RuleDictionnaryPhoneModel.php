@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,11 +45,11 @@ class RuleDictionnaryPhoneModel extends RuleDictionnaryDropdown
 
         $criterias['name']['field']         = 'name';
         $criterias['name']['name']          = _n('Model', 'Models', 1);
-        $criterias['name']['table']         = 'glpi_phonemodels';
+        $criterias['name']['table']         = 'zentra_phonemodels';
 
         $criterias['manufacturer']['field'] = 'name';
         $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
-        $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+        $criterias['manufacturer']['table'] = 'zentra_manufacturers';
 
         return $criterias;
     }

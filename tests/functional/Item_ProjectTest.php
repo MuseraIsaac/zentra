@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\IsProjectAssetCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\IsProjectAssetCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Item_Project;
 use Project;
 use ProjectState;
@@ -48,13 +48,13 @@ class Item_ProjectTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: IsProjectAssetCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['project_asset_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['project_asset_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -67,11 +67,11 @@ class Item_ProjectTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: IsProjectAssetCapacity::class)]);
 
-        foreach ($CFG_GLPI['project_asset_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['project_asset_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -83,8 +83,8 @@ class Item_ProjectTest extends DbTestCase
 
     public function testShowForProjectAndAsset(): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var array $CFG_ZENTRA */
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -100,7 +100,7 @@ class Item_ProjectTest extends DbTestCase
 
         $assets = [];
 
-        foreach ($CFG_GLPI['project_asset_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['project_asset_types'] as $itemtype) {
             $assets[$itemtype] = $this->createItem($itemtype, [
                 'name' => __FUNCTION__,
                 'designation' => __FUNCTION__,
@@ -121,10 +121,10 @@ class Item_ProjectTest extends DbTestCase
 
         $crawler = new Crawler($out);
         $rows = $crawler->filter('table tbody tr[data-itemtype="Item_Project"]');
-        $this->assertCount(count($CFG_GLPI['project_asset_types']), $rows);
+        $this->assertCount(count($CFG_ZENTRA['project_asset_types']), $rows);
         $project_types = array_combine(
-            array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['project_asset_types']),
-            $CFG_GLPI['project_asset_types'],
+            array_map(static fn($t) => $t::getTypeName(1), $CFG_ZENTRA['project_asset_types']),
+            $CFG_ZENTRA['project_asset_types'],
         );
         foreach ($rows as $row) {
             $cells = (new Crawler($row))->filter('td');

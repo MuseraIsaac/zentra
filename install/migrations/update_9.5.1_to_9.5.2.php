@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ function update951to952()
                 $document = $DB->request(
                     [
                         'SELECT' => ['entities_id'],
-                        'FROM'   => 'glpi_documents',
+                        'FROM'   => 'zentra_documents',
                         'WHERE'  => [
                             'id' => $docid,
                         ],
@@ -128,10 +128,10 @@ function update951to952()
             'items_id'          => $doc_input['items_id'],
             'timeline_position' => $doc_input['timeline_position'],
         ];
-        if (countElementsInTable('glpi_documents_items', $unicity_fields) > 0) {
+        if (countElementsInTable('zentra_documents_items', $unicity_fields) > 0) {
             continue; // Already declared in DB
         }
-        $DB->insert('glpi_documents_items', $doc_input);
+        $DB->insert('zentra_documents_items', $doc_input);
     }
     /* /Fix document_item migration */
 
@@ -144,42 +144,42 @@ function update951to952()
     /* /Register missing DomainAlert crontask */
 
     //add option to collect only unread mail
-    $migration->addField('glpi_mailcollectors', 'collect_only_unread', 'bool', ['value' => 0]);
+    $migration->addField('zentra_mailcollectors', 'collect_only_unread', 'bool', ['value' => 0]);
 
     /* Appliances rewrite */
-    $migration->addField('glpi_appliances', 'is_helpdesk_visible', 'bool', ['after' => 'otherserial', 'value' => 1]);
-    $migration->addKey('glpi_appliances', 'is_helpdesk_visible');
-    $migration->addField('glpi_states', 'is_visible_appliance', 'bool', [
+    $migration->addField('zentra_appliances', 'is_helpdesk_visible', 'bool', ['after' => 'otherserial', 'value' => 1]);
+    $migration->addKey('zentra_appliances', 'is_helpdesk_visible');
+    $migration->addField('zentra_states', 'is_visible_appliance', 'bool', [
         'value' => 1,
         'after' => 'is_visible_contract',
     ]);
-    $migration->addKey('glpi_states', 'is_visible_appliance');
+    $migration->addKey('zentra_states', 'is_visible_appliance');
 
-    if ($DB->tableExists('glpi_appliancerelations')) {
-        $migration->dropKey('glpi_appliancerelations', 'relations_id');
-        $migration->changeField('glpi_appliancerelations', 'relations_id', 'items_id', 'integer');
+    if ($DB->tableExists('zentra_appliancerelations')) {
+        $migration->dropKey('zentra_appliancerelations', 'relations_id');
+        $migration->changeField('zentra_appliancerelations', 'relations_id', 'items_id', 'integer');
         $migration->addField(
-            'glpi_appliancerelations',
+            'zentra_appliancerelations',
             'itemtype',
             'VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL',
             ['after' => 'appliances_items_id']
         );
-        $migration->addKey('glpi_appliancerelations', 'itemtype');
-        $migration->addKey('glpi_appliancerelations', 'items_id');
-        $migration->addKey('glpi_appliancerelations', [
+        $migration->addKey('zentra_appliancerelations', 'itemtype');
+        $migration->addKey('zentra_appliancerelations', 'items_id');
+        $migration->addKey('zentra_appliancerelations', [
             'itemtype',
             'items_id',
         ], 'item');
-        $migration->migrationOneTable('glpi_appliancerelations');
-        $migration->renameTable('glpi_appliancerelations', 'glpi_appliances_items_relations');
+        $migration->migrationOneTable('zentra_appliancerelations');
+        $migration->renameTable('zentra_appliancerelations', 'zentra_appliances_items_relations');
     }
 
-    if ($DB->fieldExists('glpi_appliances', 'relationtype')) {
+    if ($DB->fieldExists('zentra_appliances', 'relationtype')) {
         $iterator = $DB->request([
             'SELECT' => ['items.id', 'app.relationtype'],
-            'FROM'   => 'glpi_appliances_items AS items',
+            'FROM'   => 'zentra_appliances_items AS items',
             'LEFT JOIN' => [
-                'glpi_appliances AS app' => [
+                'zentra_appliances AS app' => [
                     'ON'  => [
                         'app'    => 'id',
                         'items'  => 'appliances_id',
@@ -203,7 +203,7 @@ function update951to952()
 
             $migration->addPostQuery(
                 $DB->buildUpdate(
-                    'glpi_appliances_items_relations',
+                    'zentra_appliances_items_relations',
                     [
                         'itemtype'  => $itemtype,
                     ],
@@ -213,7 +213,7 @@ function update951to952()
                 )
             );
         }
-        $migration->dropField('glpi_appliances', 'relationtype');
+        $migration->dropField('zentra_appliances', 'relationtype');
     }
     /* /Appliances rewrite */
 

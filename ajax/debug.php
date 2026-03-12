@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Debug\Profile;
-use Glpi\Debug\Profiler;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\UI\ThemeManager;
+use Zentra\Debug\Profile;
+use Zentra\Debug\Profiler;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\UI\ThemeManager;
 
 use function Safe\json_encode;
 use function Safe\session_write_close;
 
 Html::header_nocache();
 
-if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
+if ($_SESSION['zentra_use_mode'] !== Session::DEBUG_MODE) {
     throw new AccessDeniedHttpException();
 }
 
@@ -56,7 +56,7 @@ if (isset($_GET['ajax_id'])) {
     $profile = Profile::pull($ajax_id);
 
     // Close session ASAP to not block other requests.
-    // DO NOT do it before call to `\Glpi\Debug\Profile::pull()`,
+    // DO NOT do it before call to `\Zentra\Debug\Profile::pull()`,
     // as we have to delete profile from `$_SESSION` during the pull operation.
     session_write_close();
 
@@ -74,7 +74,7 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action === 'get_itemtypes') {
         $loaded = get_declared_classes();
-        $glpi_classes = array_filter($loaded, static function ($class) {
+        $zentra_classes = array_filter($loaded, static function ($class) {
             if (!is_subclass_of($class, 'CommonDBTM')) {
                 return false;
             }
@@ -86,9 +86,9 @@ if (isset($_GET['action'])) {
 
             return true;
         });
-        sort($glpi_classes);
+        sort($zentra_classes);
         header('Content-Type: application/json');
-        echo json_encode($glpi_classes);
+        echo json_encode($zentra_classes);
         return;
     }
     if ($action === 'get_search_options' && isset($_GET['itemtype'])) {
@@ -104,7 +104,7 @@ if (isset($_GET['action'])) {
             return;
         }
         try {
-            /** @var CommonGLPI $item */
+            /** @var CommonZENTRA $item */
             $item = getItemForItemtype($_GET['itemtype']);
             $options = Search::getOptions($item::getType());
         } catch (Throwable $e) {

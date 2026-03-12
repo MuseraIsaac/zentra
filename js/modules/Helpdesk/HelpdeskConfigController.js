@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable, glpi_toast_info, glpi_toast_error, getAjaxCsrfToken, bootstrap */
+/* global sortable, zentra_toast_info, zentra_toast_error, getAjaxCsrfToken, bootstrap */
 
-export class GlpiHelpdeskConfigController
+export class ZentraHelpdeskConfigController
 {
     #container;
     #itemtype_item;
@@ -51,7 +51,7 @@ export class GlpiHelpdeskConfigController
     #enableSortable()
     {
         const tiles_container = this.#container
-            .querySelector('[data-glpi-helpdesk-config-tiles]')
+            .querySelector('[data-zentra-helpdesk-config-tiles]')
         ;
 
         sortable(tiles_container, {
@@ -60,20 +60,20 @@ export class GlpiHelpdeskConfigController
                 <div class="card my-2 flex-grow-1 border-primary border-dashed border-2 rounded opacity-50">
                 </div>
             </div>`,
-            handle: '[data-glpi-helpdesk-config-tile-handle]',
+            handle: '[data-zentra-helpdesk-config-tile-handle]',
 
             // We don't need a class but it won't work if this param is empty.
             placeholderClass: "not-a-real-class",
 
             // Specify target items to make sure we exclude the special "add tile" item.
-            items: "[data-glpi-draggable-item]",
+            items: "[data-zentra-draggable-item]",
         });
     }
 
     #initEventsHandlers()
     {
         this.#container
-            .querySelector('[data-glpi-helpdesk-config-reorder-action-save')
+            .querySelector('[data-zentra-helpdesk-config-reorder-action-save')
             .addEventListener('click', async() => {
                 await this.#saveTilesOrder();
             })
@@ -82,7 +82,7 @@ export class GlpiHelpdeskConfigController
         // Watch for tile deletion
         this.#container.addEventListener('click', (e) => {
             const delete_button = e.target.closest(
-                '[data-glpi-helpdesk-config-action-delete]'
+                '[data-zentra-helpdesk-config-action-delete]'
             );
             if (delete_button === null) {
                 return;
@@ -91,24 +91,24 @@ export class GlpiHelpdeskConfigController
             const data = delete_button.dataset;
             this.#deleteTile(
                 e.target.closest('form'),
-                data.glpiHelpdeskConfigActionDeleteId,
-                data.glpiHelpdeskConfigActionDeleteItemtype,
+                data.zentraHelpdeskConfigActionDeleteId,
+                data.zentraHelpdeskConfigActionDeleteItemtype,
             );
         });
 
         // Watch for tile edition
         this.#container.addEventListener('click', (e) => {
-            const edit_button = e.target.closest('[data-glpi-helpdesk-config-action-show-edit-form]');
+            const edit_button = e.target.closest('[data-zentra-helpdesk-config-action-show-edit-form]');
             if (edit_button === null) {
                 return;
             }
 
-            const tile = edit_button.closest('[data-glpi-helpdesk-config-tile-container]');
+            const tile = edit_button.closest('[data-zentra-helpdesk-config-tile-container]');
             this.#showEditTileForm(tile);
         });
         this.#container.addEventListener('click', (e) => {
             const save_button = e.target.closest(
-                '[data-glpi-helpdesk-config-edit-tile-save]'
+                '[data-zentra-helpdesk-config-edit-tile-save]'
             );
             if (save_button === null) {
                 return;
@@ -119,7 +119,7 @@ export class GlpiHelpdeskConfigController
         // Watch for tile creation
         this.#container.addEventListener('click', (e) => {
             const edit_button = e.target.closest(
-                '[data-glpi-helpdesk-config-action-new-tile]'
+                '[data-zentra-helpdesk-config-action-new-tile]'
             );
             if (edit_button === null) {
                 return;
@@ -128,7 +128,7 @@ export class GlpiHelpdeskConfigController
         });
         this.#container.addEventListener('click', (e) => {
             const submit_button = e.target.closest(
-                '[data-glpi-helpdesk-config-add-tile-submit]'
+                '[data-zentra-helpdesk-config-add-tile-submit]'
             );
             if (submit_button === null) {
                 return;
@@ -137,7 +137,7 @@ export class GlpiHelpdeskConfigController
         });
 
         // Note: we use jquery here because event listener on select2 doesn't seems to work with vanilla JS.
-        $(this.#container).on('change', '[data-glpi-helpdesk-config-add-tile-type]', (e) => {
+        $(this.#container).on('change', '[data-zentra-helpdesk-config-add-tile-type]', (e) => {
             this.#triggerTypeChange(e.target.value);
         });
     }
@@ -147,8 +147,8 @@ export class GlpiHelpdeskConfigController
         // Make sure e2e tools don't click on the tiles until the events handlers
         // are ready.
         const items = this.#container.querySelectorAll(
-            '[data-glpi-helpdesk-config-tile-container],'
-            + '[data-glpi-helpdesk-config-action-new-tile]'
+            '[data-zentra-helpdesk-config-tile-container],'
+            + '[data-zentra-helpdesk-config-action-new-tile]'
         );
         for (const item of items) {
             item.classList.remove('pointer-events-none');
@@ -167,13 +167,13 @@ export class GlpiHelpdeskConfigController
             ;
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/SetTilesOrder`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/SetTilesOrder`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -185,9 +185,9 @@ export class GlpiHelpdeskConfigController
             // Refresh content and confirm success
             this.#getTilesContainerDiv().innerHTML = await response.text();
             this.#enablePointerEvents();
-            glpi_toast_info(__("Configuration updated successfully."));
+            zentra_toast_info(__("Configuration updated successfully."));
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -195,35 +195,35 @@ export class GlpiHelpdeskConfigController
     #getTilesOrder()
     {
         const nodes = this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-item-tile-id]')
+            .querySelectorAll('[data-zentra-helpdesk-config-item-tile-id]')
         ;
 
         return [...nodes].map((node) => {
-            return node.dataset.glpiHelpdeskConfigItemTileId;
+            return node.dataset.zentraHelpdeskConfigItemTileId;
         });
     }
 
     #getTilesContainerDiv()
     {
-        return this.#container.querySelector("[data-glpi-helpdesk-config-tiles]");
+        return this.#container.querySelector("[data-zentra-helpdesk-config-tiles]");
     }
 
     #getFormTileDiv()
     {
-        return this.#container.querySelector('[data-glpi-helpdesk-config-tile-form]');
+        return this.#container.querySelector('[data-zentra-helpdesk-config-tile-form]');
     }
 
     #getFormTileLoadingIndicatorDiv()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tile-form-loading]'
+            '[data-zentra-helpdesk-config-tile-form-loading]'
         );
     }
 
     #getFormTileHeader()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tile-form-title]'
+            '[data-zentra-helpdesk-config-tile-form-title]'
         );
     }
 
@@ -231,16 +231,16 @@ export class GlpiHelpdeskConfigController
     {
         // Show spinner and disable buttons
         form.querySelector(
-            '[data-glpi-helpdesk-config-delete-tile-icon]'
+            '[data-zentra-helpdesk-config-delete-tile-icon]'
         ).classList.remove('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-delete-tile-spinner-icon]'
+            '[data-zentra-helpdesk-config-delete-tile-spinner-icon]'
         ).classList.add('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-edit-tile-save]'
+            '[data-zentra-helpdesk-config-edit-tile-save]'
         ).disabled = true;
         form.querySelector(
-            '[data-glpi-helpdesk-config-action-delete]'
+            '[data-zentra-helpdesk-config-action-delete]'
         ).disabled = true;
 
         try {
@@ -250,13 +250,13 @@ export class GlpiHelpdeskConfigController
             form_data.append('tile_itemtype', itemtype);
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/DeleteTile`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/DeleteTile`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -265,13 +265,13 @@ export class GlpiHelpdeskConfigController
                 throw new Error(response.status);
             }
 
-            glpi_toast_info(__("Configuration updated successfully."));
+            zentra_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
             this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -282,12 +282,12 @@ export class GlpiHelpdeskConfigController
             this.#getFormTileLoadingIndicatorDiv().classList.remove('d-none');
             this.#getFormTileDiv().classList.add('d-none');
 
-            const tile = tile_container.querySelector('[data-glpi-helpdesk-config-tile]');
+            const tile = tile_container.querySelector('[data-zentra-helpdesk-config-tile]');
 
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/ShowEditTileForm`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/ShowEditTileForm`;
             const url_params = new URLSearchParams({
-                tile_id: tile.dataset.glpiHelpdeskConfigTileId,
-                tile_itemtype: tile.dataset.glpiHelpdeskConfigTileItemtype,
+                tile_id: tile.dataset.zentraHelpdeskConfigTileId,
+                tile_itemtype: tile.dataset.zentraHelpdeskConfigTileItemtype,
             });
             const response = await fetch(`${url}?${url_params}`);
 
@@ -304,7 +304,7 @@ export class GlpiHelpdeskConfigController
             this.#getFormTileDiv().classList.remove('d-none');
             this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -313,16 +313,16 @@ export class GlpiHelpdeskConfigController
     {
         // Show spinner and disable buttons
         form.querySelector(
-            '[data-glpi-helpdesk-config-edit-tile-save-spinner-icon]'
+            '[data-zentra-helpdesk-config-edit-tile-save-spinner-icon]'
         ).classList.remove('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-edit-tile-save-icon]'
+            '[data-zentra-helpdesk-config-edit-tile-save-icon]'
         ).classList.add('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-edit-tile-save]'
+            '[data-zentra-helpdesk-config-edit-tile-save]'
         ).disabled = true;
         form.querySelector(
-            '[data-glpi-helpdesk-config-action-delete]'
+            '[data-zentra-helpdesk-config-action-delete]'
         ).disabled = true;
 
         try {
@@ -337,13 +337,13 @@ export class GlpiHelpdeskConfigController
             const form_data = new FormData(form);
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/UpdateTile`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/UpdateTile`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -352,13 +352,13 @@ export class GlpiHelpdeskConfigController
                 throw new Error(response.status);
             }
 
-            glpi_toast_info(__("Configuration updated successfully."));
+            zentra_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
             this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -369,7 +369,7 @@ export class GlpiHelpdeskConfigController
             this.#getFormTileLoadingIndicatorDiv().classList.remove('d-none');
             this.#getFormTileDiv().classList.add('d-none');
 
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/ShowAddTileForm`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/ShowAddTileForm`;
             const response = await fetch(url);
 
             // Handle server errors
@@ -385,7 +385,7 @@ export class GlpiHelpdeskConfigController
             this.#getFormTileDiv().classList.remove('d-none');
             this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -394,13 +394,13 @@ export class GlpiHelpdeskConfigController
     {
         // Show spinner and disable button
         form.querySelector(
-            '[data-glpi-helpdesk-config-add-tile-submit-spinner-icon]'
+            '[data-zentra-helpdesk-config-add-tile-submit-spinner-icon]'
         ).classList.remove('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-add-tile-submit-plus-icon]'
+            '[data-zentra-helpdesk-config-add-tile-submit-plus-icon]'
         ).classList.add('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-add-tile-submit]'
+            '[data-zentra-helpdesk-config-add-tile-submit]'
         ).disabled = true;
 
         try {
@@ -417,13 +417,13 @@ export class GlpiHelpdeskConfigController
             form_data.append('_items_id_item', this.#items_id_item);
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/AddTile`;
+            const url = `${CFG_ZENTRA.root_doc}/Config/Helpdesk/AddTile`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -432,20 +432,20 @@ export class GlpiHelpdeskConfigController
                 throw new Error(response.status);
             }
 
-            glpi_toast_info(__("Configuration updated successfully."));
+            zentra_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
             this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred'));
+            zentra_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
 
     #triggerTypeChange(type)
     {
-        const submit_button = this.#container.querySelector('[data-glpi-helpdesk-config-add-tile-submit]');
+        const submit_button = this.#container.querySelector('[data-zentra-helpdesk-config-add-tile-submit]');
 
         // Enabled submit button if a type is selected
         if (type == 0) {
@@ -458,7 +458,7 @@ export class GlpiHelpdeskConfigController
 
         // Show the correct form
         this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-add-tile-form-for]')
+            .querySelectorAll('[data-zentra-helpdesk-config-add-tile-form-for]')
             .forEach((node) => {
                 node.classList.add('d-none');
                 node.querySelectorAll('input, select, textarea').forEach((input) => {
@@ -467,7 +467,7 @@ export class GlpiHelpdeskConfigController
             })
         ;
         this.#container
-            .querySelectorAll(`[data-glpi-helpdesk-config-add-tile-form-for="${CSS.escape(type)}"]`)
+            .querySelectorAll(`[data-zentra-helpdesk-config-add-tile-form-for="${CSS.escape(type)}"]`)
             .forEach((node) => {
                 node.classList.remove('d-none');
                 node.querySelectorAll('input, select, textarea').forEach((input) => {

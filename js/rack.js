@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* eslint no-var: 0 */
 /* global grid_link_url, grid_rack_add_tip, grid_rack_id, grid_rack_units, GridStack */
-/* global glpi_ajax_dialog, displayAjaxMessageAfterRedirect */
+/* global zentra_ajax_dialog, displayAjaxMessageAfterRedirect */
 /* global grid_item_ajax_url */
 /* global _ */
 
@@ -74,7 +74,7 @@ var initRack = function() {
                 ? 0  // front
                 : 1; // rear
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 url : grid_link_url,
                 method : 'get',
                 dialogclass: 'modal-xl',
@@ -89,7 +89,7 @@ var initRack = function() {
         .on('click', 'a.edit_rack_item', (e) => {
             e.preventDefault();
             const href = $(e.currentTarget).attr('href');
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 url : href,
                 method : 'get',
                 dialogclass: 'modal-xl',
@@ -102,7 +102,7 @@ var initRack = function() {
         .on("click", "#add_pdu", (event) => {
             event.preventDefault();
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 title: __("Add PDU"),
                 url: grid_item_ajax_url,
                 method : 'get',

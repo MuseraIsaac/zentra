@@ -5,7 +5,7 @@ Official documentation: https://playwright.dev/docs/intro
 
 ## Running the tests
 
-### With the official GLPI development docker image (recommanded)
+### With the official ZENTRA development docker image (recommanded)
 
 #### Install the e2e database
 
@@ -58,23 +58,23 @@ npx playwright install chromium
 sudo npx playwright install-deps chromium
 ```
 
-#### Setup GLPI e2e server
+#### Setup ZENTRA e2e server
 
-You'll need a GLPI server running in the `e2e_testing` environment.
+You'll need a ZENTRA server running in the `e2e_testing` environment.
 
 See examples: 
-- https://github.com/glpi-project/docker-images/blob/main/glpi-development-env/files/etc/apache2/sites-available/000-default.conf
-- https://github.com/glpi-project/docker-images/blob/main/glpi-development-env/files/etc/apache2/ports.conf
+- https://github.com/zentra-project/docker-images/blob/main/zentra-development-env/files/etc/apache2/sites-available/000-default.conf
+- https://github.com/zentra-project/docker-images/blob/main/zentra-development-env/files/etc/apache2/ports.conf
 
 #### Install the e2e database
 
-Use the `glpi:database:install` console command with the `--env=e2e_testing`
+Use the `zentra:database:install` console command with the `--env=e2e_testing`
 parameter to setup the test database.
 
 #### Setup base URL
 
 Copy the `.env` file as `.env.local` and replace `E2E_BASE_URL` by the URL to
-your GLPI server running in the `e2e_testing` environment.
+your ZENTRA server running in the `e2e_testing` environment.
 
 #### Execute all tests
 
@@ -109,7 +109,7 @@ The minimal structure for a test looks like this:
 ```ts
 # tests/e2e/specs/my_test.spec.ts
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { Profiles } from '../../utils/Profiles';
 
 test('My test', async ({page, profile}) => {
@@ -117,16 +117,16 @@ test('My test', async ({page, profile}) => {
 });
 ```
 
-The first important thing is that we import `glpi_fixture`:
+The first important thing is that we import `zentra_fixture`:
 
 ```ts
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 ```
 
 This "fixture" extends the default `test()` function with some code specific to
-GLPI.
+ZENTRA.
 
-You can see it a bit like the `GlpiTestCase` from PHPUnit, some kind of parent
+You can see it a bit like the `ZentraTestCase` from PHPUnit, some kind of parent
 class to share common code.
 
 This allow us to gain access to some specific objects, which you can see on the 
@@ -142,7 +142,7 @@ You can see this as some kind of dependency injection, like symfony does in
 controllers with type hinted parameters.
 
 More information:
-* Check the `fixtures/glpi_fixture.ts` file
+* Check the `fixtures/zentra_fixture.ts` file
 * Official documentation: https://playwright.dev/docs/test-fixtures
 
 Then, the other critical part is setting the expected profile:
@@ -152,7 +152,7 @@ await profile.set(Profiles.SuperAdmin);
 ```
 
 This is mandatory because it is frequent to switch profiles during tests and each
-thread reuse a single GLPI session so you don't know which profile is currently
+thread reuse a single ZENTRA session so you don't know which profile is currently
 used by the session when the test start.
 
 ### Going to a page
@@ -163,15 +163,15 @@ To go to a specific page, use this method:
 await page.goto('/front/preference.php');
 ```
 
-Note that the page will already be logged into GLPI with a valid session.
+Note that the page will already be logged into ZENTRA with a valid session.
 
 If you need to test a feature that required you to be logged out, you can require
 the special `anonymousPage` fixture instead:
 
 ```ts
-test('anonymous GLPI page', async ({anonymousPage}) => {
+test('anonymous ZENTRA page', async ({anonymousPage}) => {
     await anonymousPage.goto('/');
-    await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
+    await expect(anonymousPage).toHaveTitle("Authentication - ZENTRA");
 });
 ```
 
@@ -182,10 +182,10 @@ test('logged and anonymous page in the same test', async ({page, profile, anonym
     // validate with an anonymous user that they are applied
     await profile.set(Profiles.SuperAdmin);
     await page.goto('/');
-    await expect(page).toHaveTitle("Standard interface - GLPI");
+    await expect(page).toHaveTitle("Standard interface - ZENTRA");
 
     await anonymousPage.goto('/');
-    await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
+    await expect(anonymousPage).toHaveTitle("Authentication - ZENTRA");
 });
 ```
 
@@ -239,7 +239,7 @@ test('Save a form', async ({page, profile}) => {
     await profile.set(Profiles.SuperAdmin);
 
     // Go to a given form
-    const tab = "Glpi\\Form\\Form$main";
+    const tab = "Zentra\\Form\\Form$main";
     await page.goto(`/front/form/form.form.php?id=1&forcetab=${tab}`);
 
     // Set as active and save the form
@@ -258,7 +258,7 @@ It may seem simple, but it is not good for maintainability because it manually
 define how to set a form as active and save it.  
 
 This mean that any others test that will do the same actions will duplicate this
-logic and that if there are some breaking changes on GLPI's side (the save button
+logic and that if there are some breaking changes on ZENTRA's side (the save button
 might be renamed to something else) then all tests will need to be updated.
 
 A common solution for this is to wrap any actions in a page object that can be
@@ -285,12 +285,12 @@ test('Save a form', async ({page, profile}) => {
 });
 ```
 
-There is also a basic `GlpiPage` object that contains basic methods that can be
-used on any GLPI page (getting a dropdown or a richtext editor for example).  
+There is also a basic `ZentraPage` object that contains basic methods that can be
+used on any ZENTRA page (getting a dropdown or a richtext editor for example).  
 
 Specific pages objects can extends it.  
 
-See `pages/GlpiPage.ts` for more details.
+See `pages/ZentraPage.ts` for more details.
 
 Official documentation regarding this "Page object model" pattern:
 https://playwright.dev/docs/pom.
@@ -298,7 +298,7 @@ https://playwright.dev/docs/pom.
 
 ### Using the API to setup a test
 
-Some tests might need a specific item to exist in GLPI.  
+Some tests might need a specific item to exist in ZENTRA.  
 In this case, it is better to create the item with the API as it will be much
 faster than going manually in the UI.
 
@@ -336,7 +336,7 @@ import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 ...
 
-const id = await api.createItem("Glpi\\Form\\Form", {
+const id = await api.createItem("Zentra\\Form\\Form", {
     name: "My form",
     entities_id: getWorkerEntityId(),
     is_active: false,
@@ -344,7 +344,7 @@ const id = await api.createItem("Glpi\\Form\\Form", {
 ```
 
 Some tests might require global actions that goes beyond entities (for example,
-editing GLPI's config).
+editing ZENTRA's config).
 
 This will need a special treatment to make sure it doesn't impact other workers.
 

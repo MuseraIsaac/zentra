@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +31,21 @@
  * ---------------------------------------------------------------------
  */
 
-:root[data-glpi-theme="aerialgreen"] {
+:root[data-zentra-theme="aerialgreen"] {
     --tblr-primary-rgb: 142, 197, 71;
     --tblr-secondary: #768363;
     --tblr-secondary-fg: #fcfcfc;
     --tblr-link-color-rgb: 69, 148, 54;
-    --glpi-mainmenu-bg: #459436; // hsv(110°, 47%, 40%)
-    --glpi-helpdesk-header: hsl(111deg, 41%, 85%);
-    --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-palette-color-1: #459436;
-    --glpi-palette-color-2: #365731;
-    --glpi-palette-color-3: #8ec547;
-    --glpi-palette-color-4: #fec95c;
+    --zentra-mainmenu-bg: #459436; // hsv(110°, 47%, 40%)
+    --zentra-helpdesk-header: hsl(111deg, 41%, 85%);
+    --zentra-mainmenu-fg: #f4f6fa;
+    --zentra-palette-color-1: #459436;
+    --zentra-palette-color-2: #365731;
+    --zentra-palette-color-3: #8ec547;
+    --zentra-palette-color-4: #fec95c;
 
     // Helpdesk header
-    --glpi-illustrations-gradient-1: hsl(110deg, 47%, 92%);
-    --glpi-illustrations-gradient-2: hsl(110deg, 47%, 72%);
-    --glpi-illustrations-gradient-3: hsl(110deg, 47%, 45%);
+    --zentra-illustrations-gradient-1: hsl(110deg, 47%, 92%);
+    --zentra-illustrations-gradient-2: hsl(110deg, 47%, 72%);
+    --zentra-illustrations-gradient-3: hsl(110deg, 47%, 45%);
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,21 +45,21 @@ $migration->addConfig([
     'plugins_execution_mode'        => 'on', // Plugin::EXECUTION_MODE_ON
     'allow_unauthenticated_uploads' => '0',
 ]);
-$migration->addField('glpi_users', 'toast_location', 'string');
+$migration->addField('zentra_users', 'toast_location', 'string');
 
-$migration->addField('glpi_users', 'set_followup_tech', 'tinyint DEFAULT NULL');
-$migration->addField('glpi_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
+$migration->addField('zentra_users', 'set_followup_tech', 'tinyint DEFAULT NULL');
+$migration->addField('zentra_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
 $migration->addField(
-    'glpi_users',
+    'zentra_users',
     'planned_task_state',
     'int DEFAULT NULL'
 );
 
 $migration->removeConfig(['url_base_api']);
 
-// Add config entries that were missing from the default installation data since GLPI 9.5.
+// Add config entries that were missing from the default installation data since ZENTRA 9.5.
 $migration->addConfig([
-    'glpinetwork_registration_key' => null,
+    'zentranetwork_registration_key' => null,
     'impact_assets_list' => '[]',
     'timezone' => null,
 ]);

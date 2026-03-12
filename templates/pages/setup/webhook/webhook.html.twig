@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
     {{ fields.dropdownArrayField(
         'event',
         item.fields['event'],
-        item.getGlpiEventsList(item.fields['itemtype']),
+        item.getZentraEventsList(item.fields['itemtype']),
         _n('Event', 'Events', 1),
         field_options|merge({
             display_emptychoice: item.isNewItem(),
@@ -92,8 +92,8 @@
         helper: __('It is strongly advised to use the HTTPS protocol.') ~ ' ' ~ __('You may use the same placeholder tags as in the payload content and header values.')
     })) }}
     <script>
-        const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
-        window.GLPI.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', '{{ item.fields['url']|raw }}', {{ response_schema|json_encode|raw }}, editor_options).then(() => {
+        const editor_options = window.ZENTRA.Monaco.getSingleLineEditorOptions();
+        window.ZENTRA.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', '{{ item.fields['url']|raw }}', {{ response_schema|json_encode|raw }}, editor_options).then(() => {
             $('#{{ url_editor_container_id }}').closest('form').on('formdata', (e) => {
                 const editors = window.monaco.editor.getEditors().filter((editor) => {
                     return editor._domElement.classList.contains('webhook_url');
@@ -118,7 +118,7 @@
                         const url_field_editor = editors[0];
                         const url_field_value = url_field_editor.getValue();
                         url_field_editor.dispose();
-                        window.GLPI.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', url_field_value, data, editor_options);
+                        window.ZENTRA.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', url_field_value, data, editor_options);
                     }
                 });
             });
@@ -133,7 +133,7 @@
         field_options
     ) }}
 
-    {% if constant('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING') %}
+    {% if constant('ZENTRA_WEBHOOK_ALLOW_RESPONSE_SAVING') %}
         {{ fields.dropdownYesNo('save_response_body', item.fields['save_response_body'], __('Save response body')) }}
     {% endif %}
 

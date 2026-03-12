@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
 
 $link = new ManualLink();
 if (array_key_exists('id', $_REQUEST) && !$link->getFromDB($_REQUEST['id'])) {
@@ -53,7 +53,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
             'manuallinks',
             4,
             'tools',
-            sprintf(__('%s purges an item'), $_SESSION['glpiname'])
+            sprintf(__('%s purges an item'), $_SESSION['zentraname'])
         );
         $item = getItemForItemtype($link->fields['itemtype']);
         $item->getFromDB($link->fields['items_id']);
@@ -69,7 +69,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
             'manuallinks',
             4,
             'tools',
-            sprintf(__('%1$s adds the item %2$s'), $_SESSION['glpiname'], $_POST['name'])
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION['zentraname'], $_POST['name'])
         );
         $item = getItemForItemtype($link->fields['itemtype']);
         $item->getFromDB($link->fields['items_id']);
@@ -84,7 +84,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
             'manuallinks',
             4,
             'tools',
-            sprintf(__('%s updates an item'), $_SESSION['glpiname'])
+            sprintf(__('%s updates an item'), $_SESSION['zentraname'])
         );
         $item = getItemForItemtype($link->fields['itemtype']);
         $item->getFromDB($link->fields['items_id']);

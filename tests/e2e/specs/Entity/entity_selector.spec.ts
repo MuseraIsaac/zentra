@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
-import { GlpiPage } from '../../pages/GlpiPage';
+import { test, expect } from '../../fixtures/zentra_fixture';
+import { ZentraPage } from '../../pages/ZentraPage';
 import { Profiles } from '../../utils/Profiles';
 
 test.afterEach(async ({ entity }) => {
@@ -43,19 +43,19 @@ test('Can switch to full structure', async ({ page, profile }) => {
     // Go to any page
     await profile.set(Profiles.SuperAdmin);
     await page.goto('/front/preference.php');
-    const glpi_page = new GlpiPage(page);
+    const zentra_page = new ZentraPage(page);
 
     // Make sure we are not already in full structure mode
-    await expect(glpi_page.active_entity).not.toHaveText(
+    await expect(zentra_page.active_entity).not.toHaveText(
         'Root entity (full structure)'
     );
 
     // Open the entity selector and switch to full structure
-    await glpi_page.doOpenEntitySelector();
-    await glpi_page.doSwitchToAllEntities();
+    await zentra_page.doOpenEntitySelector();
+    await zentra_page.doSwitchToAllEntities();
 
     // The current entity should now be in full structure mode
-    await expect(glpi_page.active_entity).toHaveText(
+    await expect(zentra_page.active_entity).toHaveText(
         'Root entity (full structure)'
     );
 });
@@ -64,19 +64,19 @@ test('Can search for entities', async ({ page, profile }) => {
     // Go to any page
     await profile.set(Profiles.SuperAdmin);
     await page.goto('/front/preference.php');
-    const glpi_page = new GlpiPage(page);
+    const zentra_page = new ZentraPage(page);
 
     // Open the entity selector
-    const entity_04 = glpi_page.getEntityFromTree("E2E worker entity 04");
-    const entity_05 = glpi_page.getEntityFromTree("E2E worker entity 05");
-    await glpi_page.doOpenEntitySelector();
+    const entity_04 = zentra_page.getEntityFromTree("E2E worker entity 04");
+    const entity_05 = zentra_page.getEntityFromTree("E2E worker entity 05");
+    await zentra_page.doOpenEntitySelector();
 
     // By default, all entities are shown
     await expect(entity_04).toBeVisible();
     await expect(entity_05).toBeVisible();
 
     // We now execute a search
-    await glpi_page.doSearchForEntity("entity 05");
+    await zentra_page.doSearchForEntity("entity 05");
 
     // Only one entity should be shown
     await expect(entity_05).toBeVisible();
@@ -87,12 +87,12 @@ test('Can fold/unfold tree', async ({ page, profile }) => {
     // Go to any page
     await page.goto('/front/preference.php');
     await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
+    const zentra_page = new ZentraPage(page);
 
     // Open the entity selector
-    await glpi_page.doOpenEntitySelector();
-    const root_entity = glpi_page.getEntityFromTree("Root entity");
-    const child_entity = glpi_page.getEntityFromTree("E2E worker entity 05");
+    await zentra_page.doOpenEntitySelector();
+    const root_entity = zentra_page.getEntityFromTree("Root entity");
+    const child_entity = zentra_page.getEntityFromTree("E2E worker entity 05");
 
     // By default, all entities are shown
     await expect(root_entity).toBeVisible();
@@ -113,22 +113,22 @@ test('Can switch to another entity with sub entities', async ({ page, profile })
     // Go to any page
     await page.goto('/front/preference.php');
     await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
+    const zentra_page = new ZentraPage(page);
 
     // Open the entity selector
-    await glpi_page.doOpenEntitySelector();
+    await zentra_page.doOpenEntitySelector();
 
     // By default, we are not on root with sub entities enabled
-    await expect(glpi_page.active_entity).not.toHaveText(
+    await expect(zentra_page.active_entity).not.toHaveText(
         'Root entity (tree structure)'
     );
 
     // Open the entity selector
-    await glpi_page.doOpenEntitySelector();
-    await glpi_page.doSwitchToEntityWithRecursion("Root entity");
+    await zentra_page.doOpenEntitySelector();
+    await zentra_page.doSwitchToEntityWithRecursion("Root entity");
 
     // We are now root with sub entities enabled
-    await expect(glpi_page.active_entity).toHaveText(
+    await expect(zentra_page.active_entity).toHaveText(
         'Root entity (tree structure)'
     );
 });
@@ -137,22 +137,22 @@ test('Can switch to another entity without sub entities', async ({ page, profile
     // Go to any page
     await page.goto('/front/preference.php');
     await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
+    const zentra_page = new ZentraPage(page);
 
     // Open the entity selector
-    await glpi_page.doOpenEntitySelector();
+    await zentra_page.doOpenEntitySelector();
 
     // By default, we are not on root with sub entities disabled
-    await expect(glpi_page.active_entity).not.toHaveText(
+    await expect(zentra_page.active_entity).not.toHaveText(
         'Root entity'
     );
 
     // Open the entity selector
-    await glpi_page.doOpenEntitySelector();
-    await glpi_page.doSwitchToEntityWithoutRecursion("Root entity");
+    await zentra_page.doOpenEntitySelector();
+    await zentra_page.doSwitchToEntityWithoutRecursion("Root entity");
 
     // We are now root with sub entities disabled
-    await expect(glpi_page.active_entity).toHaveText(
+    await expect(zentra_page.active_entity).toHaveText(
         'Root entity'
     );
 });

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,10 @@
  */
 
 // Explicitly bind to window so Jest tests work properly
-window.GLPI = window.GLPI || {};
-window.GLPI.Search = window.GLPI.Search || {};
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.Search = window.ZENTRA.Search || {};
 
-window.GLPI.Search.ResultsView = class ResultsView {
+window.ZENTRA.Search.ResultsView = class ResultsView {
 
     constructor(element_id, view_class, push_history = true, forced_params = {}) {
         this.element_id = element_id;
@@ -62,4 +62,4 @@ window.GLPI.Search.ResultsView = class ResultsView {
         return this.view;
     }
 };
-export default window.GLPI.Search.ResultsView;
+export default window.ZENTRA.Search.ResultsView;

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
 use function Safe\json_decode;
 
-global $CFG_GLPI, $DB;
+global $CFG_ZENTRA, $DB;
 
 $track = new Ticket();
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
     $_POST = $track->enforceReadonlyFields($_POST, true);
 
     if ($track->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($track->getLinkURL());
         }
     }
@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
             'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([
-            'FROM' => 'glpi_knowbaseitems_items',
+            'FROM' => 'zentra_knowbaseitems_items',
             'WHERE' => $params,
         ]);
         if ($existing->numrows() == 0) {
@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
 
     if ($track->can($_POST["id"], READ)) {
@@ -128,7 +128,7 @@ if (isset($_POST["add"])) {
         true,
         ERROR
     );
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
+    Html::redirect($CFG_ZENTRA["root_doc"] . "/front/ticket.php");
 } elseif (isset($_POST['delete'])) {
     $track->check($_POST['id'], DELETE);
     if ($track->delete($_POST)) {
@@ -138,7 +138,7 @@ if (isset($_POST["add"])) {
             4,
             "tracking",
             //TRANS: %s is the user login
-            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+            sprintf(__('%s deletes an item'), $_SESSION["zentraname"])
         );
     }
     $track->redirectToList();
@@ -151,7 +151,7 @@ if (isset($_POST["add"])) {
             4,
             "tracking",
             //TRANS: %s is the user login
-            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+            sprintf(__('%s purges an item'), $_SESSION["zentraname"])
         );
     }
     $track->redirectToList();
@@ -164,7 +164,7 @@ if (isset($_POST["add"])) {
             4,
             "tracking",
             //TRANS: %s is the user login
-            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+            sprintf(__('%s restores an item'), $_SESSION["zentraname"])
         );
     }
     Html::back();
@@ -178,7 +178,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
@@ -192,7 +192,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
@@ -214,7 +214,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
+        sprintf(__('%s adds an actor'), $_SESSION["zentraname"])
     );
     Html::redirect(Ticket::getFormURLWithID($id));
 } elseif (isset($_POST['delete_document'])) {
@@ -266,7 +266,7 @@ if ($id > 0) {
     }
 } else {
     if (Session::getCurrentInterface() != 'central') {
-        Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");
+        Html::redirect($CFG_ZENTRA["root_doc"] . "/ServiceCatalog");
     }
 
     unset($_REQUEST['id']);

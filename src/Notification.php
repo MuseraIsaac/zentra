@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Search\CriteriaFilter;
-use Glpi\Search\FilterableInterface;
-use Glpi\Search\FilterableTrait;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Search\CriteriaFilter;
+use Zentra\Search\FilterableInterface;
+use Zentra\Search\FilterableTrait;
 
 /**
  * Notification Class
@@ -61,7 +61,7 @@ class Notification extends CommonDBTM implements FilterableInterface
 
     // MAILING USERS TYPE
 
-    //Notification to the GLPI global administrator
+    //Notification to the ZENTRA global administrator
     public const GLOBAL_ADMINISTRATOR                = 1;
     //Notification to the technicial who's assign to a ticket
     public const ASSIGN_TECH                         = 2;
@@ -286,7 +286,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -296,10 +296,10 @@ class Notification extends CommonDBTM implements FilterableInterface
             case 'event':
                 $itemtypes = (isset($values['itemtype']) && !empty($values['itemtype']))
                 ? $values['itemtype']
-                : $CFG_GLPI["notificationtemplates_types"];
+                : $CFG_ZENTRA["notificationtemplates_types"];
 
                 $events = [];
-                /** @var list<class-string<CommonGLPI>> $itemtypes */
+                /** @var list<class-string<CommonZENTRA>> $itemtypes */
                 foreach ($itemtypes as $itemtype) {
                     $target = NotificationTarget::getInstanceByType($itemtype);
                     if ($target) {
@@ -377,7 +377,7 @@ class Notification extends CommonDBTM implements FilterableInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_notificationtemplates',
+            'table'              => 'zentra_notificationtemplates',
             'field'              => 'name',
             'name'               => _n('Notification template', 'Notification templates', Session::getPluralNumber()),
             'datatype'           => 'itemlink',
@@ -421,7 +421,7 @@ class Notification extends CommonDBTM implements FilterableInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -591,14 +591,14 @@ class Notification extends CommonDBTM implements FilterableInterface
      **/
     public static function getMailingSignature($entity)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
         if ($signature !== '') {
             return $signature;
         }
 
-        return $CFG_GLPI['mailing_signature'];
+        return $CFG_ZENTRA['mailing_signature'];
     }
 
     /**
@@ -610,7 +610,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      **/
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $criteria = [
             'SELECT'    => [
@@ -649,7 +649,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         $modes = Notification_NotificationTemplate::getModes();
         $restrict_modes = [];
         foreach ($modes as $mode => $conf) {
-            if ($CFG_GLPI['notifications_' . $mode]) {
+            if ($CFG_ZENTRA['notifications_' . $mode]) {
                 $restrict_modes[] = $mode;
             }
         }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\SearchOption;
 
 class DisplayPreference extends CommonDBTM
 {
-    // From CommonGLPI
+    // From CommonZENTRA
     public $taborientation          = 'horizontal';
     public $get_item_to_display_tab = false;
 
@@ -152,7 +152,7 @@ class DisplayPreference extends CommonDBTM
         switch ($ma->getAction()) {
             case 'reset_to_default':
                 $msg = __s('This will reset the columns to the defaults for a new installation.');
-                $msg2 = __s('This will only work for types from GLPI itself or enabled plugins that support this action.');
+                $msg2 = __s('This will only work for types from ZENTRA itself or enabled plugins that support this action.');
                 echo '<div class="alert alert-info">' . $msg . '<br>' . $msg2 . '</div>';
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
@@ -648,7 +648,7 @@ class DisplayPreference extends CommonDBTM
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Preference':
@@ -684,7 +684,7 @@ class DisplayPreference extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Preference':
@@ -748,7 +748,7 @@ class DisplayPreference extends CommonDBTM
     public static function resetToDefaultOptions(string $itemtype): bool
     {
         global $DB;
-        $tables = require(GLPI_ROOT . '/install/empty_data.php');
+        $tables = require(ZENTRA_ROOT . '/install/empty_data.php');
         $prefs = array_filter($tables[self::getTable()], static fn($pref) => $pref['itemtype'] === $itemtype);
         if (!count($prefs)) {
             // plugin type or not supported

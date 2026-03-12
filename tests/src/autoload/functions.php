@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,19 +32,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Form\Form;
-use Glpi\Form\FormTranslation;
-use Glpi\Form\Question;
-use Glpi\Form\Section;
-use Glpi\Helpdesk\HelpdeskTranslation;
-use Glpi\Helpdesk\Tile\GlpiPageTile;
-use Glpi\Socket;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\Dropdown\DropdownDefinitionManager;
+use Zentra\Form\Form;
+use Zentra\Form\FormTranslation;
+use Zentra\Form\Question;
+use Zentra\Form\Section;
+use Zentra\Helpdesk\HelpdeskTranslation;
+use Zentra\Helpdesk\Tile\ZentraPageTile;
+use Zentra\Socket;
 
 function loadDataset()
 {
-    global $CFG_GLPI, $DB;
+    global $CFG_ZENTRA, $DB;
 
     // Unit test data definition
     $data = [
@@ -297,7 +297,7 @@ function loadDataset()
                 'phone2'       => '0123456788',
                 'mobile'       => '0623456789',
                 'fax'          => '0123456787',
-                'email'        => '_contact01_firstname._contact01_name@glpi.com',
+                'email'        => '_contact01_firstname._contact01_name@zentra.com',
                 'comment'      => 'Comment for contact _contact01_name',
                 'entities_id'  => '_test_root_entity',
             ],
@@ -423,7 +423,7 @@ function loadDataset()
                 'users_id'     => TU_USER,
                 'is_default'   => '1',
                 'is_dynamic'   => '0',
-                'email'        => TU_USER . '@glpi.com',
+                'email'        => TU_USER . '@zentra.com',
             ],
         ], 'KnowbaseItem' => [
             [
@@ -578,8 +578,8 @@ function loadDataset()
             [
                 'name'            => '_local_ldap',
                 'host'            => 'openldap',
-                'basedn'          => 'dc=glpi,dc=org',
-                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'basedn'          => 'dc=zentra,dc=org',
+                'rootdn'          => 'cn=Manager,dc=zentra,dc=org',
                 'port'            => '3890',
                 'condition'       => '(objectclass=inetOrgPerson)',
                 'login_field'     => 'uid',
@@ -607,7 +607,7 @@ function loadDataset()
                 'begin_date'   => '2018-12-29',
                 'end_date'     => '2019-01-06',
             ],
-        ], 'Glpi\\Dashboard\\Dashboard' => [
+        ], 'Zentra\\Dashboard\\Dashboard' => [
             [
                 'key'     => 'test_dashboard',
                 'name'    => 'Test_Dashboard',
@@ -621,7 +621,7 @@ function loadDataset()
                 'name'    => 'Test_Dashboard_3',
                 'context' => 'oustide_core',
             ],
-        ], 'Glpi\\Dashboard\\Item' => [
+        ], 'Zentra\\Dashboard\\Item' => [
             [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
                 'gridstack_id'             => 'bn_count_Computer_1',
@@ -650,7 +650,7 @@ function loadDataset()
                 'height'                   => 2,
                 'card_options'             => '{"color": "#FFFFFF"}',
             ],
-        ], 'Glpi\\Dashboard\\Right' => [
+        ], 'Zentra\\Dashboard\\Right' => [
             [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
                 'itemtype'                 => 'Entity',
@@ -711,7 +711,7 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
             ],
         ],
-        'Glpi\\Asset\\AssetDefinition' => [
+        'Zentra\\Asset\\AssetDefinition' => [
             [
                 'system_name' => 'Test01',
                 'icon' => 'ti ti-test-pipe',
@@ -727,7 +727,7 @@ function loadDataset()
                 'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
             ],
         ],
-        'Glpi\\Dropdown\\DropdownDefinition' => [
+        'Zentra\\Dropdown\\DropdownDefinition' => [
             [
                 'system_name' => 'CustomTag',
                 'icon' => 'ti ti-tag',
@@ -736,7 +736,7 @@ function loadDataset()
                 'profiles' => ['4' => ALLSTANDARDRIGHT],
             ],
         ],
-        'Glpi\\CustomDropdown\\CustomTagDropdown' => [
+        'Zentra\\CustomDropdown\\CustomTagDropdown' => [
             [
                 'id' => 1,
                 'name' => 'Tag01',
@@ -748,52 +748,52 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
             ],
         ],
-        'Glpi\\CustomAsset\\Test02AssetType' => [
+        'Zentra\\CustomAsset\\Test02AssetType' => [
             [
                 'name' => 'Test02Type01',
             ],
         ],
-        'Glpi\\CustomAsset\\Test01AssetType' => [
+        'Zentra\\CustomAsset\\Test01AssetType' => [
             [
                 'name' => 'Test01Type01',
             ],
         ],
-        'Glpi\\CustomAsset\\Test02AssetModel' => [
+        'Zentra\\CustomAsset\\Test02AssetModel' => [
             [
                 'name' => 'Test02Model01',
             ],
         ],
-        'Glpi\\CustomAsset\\Test01AssetModel' => [
+        'Zentra\\CustomAsset\\Test01AssetModel' => [
             [
                 'name' => 'Test01Model01',
             ],
         ],
-        'Glpi\\Asset\\CustomFieldDefinition' => [
+        'Zentra\\Asset\\CustomFieldDefinition' => [
             [
                 'system_name' => 'teststring',
                 'assets_assetdefinitions_id' => 'Test01',
                 'label' => 'Test String',
-                'type' => 'Glpi\\Asset\\CustomFieldType\\StringType',
+                'type' => 'Zentra\\Asset\\CustomFieldType\\StringType',
                 'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
             ],
             [
                 'system_name' => 'customtagsingle',
                 'assets_assetdefinitions_id' => 'Test01',
                 'label' => 'Single Custom Tag',
-                'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
-                'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
+                'type' => 'Zentra\\Asset\\CustomFieldType\\DropdownType',
+                'itemtype' => 'Zentra\\CustomDropdown\\CustomTagDropdown',
                 'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
             ],
             [
                 'system_name' => 'customtagmulti',
                 'assets_assetdefinitions_id' => 'Test01',
                 'label' => 'Multi Custom Tag',
-                'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
-                'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
+                'type' => 'Zentra\\Asset\\CustomFieldType\\DropdownType',
+                'itemtype' => 'Zentra\\CustomDropdown\\CustomTagDropdown',
                 'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0", "multiple" => "1"],
             ],
         ],
-        'Glpi\\CustomAsset\\Test01Asset' => [
+        'Zentra\\CustomAsset\\Test01Asset' => [
             [
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
@@ -807,7 +807,7 @@ function loadDataset()
                 'custom_customtagmulti' => [0 => "1", 1 => "2"],
             ],
         ],
-        'Glpi\\CustomAsset\\Test02Asset' => [
+        'Zentra\\CustomAsset\\Test02Asset' => [
             [
                 'name' => 'Test02 A',
                 'entities_id' => '_test_root_entity',
@@ -889,18 +889,18 @@ function loadDataset()
 
     // To bypass various right checks
     $session_bak = $_SESSION;
-    $_SESSION['glpishowallentities'] = 1;
-    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
-    $_SESSION['glpiactive_entity']   = 0;
-    $_SESSION['glpiactiveentities']  = [0];
-    $_SESSION['glpiactiveentities_string'] = "'0'";
-    $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+    $_SESSION['zentrashowallentities'] = 1;
+    $_SESSION['zentracronuserrunning'] = "cron_phpunit";
+    $_SESSION['zentra_use_mode']       = Session::NORMAL_MODE;
+    $_SESSION['zentraactive_entity']   = 0;
+    $_SESSION['zentraactiveentities']  = [0];
+    $_SESSION['zentraactiveentities_string'] = "'0'";
+    $_SESSION["zentra_currenttime"] = date("Y-m-d H:i:s");
 
     $DB->beginTransaction();
 
     // make all caldav component available for tests (for default usage we don't VTODO)
-    $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
+    $CFG_ZENTRA['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
 
     $conf = Config::getConfigurationValues('phpunit');
     if (!(isset($conf['dataset']) && $conf['dataset'] == $data['_version'])) {
@@ -918,7 +918,7 @@ function loadDataset()
                     if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
                         $foreigntypetxt = array_pop($match);
                         if (substr($foreigntypetxt, 0, 1) !== '_') {
-                            $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
+                            $foreigntype = getItemTypeForTable("zentra_$foreigntypetxt");
                         }
                     }
                     if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
@@ -958,8 +958,8 @@ function loadDataset()
     $_SESSION = $session_bak; // Unset force session variables
 
     // Ensure cache is clear after dataset reload
-    global $GLPI_CACHE;
-    $GLPI_CACHE->clear();
+    global $ZENTRA_CACHE;
+    $ZENTRA_CACHE->clear();
 
     // Force reboot of the created custom assets/dropdowns
     AssetDefinitionManager::unsetInstance();
@@ -1031,13 +1031,13 @@ function initFormTranslationFixtures()
         'hash' => md5('Title'),
     ]);
 
-    $glpi_tile = new GlpiPageTile();
-    $glpi_tile->getFromDBByCrit([
+    $zentra_tile = new ZentraPageTile();
+    $zentra_tile->getFromDBByCrit([
         'title' => 'Browse help articles',
     ]);
 
     $DB->insert(HelpdeskTranslation::getTable(), [
-        'itemtype' => GlpiPageTile::class,
+        'itemtype' => ZentraPageTile::class,
         'items_id' => $question->getID(),
         'key' => 'title',
         'language' => 'en_AU',

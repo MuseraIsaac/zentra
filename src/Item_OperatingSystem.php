@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Item_OperatingSystem extends CommonDBRelation
 {
@@ -52,7 +52,7 @@ class Item_OperatingSystem extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -61,14 +61,14 @@ class Item_OperatingSystem extends CommonDBRelation
         $nb = 0;
         switch ($item->getType()) {
             default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
                 return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -91,7 +91,7 @@ class Item_OperatingSystem extends CommonDBRelation
         global $DB;
 
         if ($sort === null) {
-            $sort = "glpi_items_operatingsystems.id";
+            $sort = "zentra_items_operatingsystems.id";
         }
         if ($order === null) {
             $order = 'ASC';
@@ -99,42 +99,42 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_items_operatingsystems.id AS assocID',
-                'glpi_operatingsystems.name',
-                'glpi_operatingsystemversions.name AS version',
-                'glpi_operatingsystemarchitectures.name AS architecture',
-                'glpi_operatingsystemservicepacks.name AS servicepack',
+                'zentra_items_operatingsystems.id AS assocID',
+                'zentra_operatingsystems.name',
+                'zentra_operatingsystemversions.name AS version',
+                'zentra_operatingsystemarchitectures.name AS architecture',
+                'zentra_operatingsystemservicepacks.name AS servicepack',
             ],
-            'FROM'      => 'glpi_items_operatingsystems',
+            'FROM'      => 'zentra_items_operatingsystems',
             'LEFT JOIN' => [
-                'glpi_operatingsystems'             => [
+                'zentra_operatingsystems'             => [
                     'ON' => [
-                        'glpi_items_operatingsystems' => 'operatingsystems_id',
-                        'glpi_operatingsystems'       => 'id',
+                        'zentra_items_operatingsystems' => 'operatingsystems_id',
+                        'zentra_operatingsystems'       => 'id',
                     ],
                 ],
-                'glpi_operatingsystemservicepacks'  => [
+                'zentra_operatingsystemservicepacks'  => [
                     'ON' => [
-                        'glpi_items_operatingsystems'       => 'operatingsystemservicepacks_id',
-                        'glpi_operatingsystemservicepacks'  => 'id',
+                        'zentra_items_operatingsystems'       => 'operatingsystemservicepacks_id',
+                        'zentra_operatingsystemservicepacks'  => 'id',
                     ],
                 ],
-                'glpi_operatingsystemarchitectures' => [
+                'zentra_operatingsystemarchitectures' => [
                     'ON' => [
-                        'glpi_items_operatingsystems'       => 'operatingsystemarchitectures_id',
-                        'glpi_operatingsystemarchitectures' => 'id',
+                        'zentra_items_operatingsystems'       => 'operatingsystemarchitectures_id',
+                        'zentra_operatingsystemarchitectures' => 'id',
                     ],
                 ],
-                'glpi_operatingsystemversions'      => [
+                'zentra_operatingsystemversions'      => [
                     'ON' => [
-                        'glpi_items_operatingsystems'    => 'operatingsystemversions_id',
-                        'glpi_operatingsystemversions'   => 'id',
+                        'zentra_items_operatingsystems'    => 'operatingsystemversions_id',
+                        'zentra_operatingsystemversions'   => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_operatingsystems.itemtype' => $item->getType(),
-                'glpi_items_operatingsystems.items_id' => $item->getID(),
+                'zentra_items_operatingsystems.itemtype' => $item->getType(),
+                'zentra_items_operatingsystems.items_id' => $item->getID(),
             ],
             'ORDERBY'   => "$sort $order",
         ]);
@@ -177,7 +177,7 @@ class Item_OperatingSystem extends CommonDBRelation
         ) {
             $sort = $_GET["sort"];
         } else {
-            $sort = "glpi_items_operatingsystems.id";
+            $sort = "zentra_items_operatingsystems.id";
         }
 
         if (empty($withtemplate)) {
@@ -220,7 +220,7 @@ class Item_OperatingSystem extends CommonDBRelation
             && ($withtemplate < 2)
         ) {
             Html::openMassiveActionsForm('mass' . self::class . $params['rand']);
-            $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $number),
+            $massiveactionparams = ['num_displayed'  => min($_SESSION['zentralist_limit'], $number),
                 'container'      => 'mass' . self::class . $params['rand'],
             ];
             Html::showMassiveActions($massiveactionparams);
@@ -254,7 +254,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         foreach ($os as $data) {
             $linkname = $data['name'];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            if ($_SESSION["zentrais_ids_visible"] || empty($data["name"])) {
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
             }
             $link = Toolbox::getItemTypeFormURL(self::getType());
@@ -368,7 +368,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '45',
-            'table'              => 'glpi_operatingsystems',
+            'table'              => 'zentra_operatingsystems',
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'dropdown',
@@ -376,7 +376,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -387,7 +387,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '46',
-            'table'              => 'glpi_operatingsystemversions',
+            'table'              => 'zentra_operatingsystemversions',
             'field'              => 'name',
             'name'               => _n('Version', 'Versions', 1),
             'datatype'           => 'dropdown',
@@ -395,7 +395,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -406,7 +406,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '41',
-            'table'              => 'glpi_operatingsystemservicepacks',
+            'table'              => 'zentra_operatingsystemservicepacks',
             'field'              => 'name',
             'name'               => OperatingSystemServicePack::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -414,7 +414,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -425,7 +425,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '43',
-            'table'              => 'glpi_items_operatingsystems',
+            'table'              => 'zentra_items_operatingsystems',
             'field'              => 'license_number',
             'name'               => __('Serial number'),
             'datatype'           => 'string',
@@ -439,7 +439,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '44',
-            'table'              => 'glpi_items_operatingsystems',
+            'table'              => 'zentra_items_operatingsystems',
             'field'              => 'licenseid',
             'name'               => __('Product ID'),
             'datatype'           => 'string',
@@ -453,7 +453,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '66',
-            'table'              => 'glpi_items_operatingsystems',
+            'table'              => 'zentra_items_operatingsystems',
             'field'              => 'install_date',
             'name'               => __('Installation date'),
             'datatype'           => 'datetime',
@@ -467,7 +467,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '61',
-            'table'              => 'glpi_operatingsystemarchitectures',
+            'table'              => 'zentra_operatingsystemarchitectures',
             'field'              => 'name',
             'name'               => _n('Architecture', 'Architectures', 1),
             'datatype'           => 'dropdown',
@@ -475,7 +475,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -486,7 +486,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '64',
-            'table'              => 'glpi_operatingsystemkernels',
+            'table'              => 'zentra_operatingsystemkernels',
             'field'              => 'name',
             'name'               => _n('Kernel', 'Kernels', 1),
             'datatype'           => 'dropdown',
@@ -494,10 +494,10 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_operatingsystemkernelversions',
+                    'table'              => 'zentra_operatingsystemkernelversions',
                     'joinparams'         => [
                         'beforejoin'   => [
-                            'table'        => 'glpi_items_operatingsystems',
+                            'table'        => 'zentra_items_operatingsystems',
                             'joinparams'   => [
                                 'jointype'           => 'itemtype_item',
                                 'specific_itemtype'  => $itemtype,
@@ -510,7 +510,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '48',
-            'table'              => 'glpi_operatingsystemkernelversions',
+            'table'              => 'zentra_operatingsystemkernelversions',
             'field'              => 'name',
             'name'               => _n('Kernel version', 'Kernel versions', 1),
             'datatype'           => 'dropdown',
@@ -518,7 +518,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -529,7 +529,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '63',
-            'table'              => 'glpi_operatingsystemeditions',
+            'table'              => 'zentra_operatingsystemeditions',
             'field'              => 'name',
             'name'               => _n('Edition', 'Editions', 1),
             'datatype'           => 'dropdown',
@@ -537,7 +537,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_operatingsystems',
+                    'table'              => 'zentra_items_operatingsystems',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => $itemtype,
@@ -552,11 +552,11 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
 
-        $specificities['itemtypes'] = $CFG_GLPI['operatingsystem_types'];
+        $specificities['itemtypes'] = $CFG_ZENTRA['operatingsystem_types'];
         return $specificities;
     }
     public static function showMassiveActionsSubForm(MassiveAction $ma)
@@ -578,7 +578,7 @@ class Item_OperatingSystem extends CommonDBRelation
      */
     public static function showFormMassiveUpdate($ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $rand = mt_rand();
         Dropdown::showFromArray(
@@ -600,7 +600,7 @@ class Item_OperatingSystem extends CommonDBRelation
         Ajax::updateItemOnSelectEvent(
             "dropdown_os_field$rand",
             "results_os_field$rand",
-            $CFG_GLPI["root_doc"]
+            $CFG_ZENTRA["root_doc"]
             . "/ajax/dropdownMassiveActionOs.php",
             [
                 'itemtype'  => '__VALUE__',

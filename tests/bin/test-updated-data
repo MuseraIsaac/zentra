@@ -4,9 +4,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel(\Glpi\Application\Environment::TESTING->value);
+$kernel = new \Zentra\Kernel\Kernel(\Zentra\Application\Environment::TESTING->value);
 $kernel->boot();
 
-$command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
+$command = new \Zentra\Tests\Command\TestUpdatedDataCommand();
 
-$app = new \Symfony\Component\Console\Application('Test updated data against fresh install', GLPI_VERSION);
+$app = new \Symfony\Component\Console\Application('Test updated data against fresh install', ZENTRA_VERSION);
 $app->add($command);
 $app->setDefaultCommand($command->getName(), true);
 $app->run();

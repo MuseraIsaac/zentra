@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_oauth_access_tokens')) {
-    $query = "CREATE TABLE `glpi_oauth_access_tokens` (
+if (!$DB->tableExists('zentra_oauth_access_tokens')) {
+    $query = "CREATE TABLE `zentra_oauth_access_tokens` (
         `identifier` varchar(255) NOT NULL,
         `client` varchar(255) NOT NULL,
         `date_expiration` timestamp NOT NULL,
@@ -53,8 +53,8 @@ if (!$DB->tableExists('glpi_oauth_access_tokens')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_oauth_auth_codes')) {
-    $query = "CREATE TABLE `glpi_oauth_auth_codes` (
+if (!$DB->tableExists('zentra_oauth_auth_codes')) {
+    $query = "CREATE TABLE `zentra_oauth_auth_codes` (
         `identifier` varchar(255) NOT NULL,
         `client` varchar(255) NOT NULL,
         `date_expiration` timestamp NOT NULL,
@@ -66,8 +66,8 @@ if (!$DB->tableExists('glpi_oauth_auth_codes')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_oauth_refresh_tokens')) {
-    $query = "CREATE TABLE `glpi_oauth_refresh_tokens` (
+if (!$DB->tableExists('zentra_oauth_refresh_tokens')) {
+    $query = "CREATE TABLE `zentra_oauth_refresh_tokens` (
         `identifier` varchar(255) NOT NULL,
         `access_token` varchar(255) NOT NULL,
         `date_expiration` timestamp NOT NULL,
@@ -77,10 +77,10 @@ if (!$DB->tableExists('glpi_oauth_refresh_tokens')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_oauthclients')) {
-    $query = "CREATE TABLE `glpi_oauthclients` (
+if (!$DB->tableExists('zentra_oauthclients')) {
+    $query = "CREATE TABLE `zentra_oauthclients` (
         `identifier` varchar(255) NOT NULL,
-        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT COMMENT 'Internal GLPI ID',
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT COMMENT 'Internal ZENTRA ID',
         `name` varchar(255) NOT NULL DEFAULT '',
         `comment` text DEFAULT NULL,
         `secret` varchar(255) NOT NULL,
@@ -98,9 +98,9 @@ if (!$DB->tableExists('glpi_oauthclients')) {
     $DB->doQuery($query);
 } else {
     // Dev migration for `redirect_uri` column from varchar(255) to TEXT
-    $migration->changeField('glpi_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
+    $migration->changeField('zentra_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
 
-    $migration->addField('glpi_oauthclients', 'allowed_ips', 'TEXT DEFAULT NULL', [
+    $migration->addField('zentra_oauthclients', 'allowed_ips', 'TEXT DEFAULT NULL', [
         'after' => 'is_confidential',
     ]);
 }

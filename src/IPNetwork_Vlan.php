@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,14 +111,14 @@ class IPNetwork_Vlan extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 self::getTable() . '.id AS assocID',
-                'glpi_vlans.*',
+                'zentra_vlans.*',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_vlans'   => [
+                'zentra_vlans'   => [
                     'ON' => [
                         self::getTable()  => 'vlans_id',
-                        'glpi_vlans'      => 'id',
+                        'zentra_vlans'      => 'id',
                     ],
                 ],
             ],
@@ -154,7 +154,7 @@ class IPNetwork_Vlan extends CommonDBRelation
         echo "<div class='spaced'>";
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . self::class . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+            $massiveactionparams = ['num_displayed' => min($_SESSION['zentralist_limit'], $number),
                 'container'     => 'mass' . self::class . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
@@ -184,14 +184,14 @@ class IPNetwork_Vlan extends CommonDBRelation
                 echo "</td>";
             }
             $name = htmlescape($data["name"]);
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            if ($_SESSION["zentrais_ids_visible"] || empty($data["name"])) {
                 $name = sprintf(__s('%1$s (%2$s)'), $name, (int) $data["id"]);
             }
             echo "<td class='center b'>
                <a href='" . htmlescape(Vlan::getFormURLWithID($data["id"])) . "'>" . $name
               . "</a>";
             echo "</td>";
-            echo "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $data["entities_id"])) . '</td>';
+            echo "<td class='center'>" . htmlescape(Dropdown::getDropdownName("zentra_entities", $data["entities_id"])) . '</td>';
             echo "<td class='numeric'>" . htmlescape($data["tag"]) . "</td>";
             echo "</tr>";
         }
@@ -231,14 +231,14 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
             $nb = 0;
             switch (true) {
                 case $item instanceof IPNetwork:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb =  countElementsInTable(
                             $this->getTable(),
                             ['ipnetworks_id' => $item->getID()]
@@ -251,7 +251,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof IPNetwork) {

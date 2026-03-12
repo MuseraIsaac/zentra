@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ class DeviceBattery extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicebatterytypes',
+            'table'              => 'zentra_devicebatterytypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -138,7 +138,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["devicebatterytypes_id"]) {
             $row->addCell(
                 $row->getHeaderByName('devicebattery_type'),
-                htmlescape(Dropdown::getDropdownName("glpi_devicebatterytypes", $this->fields["devicebatterytypes_id"])),
+                htmlescape(Dropdown::getDropdownName("zentra_devicebatterytypes", $this->fields["devicebatterytypes_id"])),
                 $father
             );
         }

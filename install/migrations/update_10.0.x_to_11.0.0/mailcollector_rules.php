@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,20 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
  * @var Migration $migration
  */
-// Add a rule to refuse emails that corresponds to a GLPI notification
-if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi_notifications']) === 0) {
+// Add a rule to refuse emails that corresponds to a ZENTRA notification
+if (countElementsInTable('zentra_rules', ['uuid' => 'zentra_rule_mail_collector_zentra_notifications']) === 0) {
     // Add the missing rule
     $migration->createRule(
         [
-            'name'          => 'GLPI notifications',
-            'description'   => 'Exclude emails corresponding to a GLPI notification',
-            'uuid'          => 'glpi_rule_mail_collector_glpi_notifications',
+            'name'          => 'ZENTRA notifications',
+            'description'   => 'Exclude emails corresponding to a ZENTRA notification',
+            'uuid'          => 'zentra_rule_mail_collector_zentra_notifications',
             'match'         => 'AND',
             'sub_type'      => 'RuleMailCollector',
             'is_active'     => 1,
@@ -57,7 +57,7 @@ if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi
             [
                 'criteria'  => 'message_id',
                 'condition' => 6,
-                'pattern'   => '/GLPI(_(?<uuid>[a-z0-9]+))?(-(?<itemtype>[a-z]+))?(-(?<items_id>[0-9]+))?(\/(?<event>[a-z_]+))?(\.(?<random>[0-9]+\.[0-9]+))?@(?<uname>.+)/i',
+                'pattern'   => '/ZENTRA(_(?<uuid>[a-z0-9]+))?(-(?<itemtype>[a-z]+))?(-(?<items_id>[0-9]+))?(\/(?<event>[a-z_]+))?(\.(?<random>[0-9]+\.[0-9]+))?@(?<uname>.+)/i',
             ],
         ],
         [
@@ -72,7 +72,7 @@ if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi
     // Move all rules to an higher ranking and put the new rule to first position
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_rules',
+            'zentra_rules',
             [
                 'ranking'   => new QueryExpression($DB::quoteName('ranking') . ' + 1'),
             ],
@@ -83,12 +83,12 @@ if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_rules',
+            'zentra_rules',
             [
                 'ranking'   => 1,
             ],
             [
-                'uuid'      => 'glpi_rule_mail_collector_glpi_notifications',
+                'uuid'      => 'zentra_rule_mail_collector_zentra_notifications',
             ]
         )
     );

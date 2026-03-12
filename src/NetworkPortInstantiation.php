@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Socket;
-use Glpi\Toolbox\ArrayPathAccessor;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Socket;
+use Zentra\Toolbox\ArrayPathAccessor;
 
 /**
  * NetworkPortInstantiation class
@@ -274,7 +274,7 @@ class NetworkPortInstantiation extends CommonDBChild
      */
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $alert = '';
         $device_attributes = [];
@@ -285,7 +285,7 @@ class NetworkPortInstantiation extends CommonDBChild
 
             if (
                 !$options['several']
-                && in_array($lastItem::class, $CFG_GLPI["itemdevicenetworkcard_types"], true)
+                && in_array($lastItem::class, $CFG_ZENTRA["itemdevicenetworkcard_types"], true)
             ) {
                 // Query each link to network cards
                 $criteria = [
@@ -293,9 +293,9 @@ class NetworkPortInstantiation extends CommonDBChild
                         'link.id AS link_id',
                         'device.designation AS name',
                     ],
-                    'FROM'      => 'glpi_devicenetworkcards AS device',
+                    'FROM'      => 'zentra_devicenetworkcards AS device',
                     'INNER JOIN' => [
-                        'glpi_items_devicenetworkcards AS link'   => [
+                        'zentra_items_devicenetworkcards AS link'   => [
                             'ON' => [
                                 'link'   => 'devicenetworkcards_id',
                                 'device' => 'id',
@@ -429,7 +429,7 @@ TWIG, ['label' => __('MAC'), 'mac' => $netport->fields['mac']]);
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
             {% if recursive_items|length > 0 %}
-                {{ fields.dropdownField('Glpi\\\\Socket', 'sockets_id', socket_id, label) }}
+                {{ fields.dropdownField('Zentra\\\\Socket', 'sockets_id', socket_id, label) }}
             {% else %}
                 <div class="alert alert-info">{{ no_link_label }}</div>
             {% endif %}
@@ -503,7 +503,7 @@ TWIG, $twig_params);
                     'port.name',
                     'port.mac',
                 ],
-                'FROM'   => 'glpi_networkports AS port',
+                'FROM'   => 'zentra_networkports AS port',
                 'WHERE'  => [
                     'items_id'           => $lastItem->getID(),
                     'itemtype'           => $lastItem->getType(),
@@ -553,7 +553,7 @@ TWIG, $twig_params);
         echo "</td>";
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class) {
             $instantiation = $item->getInstantiation();
@@ -571,7 +571,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class) {
             $instantiation = $item->getInstantiation();
@@ -622,7 +622,7 @@ TWIG, $twig_params);
                 echo $oppositePort->getLink();
                 if ($device1->fields["entities_id"] !== $device2->fields["entities_id"]) {
                     echo "<br>(" . htmlescape(Dropdown::getDropdownName(
-                        "glpi_entities",
+                        "zentra_entities",
                         $device2->getEntityID()
                     )) . ")";
                 }
@@ -654,7 +654,7 @@ TWIG, $twig_params);
                     "<span class='b'>" . htmlescape($device2->getName()) . "</span>"
                 );
                 echo "<br>(" . htmlescape(Dropdown::getDropdownName(
-                    "glpi_entities",
+                    "zentra_entities",
                     $device2->getEntityID()
                 )) . ")";
             }
@@ -698,7 +698,7 @@ TWIG, $twig_params);
      **/
     public static function dropdownConnect($ID, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p['name']        = 'networkports_id';
         $p['comments']    = 1;
@@ -716,12 +716,12 @@ TWIG, $twig_params);
             if (is_array($p['entity'])) {
                 echo "entity_sons options is not available with entity option as array";
             } else {
-                $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
+                $p['entity'] = getSonsOf('zentra_entities', $p['entity']);
             }
         }
 
         echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='" . htmlescape($ID) . "'>";
-        $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
+        $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_ZENTRA["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',
             'entity_restrict'    => Session::getMatchingActiveEntities($p['entity']),
@@ -734,7 +734,7 @@ TWIG, $twig_params);
         Ajax::updateItemOnSelectEvent(
             "dropdown_NetworkPortConnect_itemtype$rand",
             "show_" . $p['name'] . "$rand",
-            $CFG_GLPI["root_doc"]
+            $CFG_ZENTRA["root_doc"]
                                        . "/ajax/dropdownConnectNetworkPortDeviceType.php",
             $params
         );

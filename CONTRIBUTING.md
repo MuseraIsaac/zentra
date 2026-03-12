@@ -1,18 +1,18 @@
-# Contributing to GLPI
+# Contributing to ZENTRA
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-Please note that current repository is about GLPI core only. All related plugins are the responsibility of their respective owners and all requests must be done on their own systems.
+Please note that current repository is about ZENTRA core only. All related plugins are the responsibility of their respective owners and all requests must be done on their own systems.
 
 **Please write only in English!**
 
 ## Security
 
-**⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
+**⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/zentra-project/zentra/security/policy) for more details. ⚠️**
 
 ## Bugs
 
-Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
+Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.zentra-network.com/)** or [partners](https://zentra-project.org/partners/).
 
 If you found a bug, the first steps to do are:
 - check if you're using the latest version, and if not, upgrade to see if the problem remains unsolved,
@@ -26,14 +26,14 @@ If developers are not able to reproduce the issue, it may not be fixed.
 
 If you want to work on a new feature, open a ticket using the feature template, so we can discuss on it.
 
-If you're just asking for something to be added without doing it yourself, please consider adding (or upvoting) an enhancement on the [suggestion website](https//suggest.glpi-project.org).
+If you're just asking for something to be added without doing it yourself, please consider adding (or upvoting) an enhancement on the [suggestion website](https//suggest.zentra-project.org).
 
 ## Support request
 
-You have a question on GLPI usage, or want to know what are the capabilities.
+You have a question on ZENTRA usage, or want to know what are the capabilities.
 
-Current repository is not the right place for that. You may try to ask your question on [the forums](https://forum.glpi-project.org), on the mailing lists, on telegram channels, ...
+Current repository is not the right place for that. You may try to ask your question on [the forums](https://forum.zentra-project.org), on the mailing lists, on telegram channels, ...
 
 ## Coding
 
-If you want to contribute to the project code, please take a time to read the [project coding guidelines](https://glpi-developer-documentation.readthedocs.io).
+If you want to contribute to the project code, please take a time to read the [project coding guidelines](https://zentra-developer-documentation.readthedocs.io).

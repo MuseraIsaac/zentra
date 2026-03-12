@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 class SoftwareLicenseTest extends DbTestCase
 {
@@ -49,7 +49,7 @@ class SoftwareLicenseTest extends DbTestCase
     {
         $license = new \SoftwareLicense();
 
-        //Without softwares_id, accepted (since GLPI 11.0.0)
+        //Without softwares_id, accepted (since ZENTRA 11.0.0)
         $input = [
             'name' => 'not_inserted_software_license',
             'entities_id' => 0,
@@ -593,7 +593,7 @@ class SoftwareLicenseTest extends DbTestCase
         ])->getID();
 
         $user1 = getItemByTypeName('User', TU_USER);
-        $user2 = getItemByTypeName('User', 'glpi');
+        $user2 = getItemByTypeName('User', 'zentra');
 
         // First assignment should succeed (quota: 1/1)
         $license_user1_id = $this->createItem(\SoftwareLicense_User::class, [

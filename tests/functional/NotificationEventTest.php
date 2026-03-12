@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Marketplace\Controller;
-use Glpi\Tests\DbTestCase;
+use Zentra\Marketplace\Controller;
+use Zentra\Tests\DbTestCase;
 use NotificationEvent;
 use PHPUnit\Framework\Attributes\TestWith;
 use Ticket;
@@ -59,16 +59,16 @@ class NotificationEventTest extends DbTestCase
 
     #[TestWith(['checkpluginsupdate', Controller::class,  ['plugins' => ['tester' => '1.2.3']]])]
     #[TestWith(['desynchronization', \DBConnection::class, ['diff' => 'some diff', 'name' => 'my_slave_host',]])]
-    public function testNotificationOnCommonGlpi(string $event, string $classname, array $options = []): void
+    public function testNotificationOnCommonZentra(string $event, string $classname, array $options = []): void
     {
         // --- arrange
         $this->login();
         $this->enableNotifications();
 
         // act
-        $common_glpi = new $classname();
-        assert(!$common_glpi instanceof \CommonDBTM, 'test should not run on CommonDBTM but on CommonGLPI.');
-        NotificationEvent::raiseEvent($event, $common_glpi, $options);
+        $common_zentra = new $classname();
+        assert(!$common_zentra instanceof \CommonDBTM, 'test should not run on CommonDBTM but on CommonZENTRA.');
+        NotificationEvent::raiseEvent($event, $common_zentra, $options);
 
         // assert
         $this->assertEventInQueue($event);
@@ -96,9 +96,9 @@ class NotificationEventTest extends DbTestCase
      */
     private function enableNotifications(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $CFG_GLPI['use_notifications'] = 1;
-        $CFG_GLPI['notifications_' . \Notification_NotificationTemplate::MODE_MAIL] = 1;
+        $CFG_ZENTRA['use_notifications'] = 1;
+        $CFG_ZENTRA['notifications_' . \Notification_NotificationTemplate::MODE_MAIL] = 1;
     }
 }

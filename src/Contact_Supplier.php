@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Toolbox\URL;
 
 class Contact_Supplier extends CommonDBRelation
 {
@@ -59,7 +59,7 @@ class Contact_Supplier extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -69,13 +69,13 @@ class Contact_Supplier extends CommonDBRelation
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb =  self::countForItem($item);
                     }
                     return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Contact':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -85,7 +85,7 @@ class Contact_Supplier extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -155,7 +155,7 @@ class Contact_Supplier extends CommonDBRelation
             $supplier->getFromDB($data["id"]);
             if (!isset($suppliertype_cache[$data["suppliertypes_id"]])) {
                 $suppliertype_cache[$data["suppliertypes_id"]] = Dropdown::getDropdownName(
-                    "glpi_suppliertypes",
+                    "zentra_suppliertypes",
                     $data["suppliertypes_id"]
                 );
             }
@@ -172,7 +172,7 @@ class Contact_Supplier extends CommonDBRelation
             ];
             if (Session::isMultiEntitiesMode()) {
                 if (!isset($entity_cache[$data["entity"]])) {
-                    $entity_cache[$data["entity"]] = Dropdown::getDropdownName("glpi_entities", $data["entity"]);
+                    $entity_cache[$data["entity"]] = Dropdown::getDropdownName("zentra_entities", $data["entity"]);
                 }
                 $entry['entity'] = $entity_cache[$data["entity"]];
             }
@@ -251,7 +251,7 @@ class Contact_Supplier extends CommonDBRelation
 
             if (!isset($contacttype_cache[$data["contacttypes_id"]])) {
                 $contacttype_cache[$data["contacttypes_id"]] = Dropdown::getDropdownName(
-                    "glpi_contacttypes",
+                    "zentra_contacttypes",
                     $data["contacttypes_id"]
                 );
             }
@@ -270,7 +270,7 @@ class Contact_Supplier extends CommonDBRelation
             ];
             if (Session::isMultiEntitiesMode()) {
                 if (!isset($entity_cache[$data["entity"]])) {
-                    $entity_cache[$data["entity"]] = Dropdown::getDropdownName("glpi_entities", $data["entity"]);
+                    $entity_cache[$data["entity"]] = Dropdown::getDropdownName("zentra_entities", $data["entity"]);
                 }
                 $entry['entity'] = $entity_cache[$data["entity"]];
             }

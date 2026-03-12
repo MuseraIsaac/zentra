@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_alert, glpi_html_dialog */
+/* global zentra_alert, zentra_html_dialog */
 /* global _ */
 
 class Knowbase {
@@ -49,7 +49,7 @@ class Knowbase {
             const _this = $(e.currentTarget);
 
             $.ajax({
-                url: `${CFG_GLPI.root_doc}/ajax/getKbRevision.php`,
+                url: `${CFG_ZENTRA.root_doc}/ajax/getKbRevision.php`,
                 method: 'GET',
                 cache: false,
                 data: {
@@ -57,7 +57,7 @@ class Knowbase {
                 }
             })
                 .done((data) => {
-                    glpi_html_dialog({
+                    zentra_html_dialog({
                         title: __('Show revision %d').replace('%d', _this.data('rev')),
                         body: `
                             <div>
@@ -70,8 +70,8 @@ class Knowbase {
                     });
                 })
                 .fail(() => {
-                    glpi_alert({
-                        title: __('Contact your GLPI admin!'),
+                    zentra_alert({
+                        title: __('Contact your ZENTRA admin!'),
                         message: __('Unable to load revision!'),
                     });
                 });
@@ -106,7 +106,7 @@ class Knowbase {
 
         const lib_import = import('/lib/jquery-prettytextdiff.js');
         const data_promise = $.ajax({
-            url: `${CFG_GLPI.root_doc}/ajax/compareKbRevisions.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/compareKbRevisions.php`,
             method: 'post',
             cache: false,
             data: {
@@ -121,7 +121,7 @@ class Knowbase {
                 new_id = __('current');
             }
 
-            glpi_html_dialog({
+            zentra_html_dialog({
                 modalclass: 'modal-xl',
                 title: __('Compare revisions %1$d and %2$d')
                     .replace("%1$d", old_id)
@@ -154,8 +154,8 @@ class Knowbase {
 
             $(`#compare_view_${kb_item_id} tr`).prettyTextDiff();
         }, () => {
-            glpi_alert({
-                title: __('Contact your GLPI admin!'),
+            zentra_alert({
+                title: __('Contact your ZENTRA admin!'),
                 message: __('Unable to load diff!'),
             });
         });

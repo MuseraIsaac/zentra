@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
@@ -92,7 +92,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     </div>
                     <div class="card-footer d-flex flex-row-reverse">
                         <input type="hidden" name="replay_confirm" value="replay_confirm">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
                     </div>
                 </div>
@@ -149,7 +149,7 @@ TWIG, $twig_params);
                     //Find all the software in the database with the same name and manufacturer
                     $same_iterator = $DB->request([
                         'SELECT' => 'id',
-                        'FROM'   => 'glpi_softwares',
+                        'FROM'   => 'zentra_softwares',
                         'WHERE'  => [
                             'name'               => $input['name'],
                             'manufacturers_id'   => $input['manufacturers_id'],
@@ -184,32 +184,32 @@ TWIG, $twig_params);
         // Select all the differents software
         $criteria = [
             'SELECT'          => [
-                'glpi_softwares.name',
-                'glpi_manufacturers.name AS manufacturer',
-                'glpi_softwares.manufacturers_id AS manufacturers_id',
-                'glpi_softwares.entities_id AS entities_id',
-                'glpi_softwares.is_helpdesk_visible AS helpdesk',
-                'glpi_softwares.softwarecategories_id AS softwarecategories_id',
+                'zentra_softwares.name',
+                'zentra_manufacturers.name AS manufacturer',
+                'zentra_softwares.manufacturers_id AS manufacturers_id',
+                'zentra_softwares.entities_id AS entities_id',
+                'zentra_softwares.is_helpdesk_visible AS helpdesk',
+                'zentra_softwares.softwarecategories_id AS softwarecategories_id',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_softwares',
+            'FROM'            => 'zentra_softwares',
             'LEFT JOIN'       => [
-                'glpi_manufacturers' => [
+                'zentra_manufacturers' => [
                     'ON' => [
-                        'glpi_manufacturers' => 'id',
-                        'glpi_softwares'     => 'manufacturers_id',
+                        'zentra_manufacturers' => 'id',
+                        'zentra_softwares'     => 'manufacturers_id',
                     ],
                 ],
             ],
             'WHERE'           => [
                 // Do not replay on trashbin and templates
-                'glpi_softwares.is_deleted'   => 0,
-                'glpi_softwares.is_template'  => 0,
+                'zentra_softwares.is_deleted'   => 0,
+                'zentra_softwares.is_template'  => 0,
             ],
         ];
 
         if (isset($params['manufacturer']) && $params['manufacturer']) {
-            $criteria['WHERE']['glpi_softwares.manufacturers_id'] = $params['manufacturer'];
+            $criteria['WHERE']['zentra_softwares.manufacturers_id'] = $params['manufacturer'];
         }
 
         return $criteria;
@@ -238,9 +238,9 @@ TWIG, $twig_params);
                     'gs.entities_id AS entities_id',
                     'gm.name AS manufacturer',
                 ],
-                'FROM'      => 'glpi_softwares AS gs',
+                'FROM'      => 'zentra_softwares AS gs',
                 'LEFT JOIN' => [
-                    'glpi_manufacturers AS gm' => [
+                    'zentra_manufacturers AS gm' => [
                         'ON' => [
                             'gs'  => 'manufacturers_id',
                             'gm'  => 'id',
@@ -304,7 +304,7 @@ TWIG, $twig_params);
         }
         $soft = new Software();
         if (isset($res_rule['_ignore_import']) && ($res_rule['_ignore_import'] == 1)) {
-            $soft->putInTrash($ID, __('Software deleted by GLPI dictionary rules'));
+            $soft->putInTrash($ID, __('Software deleted by ZENTRA dictionary rules'));
             return;
         }
 
@@ -316,7 +316,7 @@ TWIG, $twig_params);
               && isset($res_rule['new_entities_id'])
               && in_array(
                   $res_rule['new_entities_id'],
-                  getAncestorsOf('glpi_entities', $entity)
+                  getAncestorsOf('zentra_entities', $entity)
               ))
         ) {
             if (isset($res_rule["name"])) {
@@ -365,7 +365,7 @@ TWIG, $twig_params);
 
         //Get all the different versions for a software
         $iterator = $DB->request([
-            'FROM'   => 'glpi_softwareversions',
+            'FROM'   => 'zentra_softwareversions',
             'WHERE'  => ['softwares_id' => $ID],
         ]);
 
@@ -412,29 +412,29 @@ TWIG, $twig_params);
             // (which means that don't have version associated anymore)
             $iterator = $DB->request([
                 'SELECT'    => [
-                    'glpi_softwares.id',
-                    'COUNT' => 'glpi_softwareversions.softwares_id AS cpt',
+                    'zentra_softwares.id',
+                    'COUNT' => 'zentra_softwareversions.softwares_id AS cpt',
                 ],
-                'FROM'      => 'glpi_softwares',
+                'FROM'      => 'zentra_softwares',
                 'LEFT JOIN' => [
-                    'glpi_softwareversions' => [
+                    'zentra_softwareversions' => [
                         'ON' => [
-                            'glpi_softwareversions' => 'softwares_id',
-                            'glpi_softwares'        => 'id',
+                            'zentra_softwareversions' => 'softwares_id',
+                            'zentra_softwares'        => 'id',
                         ],
                     ],
                 ],
                 'WHERE'     => [
-                    'glpi_softwares.id'  => $soft_ids,
+                    'zentra_softwares.id'  => $soft_ids,
                     'is_deleted'         => 0,
                 ],
-                'GROUPBY'   => 'glpi_softwares.id',
+                'GROUPBY'   => 'zentra_softwares.id',
                 'HAVING'    => ['cpt' => 0],
             ]);
 
             $software = new Software();
             foreach ($iterator as $soft) {
-                $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
+                $software->putInTrash($soft["id"], __('Software deleted by ZENTRA dictionary rules'));
             }
         }
     }
@@ -462,7 +462,7 @@ TWIG, $twig_params);
             if ($new_versionID == -1) {
                 //Transfer versions from old software to new software for a specific version
                 $DB->update(
-                    'glpi_softwareversions',
+                    'zentra_softwareversions',
                     [
                         'name'         => $new_version,
                         'softwares_id' => $new_software_id,
@@ -496,14 +496,14 @@ TWIG, $twig_params);
                 ]);
                 foreach ($iterator as $data) {
                     $DB->delete(
-                        'glpi_items_softwareversions',
+                        'zentra_items_softwareversions',
                         [
                             'id' => $data['id'],
                         ]
                     );
                 }
 
-                //Change ID of the version in glpi_items_softwareversions
+                //Change ID of the version in zentra_items_softwareversions
                 $DB->update(
                     $item_softwareversion_table,
                     [
@@ -516,7 +516,7 @@ TWIG, $twig_params);
 
                 // Update licenses version link
                 $DB->update(
-                    'glpi_softwarelicenses',
+                    'zentra_softwarelicenses',
                     [
                         'softwareversions_id_buy' => $new_versionID,
                     ],
@@ -526,7 +526,7 @@ TWIG, $twig_params);
                 );
 
                 $DB->update(
-                    'glpi_softwarelicenses',
+                    'zentra_softwarelicenses',
                     [
                         'softwareversions_id_use' => $new_versionID,
                     ],
@@ -556,8 +556,8 @@ TWIG, $twig_params);
 
         // Return false if one of the 2 software doesn't exist
         if (
-            !countElementsInTable('glpi_softwares', ['id' => $old_software_id])
-            || !countElementsInTable('glpi_softwares', ['id' => $new_software_id])
+            !countElementsInTable('zentra_softwares', ['id' => $old_software_id])
+            || !countElementsInTable('zentra_softwares', ['id' => $new_software_id])
         ) {
             return false;
         }
@@ -565,7 +565,7 @@ TWIG, $twig_params);
         // Transfer licenses to new software if needed
         if ($old_software_id != $new_software_id) {
             $DB->update(
-                'glpi_softwarelicenses',
+                'zentra_softwarelicenses',
                 [
                     'softwares_id' => $new_software_id,
                 ],
@@ -591,7 +591,7 @@ TWIG, $twig_params);
 
         // Check if the version exists
         $iterator = $DB->request([
-            'FROM'   => 'glpi_softwareversions',
+            'FROM'   => 'zentra_softwareversions',
             'WHERE'  => [
                 'softwares_id' => $software_id,
                 'name'         => $version,

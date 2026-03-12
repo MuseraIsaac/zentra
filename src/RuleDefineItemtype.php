@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class RuleDefineItemtype extends Rule
 {
@@ -218,15 +218,15 @@ TWIG, $twig_params);
     /**
      * Get itemtypes
      *
-     * @global array $CFG_GLPI
+     * @global array $CFG_ZENTRA
      * @return array
      */
     public static function getItemTypesForRules()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $types = [];
-        foreach ($CFG_GLPI['inventory_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['inventory_types'] as $itemtype) {
             if (class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                 /** @var CommonDBTM $item */
                 $item = new $itemtype();

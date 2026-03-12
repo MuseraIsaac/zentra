@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Item_Line extends CommonDBRelation
 {
@@ -47,7 +47,7 @@ class Item_Line extends CommonDBRelation
         return _n('Line item', 'Line items', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -55,19 +55,19 @@ class Item_Line extends CommonDBRelation
 
         $nb = 0;
         if ($item instanceof Line) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForMainItem($item) + self::countSimcardItemsForLine($item);
             }
             return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
         } else {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item) + self::countSimcardLinesForItem($item);
             }
             return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -109,10 +109,10 @@ class Item_Line extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-        $specificities['itemtypes'] = $CFG_GLPI['line_types'];
+        $specificities['itemtypes'] = $CFG_ZENTRA['line_types'];
 
         // Define normalized action for add_item and remove_item
         $specificities['normalized']['add'][]          = 'add_item';
@@ -165,7 +165,7 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $ID = $line->fields['id'];
 
@@ -246,7 +246,7 @@ class Item_Line extends CommonDBRelation
                 'link_itemtype' => self::class,
                 'source_itemtype' => $line::class,
                 'source_items_id' => $ID,
-                'link_types' => $CFG_GLPI['line_types'],
+                'link_types' => $CFG_ZENTRA['line_types'],
                 'generic_target' => true,
                 'dropdown_options' => [
                     'entity'      => $line->getEntityID(),

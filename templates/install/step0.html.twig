@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -36,12 +36,12 @@
 <div class="container text-center">
    <div class="text-start">
       {% set alert_messages %}
-         {{ __("Choose 'Install' for a completely new installation of GLPI.") }}<br>
-         {{ __("Select 'Upgrade' to update your version of GLPI from an earlier version") }}
+         {{ __("Choose 'Install' for a completely new installation of ZENTRA.") }}<br>
+         {{ __("Select 'Upgrade' to update your version of ZENTRA from an earlier version") }}
       {% endset %}
 
       {{ alerts.alert_info(
-         __('Installation or update of GLPI'),
+         __('Installation or update of ZENTRA'),
          alert_messages
       ) }}
    </div>

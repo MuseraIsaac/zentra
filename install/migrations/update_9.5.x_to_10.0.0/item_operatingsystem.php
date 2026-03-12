@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+/** Replace -1 values for zentra_items_operatingsystems table foreign key fields */
 // Migration may have been missed if user installed 10.x version before 9.5.7 release date.
 foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
     /**
@@ -41,10 +41,10 @@ foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystems
      */
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_items_operatingsystems',
+            'zentra_items_operatingsystems',
             [$item_os_fkey => '0'],
             [$item_os_fkey => '-1']
         )
     );
 }
-/** /Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+/** /Replace -1 values for zentra_items_operatingsystems table foreign key fields */

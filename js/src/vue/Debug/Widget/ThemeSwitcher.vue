@@ -8,7 +8,7 @@
 
     onMounted(() => {
         $.ajax({
-            url: CFG_GLPI['root_doc'] + '/ajax/debug.php',
+            url: CFG_ZENTRA['root_doc'] + '/ajax/debug.php',
             data: {
                 action: 'get_themes'
             }
@@ -18,15 +18,15 @@
     });
 
     function getCurrentTheme() {
-        return document.documentElement.attributes['data-glpi-theme'].value;
+        return document.documentElement.attributes['data-zentra-theme'].value;
     }
 
     function onThemeChange() {
         const selection = $(`#theme${rand}`).val();
         const new_theme = themes.value.find((theme) => theme['key'] === selection);
         if (new_theme !== undefined) {
-            document.documentElement.attributes['data-glpi-theme'].value = new_theme['key'];
-            document.documentElement.attributes['data-glpi-theme-dark'].value = new_theme['is_dark'] ? '1' : '0';
+            document.documentElement.attributes['data-zentra-theme'].value = new_theme['key'];
+            document.documentElement.attributes['data-zentra-theme-dark'].value = new_theme['is_dark'] ? '1' : '0';
 
             const textareas = document.querySelectorAll('textarea');
             // Try getting TinyMCE editor for each
@@ -36,7 +36,7 @@
                 if (editor !== undefined && editor !== null) {
                     const editor_root_element = $(editor.dom.doc.documentElement);
                     const page_root_element = $(document.documentElement);
-                    const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                    const to_copy = ['data-zentra-theme', 'data-zentra-theme-dark'];
                     for (const attr of to_copy) {
                         if (page_root_element.attr(attr) !== undefined) {
                             editor_root_element.attr(attr, page_root_element.attr(attr));
@@ -45,7 +45,7 @@
                 }
             }
             if (window.monaco?.editor !== undefined) {
-                window.monaco.editor.setTheme(new_theme['is_dark'] ? 'glpi-dark' : 'glpi');
+                window.monaco.editor.setTheme(new_theme['is_dark'] ? 'zentra-dark' : 'zentra');
             }
         }
         emit('refreshButton');

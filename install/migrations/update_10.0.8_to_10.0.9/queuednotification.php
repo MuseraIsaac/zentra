@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-/* Add `event` to some glpi_queuednotifications */
+/* Add `event` to some zentra_queuednotifications */
 /* This migration was not executed during from 10.0.7 to 10.0.8 (see #15133) */
-if (!$DB->fieldExists('glpi_queuednotifications', 'event')) {
-    $migration->addField('glpi_queuednotifications', 'event', 'varchar(255) DEFAULT NULL', ['value' => null]);
+if (!$DB->fieldExists('zentra_queuednotifications', 'event')) {
+    $migration->addField('zentra_queuednotifications', 'event', 'varchar(255) DEFAULT NULL', ['value' => null]);
 }

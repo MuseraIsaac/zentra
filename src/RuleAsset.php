@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ class RuleAsset extends Rule
             Rule::REGEX_NOT_MATCH,
         ];
 
-        $criterias['states_id']['table']            = 'glpi_states';
+        $criterias['states_id']['table']            = 'zentra_states';
         $criterias['states_id']['field']            = 'states_id';
         $criterias['states_id']['name']             = __('Status');
         $criterias['states_id']['type']             = 'dropdown';
@@ -117,17 +117,17 @@ class RuleAsset extends Rule
         $criterias['contact_num']['name']           = __('Alternate username number');
 
         $criterias['manufacturer']['name']          = Manufacturer::getTypeName(1);
-        $criterias['manufacturer']['table']         = 'glpi_manufacturers';
+        $criterias['manufacturer']['table']         = 'zentra_manufacturers';
         $criterias['manufacturer']['field']         = 'manufacturers_id';
         $criterias['manufacturer']['type']          = 'dropdown';
 
-        $criterias['locations_id']['table']         = 'glpi_locations';
+        $criterias['locations_id']['table']         = 'zentra_locations';
         $criterias['locations_id']['field']         = 'completename';
         $criterias['locations_id']['name']          = Location::getTypeName(Session::getPluralNumber());
         $criterias['locations_id']['linkfield']     = 'locations_id';
         $criterias['locations_id']['type']          = 'dropdown';
 
-        $criterias['entities_id']['table']          = 'glpi_entities';
+        $criterias['entities_id']['table']          = 'zentra_entities';
         $criterias['entities_id']['field']          = 'name';
         $criterias['entities_id']['name']           = Entity::getTypeName(1);
         $criterias['entities_id']['linkfield']      = 'entities_id';
@@ -135,17 +135,17 @@ class RuleAsset extends Rule
 
         $criterias['users_id']['name']            = User::getTypeName(1);
         $criterias['users_id']['type']            = 'dropdown_users';
-        $criterias['users_id']['table']           = 'glpi_users';
+        $criterias['users_id']['table']           = 'zentra_users';
 
         $criterias['_tag']['name']            = sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag'));
 
-        $criterias['_locations_id_of_user']['table']     = 'glpi_locations';
+        $criterias['_locations_id_of_user']['table']     = 'zentra_locations';
         $criterias['_locations_id_of_user']['field']     = 'completename';
         $criterias['_locations_id_of_user']['name']      = __('User location');
         $criterias['_locations_id_of_user']['linkfield'] = '_locations_id_of_user';
         $criterias['_locations_id_of_user']['type']      = 'dropdown';
 
-        $criterias['_groups_id_of_user']['table']        = 'glpi_groups';
+        $criterias['_groups_id_of_user']['table']        = 'zentra_groups';
         $criterias['_groups_id_of_user']['field']        = 'completename';
         $criterias['_groups_id_of_user']['name']         = __('User in group');
         $criterias['_groups_id_of_user']['linkfield']    = '_groups_id_of_user';
@@ -183,16 +183,16 @@ class RuleAsset extends Rule
 
         $actions['states_id']['name']           = __('Status');
         $actions['states_id']['type']           = 'dropdown';
-        $actions['states_id']['table']          = 'glpi_states';
+        $actions['states_id']['table']          = 'zentra_states';
 
         $actions['locations_id']['name']          = Location::getTypeName(1);
         $actions['locations_id']['type']          = 'dropdown';
-        $actions['locations_id']['table']         = 'glpi_locations';
+        $actions['locations_id']['table']         = 'zentra_locations';
         $actions['locations_id']['force_actions'] = ['assign', 'fromuser'];
 
         $actions['users_id']['name']            = User::getTypeName(1);
         $actions['users_id']['type']            = 'dropdown_users';
-        $actions['users_id']['table']           = 'glpi_users';
+        $actions['users_id']['table']           = 'zentra_users';
 
         $actions['_affect_user_by_regex']['name']              = __('User based contact information');
         $actions['_affect_user_by_regex']['type']              = 'text';
@@ -201,17 +201,17 @@ class RuleAsset extends Rule
 
         $actions['groups_id']['name']          = Group::getTypeName(1);
         $actions['groups_id']['type']          = 'dropdown';
-        $actions['groups_id']['table']         = 'glpi_groups';
+        $actions['groups_id']['table']         = 'zentra_groups';
         $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
         $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser'];
 
-        $actions['users_id_tech']['table']      = 'glpi_users';
+        $actions['users_id_tech']['table']      = 'zentra_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
         $actions['users_id_tech']['name']       = __('Technician in charge');
 
         $actions['groups_id_tech']['name']      = __('Group in charge');
         $actions['groups_id_tech']['type']      = 'dropdown';
-        $actions['groups_id_tech']['table']     = 'glpi_groups';
+        $actions['groups_id_tech']['table']     = 'zentra_groups';
         $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
 
         $actions['comment']['table']            = '';

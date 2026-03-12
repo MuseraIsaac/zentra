@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -76,12 +76,12 @@
             type="button"
         >
             {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
-            {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
+            {% for strategy in enum_cases('Zentra\\Form\\Condition\\CreationStrategy') %}
                 {% set is_visible = selected_strategy == strategy %}
                 {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
                 <div
                     class="{{ display_class }} align-items-center"
-                    data-glpi-editor-condition-badge="{{ strategy.value }}"
+                    data-zentra-editor-condition-badge="{{ strategy.value }}"
                 >
                     <i class="{{ strategy.getIcon() }} me-1"></i>
                     <span>{{ strategy.getLabel() }}</span>
@@ -91,7 +91,7 @@
             {% set conditions = destination.getConfiguredConditionsData() %}
             <span
                 class="badge text-bg-secondary ms-1"
-                data-glpi-editor-conditions-count-badge
+                data-zentra-editor-conditions-count-badge
                 role="status"
                 aria-label="{{ __('Conditions count') }}"
             >
@@ -102,7 +102,7 @@
             class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
             data-select2-dont-use-as-parent
         >
-            <div class="card visibility-dropdown-card" data-glpi-form-editor-on-click="stop-propagation">
+            <div class="card visibility-dropdown-card" data-zentra-form-editor-on-click="stop-propagation">
                 <div class="card-body">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="ti ti-circuit-changeover me-2"></i>

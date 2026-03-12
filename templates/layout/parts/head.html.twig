@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -32,18 +32,18 @@
 
 <!DOCTYPE html>
 <html lang="{{ lang ?? 'en' }}"
-    {% if session('glpiisrtl') %}
+    {% if session('zentraisrtl') %}
         dir="rtl"
     {% endif %}
-    {% if session('glpihighcontrast_css') %}
+    {% if session('zentrahighcontrast_css') %}
         data-high-contrast="1"
     {% endif %}
     {% if theme is defined %}
-        data-glpi-theme="{{ theme.getKey() }}"
-        data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
+        data-zentra-theme="{{ theme.getKey() }}"
+        data-zentra-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
     {% endif %}
-    {% if glpi_request_id is defined %}
-        data-glpi-request-id="{{ glpi_request_id }}"
+    {% if zentra_request_id is defined %}
+        data-zentra-request-id="{{ zentra_request_id }}"
     {% endif %}
 >
 <head>
@@ -57,7 +57,7 @@
    {# auto desktop / mobile viewport #}
    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-   {# prevent robots to index GLPI instances #}
+   {# prevent robots to index ZENTRA instances #}
    <meta name="robots" content="noindex, nofollow" />
 
     {# Custom header tags #}
@@ -65,7 +65,7 @@
         <{{ header_tag.tag }} {% for key, value in header_tag.properties %}{{ key }}="{{ value }}" {% endfor %}/>
     {% endfor %}
 
-   <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
+   <meta property="zentra:csrf_token" content="{{ csrf_token(true) }}" />
 
    {% for css_file in css_files|merge(get_plugins_css_files(is_anonymous_page|default(false))) %}
       <link rel="stylesheet" type="text/css" href="{{ css_path(css_file.path, css_file.options ?? []) }}" />

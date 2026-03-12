@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 
         .timeline-item-buttons {
             .is-private {
-                color: var(--glpi-timeline-badge-fg);
+                color: var(--zentra-timeline-badge-fg);
             }
         }
     }
@@ -166,24 +166,24 @@
     &.ITILContent,
     &.ITILValidation {
         .timeline-content {
-            background-color: var(--glpi-timeline-itil-content-bg);
-            color: var(--glpi-timeline-itil-content-fg);
-            border-color: var(--glpi-timeline-itil-content-border-color);
+            background-color: var(--zentra-timeline-itil-content-bg);
+            color: var(--zentra-timeline-itil-content-fg);
+            border-color: var(--zentra-timeline-itil-content-border-color);
 
             &::before {
-                border-color: var(--glpi-timeline-itil-content-border-color) var(--glpi-timeline-itil-content-border-color) transparent transparent;
+                border-color: var(--zentra-timeline-itil-content-border-color) var(--zentra-timeline-itil-content-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: var(--glpi-timeline-itil-content-bg) var(--glpi-timeline-itil-content-bg) transparent transparent;
+                border-color: var(--zentra-timeline-itil-content-bg) var(--zentra-timeline-itil-content-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: var(--glpi-timeline-itil-content-border-color) transparent transparent var(--glpi-timeline-itil-content-border-color);
+                border-color: var(--zentra-timeline-itil-content-border-color) transparent transparent var(--zentra-timeline-itil-content-border-color);
             }
 
             &.t-right::after {
-                border-color: var(--glpi-timeline-itil-content-bg) transparent transparent var(--glpi-timeline-itil-content-bg);
+                border-color: var(--zentra-timeline-itil-content-bg) transparent transparent var(--zentra-timeline-itil-content-bg);
             }
         }
     }
@@ -191,61 +191,61 @@
     &.ITILFollowup,
     &.KnowbaseItemComment {
         .timeline-content {
-            background-color: var(--glpi-timeline-fup-bg);
-            color: var(--glpi-timeline-fup-fg);
-            border-color: var(--glpi-timeline-fup-border-color);
+            background-color: var(--zentra-timeline-fup-bg);
+            color: var(--zentra-timeline-fup-fg);
+            border-color: var(--zentra-timeline-fup-border-color);
             background-image: url("../pics/timeline/followup.png");
             background-repeat: no-repeat;
 
             &::before {
-                border-color: var(--glpi-timeline-fup-border-color) var(--glpi-timeline-fup-border-color) transparent transparent;
+                border-color: var(--zentra-timeline-fup-border-color) var(--zentra-timeline-fup-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: var(--glpi-timeline-fup-bg) var(--glpi-timeline-fup-bg) transparent transparent;
+                border-color: var(--zentra-timeline-fup-bg) var(--zentra-timeline-fup-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: var(--glpi-timeline-fup-border-color) transparent transparent var(--glpi-timeline-fup-border-color);
+                border-color: var(--zentra-timeline-fup-border-color) transparent transparent var(--zentra-timeline-fup-border-color);
             }
 
             &.t-right::after {
-                border-color: var(--glpi-timeline-fup-bg) transparent transparent var(--glpi-timeline-fup-bg);
+                border-color: var(--zentra-timeline-fup-bg) transparent transparent var(--zentra-timeline-fup-bg);
             }
         }
     }
 
     &.ITILTask {
         .timeline-content {
-            background-color: var(--glpi-timeline-task-bg);
-            color: var(--glpi-timeline-task-fg);
-            border-color: var(--glpi-timeline-task-border-color);
+            background-color: var(--zentra-timeline-task-bg);
+            color: var(--zentra-timeline-task-fg);
+            border-color: var(--zentra-timeline-task-border-color);
             background-image: url("../pics/timeline/task.png");
             background-repeat: no-repeat;
 
             &::before {
-                border-color: var(--glpi-timeline-task-border-color) var(--glpi-timeline-task-border-color) transparent transparent;
+                border-color: var(--zentra-timeline-task-border-color) var(--zentra-timeline-task-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: var(--glpi-timeline-task-bg) var(--glpi-timeline-task-bg) transparent transparent;
+                border-color: var(--zentra-timeline-task-bg) var(--zentra-timeline-task-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: var(--glpi-timeline-task-border-color) transparent transparent var(--glpi-timeline-task-border-color);
+                border-color: var(--zentra-timeline-task-border-color) transparent transparent var(--zentra-timeline-task-border-color);
             }
 
             &.t-right::after {
-                border-color: var(--glpi-timeline-task-bg) transparent transparent var(--glpi-timeline-task-bg);
+                border-color: var(--zentra-timeline-task-bg) transparent transparent var(--zentra-timeline-task-bg);
             }
         }
     }
 
     &.ITILSolution {
         .timeline-content {
-            background-color: var(--glpi-timeline-solution-bg);
-            color: var(--glpi-timeline-solution-fg);
-            border-color: var(--glpi-timeline-solution-border-color);
+            background-color: var(--zentra-timeline-solution-bg);
+            color: var(--zentra-timeline-solution-fg);
+            border-color: var(--zentra-timeline-solution-border-color);
             border-left: 1em transparent solid;
 
             .solimg {
@@ -255,19 +255,19 @@
             }
 
             &::before {
-                border-color: var(--glpi-timeline-solution-border-color) var(--glpi-timeline-solution-border-color) transparent transparent;
+                border-color: var(--zentra-timeline-solution-border-color) var(--zentra-timeline-solution-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: var(--glpi-timeline-solution-bg) var(--glpi-timeline-solution-bg) transparent transparent;
+                border-color: var(--zentra-timeline-solution-bg) var(--zentra-timeline-solution-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: var(--glpi-timeline-solution-border-color) transparent transparent var(--glpi-timeline-solution-border-color);
+                border-color: var(--zentra-timeline-solution-border-color) transparent transparent var(--zentra-timeline-solution-border-color);
             }
 
             &.t-right::after {
-                border-color: var(--glpi-timeline-solution-bg) transparent transparent var(--glpi-timeline-solution-bg);
+                border-color: var(--zentra-timeline-solution-bg) transparent transparent var(--zentra-timeline-solution-bg);
             }
         }
     }
@@ -297,9 +297,9 @@
 
         &#new-Document_Item-block {
             .timeline-content {
-                border: 1px solid var(--glpi-timeline-document-border-color);
+                border: 1px solid var(--zentra-timeline-document-border-color);
                 box-shadow: inherit;
-                color: var(--glpi-timeline-document-fg);
+                color: var(--zentra-timeline-document-fg);
             }
         }
     }
@@ -383,29 +383,29 @@
 .filter-timeline-popover {
     .form-check {
         .form-check-input:checked {
-            background-color: var(--glpi-timeline-fup-bg);
-            border-color: var(--glpi-timeline-fup-border-color);
+            background-color: var(--zentra-timeline-fup-bg);
+            border-color: var(--zentra-timeline-fup-border-color);
         }
 
         &.ITILContent,
         &.ITILValidation {
             .form-check-input:checked {
-                background-color: var(--glpi-timeline-itil-content-bg);
-                border-color: var(--glpi-timeline-itil-content-border-color);
+                background-color: var(--zentra-timeline-itil-content-bg);
+                border-color: var(--zentra-timeline-itil-content-border-color);
             }
         }
 
         &.ITILTask {
             .form-check-input:checked {
-                background-color: var(--glpi-timeline-task-bg);
-                border-color: var(--glpi-timeline-task-border-color);
+                background-color: var(--zentra-timeline-task-bg);
+                border-color: var(--zentra-timeline-task-border-color);
             }
         }
 
         &.ITILSolution {
             .form-check-input:checked {
-                background-color: var(--glpi-timeline-solution-bg);
-                border-color: var(--glpi-timeline-solution-border-color);
+                background-color: var(--zentra-timeline-solution-bg);
+                border-color: var(--zentra-timeline-solution-border-color);
             }
         }
     }

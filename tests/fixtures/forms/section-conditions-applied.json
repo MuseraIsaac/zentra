@@ -73,7 +73,7 @@
                     "id": 1,
                     "uuid": "d1b2c3d4-0001-0001-0001-000000000010",
                     "name": "My question used as a criteria",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -90,7 +90,7 @@
                     "id": 2,
                     "uuid": "d1b2c3d4-0001-0001-0001-000000000011",
                     "name": "Just a question to avoid empty sections",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -107,7 +107,7 @@
                     "id": 3,
                     "uuid": "d1b2c3d4-0001-0001-0001-000000000012",
                     "name": "Just a question to avoid empty sections",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -124,7 +124,7 @@
                     "id": 4,
                     "uuid": "d1b2c3d4-0001-0001-0001-000000000013",
                     "name": "Just a question to avoid empty sections",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -140,7 +140,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": ["all"],
                         "group_ids": [],
@@ -149,7 +149,7 @@
                     "is_active": true
                 },
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\DirectAccess",
                     "config": {
                         "token": "CQBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVg",
                         "allow_unauthenticated": false
@@ -160,7 +160,7 @@
             "destinations": [
                 {
                     "id": 1,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{# Must be an enum implementing 'Glpi\\Form\\Condition\\StrategyInterface' #}
+{# Must be an enum implementing 'Zentra\\Form\\Condition\\StrategyInterface' #}
 {% set strategies = null %}
 
 {# Currently selected strategy #}
@@ -41,7 +41,7 @@
 {% set conditions = null %}
 
 {% block conditions_editor %}
-    <div data-glpi-conditions-editor-container data-testid="conditions-container">
+    <div data-zentra-conditions-editor-container data-testid="conditions-container">
         <div class="btn-group" role="group">
 
             {# Display strategy picker #}
@@ -54,14 +54,14 @@
                     name="{{ strategy_input_name }}"
                     value="{{ strategy.value }}"
                     autocomplete="off"
-                    data-glpi-conditions-editor-strategy
+                    data-zentra-conditions-editor-strategy
                     {% if selected_strategy == strategy %}
                         checked
-                        data-glpi-editor-refresh-checked
+                        data-zentra-editor-refresh-checked
                     {% endif %}
                     {# Will be enabled by the js controller to prevent actions until it is ready #}
-                    data-glpi-conditions-editor-disabled
-                    data-glpi-conditions-editor-enable-on-ready
+                    data-zentra-conditions-editor-disabled
+                    data-zentra-conditions-editor-enable-on-ready
                 >
                 <label
                     for="strategy_{{ rand }}"
@@ -79,11 +79,11 @@
         {% set visibility_class = is_visible ? '' : 'd-none' %}
         <div
             class="{{ visibility_class }} mt-4"
-            data-glpi-conditions-editor
+            data-zentra-conditions-editor
             data-testid="conditions-editor"
             {% for strategy in enum_cases(strategies) %}
                 {% if strategy.showEditor() %}
-                    data-glpi-conditions-editor-display-for-{{ strategy.value }}
+                    data-zentra-conditions-editor-display-for-{{ strategy.value }}
                 {% endif %}
             {% endfor %}
         >
@@ -98,38 +98,38 @@
             {# Initial values #}
             {% for condition in conditions %}
                 {% if not condition.getItemUuid() is empty %}
-                    <div data-glpi-conditions-editor-condition>
+                    <div data-zentra-conditions-editor-condition>
                         {% if not loop.first %}
                             <input
                                 type="hidden"
                                 name="_conditions[{{ loop.index0 }}][logic_operator]"
                                 value="{{ condition.getLogicOperator().value }}"
-                                data-glpi-conditions-editor-logic-operator
+                                data-zentra-conditions-editor-logic-operator
                             />
                         {% endif %}
                         <input
                             type="hidden"
                             name="_conditions[{{ loop.index0 }}][item]"
                             value="{{ condition.getItemDropdownKey() }}"
-                            data-glpi-conditions-editor-item
+                            data-zentra-conditions-editor-item
                         />
                         <input
                             type="hidden"
                             name="_conditions[{{ loop.index0 }}][item_uuid]"
                             value="{{ condition.getItemUuid() }}"
-                            data-glpi-conditions-editor-item-uuid
+                            data-zentra-conditions-editor-item-uuid
                         />
                         <input
                             type="hidden"
                             name="_conditions[{{ loop.index0 }}][item_type]"
                             value="{{ condition.getItemType().value }}"
-                            data-glpi-conditions-editor-item-type
+                            data-zentra-conditions-editor-item-type
                         />
                         <input
                             type="hidden"
                             name="_conditions[{{ loop.index0 }}][value_operator]"
                             value="{{ condition.getValueOperator().value }}"
-                            data-glpi-conditions-editor-value-operator
+                            data-zentra-conditions-editor-value-operator
                         />
                         {% if condition.getValue() is iterable %}
                             {% set original_loop_index = loop.index0 %}
@@ -138,7 +138,7 @@
                                     type="hidden"
                                     name="_conditions[{{ original_loop_index }}][value][{{ key }}]"
                                     value="{{ value }}"
-                                    data-glpi-conditions-editor-value
+                                    data-zentra-conditions-editor-value
                                 />
                             {% endfor %}
                         {% else %}
@@ -146,7 +146,7 @@
                                 type="hidden"
                                 name="_conditions[{{ loop.index0 }}][value]"
                                 value="{{ condition.getValue() }}"
-                                data-glpi-conditions-editor-value
+                                data-zentra-conditions-editor-value
                             />
                         {% endif %}
                     </div>

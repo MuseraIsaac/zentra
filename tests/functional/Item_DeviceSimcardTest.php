@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 class Item_DeviceSimcardTest extends DbTestCase
 {
@@ -106,7 +106,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         global $DB;
         //drop update access on item_devicesimcard
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 1],
             [
                 'profiles_id'  => 4,
@@ -118,7 +118,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->login();
         //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 3],
             [
                 'profiles_id'  => 4,

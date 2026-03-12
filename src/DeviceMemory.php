@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryFunction;
 
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice
@@ -100,7 +100,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicememorytypes',
+            'table'              => 'zentra_devicememorytypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -108,7 +108,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_devicememorymodels',
+            'table'              => 'zentra_devicememorymodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -184,7 +184,7 @@ class DeviceMemory extends CommonDevice
                 if ($this->fields["devicememorytypes_id"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicememory_type'),
-                        htmlescape(Dropdown::getDropdownName("glpi_devicememorytypes", $this->fields["devicememorytypes_id"])),
+                        htmlescape(Dropdown::getDropdownName("zentra_devicememorytypes", $this->fields["devicememorytypes_id"])),
                         $father
                     );
                 }
@@ -222,7 +222,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '110',
-            'table'              => 'glpi_devicememories',
+            'table'              => 'zentra_devicememories',
             'field'              => 'designation',
             'name'               => DeviceMemoryType::getTypeName(1),
             'forcegroupby'       => true,
@@ -231,7 +231,7 @@ class DeviceMemory extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicememories',
+                    'table'              => 'zentra_items_devicememories',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -239,7 +239,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '111',
-            'table'              => 'glpi_items_devicememories',
+            'table'              => 'zentra_items_devicememories',
             'field'              => 'size',
             'unit'               => 'auto',
             'name'               => _n('Memory', 'Memories', 1),
@@ -258,7 +258,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '1326',
-            'table'              => 'glpi_items_devicememories',
+            'table'              => 'zentra_items_devicememories',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -270,7 +270,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '1327',
-            'table'              => 'glpi_items_devicememories',
+            'table'              => 'zentra_items_devicememories',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

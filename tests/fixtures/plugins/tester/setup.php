@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,32 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Destination\FormDestinationManager;
-use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\QuestionType\QuestionTypesManager;
-use Glpi\Form\ServiceCatalog\HomeSearchManager;
-use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
-use Glpi\Helpdesk\Tile\TilesManager;
-use GlpiPlugin\Tester\Form\ComputerDestination;
-use GlpiPlugin\Tester\Form\ComputerProvider;
-use GlpiPlugin\Tester\Form\CustomTile;
-use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
-use GlpiPlugin\Tester\Form\QuestionTypeRange;
-use GlpiPlugin\Tester\Form\QuestionTypeColor;
-use GlpiPlugin\Tester\Form\ExternalIDField;
-use GlpiPlugin\Tester\Form\TesterCategory;
-use GlpiPlugin\Tester\MyPsr4Class;
+use Zentra\Form\AccessControl\FormAccessControlManager;
+use Zentra\Form\Destination\FormDestinationManager;
+use Zentra\Form\Destination\FormDestinationTicket;
+use Zentra\Form\QuestionType\QuestionTypesManager;
+use Zentra\Form\ServiceCatalog\HomeSearchManager;
+use Zentra\Form\ServiceCatalog\ServiceCatalogManager;
+use Zentra\Helpdesk\Tile\TilesManager;
+use ZentraPlugin\Tester\Form\ComputerDestination;
+use ZentraPlugin\Tester\Form\ComputerProvider;
+use ZentraPlugin\Tester\Form\CustomTile;
+use ZentraPlugin\Tester\Form\DayOfTheWeekPolicy;
+use ZentraPlugin\Tester\Form\QuestionTypeRange;
+use ZentraPlugin\Tester\Form\QuestionTypeColor;
+use ZentraPlugin\Tester\Form\ExternalIDField;
+use ZentraPlugin\Tester\Form\TesterCategory;
+use ZentraPlugin\Tester\MyPsr4Class;
 
 function plugin_version_tester()
 {
     return [
         'name'           => 'tester',
         'version'        => '1.0.0',
-        'author'         => 'GLPI Test suite',
+        'author'         => 'ZENTRA Test suite',
         'license'        => 'GPL v2+',
         'requirements'   => [
-            'glpi' => [
+            'zentra' => [
                 'min' => '9.5.0',
             ]
         ]
@@ -129,6 +129,6 @@ function plugin_init_tester(): void
 
 function plugin_tester_boot()
 {
-    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
-    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
+    \Zentra\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
+    \Zentra\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
 }

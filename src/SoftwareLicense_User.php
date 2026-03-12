@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * SoftwareLicense_User Class
@@ -98,11 +98,11 @@ class SoftwareLicense_User extends CommonDBRelation
         return SoftwareLicense::getTypeName($nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate && SoftwareLicense::canView() && $item::class === User::class) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(SoftwareLicense_User::getTable(), ['users_id' => $item->fields['id']]);
             }
             return self::createTabEntry(
@@ -116,7 +116,7 @@ class SoftwareLicense_User extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$withtemplate && SoftwareLicense::canView() && $item::class === User::class) {
             self::showForUser($item, $withtemplate);
@@ -184,7 +184,7 @@ class SoftwareLicense_User extends CommonDBRelation
                     <form method="post" action="{{ 'Item_SoftwareLicense'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, null, {
                                 used: used,
@@ -214,7 +214,7 @@ TWIG, $twig_params);
             $entry['name'] = $license->getLink();
             if (!isset($entity_cache[$license->fields["entities_id"]])) {
                 $entity_cache[$license->fields["entities_id"]] = Dropdown::getDropdownName(
-                    "glpi_entities",
+                    "zentra_entities",
                     $license->fields["entities_id"]
                 );
             }
@@ -227,7 +227,7 @@ TWIG, $twig_params);
 
             if (!isset($type_cache[$license->fields["softwarelicensetypes_id"]])) {
                 $type_cache[$license->fields["softwarelicensetypes_id"]] = Dropdown::getDropdownName(
-                    "glpi_softwarelicensetypes",
+                    "zentra_softwarelicensetypes",
                     $license->fields["softwarelicensetypes_id"]
                 );
             }

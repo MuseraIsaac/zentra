@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 if (navigator.userAgent.indexOf('AppleWebKit') !== -1 && navigator.vendor.indexOf('Apple') !== -1) {
     // Workaround for select2 dropdownAutowidth not applying until the second time the dropdown is opened
-    // See: https://github.com/glpi-project/glpi/issues/13433 and https://github.com/select2/select2/issues/4678
+    // See: https://github.com/zentra-project/zentra/issues/13433 and https://github.com/select2/select2/issues/4678
     const original_select2_fn = $.fn.select2;
     $.fn.select2 = function (options) {
         const result = original_select2_fn.apply(this, arguments);

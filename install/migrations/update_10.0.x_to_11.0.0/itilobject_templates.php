@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ $default_collation = DBConnection::getDefaultCollation();
 
 // Add template foreign key field to all ITIL Objects
 $itil_type_tables = [
-    'glpi_tickets'  => 'tickettemplates_id',
-    'glpi_changes'  => 'changetemplates_id',
-    'glpi_problems' => 'problemtemplates_id',
+    'zentra_tickets'  => 'tickettemplates_id',
+    'zentra_changes'  => 'changetemplates_id',
+    'zentra_problems' => 'problemtemplates_id',
 ];
 
 foreach ($itil_type_tables as $table => $fkey_to_add) {
@@ -56,9 +56,9 @@ foreach ($itil_type_tables as $table => $fkey_to_add) {
 
 // Add status_allowed field to all ITIL Object template tables
 $itiltemplate_tables = [
-    'glpi_tickettemplates'  => [1, 10, 2, 3, 4, 5, 6],
-    'glpi_changetemplates'  => [1, 9, 10, 7, 4, 11, 12, 5, 8, 6, 14, 13],
-    'glpi_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
+    'zentra_tickettemplates'  => [1, 10, 2, 3, 4, 5, 6],
+    'zentra_changetemplates'  => [1, 9, 10, 7, 4, 11, 12, 5, 8, 6, 14, 13],
+    'zentra_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
 ];
 
 foreach ($itiltemplate_tables as $table => $all_statuses) {
@@ -71,8 +71,8 @@ foreach ($itiltemplate_tables as $table => $all_statuses) {
     }
 }
 
-if (!$DB->tableExists('glpi_tickettemplatereadonlyfields')) {
-    $query = "CREATE TABLE `glpi_tickettemplatereadonlyfields` (
+if (!$DB->tableExists('zentra_tickettemplatereadonlyfields')) {
+    $query = "CREATE TABLE `zentra_tickettemplatereadonlyfields` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
         `num` int NOT NULL DEFAULT '0',
@@ -82,8 +82,8 @@ if (!$DB->tableExists('glpi_tickettemplatereadonlyfields')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_changetemplatereadonlyfields')) {
-    $query = "CREATE TABLE `glpi_changetemplatereadonlyfields` (
+if (!$DB->tableExists('zentra_changetemplatereadonlyfields')) {
+    $query = "CREATE TABLE `zentra_changetemplatereadonlyfields` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
         `num` int NOT NULL DEFAULT '0',
@@ -93,8 +93,8 @@ if (!$DB->tableExists('glpi_changetemplatereadonlyfields')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_problemtemplatereadonlyfields')) {
-    $query = "CREATE TABLE `glpi_problemtemplatereadonlyfields` (
+if (!$DB->tableExists('zentra_problemtemplatereadonlyfields')) {
+    $query = "CREATE TABLE `zentra_problemtemplatereadonlyfields` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
         `num` int NOT NULL DEFAULT '0',

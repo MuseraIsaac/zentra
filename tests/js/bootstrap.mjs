@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,10 +45,10 @@ await import('lodash').then((lodash) => {
 });
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
-window.GLPI_TEST_ENV = true;
+window.ZENTRA_TEST_ENV = true;
 
-// Set faux CFG_GLPI variable. We cannot get the real values since they are set inline in PHP.
-window.CFG_GLPI = {
+// Set faux CFG_ZENTRA variable. We cannot get the real values since they are set inline in PHP.
+window.CFG_ZENTRA = {
     root_doc: '/'
 };
 

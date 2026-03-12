@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
+$validation_tables = ['zentra_ticketvalidations', 'zentra_changevalidations'];
 
 $needed_migration = false;
 
@@ -64,7 +64,7 @@ foreach ($validation_tables as $validation_table) {
 
 // Use the fact fields had changed as an indication this one-time migration hasn't been run yet
 if ($needed_migration) {
-    $DB->update('glpi_notificationtargets', [
+    $DB->update('zentra_notificationtargets', [
         'items_id'  => Notification::VALIDATION_TARGET,
     ], [
         'items_id'  => Notification::VALIDATION_APPROVER,

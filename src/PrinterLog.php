@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset;
-use Glpi\Dashboard\Widget;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset;
+use Zentra\Dashboard\Widget;
 use Safe\DateTime;
 
 use function Safe\strtotime;
@@ -59,26 +59,26 @@ class PrinterLog extends CommonDBChild
         return 'ti ti-chart-line';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $array_ret = [];
 
         /** @var Printer|Asset $item */
-        if (in_array($item::class, $CFG_GLPI['printer_types'])) {
+        if (in_array($item::class, $CFG_ZENTRA['printer_types'])) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
             $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
         }
         return $array_ret;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         /** @var Printer|Asset $item */
-        if (in_array($item::class, $CFG_GLPI['printer_types']) && $item->getID() > 0) {
+        if (in_array($item::class, $CFG_ZENTRA['printer_types']) && $item->getID() > 0) {
             $printerlog = new self();
             $printerlog->showMetrics($item);
             return true;
@@ -251,7 +251,7 @@ class PrinterLog extends CommonDBChild
         // the "Constants for PHP Date Output" used in others functions
         // See https://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.selfdefinedformats
         $fmt = new IntlDateFormatter(
-            $_SESSION['glpilanguage'] ?? 'en_GB',
+            $_SESSION['zentralanguage'] ?? 'en_GB',
             IntlDateFormatter::NONE,
             IntlDateFormatter::NONE,
             null,
@@ -357,7 +357,7 @@ class PrinterLog extends CommonDBChild
     }
 
     /**
-     * Get the label for a given column of glpi_printerlogs.
+     * Get the label for a given column of zentra_printerlogs.
      * To be used when displaying the printed pages graph.
      *
      * @param string $key

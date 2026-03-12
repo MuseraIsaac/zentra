@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Event;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Event;
+use Zentra\Plugin\Hooks;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -212,7 +212,7 @@ class RuleCollection extends CommonDBTM
                     $p['inherited']
                 );
             } else {
-                $sons = getSonsOf('glpi_entities', $this->entity);
+                $sons = getSonsOf('zentra_entities', $this->entity);
                 $where[Rule::getTable() . '.entities_id'] = $sons;
             }
 
@@ -231,8 +231,8 @@ class RuleCollection extends CommonDBTM
 
         if (method_exists($this, 'collectionFilter')) {
             $filter_opts = [];
-            if (isset($options['_glpi_tab'])) {
-                $filter_opts['_glpi_tab'] = $options['_glpi_tab'];
+            if (isset($options['_zentra_tab'])) {
+                $filter_opts['_zentra_tab'] = $options['_zentra_tab'];
             }
             $criteria = $this->collectionFilter($criteria, $filter_opts);
         }
@@ -504,13 +504,13 @@ class RuleCollection extends CommonDBTM
      **/
     public function showListRules($target, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p['inherited'] = 1;
         $p['childrens'] = 0;
         $p['active']    = false;
         $p['condition'] = 0;
-        $p['_glpi_tab'] = $options['_glpi_tab'];
+        $p['_zentra_tab'] = $options['_zentra_tab'];
         $p['display_criterias'] = false;
         $p['display_actions']   = false;
 
@@ -565,7 +565,7 @@ TWIG, $twig_params);
             $p['start'] = 0;
         }
 
-        $p['limit'] = $_SESSION['glpilist_limit'];
+        $p['limit'] = $_SESSION['zentralist_limit'];
         $this->getCollectionPart($p);
 
         $ruletype = static::getRuleClassName();
@@ -646,7 +646,7 @@ TWIG, $twig_params);
                        const new_index = sort_detail.destination.index;
                        const old_index = sort_detail.origin.index;
 
-                       $.post(CFG_GLPI['root_doc'] + '/ajax/rule.php', {
+                       $.post(CFG_ZENTRA['root_doc'] + '/ajax/rule.php', {
                           'action': 'move_rule',
                           'rule_id': sort_detail.item.dataset.id,
                           'collection_classname':  "{$collection_classname}",
@@ -660,7 +660,7 @@ TWIG, $twig_params);
             </script>
 HTML;
 
-        $url = $CFG_GLPI["root_doc"];
+        $url = $CFG_ZENTRA["root_doc"];
         $url .= static::getRulesTestURL();
 
         $twig_params = [
@@ -731,7 +731,7 @@ TWIG, $twig_params);
 
         $criteria = [
             'SELECT' => 'ranking',
-            'FROM'   => 'glpi_rules',
+            'FROM'   => 'zentra_rules',
             'WHERE'  => ['id' => $ID],
         ];
 
@@ -747,7 +747,7 @@ TWIG, $twig_params);
             // Search rules to switch
             $criteria = [
                 'SELECT' => ['id', 'ranking'],
-                'FROM'   => 'glpi_rules',
+                'FROM'   => 'zentra_rules',
                 'WHERE'  => [
                     'sub_type'  => static::getRuleClassName(),
                 ] + $add_condition,
@@ -779,7 +779,7 @@ TWIG, $twig_params);
                 $result = false;
                 $criteria = [
                     'SELECT' => ['id', 'ranking'],
-                    'FROM'   => 'glpi_rules',
+                    'FROM'   => 'zentra_rules',
                     'WHERE'  => ['sub_type' => static::getRuleClassName()],
                 ];
                 $diff = $new_rank - $current_rank;
@@ -850,7 +850,7 @@ TWIG, $twig_params);
         global $DB;
 
         $result = $DB->update(
-            'glpi_rules',
+            'zentra_rules',
             [
                 'ranking' => new QueryExpression($DB::quoteName('ranking') . ' - 1'),
             ],
@@ -884,7 +884,7 @@ TWIG, $twig_params);
 
         $max_ranking_criteria = [
             'SELECT' => ['MAX' => 'ranking AS maxi'],
-            'FROM' => 'glpi_rules',
+            'FROM' => 'zentra_rules',
             'WHERE' => ['sub_type' => static::getRuleClassName()],
         ];
 
@@ -929,7 +929,7 @@ TWIG, $twig_params);
             // Move back all rules between old and new rank
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ranking AS _ranking'],
-                'FROM'   => 'glpi_rules',
+                'FROM'   => 'zentra_rules',
                 'WHERE'  => [
                     'sub_type'  => static::getRuleClassName(),
                     ['ranking'  => ['>', $old_rank]],
@@ -948,7 +948,7 @@ TWIG, $twig_params);
             // Move forward all rule  between old and new rank
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ranking AS _ranking'],
-                'FROM'   => 'glpi_rules',
+                'FROM'   => 'zentra_rules',
                 'WHERE'  => [
                     'sub_type'  => static::getRuleClassName(),
                     ['ranking'  => ['>=', $rank]],
@@ -979,7 +979,7 @@ TWIG, $twig_params);
      * @since 0.85
      *
      * @return void
-     * @todo Not used in GLPI core. Used by glpiinventory plugin
+     * @todo Not used in ZENTRA core. Used by zentrainventory plugin
      **/
     public static function titleBackup()
     {
@@ -1040,7 +1040,7 @@ TWIG, $twig_params);
             unset($rulecollection->fields['id'], $rulecollection->fields['date_mod']);
 
             $name = Dropdown::getDropdownName(
-                "glpi_entities",
+                "zentra_entities",
                 $rulecollection->fields['entities_id']
             );
             $rulecollection->fields['entities_id'] = $name;
@@ -1184,7 +1184,7 @@ TWIG, $twig_params);
         }
         // convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
-        // check rules (check if entities, criteria and actions is always good in this glpi)
+        // check rules (check if entities, criteria and actions is always good in this zentra)
         $entity        = new Entity();
         $rules_refused = [];
         /** @var array<class-string<Rule>, Rule> $rule_subtypes Cache of rule subtype instances */
@@ -1333,7 +1333,7 @@ TWIG, $twig_params);
         unset($rule);
 
         // save rules for ongoing processing
-        $_SESSION['glpi_import_rules']         = $rules;
+        $_SESSION['zentra_import_rules']         = $rules;
         $rules_refused_for_session = [];
         foreach ($rules_refused as $k => $rule) {
             $r = [];
@@ -1349,7 +1349,7 @@ TWIG, $twig_params);
             $rules_refused_for_session[$k] = $r;
         }
 
-        $_SESSION['glpi_import_rules_refused'] = $rules_refused_for_session;
+        $_SESSION['zentra_import_rules_refused'] = $rules_refused_for_session;
 
         // if no conflict detected, we can directly process the import
         if (!count($rules_refused)) {
@@ -1364,7 +1364,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * import rules in glpi after user validation
+     * import rules in zentra after user validation
      *
      * @since 0.85
      *
@@ -1378,10 +1378,10 @@ TWIG, $twig_params);
         $entity       = new Entity();
 
         // get session vars
-        $rules         = $_SESSION['glpi_import_rules'];
-        $rules_refused = $_SESSION['glpi_import_rules_refused'];
+        $rules         = $_SESSION['zentra_import_rules'];
+        $rules_refused = $_SESSION['zentra_import_rules_refused'];
         $rr_keys       = array_keys($rules_refused);
-        unset($_SESSION['glpi_import_rules'], $_SESSION['glpi_import_rules_refused']);
+        unset($_SESSION['zentra_import_rules'], $_SESSION['zentra_import_rules_refused']);
 
         // unset all refused rules
         foreach ($rules['rule'] as $k_rule => &$rule) {
@@ -1440,7 +1440,7 @@ TWIG, $twig_params);
                         "rules",
                         4,
                         "setup",
-                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rules_id)
+                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["zentraname"], $rules_id)
                     );
                     $add_criteria_and_actions = true;
                 }
@@ -1455,7 +1455,7 @@ TWIG, $twig_params);
                         "rules",
                         4,
                         "setup",
-                        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+                        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
                     );
 
                     // remove all dependent criterias and action
@@ -1575,7 +1575,7 @@ TWIG, $twig_params);
      */
     public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $input = $this->prepareInputDataForTestProcess($condition);
         $rule      = $this->getRuleClass();
@@ -1603,7 +1603,7 @@ TWIG, $twig_params);
             'rule_classname' => static::getRuleClassName(),
             'condition' => $condition,
             'params' => [
-                'target' => $CFG_GLPI["root_doc"] . static::getRulesTestURL(),
+                'target' => $CFG_ZENTRA["root_doc"] . static::getRulesTestURL(),
             ],
         ]);
 
@@ -1728,25 +1728,25 @@ TWIG, $twig_params);
 
         $limit = [];
         if ($condition > 0) {
-            $limit = ['glpi_rules.condition' => ['&', (int) $condition]];
+            $limit = ['zentra_rules.condition' => ['&', (int) $condition]];
         }
         $input = [];
 
         $iterator = $DB->request([
-            'SELECT'          => 'glpi_rulecriterias.criteria',
+            'SELECT'          => 'zentra_rulecriterias.criteria',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_rulecriterias',
+            'FROM'            => 'zentra_rulecriterias',
             'INNER JOIN'      => [
-                'glpi_rules'   => [
+                'zentra_rules'   => [
                     'ON' => [
-                        'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id',
+                        'zentra_rulecriterias' => 'rules_id',
+                        'zentra_rules'         => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => static::getRuleClassName(),
+                'zentra_rules.is_active'  => 1,
+                'zentra_rules.sub_type'   => static::getRuleClassName(),
             ] + $limit,
         ]);
 
@@ -1902,15 +1902,15 @@ TWIG, $twig_params);
      */
     public static function getClassByType($itemtype, $check_dictionnary_type = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($plug = isPluginItemType($itemtype)) {
-            $typeclass = "GlpiPlugin\\{$plug['plugin']}\\{$plug['class']}Collection";
+            $typeclass = "ZentraPlugin\\{$plug['plugin']}\\{$plug['class']}Collection";
             if (!class_exists($typeclass)) {
                 $typeclass = 'Plugin' . $plug['plugin'] . $plug['class'] . 'Collection';
             }
         } else {
-            if (in_array($itemtype, $CFG_GLPI["dictionnary_types"], true)) {
+            if (in_array($itemtype, $CFG_ZENTRA["dictionnary_types"], true)) {
                 $typeclass = 'RuleDictionnary' . $itemtype . "Collection";
             } else {
                 $typeclass = $itemtype . "Collection";
@@ -1918,7 +1918,7 @@ TWIG, $twig_params);
         }
 
         if (
-            ($check_dictionnary_type && in_array($itemtype, $CFG_GLPI["dictionnary_types"], true))
+            ($check_dictionnary_type && in_array($itemtype, $CFG_ZENTRA["dictionnary_types"], true))
             || !$check_dictionnary_type
         ) {
             $item = getItemForItemtype($typeclass);
@@ -1957,20 +1957,20 @@ TWIG, $twig_params);
         $params = [];
 
         $iterator = $DB->request([
-            'SELECT'          => 'glpi_rulecriterias.criteria',
+            'SELECT'          => 'zentra_rulecriterias.criteria',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_rulecriterias',
+            'FROM'            => 'zentra_rulecriterias',
             'INNER JOIN'      => [
-                'glpi_rules'   => [
+                'zentra_rules'   => [
                     'ON' => [
-                        'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id',
+                        'zentra_rulecriterias' => 'rules_id',
+                        'zentra_rules'         => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => static::getRuleClassName(),
+                'zentra_rules.is_active'  => 1,
+                'zentra_rules.sub_type'   => static::getRuleClassName(),
             ],
         ]);
 
@@ -2004,7 +2004,7 @@ TWIG, $twig_params);
         return _n('Rule', 'Rules', Session::getPluralNumber());
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item instanceof self) {
             $ong = [];
@@ -2014,8 +2014,8 @@ TWIG, $twig_params);
                         // TRANS: %s is the entity name
                         __('Rules applied: %s'),
                         Dropdown::getDropdownName(
-                            'glpi_entities',
-                            $_SESSION['glpiactive_entity']
+                            'zentra_entities',
+                            $_SESSION['zentraactive_entity']
                         )
                     )
                 );
@@ -2027,8 +2027,8 @@ TWIG, $twig_params);
                         // TRANS: %s is the entity name
                         __('Local rules: %s'),
                         Dropdown::getDropdownName(
-                            'glpi_entities',
-                            $_SESSION['glpiactive_entity']
+                            'zentra_entities',
+                            $_SESSION['zentraactive_entity']
                         )
                     )
                 );
@@ -2042,7 +2042,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof self) {
             $options = $_GET;
@@ -2061,7 +2061,7 @@ TWIG, $twig_params);
                     break;
             }
             if ($item->isRuleEntityAssigned()) {
-                $item->setEntity($_SESSION['glpiactive_entity']);
+                $item->setEntity($_SESSION['zentraactive_entity']);
             }
             $item->title();
             $item->showEngineSummary();
@@ -2078,10 +2078,10 @@ TWIG, $twig_params);
      */
     public static function getRules(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $rules = [];
-        foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+        foreach ($CFG_ZENTRA["rulecollections_types"] as $rulecollectionclass) {
             if (!is_a($rulecollectionclass, RuleCollection::class, true)) {
                 continue;
             }

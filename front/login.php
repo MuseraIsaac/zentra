@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Exception\AuthenticationFailedException;
+use Zentra\Exception\AuthenticationFailedException;
 
 use function Safe\session_destroy;
 
@@ -43,13 +43,13 @@ use function Safe\session_destroy;
  * @since 0.85
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
-if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
+if (!isset($_SESSION["zentracookietest"]) || ($_SESSION["zentracookietest"] != 'testcookie')) {
     if (!Session::canWriteSessionFiles()) {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
+        Html::redirect($CFG_ZENTRA['root_doc'] . "/index.php?error=2");
     } else {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
+        Html::redirect($CFG_ZENTRA['root_doc'] . "/index.php?error=1");
     }
 }
 
@@ -57,14 +57,14 @@ if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
     $_POST['totp_code'] = implode('', $_POST['totp_code']);
 }
 
-$remember = ($_POST['login_remember'] ?? 0) && $CFG_GLPI["login_remember_time"];
+$remember = ($_POST['login_remember'] ?? 0) && $CFG_ZENTRA["login_remember_time"];
 
 $auth = new Auth();
 
 // now we can continue with the process...
 if (isset($_REQUEST['totp_cancel'])) {
     session_destroy();
-    Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
+    Html::redirect($CFG_ZENTRA['root_doc'] . '/index.php');
 }
 if ($auth->login($_POST['login_name'] ?? '', $_POST['login_password'] ?? '', ($_REQUEST["noAUTO"] ?? false), $remember, $_POST['auth'] ?? '')) {
     Auth::redirectIfAuthenticated();

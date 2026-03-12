@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/software.class.php */
@@ -64,7 +64,7 @@ class DomainTest extends DbTestCase
 
         $domain = new \Domain();
         $domains_id = (int) $domain->add([
-            'name'   => 'glpi-project.org',
+            'name'   => 'zentra-project.org',
         ]);
         $this->assertGreaterThan(0, $domains_id);
 
@@ -84,7 +84,7 @@ class DomainTest extends DbTestCase
                 0,
                 $record->add([
                     'name'         => $sub,
-                    'data'         => 'glpi-project.org.',
+                    'data'         => 'zentra-project.org.',
                     'domains_id'   => $domains_id,
                 ])
             );
@@ -127,7 +127,7 @@ class DomainTest extends DbTestCase
 
         $iterator = $DB->request(\Domain::expiredDomainsCriteria($entity->fields['id']));
         $this->assertSame(
-            "SELECT * FROM `glpi_domains` WHERE "
+            "SELECT * FROM `zentra_domains` WHERE "
             . "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' "
             . "AND DATEDIFF(CURDATE(), `date_expiration`) > 1 AND DATEDIFF(CURDATE(), `date_expiration`) > 0",
             $iterator->getSql()
@@ -135,7 +135,7 @@ class DomainTest extends DbTestCase
 
         $iterator = $DB->request(\Domain::closeExpiriesDomainsCriteria($entity->fields['id']));
         $this->assertSame(
-            "SELECT * FROM `glpi_domains` WHERE "
+            "SELECT * FROM `zentra_domains` WHERE "
             . "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' "
             . "AND DATEDIFF(CURDATE(), `date_expiration`) > -7 AND DATEDIFF(CURDATE(), `date_expiration`) < 0",
             $iterator->getSql()
@@ -147,7 +147,7 @@ class DomainTest extends DbTestCase
         $this->login();
         $domain = new \Domain();
         $domains_id = (int) $domain->add([
-            'name'   => 'glpi-project.org',
+            'name'   => 'zentra-project.org',
         ]);
         $this->assertGreaterThan(0, $domains_id);
 
@@ -157,7 +157,7 @@ class DomainTest extends DbTestCase
                 0,
                 $record->add([
                     'name'         => $sub,
-                    'data'         => 'glpi-project.org.',
+                    'data'         => 'zentra-project.org.',
                     'domains_id'   => $domains_id,
                 ])
             );
@@ -178,7 +178,7 @@ class DomainTest extends DbTestCase
             [$domains_id]
         );
         $transfer->moveItems(['Domain' => [$domains_id]], $entities_id, [$domains_id]);
-        unset($_SESSION['glpitransfer_list']);
+        unset($_SESSION['zentratransfer_list']);
 
         $this->assertTrue($domain->getFromDB($domains_id));
         $this->assertSame($entities_id, (int) $domain->fields['entities_id']);
@@ -198,8 +198,8 @@ class DomainTest extends DbTestCase
         $this->login();
 
         // Force usage of notifications
-        global $CFG_GLPI;
-        $CFG_GLPI['use_notifications'] = true;
+        global $CFG_ZENTRA;
+        $CFG_ZENTRA['use_notifications'] = true;
 
         $alert    = new \Alert();
         $domain   = new \Domain();
@@ -267,7 +267,7 @@ class DomainTest extends DbTestCase
         unset($expired_alert['id']);
         $this->assertEquals(
             [
-                'date'     => $_SESSION["glpi_currenttime"],
+                'date'     => $_SESSION["zentra_currenttime"],
                 'itemtype' => 'Domain',
                 'items_id' => $domain_1_id,
                 'type'     => \Alert::END,
@@ -286,7 +286,7 @@ class DomainTest extends DbTestCase
         unset($expiring_alert['id']);
         $this->assertEquals(
             [
-                'date'     => $_SESSION["glpi_currenttime"],
+                'date'     => $_SESSION["zentra_currenttime"],
                 'itemtype' => 'Domain',
                 'items_id' => $domain_3_id,
                 'type'     => \Alert::NOTICE,

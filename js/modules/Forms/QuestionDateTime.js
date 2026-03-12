@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiFormQuestionTypeDateTime {
+export class ZentraFormQuestionTypeDateTime {
     /**
      * Placeholders for different input types
      *
@@ -39,7 +39,7 @@ export class GlpiFormQuestionTypeDateTime {
     #placeholders;
 
     /**
-     * Create a new GlpiFormQuestionTypeDateTime instance.
+     * Create a new ZentraFormQuestionTypeDateTime instance.
      *
      * @param {Object} placeholders Placeholders for inputs and default values
      */
@@ -48,14 +48,14 @@ export class GlpiFormQuestionTypeDateTime {
 
         // Initialize event listeners for checkboxes
         $(document).on('change', 'input[id^="is_default_value_current_time_"]', (e) => {
-            const questionSection = $(e.target).closest('section[data-glpi-form-editor-question]');
+            const questionSection = $(e.target).closest('section[data-zentra-form-editor-question]');
             this.updateDateAndTimeInputType(questionSection);
         });
 
         $(document).on('change', 'input[id^="is_date_enabled_"], input[id^="is_time_enabled_"]', (e) => {
             const input = e.target;
             const isChecked = $(input).is(':checked');
-            const questionSection = $(input).closest('section[data-glpi-form-editor-question]');
+            const questionSection = $(input).closest('section[data-zentra-form-editor-question]');
             const otherInput = questionSection.find('input[id^="is_date_enabled_"], input[id^="is_time_enabled_"]')
                 .not(`[name="${CSS.escape(input.name)}"]`);
 

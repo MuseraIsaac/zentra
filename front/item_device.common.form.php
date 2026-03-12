@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,15 +35,15 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
 
 /**
  * @since 0.85
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 /**
  * Following variables have to be defined before inclusion of this file:
@@ -73,10 +73,10 @@ if (isset($_POST["add"])) {
             get_class($item_device),
             4,
             "setup",
-            sprintf(__('%1$s adds an item'), $_SESSION["glpiname"])
+            sprintf(__('%1$s adds an item'), $_SESSION["zentraname"])
         );
 
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($item_device->getLinkURL());
         }
     }
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
 
     $device = $item_device->getOnePeer(1);
@@ -106,11 +106,11 @@ if (isset($_POST["add"])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } else {
-    if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
+    if (in_array($item_device->getType(), $CFG_ZENTRA['devices_in_menu'])) {
         $menus = ["assets", strtolower($item_device->getType())];
     } else {
         $menus = ["config", "commondevice", $item_device->getType()];

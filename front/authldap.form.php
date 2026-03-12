@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 Session::checkRight("config", UPDATE);
 
@@ -56,15 +56,15 @@ if (isset($_POST["update"])) {
                 Session::addMessageAfterRedirect(__s('Test successful'));
             } else {
                 Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
-                GLPINetwork::addErrorMessageAfterRedirect();
+                ZENTRANetwork::addErrorMessageAfterRedirect();
             }
-            Html::redirect($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=" . $newID);
+            Html::redirect($CFG_ZENTRA["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=" . $newID);
         }
     }
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $config_ldap->delete($_POST, true);
-    $_SESSION['glpi_authconfig'] = 1;
+    $_SESSION['zentra_authconfig'] = 1;
     $config_ldap->redirectToList();
 } elseif (isset($_POST["add_replicate"])) {
     $replicate = new AuthLdapReplicate();

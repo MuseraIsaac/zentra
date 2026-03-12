@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,23 +34,23 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/telemetry.class.php NOT requiring the Web server*/
 
 class TelemetryTest extends DbTestCase
 {
-    public function testGrabGlpiInfos()
+    public function testGrabZentraInfos()
     {
         //we do not want any error messages
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+        $_SESSION['zentracronuserrunning'] = "cron_phpunit";
 
         $expected = [
             'uuid'               => 'TO BE SET',
-            'version'            => GLPI_VERSION,
+            'version'            => ZENTRA_VERSION,
             'plugins'            => [],
             'default_language'   => 'en_GB',
-            'install_mode'       => GLPI_INSTALL_MODE,
+            'install_mode'       => ZENTRA_INSTALL_MODE,
             'usage'              => [
                 'avg_entities'          => '0-500',
                 'avg_computers'         => '0-500',
@@ -67,7 +67,7 @@ class TelemetryTest extends DbTestCase
             ],
         ];
 
-        $result = \Telemetry::grabGlpiInfos();
+        $result = \Telemetry::grabZentraInfos();
         $this->assertEquals(40, strlen($result['uuid']));
         $expected['uuid'] = $result['uuid'];
         $expected['plugins'] = $result['plugins'];
@@ -86,7 +86,7 @@ class TelemetryTest extends DbTestCase
             'key'       => 'testplugin',
             'version'   => '0.x.z',
         ];
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
         //enable ldap server
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
@@ -98,7 +98,7 @@ class TelemetryTest extends DbTestCase
         );
 
         $expected['usage']['ldap_enabled'] = true;
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
         $groups = new \Group();
         for ($i = 0; $i < 501; $i++) {
@@ -109,17 +109,17 @@ class TelemetryTest extends DbTestCase
         }
 
         $expected['usage']['avg_groups'] = '500-1000';
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
-        global $CFG_GLPI;
-        $CFG_GLPI['use_notifications'] = 1;
+        global $CFG_ZENTRA;
+        $CFG_ZENTRA['use_notifications'] = 1;
 
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
-        $CFG_GLPI['notifications_mailing'] = 1;
-        $CFG_GLPI['notifications_ajax']    = 1;
+        $CFG_ZENTRA['notifications_mailing'] = 1;
+        $CFG_ZENTRA['notifications_ajax']    = 1;
         $expected['usage']['notifications'] = ['mailing', 'ajax'];
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
         $collector = new \MailCollector();
         $this->assertGreaterThan(
@@ -133,7 +133,7 @@ class TelemetryTest extends DbTestCase
         );
 
         $expected['usage']['mailcollector_enabled'] = true;
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
 
         $this->assertTrue(
             $collector->update([
@@ -143,7 +143,7 @@ class TelemetryTest extends DbTestCase
         );
 
         $expected['usage']['mailcollector_enabled'] = false;
-        $this->assertSame($expected, \Telemetry::grabGlpiInfos());
+        $this->assertSame($expected, \Telemetry::grabZentraInfos());
     }
 
     public function testGrabDbInfos()

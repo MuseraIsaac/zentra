@@ -4,7 +4,7 @@
     },
     "1": {
         "name": "Name",
-        "table": "glpi_computerantiviruses",
+        "table": "zentra_computerantiviruses",
         "field": "name",
         "datatype": "itemlink",
         "nosearch": false,
@@ -20,7 +20,7 @@
     },
     "2": {
         "name": "Version",
-        "table": "glpi_computerantiviruses",
+        "table": "zentra_computerantiviruses",
         "field": "antivirus_version",
         "datatype": "string",
         "nosearch": false,
@@ -34,7 +34,7 @@
     },
     "3": {
         "name": "Signature database version",
-        "table": "glpi_computerantiviruses",
+        "table": "zentra_computerantiviruses",
         "field": "signature_version",
         "datatype": "string",
         "nosearch": false,

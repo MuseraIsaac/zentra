@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasSoftwaresCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasSoftwaresCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Item_SoftwareLicense;
 use Toolbox;
 
@@ -45,11 +45,11 @@ class Item_SoftwareLicenseTest extends DbTestCase
 {
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);
 
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['software_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -207,13 +207,13 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'items_id' => $source_computer->fields['id'],
             'itemtype' => 'Computer',
         ];
-        $this->assertSame(3, countElementsInTable('glpi_items_softwarelicenses', $input));
+        $this->assertSame(3, countElementsInTable('zentra_items_softwarelicenses', $input));
 
         $input = [
             'items_id' => $target_computer->fields['id'],
             'itemtype' => 'Computer',
         ];
-        $this->assertSame(3, countElementsInTable('glpi_items_softwarelicenses', $input));
+        $this->assertSame(3, countElementsInTable('zentra_items_softwarelicenses', $input));
 
         //cleanup
         $lic_computer = new Item_SoftwareLicense();
@@ -232,7 +232,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $this->assertEmpty($cSoftwareLicense->getTabNameForItem(new \Computer(), 0));
         $this->assertEmpty($cSoftwareLicense->getTabNameForItem($license, 1));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $expected = [
             1 => "Summary",
             2 => "Affected items",
@@ -243,7 +243,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         );
         $this->assertSame($expected, $tabs);
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $expected = [
             1 => "Summary",
             2 => "Affected items 2/" . $license->fields['number'],

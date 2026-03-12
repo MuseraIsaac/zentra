@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ use Computer;
 use Consumable;
 use ConsumableItem;
 use DeviceSimcard;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Infocom;
 use Item_DeviceSimcard;
 use Supplier;
@@ -53,7 +53,7 @@ class SupplierTest extends DbTestCase
         $this->login();
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         $this->setEntity('_test_root_entity', true);
 
@@ -101,8 +101,8 @@ class SupplierTest extends DbTestCase
 
     public function testShowInfocoms(): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var array $CFG_ZENTRA */
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -141,7 +141,7 @@ class SupplierTest extends DbTestCase
 
         $excluded = Infocom::getExcludedTypes();
         $expected_itemtypes = array_filter(
-            $CFG_GLPI['infocom_types'],
+            $CFG_ZENTRA['infocom_types'],
             static fn($t) => !in_array($t, $excluded, true)
         );
         foreach ($expected_itemtypes as $itemtype) {
@@ -208,7 +208,7 @@ class SupplierTest extends DbTestCase
         $this->assertEmpty($missing_itemtypes, 'Some infocom types are missing in the output: ' . implode(', ', array_map(fn($t) => $t::getTypeName(2), $missing_itemtypes)));
 
         // Test replacement of item lists with links to search results when too many items
-        $_SESSION['glpilist_limit'] = 1;
+        $_SESSION['zentralist_limit'] = 1;
         ob_start();
         $supplier->showInfocoms();
         $out = ob_get_clean();

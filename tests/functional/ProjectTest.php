@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Team\Team;
-use Glpi\Tests\DbTestCase;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Team\Team;
+use Zentra\Tests\DbTestCase;
 use Notepad;
 use ProjectState;
 use ProjectTask;
@@ -181,7 +181,7 @@ class ProjectTest extends DbTestCase
         $this->login();
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         $project = new \Project();
 
@@ -223,9 +223,9 @@ class ProjectTest extends DbTestCase
         );
         $expected_names[] = $task_2_name;
 
-        // Add 1 second to GLPI current time
+        // Add 1 second to ZENTRA current time
         $date2 = date('Y-m-d H:i:s', strtotime($date) + 1);
-        $_SESSION['glpi_currenttime'] = $date2;
+        $_SESSION['zentra_currenttime'] = $date2;
 
         // Create from template
         $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
@@ -658,8 +658,8 @@ PLAINTEXT;
 
         // Only allowed to read own tasks -> specific additional menu content
         $this->login();
-        $_SESSION['glpiactiveprofile']['project'] = 0;
-        $_SESSION['glpiactiveprofile']['projecttask'] = ProjectTask::READMY;
+        $_SESSION['zentraactiveprofile']['project'] = 0;
+        $_SESSION['zentraactiveprofile']['projecttask'] = ProjectTask::READMY;
 
         $this->assertEquals(ProjectTask::getMyTasksURL(false), \Project::getAdditionalMenuContent()['project']['page']);
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ use function Safe\spl_autoload_register;
  * @param string $classname
  * @return void
  */
-function glpi_autoload($classname)
+function zentra_autoload($classname)
 {
     if (!str_starts_with($classname, 'Plugin') && !str_starts_with($classname, NS_PLUG)) {
         return;
@@ -60,7 +60,7 @@ function glpi_autoload($classname)
     }
 
     $plugin_path = null;
-    foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_dir) {
+    foreach (ZENTRA_PLUGINS_DIRECTORIES as $plugins_dir) {
         $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_key);
         if (is_dir($dir_to_check)) {
             $plugin_path = $dir_to_check;
@@ -93,4 +93,4 @@ function glpi_autoload($classname)
     }
 }
 
-spl_autoload_register('glpi_autoload');
+spl_autoload_register('zentra_autoload');

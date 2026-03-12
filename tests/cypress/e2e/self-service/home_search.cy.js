@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ describe('Helpdesk Search with FormProvider', () => {
         cy.changeProfile('Super-Admin');
 
         // Create a category
-        cy.createWithAPI('Glpi\\Form\\Category', {
+        cy.createWithAPI('Zentra\\Form\\Category', {
             'name': category_name,
             'description': "Category for testing FormProvider",
         }).then(category_id => {
@@ -182,7 +182,7 @@ describe('Helpdesk Search with FormProvider', () => {
         // Unpin the pinned form
         cy.changeProfile('Super-Admin');
         cy.get('@pinned_form_id').then(form_id => {
-            cy.updateWithAPI('Glpi\\Form\\Form', form_id, {
+            cy.updateWithAPI('Zentra\\Form\\Form', form_id, {
                 'is_pinned': false,
             });
         });

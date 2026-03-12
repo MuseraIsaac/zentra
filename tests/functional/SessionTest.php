@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use Computer;
-use Glpi\Cache\CacheManager;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\SessionExpiredException;
-use Glpi\Tests\DbTestCase;
+use Zentra\Cache\CacheManager;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\SessionExpiredException;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Profile;
@@ -58,13 +58,13 @@ class SessionTest extends DbTestCase
         $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
 
         //test add message in cron mode
-        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+        $_SESSION['zentracronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
         //adding a message in "cron mode" does not add anything in the session
         $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
 
         //set not running from cron
-        unset($_SESSION['glpicronuserrunning']);
+        unset($_SESSION['zentracronuserrunning']);
 
         //test all messages types
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
@@ -186,9 +186,9 @@ class SessionTest extends DbTestCase
 
         // Test groups from whole entity tree
         $session_backup = $_SESSION;
-        $_SESSION['glpiactiveentities'] = $entities_ids;
+        $_SESSION['zentraactiveentities'] = $entities_ids;
         \Session::loadGroups();
-        $groups = $_SESSION['glpigroups'];
+        $groups = $_SESSION['zentragroups'];
         $_SESSION = $session_backup;
         $expected_groups = array_map(
             static fn($group) => (string) $group['id'],
@@ -209,9 +209,9 @@ class SessionTest extends DbTestCase
             }
 
             $session_backup = $_SESSION;
-            $_SESSION['glpiactiveentities'] = [$entid];
+            $_SESSION['zentraactiveentities'] = [$entid];
             \Session::loadGroups();
-            $groups = $_SESSION['glpigroups'];
+            $groups = $_SESSION['zentragroups'];
             $_SESSION = $session_backup;
             $this->assertEquals($expected_groups, $groups);
         }
@@ -229,14 +229,14 @@ class SessionTest extends DbTestCase
         $this->assertEquals('Login', __('Login'));
 
         //create directory for local i18n
-        if (!file_exists(GLPI_LOCAL_I18N_DIR . '/core')) {
-            mkdir(GLPI_LOCAL_I18N_DIR . '/core');
+        if (!file_exists(ZENTRA_LOCAL_I18N_DIR . '/core')) {
+            mkdir(ZENTRA_LOCAL_I18N_DIR . '/core');
         }
 
         //write local MO file with i18n override
         copy(
             __DIR__ . '/../local_en_GB.mo',
-            GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
+            ZENTRA_LOCAL_I18N_DIR . '/core/en_GB.mo'
         );
         $cache->clear();
         \Session::loadLanguage('en_GB');
@@ -246,7 +246,7 @@ class SessionTest extends DbTestCase
 
         //write local PHP file with i18n override
         file_put_contents(
-            GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
+            ZENTRA_LOCAL_I18N_DIR . '/core/en_GB.php',
             "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
         );
         $cache->clear();
@@ -256,8 +256,8 @@ class SessionTest extends DbTestCase
         $this->assertEquals('Password from local PHP', __('Password'));
 
         //cleanup -- keep at the end
-        unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.php');
-        unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo');
+        unlink(ZENTRA_LOCAL_I18N_DIR . '/core/en_GB.php');
+        unlink(ZENTRA_LOCAL_I18N_DIR . '/core/en_GB.mo');
     }
 
     public static function mustChangePasswordProvider()
@@ -290,7 +290,7 @@ class SessionTest extends DbTestCase
     #[DataProvider('mustChangePasswordProvider')]
     public function testMustChangePassword(string $last_update, int $expiration_delay, bool $expected_result)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
         $user = new User();
@@ -304,14 +304,14 @@ class SessionTest extends DbTestCase
         $this->assertGreaterThan(0, $user_id);
         $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
-        $CFG_GLPI['password_expiration_lock_delay'] = -1;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['password_expiration_delay'] = $expiration_delay;
+        $CFG_ZENTRA['password_expiration_lock_delay'] = -1;
         \Session::destroy();
         \Session::start();
         $auth = new \Auth();
         $is_logged = $auth->login($username, 'test', true);
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->assertTrue($is_logged);
         $this->assertEquals($expected_result, \Session::mustChangePassword());
@@ -345,7 +345,7 @@ class SessionTest extends DbTestCase
                 'expected'      => 'en_US',
             ],
             [
-                // latin as first choice (not available in GLPI), should fallback to italian
+                // latin as first choice (not available in ZENTRA), should fallback to italian
                 'header'        => 'la, it-IT;q=0.9, it;q=0.8',
                 'config'        => 'en_GB',
                 'legacy_config' => null,
@@ -392,22 +392,22 @@ class SessionTest extends DbTestCase
     #[DataProvider('preferredLanguageProvider')]
     public function testGetPreferredLanguage(?string $header, ?string $config, ?string $legacy_config, string $expected)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $header_backup = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
-        $cfg_backup = $CFG_GLPI;
+        $cfg_backup = $CFG_ZENTRA;
 
         if ($header !== null) {
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header;
         }
-        $CFG_GLPI['language'] = $config;
-        $CFG_GLPI['default_language'] = $legacy_config;
+        $CFG_ZENTRA['language'] = $config;
+        $CFG_ZENTRA['default_language'] = $legacy_config;
         $result = \Session::getPreferredLanguage();
 
         if ($header_backup !== null) {
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header_backup;
         }
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->assertEquals($expected, $result);
     }
@@ -415,7 +415,7 @@ class SessionTest extends DbTestCase
     public static function newIdorParamsProvider()
     {
         // No extra params
-        foreach (['Computer', 'Ticket', 'Glpi\\Dashboard\\Item'] as $itemtype) {
+        foreach (['Computer', 'Ticket', 'Zentra\\Dashboard\\Item'] as $itemtype) {
             yield [
                 'itemtype' => $itemtype,
             ];
@@ -446,7 +446,7 @@ class SessionTest extends DbTestCase
         $this->assertEquals(64, strlen($token));
 
         // validate token with dedicated method
-        $this->assertIsArray($token_data = $_SESSION['glpiidortokens'][$token]);
+        $this->assertIsArray($token_data = $_SESSION['zentraidortokens'][$token]);
         if ($itemtype !== '') {
             $this->assertCount(1 + count($add_params), $token_data);
             $this->assertEquals($itemtype, $token_data['itemtype']);
@@ -680,7 +680,7 @@ class SessionTest extends DbTestCase
         \Session::cleanIDORTokens();
 
         // Ensure that only max token count has been preserved
-        $this->assertCount($max, $_SESSION['glpiidortokens']);
+        $this->assertCount($max, $_SESSION['zentraidortokens']);
 
         // Ensure that latest tokens are preserved during cleaning
         for ($i = 1; $i < $max + $overflow; $i++) {
@@ -726,16 +726,16 @@ class SessionTest extends DbTestCase
         for ($i = 0; $i < 10; $i++) {
             // A shared token is only valid once
             $shared_token = \Session::getNewCSRFToken(false);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
+            $this->assertTrue(\Session::validateCSRF(['_zentra_csrf_token' => $shared_token]));
+            $this->assertFalse(\Session::validateCSRF(['_zentra_csrf_token' => $shared_token]));
 
             // A standalone token is only valid once
             $standalone_token = \Session::getNewCSRFToken(true);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
+            $this->assertTrue(\Session::validateCSRF(['_zentra_csrf_token' => $standalone_token]));
+            $this->assertFalse(\Session::validateCSRF(['_zentra_csrf_token' => $standalone_token]));
 
             // A fake token is never valid
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => bin2hex(random_bytes(32))]));
+            $this->assertFalse(\Session::validateCSRF(['_zentra_csrf_token' => bin2hex(random_bytes(32))]));
         }
     }
 
@@ -753,11 +753,11 @@ class SessionTest extends DbTestCase
         \Session::cleanCSRFTokens();
 
         // Ensure that only max token count has been preserved
-        $this->assertCount($max, $_SESSION['glpicsrftokens']);
+        $this->assertCount($max, $_SESSION['zentracsrftokens']);
 
         // Ensure that latest tokens are preserved during cleaning
         for ($i = 1; $i < $max + $overflow; $i++) {
-            $result = \Session::validateCSRF(['_glpi_csrf_token' => $tokens[$i]]);
+            $result = \Session::validateCSRF(['_zentra_csrf_token' => $tokens[$i]]);
             // if $i < $overflow, then the token should have been dropped from the list
             $this->assertEquals($i >= $overflow, $result);
         }
@@ -791,7 +791,7 @@ class SessionTest extends DbTestCase
             $profile->getFromDB($profiles_id);
             $old_user_rights = ProfileRight::getProfileRights($profiles_id, ['user'])['user'];
             $new_profiles_id = $profile->clone(['name' => $profile_name . '-Impersonate']);
-            $DB->update('glpi_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
+            $DB->update('zentra_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
                 'profiles_id' => $new_profiles_id,
                 'name' => 'user',
             ]);
@@ -882,7 +882,7 @@ class SessionTest extends DbTestCase
         $this->assertGreaterThan(0, $profile->getID());
         $old_user_rights = ProfileRight::getProfileRights($profile->getID(), ['user'])['user'];
         $new_profiles_id = $profile->clone(['name' => $profile->getName() . '-ImpersonateTest']);
-        $DB->update('glpi_profilerights', ['rights' => READ | UPDATE], [
+        $DB->update('zentra_profilerights', ['rights' => READ | UPDATE], [
             'profiles_id' => $new_profiles_id,
             'name' => 'config',
         ]);
@@ -898,7 +898,7 @@ class SessionTest extends DbTestCase
 
         $this->assertFalse(\Session::canImpersonate($user->getID()));
 
-        $DB->update('glpi_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
+        $DB->update('zentra_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
             'profiles_id' => $new_profiles_id,
             'name' => 'user',
         ]);
@@ -907,7 +907,7 @@ class SessionTest extends DbTestCase
 
         $this->assertTrue(\Session::canImpersonate($user->getID()));
 
-        $DB->update('glpi_profilerights', ['rights' => 0], [
+        $DB->update('zentra_profilerights', ['rights' => 0], [
             'profiles_id' => $new_profiles_id,
             'name' => 'config',
         ]);
@@ -996,13 +996,13 @@ class SessionTest extends DbTestCase
     }
 
     /**
-     * Test that $_SESSION['glpigroups'] contains the expected ids
+     * Test that $_SESSION['zentragroups'] contains the expected ids
      */
     public function testSessionGroups(): void
     {
         foreach ($this->sessionGroupsProvider() as $i => $data) {
             $expected = $data['expected'];
-            $this->assertEquals($expected, $_SESSION['glpigroups'], "Unexpected session groups with data set $i");
+            $this->assertEquals($expected, $_SESSION['zentragroups'], "Unexpected session groups with data set $i");
         }
     }
 
@@ -1069,7 +1069,7 @@ class SessionTest extends DbTestCase
 
         // Update or insert a new profilerights item with the created profile and 'ticket' rights
         $DB->updateOrInsert(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights'       => \Ticket::READALL,
             ],
@@ -1080,13 +1080,13 @@ class SessionTest extends DbTestCase
         );
 
         // Assert that the current profile does not have 'ticket' rights set to \Ticket::READALL
-        $this->assertNotEquals(\Ticket::READALL, $_SESSION['glpiactiveprofile']['ticket']);
+        $this->assertNotEquals(\Ticket::READALL, $_SESSION['zentraactiveprofile']['ticket']);
 
         // Reload the current profile
         \Session::reloadCurrentProfile();
 
         // Assert that the current profile now has 'ticket' rights set to \Ticket::READALL
-        $this->assertEquals(\Ticket::READALL, $_SESSION['glpiactiveprofile']['ticket']);
+        $this->assertEquals(\Ticket::READALL, $_SESSION['zentraactiveprofile']['ticket']);
     }
 
     /**
@@ -1224,13 +1224,13 @@ class SessionTest extends DbTestCase
     #[DataProvider('entitiesRestrictProvider')]
     public function testGetMatchingActiveEntities(mixed $entity_restrict, ?array $active_entities, mixed $result): void
     {
-        $_SESSION['glpiactiveentities'] = $active_entities;
+        $_SESSION['zentraactiveentities'] = $active_entities;
         $this->assertSame($result, \Session::getMatchingActiveEntities($entity_restrict));
     }
 
     public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
     {
-        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', null, 3];
+        $_SESSION['zentraactiveentities'] = [0, 1, 2, 'foo', null, 3];
 
         $errors = [];
         set_error_handler(static function ($errno, $errstr) use (&$errors) {
@@ -1240,13 +1240,13 @@ class SessionTest extends DbTestCase
         restore_error_handler();
 
         $this->assertCount(2, $errors);
-        $this->assertEquals($errors[0], 'Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.');
-        $this->assertEquals($errors[1], 'Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.');
+        $this->assertEquals($errors[0], 'Unexpected value `foo` found in `$_SESSION[\'zentraactiveentities\']`.');
+        $this->assertEquals($errors[1], 'Unexpected value `null` found in `$_SESSION[\'zentraactiveentities\']`.');
     }
 
     public function testShouldReloadActiveEntities(): void
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -1304,8 +1304,8 @@ class SessionTest extends DbTestCase
     {
         $this->login();
         \Session::changeActiveEntities("all");
-        $this->assertEquals("Root entity (full structure)", $_SESSION["glpiactive_entity_name"]);
-        $this->assertEquals("Root entity (full structure)", $_SESSION["glpiactive_entity_shortname"]);
+        $this->assertEquals("Root entity (full structure)", $_SESSION["zentraactive_entity_name"]);
+        $this->assertEquals("Root entity (full structure)", $_SESSION["zentraactive_entity_shortname"]);
     }
 
     public function testCheckValidSessionIdWithSessionExpiration(): void
@@ -1412,12 +1412,12 @@ class SessionTest extends DbTestCase
     #[DataProvider('checkFaqAccessProvider')]
     public function testFaqAccessAccess(int $rights, bool $use_public_faq, ?\Exception $exception): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
-        $CFG_GLPI['use_public_faq'] = $use_public_faq;
-        $_SESSION["glpiactiveprofile"]['knowbase'] = $rights;
+        $CFG_ZENTRA['use_public_faq'] = $use_public_faq;
+        $_SESSION["zentraactiveprofile"]['knowbase'] = $rights;
 
         if ($exception !== null) {
             $this->expectExceptionObject($exception);
@@ -1431,7 +1431,7 @@ class SessionTest extends DbTestCase
 
         \Session::checkLoginUser(); // no exception thrown, as expected
 
-        unset($_SESSION['glpiname']);
+        unset($_SESSION['zentraname']);
         $this->expectException(AccessDeniedHttpException::class);
         $this->expectExceptionMessage('User has no valid session but seems to be logged in');
         \Session::checkLoginUser();
@@ -1559,10 +1559,10 @@ class SessionTest extends DbTestCase
     public function testCheckCSRF(): void
     {
         $token = \Session::getNewCSRFToken();
-        \Session::checkCSRF(['_glpi_csrf_token' => $token]); // No exception thrown
+        \Session::checkCSRF(['_zentra_csrf_token' => $token]); // No exception thrown
 
         $this->expectException(AccessDeniedHttpException::class);
-        \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
+        \Session::checkCSRF(['_zentra_csrf_token' => 'invalid token']);
     }
 
     public function testRightCheckBypass()
@@ -1624,11 +1624,11 @@ class SessionTest extends DbTestCase
         \Html::generateMenuSession(true);
 
         // Assert: the config menu content should not be generated
-        $this->assertArrayNotHasKey('content', $_SESSION['glpimenu']['config']);
+        $this->assertArrayNotHasKey('content', $_SESSION['zentramenu']['config']);
 
         // Control group: make sure the given key is set for another user
-        $this->login('glpi');
+        $this->login('zentra');
         \Html::generateMenuSession(true);
-        $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
+        $this->assertArrayHasKey('content', $_SESSION['zentramenu']['config']);
     }
 }

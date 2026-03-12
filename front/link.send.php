@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
@@ -44,7 +44,7 @@ Session::checkRight("link", READ);
 if (isset($_GET["lID"])) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'link', 'data'],
-        'FROM'   => 'glpi_links',
+        'FROM'   => 'zentra_links',
         'WHERE'  => [
             'id' => $_GET['lID'],
         ],

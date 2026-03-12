@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@ describe('Service catalog tab', () => {
 
     const uid = new Date().getTime();
     const category_name = `Category ${uid}`;
-    const category_dropdown_value = `»${category_name}`; // GLPI add "»" prefix to common tree dropdown values
+    const category_dropdown_value = `»${category_name}`; // ZENTRA add "»" prefix to common tree dropdown values
 
     before(() => {
-        cy.createWithAPI('Glpi\\Form\\Category', {
+        cy.createWithAPI('Zentra\\Form\\Category', {
             'name': category_name,
             'description': "my description",
         });
@@ -80,7 +80,7 @@ describe('Service catalog tab', () => {
         cy.createWithAPI('KnowbaseItem', {
             'name': "Test knowbase item for service_catalog_tab.cy.js",
             'content': "My content",
-        }).then((knowbaseItem_id) => cy.visit(`/front/knowbaseitem.form.php?id=${knowbaseItem_id}&forcetab=Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1`));
+        }).then((knowbaseItem_id) => cy.visit(`/front/knowbaseitem.form.php?id=${knowbaseItem_id}&forcetab=Zentra\\Form\\ServiceCatalog\\ServiceCatalog$1`));
 
         // Check that the service catalog configuration isn't active by default
         cy.findByRole('checkbox', {'name': 'Active'}).should('not.be.checked');

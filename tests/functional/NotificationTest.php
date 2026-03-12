@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use Contract;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use Group;
 use Group_User;
 use NotificationEvent;
@@ -54,7 +54,7 @@ class NotificationTest extends DbTestCase
 {
     public function testGetMailingSignature()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -63,7 +63,7 @@ class NotificationTest extends DbTestCase
         $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $CFG_GLPI['mailing_signature'] = 'global_signature';
+        $CFG_ZENTRA['mailing_signature'] = 'global_signature';
 
         $this->assertEquals("global_signature", \Notification::getMailingSignature($parent));
         $this->assertEquals("global_signature", \Notification::getMailingSignature($child_1));
@@ -114,7 +114,7 @@ class NotificationTest extends DbTestCase
      */
     public function testFilter(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $target_notification = "New Ticket";
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
@@ -123,8 +123,8 @@ class NotificationTest extends DbTestCase
         $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable()));
 
         // Enable notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_ZENTRA['use_notifications'] = true;
+        $CFG_ZENTRA['notifications_mailing'] = true;
 
         // Activate only new followup notification
         $success = $DB->update(\Notification::getTable(), ['is_active' => false], [
@@ -458,7 +458,7 @@ HTML,
     {
         $transport = $this->createCapturingTransport();
 
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::setMailer(new \ZENTRAMailer($transport));
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
 
@@ -489,7 +489,7 @@ HTML,
 
     public function testAttachedDocuments(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $this->login();
 
@@ -505,7 +505,7 @@ HTML,
             $expected_attachments = $row['expected_attachments'];
 
             // Enable notifications
-            $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
+            $CFG_ZENTRA['use_notifications'] = $CFG_ZENTRA['notifications_mailing'] = true;
 
             // Ensure only tested notification is active
             $deactivated = $DB->update(
@@ -517,22 +517,22 @@ HTML,
             $this->assertTrue($notification->update(['id' => $notification->getID(), 'is_active' => 1]));
 
             // Update global/notification configuration
-            $CFG_GLPI['attach_ticket_documents_to_mail'] = $global_config;
+            $CFG_ZENTRA['attach_ticket_documents_to_mail'] = $global_config;
             $this->assertTrue($notification->update(['id' => $notification->getID(), 'attach_documents' => $notif_config]));
 
             // Adapt notification template to send expected content format (HTML or plain text)
             $notification_notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notifications_notificationtemplates',
+                'FROM' => 'zentra_notifications_notificationtemplates',
                 'WHERE' => ['notifications_id' => $notification->getID()],
             ]);
             foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
                 $notificationtemplate_it = $DB->request([
-                    'FROM' => 'glpi_notificationtemplates',
+                    'FROM' => 'zentra_notificationtemplates',
                     'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
                 ]);
                 foreach ($notificationtemplate_it as $notificationtemplate_data) {
                     $template_updated = $DB->update(
-                        'glpi_notificationtemplatetranslations',
+                        'zentra_notificationtemplatetranslations',
                         ['content_html' => $send_html ? '<p>HTML</p>' : null],
                         ['notificationtemplates_id' => $notificationtemplate_data['id']]
                     );
@@ -554,7 +554,7 @@ HTML,
             $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
             $this->assertCount(1, $queued_notifications);
 
-            \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+            \NotificationEventMailing::setMailer(new \ZENTRAMailer($transport));
             \NotificationEventMailing::send($queued_notifications);
             \NotificationEventMailing::setMailer(null);
 
@@ -580,7 +580,7 @@ HTML,
 
     public function testSolutionDocumentsAttachedToSolvedNotification(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -588,9 +588,9 @@ HTML,
 
         foreach ([\Ticket::class, \Change::class, \Problem::class] as $itemtype) {
             // Arrange - Configure notifications
-            $CFG_GLPI['use_notifications'] = true;
-            $CFG_GLPI['notifications_mailing'] = true;
-            $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+            $CFG_ZENTRA['use_notifications'] = true;
+            $CFG_ZENTRA['notifications_mailing'] = true;
+            $CFG_ZENTRA['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
             $this->activateOnlyNotification($itemtype, 'solved');
 
@@ -640,16 +640,16 @@ HTML,
 
     public function testFollowupDocumentsAttachedToClosedNotification(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Arrange - Configure notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        $CFG_ZENTRA['use_notifications'] = true;
+        $CFG_ZENTRA['notifications_mailing'] = true;
+        $CFG_ZENTRA['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
         $this->activateOnlyNotification(\Ticket::class, 'closed');
 
@@ -708,16 +708,16 @@ HTML,
 
     public function testFollowupDocumentsAttachedToRejectSolutionNotification(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $this->login();
 
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Arrange - Configure notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        $CFG_ZENTRA['use_notifications'] = true;
+        $CFG_ZENTRA['notifications_mailing'] = true;
+        $CFG_ZENTRA['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
         $this->assertTrue($DB->update(
             \Notification::getTable(),
@@ -728,7 +728,7 @@ HTML,
         $closed_notif = new \Notification();
         $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
         $closed_template_link = $DB->request([
-            'FROM'  => 'glpi_notifications_notificationtemplates',
+            'FROM'  => 'zentra_notifications_notificationtemplates',
             'WHERE' => ['notifications_id' => $closed_notif->getID()],
         ])->current();
 
@@ -812,12 +812,12 @@ HTML,
      */
     private function createUploadedImage(string $prefix): string
     {
-        $filename = $prefix . uniqid('glpitest_', true) . '.png';
+        $filename = $prefix . uniqid('zentratest_', true) . '.png';
 
         $image = imagecreate(100, 100);
         $this->assertInstanceOf(\GdImage::class, $image);
         $this->assertIsInt(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
-        $this->assertTrue(imagepng($image, GLPI_TMP_DIR . '/' . $filename));
+        $this->assertTrue(imagepng($image, ZENTRA_TMP_DIR . '/' . $filename));
 
         return $filename;
     }
@@ -829,7 +829,7 @@ HTML,
      */
     protected function testEntityRestrictionProvider(): iterable
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         // Test users
         [$user_root, $user_sub] = $this->createItems(User::class, [
@@ -871,8 +871,8 @@ HTML,
         $this->assertEquals(0, $active_notification);
 
         // Enable notification
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['use_notifications'] = true;
+        $CFG_ZENTRA['notifications_mailing'] = true;
+        $CFG_ZENTRA['use_notifications'] = true;
 
         // Find the "Contract end" notification and enable it
         $notification = getItemByTypeName(\Notification::class, "Contract End");

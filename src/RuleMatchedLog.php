@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Inventory\Request;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Inventory\Request;
 
 use function Safe\json_decode;
 
@@ -79,7 +79,7 @@ class RuleMatchedLog extends CommonDBTM
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $array_ret = [];
 
@@ -121,7 +121,7 @@ class RuleMatchedLog extends CommonDBTM
         return $array_ret;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof CommonDBTM && ($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
             self::showForItem($item);
@@ -168,7 +168,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     private static function showForItem(CommonDBTM $item): void
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         $criteria = [
             'FROM' => self::getTable(),
@@ -176,7 +176,7 @@ class RuleMatchedLog extends CommonDBTM
         if ($item instanceof Agent) {
             $criteria['WHERE'] = [
                 'agents_id' => $item->getID(),
-                'itemtype'  => $CFG_GLPI['inventory_types'],
+                'itemtype'  => $CFG_ZENTRA['inventory_types'],
             ];
         } else {
             $criteria['WHERE'] = [
@@ -187,7 +187,7 @@ class RuleMatchedLog extends CommonDBTM
 
         $start = (int) ($_GET['start'] ?? 0);
         $count = $DB->request($criteria + ['COUNT' => 'cpt'])->current()['cpt'];
-        $limit = (int) $_SESSION['glpilist_limit'];
+        $limit = (int) $_SESSION['zentralist_limit'];
 
         $iterator = $DB->request(
             $criteria + [

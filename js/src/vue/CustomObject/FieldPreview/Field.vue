@@ -44,7 +44,7 @@
 </template>
 
 <style scoped>
-    [data-glpi-theme-dark="1"] .form-field {
+    [data-zentra-theme-dark="1"] .form-field {
         border: var(--tblr-border-width) solid var(--tblr-border-color);
     }
     .form-field {

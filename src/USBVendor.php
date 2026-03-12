@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\CacheableListInterface;
-use Glpi\Inventory\FilesToJSON;
+use Zentra\Features\CacheableListInterface;
+use Zentra\Inventory\FilesToJSON;
 use Psr\SimpleCache\InvalidArgumentException;
 
 use function Safe\file_get_contents;
@@ -46,7 +46,7 @@ use function Safe\preg_replace;
  */
 class USBVendor extends CommonDropdown implements CacheableListInterface
 {
-    public string $cache_key = 'glpi_usbvendors';
+    public string $cache_key = 'zentra_usbvendors';
 
     public static function getTypeName($nb = 0)
     {
@@ -98,10 +98,10 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $vendors = new USBVendor();
-        if (($usbids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
+        if (($usbids = $ZENTRA_CACHE->get($vendors->cache_key)) !== null) {
             return $usbids;
         }
 
@@ -110,7 +110,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         $db_usbids = $vendors->getDbList();
         $usbids = $db_usbids + $file_usbids;
         $usbids = array_change_key_case($usbids, CASE_LOWER);
-        $GLPI_CACHE->set($vendors->cache_key, $usbids);
+        $ZENTRA_CACHE->set($vendors->cache_key, $usbids);
 
         return $usbids;
     }
@@ -150,9 +150,9 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public function invalidateListCache(): void
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
-        $GLPI_CACHE->delete($this->cache_key);
+        $ZENTRA_CACHE->delete($this->cache_key);
     }
 
     /**

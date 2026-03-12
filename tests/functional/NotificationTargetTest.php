@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace tests\units;
 
 use Entity;
 use Generator;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Notification;
 use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -58,9 +58,9 @@ class NotificationTargetTest extends DbTestCase
         $ntarget_child_1 = new NotificationTarget($child_1);
         $ntarget_child_2 = new NotificationTarget($child_2);
 
-        $this->assertEquals("[GLPI] ", $ntarget_parent->getSubjectPrefix());
-        $this->assertEquals("[GLPI] ", $ntarget_child_1->getSubjectPrefix());
-        $this->assertEquals("[GLPI] ", $ntarget_child_2->getSubjectPrefix());
+        $this->assertEquals("[ZENTRA] ", $ntarget_parent->getSubjectPrefix());
+        $this->assertEquals("[ZENTRA] ", $ntarget_child_1->getSubjectPrefix());
+        $this->assertEquals("[ZENTRA] ", $ntarget_child_2->getSubjectPrefix());
 
         $entity  = new Entity();
         $this->assertTrue($entity->update([
@@ -223,12 +223,12 @@ class NotificationTargetTest extends DbTestCase
         bool $allow_response,
         array $expected_results
     ): void {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login(); // must be logged-in to update entities
 
         foreach ($global_config as $config_key => $config_value) {
-            $CFG_GLPI[$config_key] = $config_value;
+            $CFG_ZENTRA[$config_key] = $config_value;
         }
 
         foreach ($entities_configs as $entity_id => $entity_config) {
@@ -245,7 +245,7 @@ class NotificationTargetTest extends DbTestCase
 
     public function testGetUrlbase()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -259,7 +259,7 @@ class NotificationTargetTest extends DbTestCase
         $ntarget_child_2 = new NotificationTarget($child_2);
 
         // test global settings
-        $CFG_GLPI['url_base'] = 'global.tld';
+        $CFG_ZENTRA['url_base'] = 'global.tld';
 
         $this->assertEquals('global.tld', $ntarget_parent->getUrlBase());
         $this->assertEquals('global.tld', $ntarget_child_1->getUrlBase());
@@ -314,7 +314,7 @@ class NotificationTargetTest extends DbTestCase
      */
     protected function getSenderProvider(): Generator
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -327,8 +327,8 @@ class NotificationTargetTest extends DbTestCase
         ];
 
         // Case 2: no reply with global config
-        $CFG_GLPI['noreply_email'] = "noreply@localhost";
-        $CFG_GLPI['noreply_email_name'] = "No reply";
+        $CFG_ZENTRA['noreply_email'] = "noreply@localhost";
+        $CFG_ZENTRA['noreply_email_name'] = "No reply";
 
         yield [
             'allow_response' => false,
@@ -344,8 +344,8 @@ class NotificationTargetTest extends DbTestCase
         ];
 
         // Case 4: default post install values with global admin config
-        $CFG_GLPI['admin_email'] = "globaladmin@localhost";
-        $CFG_GLPI['admin_email_name'] = "Global admin";
+        $CFG_ZENTRA['admin_email'] = "globaladmin@localhost";
+        $CFG_ZENTRA['admin_email_name'] = "Global admin";
 
         yield [
             'allow_response' => true,
@@ -373,8 +373,8 @@ class NotificationTargetTest extends DbTestCase
         ];
 
         // Case 6: default post install values with global from config
-        $CFG_GLPI['from_email'] = "globalfrom@localhost";
-        $CFG_GLPI['from_email_name'] = "Global from";
+        $CFG_ZENTRA['from_email'] = "globalfrom@localhost";
+        $CFG_ZENTRA['from_email_name'] = "Global from";
 
         yield [
             'allow_response' => true,
@@ -432,8 +432,8 @@ class NotificationTargetTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'GlpiPlugin\Namespace\Test',
-            'class'    => 'GlpiPlugin\Namespace\NotificationTargetTest',
+            'itemtype' => 'ZentraPlugin\Namespace\Test',
+            'class'    => 'ZentraPlugin\Namespace\NotificationTargetTest',
         ];
     }
 
@@ -449,7 +449,7 @@ class NotificationTargetTest extends DbTestCase
 
     public static function formatUrlProvider(): iterable
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // No URL returned for anonymous user
         yield [
@@ -458,28 +458,28 @@ class NotificationTargetTest extends DbTestCase
             'expected' => '',
         ];
 
-        // GLPI user, no `noAUTO=1` parameter
+        // ZENTRA user, no `noAUTO=1` parameter
         yield [
-            'usertype' => NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::ZENTRA_USER,
             'redirect' => 'Ticket_24',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
+            'expected' => $CFG_ZENTRA['url_base'] . '/index.php?redirect=Ticket_24',
         ];
         yield [
-            'usertype' => NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::ZENTRA_USER,
             'redirect' => '/front/test.php?param=test&value=foo bar',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
+            'expected' => $CFG_ZENTRA['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
         ];
 
         // External user, no `noAUTO` parameter
         yield [
             'usertype' => NotificationTarget::EXTERNAL_USER,
             'redirect' => 'Ticket_24',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
+            'expected' => $CFG_ZENTRA['url_base'] . '/index.php?redirect=Ticket_24',
         ];
         yield [
             'usertype' => NotificationTarget::EXTERNAL_USER,
             'redirect' => '/front/test.php?param=test&value=foo bar',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
+            'expected' => $CFG_ZENTRA['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
         ];
     }
 
@@ -497,60 +497,60 @@ class NotificationTargetTest extends DbTestCase
                 "itemtype" => "Ticket",
                 "items_id" => 1,
                 "event" => "new",
-                "expected" => "/^GLPI_%UUID%-Ticket-1\/new@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-Ticket-1\/new@%UNAME%$/",
             ],
             [
                 "itemtype" => "Ticket",
                 "items_id" => 1,
                 "event" => "update",
-                "expected" => "/^GLPI_%UUID%-Ticket-1\/update\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-Ticket-1\/update\.\d+\.\d+@%UNAME%$/",
             ],
             [
                 "itemtype" => "Certificate",
                 "items_id" => 1,
                 "event" => 'alert',
-                "expected" => "/^GLPI_%UUID%-Certificate-1\/alert\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-Certificate-1\/alert\.\d+\.\d+@%UNAME%$/",
             ],
             [
                 "itemtype" => "User",
                 "items_id" => 7,
                 "event" => 'new',
-                "expected" => "/^GLPI_%UUID%-User-7\/new@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-User-7\/new@%UNAME%$/",
             ],
             [
                 "itemtype" => "User",
                 "items_id" => 7,
                 "event" => 'passwordexpires',
-                "expected" => "/^GLPI_%UUID%-User-7\/passwordexpires\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-User-7\/passwordexpires\.\d+\.\d+@%UNAME%$/",
             ],
             [
                 // no item
                 "itemtype" => null,
                 "items_id" => null,
                 "event" => "some_event",
-                "expected" => "/^GLPI_%UUID%\/some_event\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%\/some_event\.\d+\.\d+@%UNAME%$/",
             ],
             [
                 // invalid itemtype
                 "itemtype" => "Other",
                 "items_id" => 1,
                 "event" => "update",
-                "expected" => "/^GLPI_%UUID%\/update\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%\/update\.\d+\.\d+@%UNAME%$/",
             ],
             [
                 // no event
                 "itemtype" => null,
                 "items_id" => null,
                 "event" => null,
-                "expected" => "/^GLPI_%UUID%\/none\.\d+\.\d+@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%\/none\.\d+\.\d+@%UNAME%$/",
             ],
             [
-                // namespaced itemtype (real GLPI class) - validates RFC 2822 fix
+                // namespaced itemtype (real ZENTRA class) - validates RFC 2822 fix
                 // backslashes from namespace must be stripped from message ID
-                "itemtype" => "Glpi\\Socket",
+                "itemtype" => "Zentra\\Socket",
                 "items_id" => 3,
                 "event" => "new",
-                "expected" => "/^GLPI_%UUID%-Glpi-Socket-3\/new@%UNAME%$/",
+                "expected" => "/^ZENTRA_%UUID%-Zentra-Socket-3\/new@%UNAME%$/",
             ],
         ];
     }
@@ -626,11 +626,11 @@ class NotificationTargetTest extends DbTestCase
 
         $notification_target->addToRecipientsList([
             'users_id' => getItemByTypeName('User', TU_USER, true),
-            'usertype' => NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::ZENTRA_USER,
         ]);
         $notification_target->addToRecipientsList([
             'users_id' => $users_id,
-            'usertype' => NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::ZENTRA_USER,
         ]);
         $this->assertCount(2, $notification_target->getTargets());
 

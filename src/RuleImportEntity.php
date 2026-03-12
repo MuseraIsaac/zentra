@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Plugin\Hooks;
+use Zentra\Plugin\Hooks;
 
 class RuleImportEntity extends Rule
 {
@@ -128,10 +128,10 @@ class RuleImportEntity extends Rule
 
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         if ($criteria['field'] === '_source') {
-            $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
+            $tab = ['ZENTRA' => __('ZENTRA'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
             foreach (array_keys($PLUGIN_HOOKS[Hooks::IMPORT_ITEM] ?? []) as $plug) {
                 if (!Plugin::isPluginActive($plug)) {
                     continue;
@@ -143,7 +143,7 @@ class RuleImportEntity extends Rule
         }
 
         if ($criteria['field'] === 'itemtype') {
-            Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
+            Dropdown::showItemTypes($name, $CFG_ZENTRA['asset_types'], ['value' => $value]);
             return true;
         }
 
@@ -165,7 +165,7 @@ class RuleImportEntity extends Rule
     {
         $crit = $this->getCriteria($ID);
         if (count($crit) && $crit['field'] === '_source') {
-            if ($pattern === 'GLPI') {
+            if ($pattern === 'ZENTRA') {
                 $name = $pattern;
             } elseif ($pattern === 'NATIVE_INVENTORY') {
                 $name = AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY);

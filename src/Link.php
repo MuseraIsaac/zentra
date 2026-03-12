@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\TemplateManager;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Features\AssignableItem;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\ContentTemplates\TemplateManager;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Features\AssignableItem;
+use Zentra\Toolbox\URL;
 
 use function Safe\preg_match;
 
@@ -89,11 +89,11 @@ class Link extends CommonDBTM
         }
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $entity_criteria = getEntitiesRestrictCriteria(
                     Link::getTable(),
                     '',
@@ -102,10 +102,10 @@ class Link extends CommonDBTM
                 );
 
                 $nb = countElementsInTable(
-                    ['glpi_links_itemtypes','glpi_links'],
+                    ['zentra_links_itemtypes','zentra_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                        'zentra_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('zentra_links.id')),
+                        'zentra_links_itemtypes.itemtype'  => $item->getType(),
                     ] + $entity_criteria
                 );
             }
@@ -114,7 +114,7 @@ class Link extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -157,7 +157,7 @@ class Link extends CommonDBTM
         global $DB;
         return array_column(iterator_to_array($DB->request([
             'SELECT' => ['itemtype'],
-            'FROM' => 'glpi_links_itemtypes',
+            'FROM' => 'zentra_links_itemtypes',
             'WHERE' => ['links_id' => $this->getID()],
         ])), 'itemtype');
     }
@@ -170,7 +170,7 @@ class Link extends CommonDBTM
      */
     private function getTagCompletions(): array
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         static $completions = null;
 
@@ -184,7 +184,7 @@ class Link extends CommonDBTM
                 ];
             }
             if ($this->isNewItem()) {
-                $itemtypes = $CFG_GLPI['link_types'];
+                $itemtypes = $CFG_ZENTRA['link_types'];
             } else {
                 $itemtypes = $this->getLinkedItemtypes();
             }
@@ -278,7 +278,7 @@ class Link extends CommonDBTM
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -298,25 +298,25 @@ class Link extends CommonDBTM
             if ($get_ip) {
                 $iterator = $DB->request([
                     'SELECT' => [
-                        'glpi_ipaddresses.id',
-                        'glpi_ipaddresses.name AS ip',
+                        'zentra_ipaddresses.id',
+                        'zentra_ipaddresses.name AS ip',
                     ],
-                    'FROM'   => 'glpi_networknames',
+                    'FROM'   => 'zentra_networknames',
                     'INNER JOIN'   => [
-                        'glpi_ipaddresses'   => [
+                        'zentra_ipaddresses'   => [
                             'ON' => [
-                                'glpi_ipaddresses'   => 'items_id',
-                                'glpi_networknames'  => 'id', [
+                                'zentra_ipaddresses'   => 'items_id',
+                                'zentra_networknames'  => 'id', [
                                     'AND' => [
-                                        'glpi_ipaddresses.itemtype' => 'NetworkName',
+                                        'zentra_ipaddresses.itemtype' => 'NetworkName',
                                     ],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE'        => [
-                        'glpi_networknames.items_id'  => $item->getID(),
-                        'glpi_networknames.itemtype'  => ['NetworkEquipment'],
+                        'zentra_networknames.items_id'  => $item->getID(),
+                        'zentra_networknames.itemtype'  => ['NetworkEquipment'],
                     ],
                 ]);
                 foreach ($iterator as $data2) {
@@ -335,36 +335,36 @@ class Link extends CommonDBTM
         if ($get_ip) {
             $iterator = $DB->request([
                 'SELECT' => [
-                    'glpi_ipaddresses.id',
-                    'glpi_ipaddresses.name AS ip',
-                    'glpi_networkports.mac',
+                    'zentra_ipaddresses.id',
+                    'zentra_ipaddresses.name AS ip',
+                    'zentra_networkports.mac',
                 ],
-                'FROM'   => 'glpi_networkports',
+                'FROM'   => 'zentra_networkports',
                 'INNER JOIN'   => [
-                    'glpi_networknames'   => [
+                    'zentra_networknames'   => [
                         'ON' => [
-                            'glpi_networknames'  => 'items_id',
-                            'glpi_networkports'  => 'id', [
+                            'zentra_networknames'  => 'items_id',
+                            'zentra_networkports'  => 'id', [
                                 'AND' => [
-                                    'glpi_networknames.itemtype' => 'NetworkPort',
+                                    'zentra_networknames.itemtype' => 'NetworkPort',
                                 ],
                             ],
                         ],
                     ],
-                    'glpi_ipaddresses'   => [
+                    'zentra_ipaddresses'   => [
                         'ON' => [
-                            'glpi_ipaddresses'   => 'items_id',
-                            'glpi_networknames'  => 'id', [
+                            'zentra_ipaddresses'   => 'items_id',
+                            'zentra_networknames'  => 'id', [
                                 'AND' => [
-                                    'glpi_ipaddresses.itemtype' => 'NetworkName',
+                                    'zentra_ipaddresses.itemtype' => 'NetworkName',
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item::class,
+                    'zentra_networkports.items_id'  => $item->getID(),
+                    'zentra_networkports.itemtype'  => $item::class,
                 ],
             ]);
             foreach ($iterator as $data2) {
@@ -376,31 +376,31 @@ class Link extends CommonDBTM
         if ($get_mac) {
             $criteria = [
                 'SELECT' => [
-                    'glpi_networkports.id',
-                    'glpi_networkports.mac',
+                    'zentra_networkports.id',
+                    'zentra_networkports.mac',
                 ],
-                'FROM'   => 'glpi_networkports',
+                'FROM'   => 'zentra_networkports',
                 'WHERE'  => [
-                    'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item::class,
+                    'zentra_networkports.items_id'  => $item->getID(),
+                    'zentra_networkports.itemtype'  => $item::class,
                 ],
-                'GROUP' => 'glpi_networkports.mac',
+                'GROUP' => 'zentra_networkports.mac',
             ];
 
             if ($get_ip) {
                 $criteria['LEFT JOIN'] = [
-                    'glpi_networknames' => [
+                    'zentra_networknames' => [
                         'ON' => [
-                            'glpi_networknames'  => 'items_id',
-                            'glpi_networkports'  => 'id', [
+                            'zentra_networknames'  => 'items_id',
+                            'zentra_networkports'  => 'id', [
                                 'AND' => [
-                                    'glpi_networknames.itemtype'  => 'NetworkPort',
+                                    'zentra_networknames.itemtype'  => 'NetworkPort',
                                 ],
                             ],
                         ],
                     ],
                 ];
-                $criteria['WHERE']['glpi_networknames.id'] = null;
+                $criteria['WHERE']['zentra_networknames.id'] = null;
             }
 
             $iterator = $DB->request($criteria);
@@ -425,32 +425,32 @@ class Link extends CommonDBTM
      */
     public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $vars = [
             'ID' => $item->getID(),
-            'LOGIN' => $_SESSION["glpiname"] ?? '',
+            'LOGIN' => $_SESSION["zentraname"] ?? '',
             'NAME' => $item->getName(),
             'SERIAL' => $item->isField('serial') ? $item->getField('serial') : '',
             'OTHERSERIAL' => $item->isField('otherserial') ? $item->getField('otherserial') : '',
             'LOCATIONID' => $item->isField('locations_id') ? $item->getField('locations_id') : '',
             'DOMAIN' => '',
-            'NETWORK' => $item->isField('networks_id') ? Dropdown::getDropdownName('glpi_networks', $item->getField('networks_id')) : '',
-            'USER' => $item->isField('users_id') ? Dropdown::getDropdownName('glpi_users', $item->getField('users_id')) : '',
+            'NETWORK' => $item->isField('networks_id') ? Dropdown::getDropdownName('zentra_networks', $item->getField('networks_id')) : '',
+            'USER' => $item->isField('users_id') ? Dropdown::getDropdownName('zentra_users', $item->getField('users_id')) : '',
             'REALNAME' => $item->isField('realname') ? $item->getField('realname') : '',
             'FIRSTNAME' => $item->isField('firstname') ? $item->getField('firstname') : '',
             'MODEL' => '',
         ];
 
         if (Toolbox::hasTrait($item::class, AssignableItem::class)) {
-            $group_names = array_map(static fn($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
+            $group_names = array_map(static fn($group_id) => Dropdown::getDropdownName('zentra_groups', $group_id), $item->fields['groups_id']);
             $vars['GROUPS'] = $group_names;
-            // GROUP - BC for < GLPI 11
+            // GROUP - BC for < ZENTRA 11
             $vars['GROUP'] = count($group_names) > 0 ? array_shift($group_names) : '';
         } else {
             $vars['GROUPS'] = [];
-            // GROUP - BC for < GLPI 11
-            $vars['GROUP'] = $item->isField('groups_id') ? Dropdown::getDropdownName('glpi_groups', $item->getField('groups_id')) : '';
+            // GROUP - BC for < ZENTRA 11
+            $vars['GROUP'] = $item->isField('groups_id') ? Dropdown::getDropdownName('zentra_groups', $item->getField('groups_id')) : '';
         }
 
         $item_fields = $item->fields;
@@ -469,9 +469,9 @@ class Link extends CommonDBTM
         }
 
         $vars['LOCATION'] = $item->isField('locations_id')
-            ? Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id')) : '';
+            ? Dropdown::getDropdownName('zentra_locations', $item->getField('locations_id')) : '';
 
-        if (in_array($item::class, $CFG_GLPI['domain_types'], true)) {
+        if (in_array($item::class, $CFG_ZENTRA['domain_types'], true)) {
             $domain_table = Domain::getTable();
             $domain_item_table = Domain_Item::getTable();
             $iterator = $DB->request([
@@ -657,7 +657,7 @@ TWIG, $buttons_params);
      */
     public static function getAllLinksFor($item, $params)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $computedlinks = [];
         if (
@@ -711,7 +711,7 @@ TWIG, $buttons_params);
                     // same name for all files, ex name = foo.txt
                     $file = reset($files);
                 }
-                $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id']
+                $url             = $CFG_ZENTRA["root_doc"] . "/front/link.send.php?lID=" . $params['id']
                                  . "&itemtype=" . $item::class
                                  . "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
@@ -736,10 +736,10 @@ TWIG, $buttons_params);
     {
         $tab = [];
 
-        // "Fake" search options, processing is done in Search::giveItem() for glpi_links._virtual
+        // "Fake" search options, processing is done in Search::giveItem() for zentra_links._virtual
         $newtab = [
             'id'                 => '145',
-            'table'              => 'glpi_links',
+            'table'              => 'zentra_links',
             'field'              => '_virtual',
             'name'               => _n('External link', 'External links', Session::getPluralNumber()),
             'datatype'           => 'specific',
@@ -748,7 +748,7 @@ TWIG, $buttons_params);
             'nosort'             => '1',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_links_itemtypes',
+                    'table'              => 'zentra_links_itemtypes',
                     'joinparams'         => [
                         'jointype'           => 'itemtypeonly',
                     ],
@@ -762,11 +762,11 @@ TWIG, $buttons_params);
     }
 
     /**
-     * @param CommonGLPI $item
+     * @param CommonZENTRA $item
      *
      * @return array|int|string
      */
-    public static function getEntityRestrictForItem(CommonGLPI $item)
+    public static function getEntityRestrictForItem(CommonZENTRA $item)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -793,24 +793,24 @@ TWIG, $buttons_params);
 
         return $DB->request([
             'SELECT'       => [
-                'glpi_links.id',
-                'glpi_links.link AS link',
-                'glpi_links.name AS name',
-                'glpi_links.data AS data',
-                'glpi_links.open_window AS open_window',
+                'zentra_links.id',
+                'zentra_links.link AS link',
+                'zentra_links.name AS name',
+                'zentra_links.data AS data',
+                'zentra_links.open_window AS open_window',
             ],
-            'FROM'         => 'glpi_links',
+            'FROM'         => 'zentra_links',
             'INNER JOIN'   => [
-                'glpi_links_itemtypes'  => [
+                'zentra_links_itemtypes'  => [
                     'ON' => [
-                        'glpi_links_itemtypes'  => 'links_id',
-                        'glpi_links'            => 'id',
+                        'zentra_links_itemtypes'  => 'links_id',
+                        'zentra_links'            => 'id',
                     ],
                 ],
             ],
             'WHERE'        => [
-                'glpi_links_itemtypes.itemtype'  => $item::class,
-            ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
+                'zentra_links_itemtypes.itemtype'  => $item::class,
+            ] + getEntitiesRestrictCriteria('zentra_links', 'entities_id', $restrict, true),
             'ORDERBY'      => 'name',
         ]);
     }
@@ -882,7 +882,7 @@ TWIG, $buttons_params);
         parent::post_updateItem($history);
         if (isset($this->input['itemtypes'])) {
             $existing_itemtypes = iterator_to_array($DB->request([
-                'FROM' => 'glpi_links_itemtypes',
+                'FROM' => 'zentra_links_itemtypes',
                 'WHERE' => ['links_id' => $this->getID()],
             ]));
             $link_itemtype = new Link_Itemtype();

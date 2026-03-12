@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,66 +34,66 @@
 /* stylelint-disable property-no-vendor-prefix */
 body {
     .flatpickr-calendar {
-        --glpi-flatpickr-bg: var(--tblr-bg-surface);
-        --glpi-flatpickr-text-color: var(--tblr-body-color);
-        --glpi-flatpickr-accent-color: color-mix(in srgb, var(--tblr-link-color), transparent 50%);
-        --glpi-flatpickr-date-hover-bg: color-mix(in srgb, var(--glpi-flatpickr-accent-color), transparent 40%);
-        --glpi-flatpickr-date-selection-hover-bg: color-mix(in srgb, var(--glpi-flatpickr-accent-color), transparent 30%);
-        --glpi-flatpickr-date-selection-fg: var(--glpi-flatpickr-text-color);
-        --glpi-flatpickr-border-color: var(--tblr-border-color);
-        --glpi-flatpickr-shadow-color: color-mix(in srgb, var(--tblr-body-color), transparent 96%);
-        --glpi-flatpickr-faded-color: color-mix(in srgb, var(--tblr-body-color), transparent 70%);
+        --zentra-flatpickr-bg: var(--tblr-bg-surface);
+        --zentra-flatpickr-text-color: var(--tblr-body-color);
+        --zentra-flatpickr-accent-color: color-mix(in srgb, var(--tblr-link-color), transparent 50%);
+        --zentra-flatpickr-date-hover-bg: color-mix(in srgb, var(--zentra-flatpickr-accent-color), transparent 40%);
+        --zentra-flatpickr-date-selection-hover-bg: color-mix(in srgb, var(--zentra-flatpickr-accent-color), transparent 30%);
+        --zentra-flatpickr-date-selection-fg: var(--zentra-flatpickr-text-color);
+        --zentra-flatpickr-border-color: var(--tblr-border-color);
+        --zentra-flatpickr-shadow-color: color-mix(in srgb, var(--tblr-body-color), transparent 96%);
+        --zentra-flatpickr-faded-color: color-mix(in srgb, var(--tblr-body-color), transparent 70%);
 
-        background: var(--glpi-flatpickr-bg);
-        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
-        box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
+        background: var(--zentra-flatpickr-bg);
+        -webkit-box-shadow: 1px 0 0 var(--zentra-flatpickr-shadow-color), -1px 0 0 var(--zentra-flatpickr-shadow-color), 0 1px 0 var(--zentra-flatpickr-shadow-color), 0 -1px 0 var(--zentra-flatpickr-shadow-color), 0 3px 13px var(--zentra-flatpickr-shadow-color);
+        box-shadow: 1px 0 0 var(--zentra-flatpickr-shadow-color), -1px 0 0 var(--zentra-flatpickr-shadow-color), 0 1px 0 var(--zentra-flatpickr-shadow-color), 0 -1px 0 var(--zentra-flatpickr-shadow-color), 0 3px 13px var(--zentra-flatpickr-shadow-color);
     }
 
     .flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
-        -webkit-box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
-        box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
+        -webkit-box-shadow: -2px 0 0 var(--zentra-flatpickr-shadow-color), 5px 0 0 var(--zentra-flatpickr-shadow-color);
+        box-shadow: -2px 0 0 var(--zentra-flatpickr-shadow-color), 5px 0 0 var(--zentra-flatpickr-shadow-color);
     }
 
     .flatpickr-calendar.hasTime .flatpickr-time {
-        border-top: 1px solid var(--glpi-flatpickr-border-color);
+        border-top: 1px solid var(--zentra-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::before {
-        border-bottom-color: var(--glpi-flatpickr-border-color);
+        border-bottom-color: var(--zentra-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::after {
-        border-bottom-color: var(--glpi-flatpickr-bg);
+        border-bottom-color: var(--zentra-flatpickr-bg);
     }
 
     .flatpickr-calendar.arrowBottom::before {
-        border-top-color: var(--glpi-flatpickr-border-color);
+        border-top-color: var(--zentra-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowBottom::after {
-        border-top-color: var(--glpi-flatpickr-bg);
+        border-top-color: var(--zentra-flatpickr-bg);
     }
 
     .flatpickr-months .flatpickr-month {
-        background: var(--glpi-flatpickr-bg);
-        color: var(--glpi-flatpickr-text-color);
-        fill: var(--glpi-flatpickr-text-color);
+        background: var(--zentra-flatpickr-bg);
+        color: var(--zentra-flatpickr-text-color);
+        fill: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month,
     .flatpickr-months .flatpickr-next-month {
-        color: var(--glpi-flatpickr-text-color);
-        fill: var(--glpi-flatpickr-text-color);
+        color: var(--zentra-flatpickr-text-color);
+        fill: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month:hover,
     .flatpickr-months .flatpickr-next-month:hover {
-        color: var(--glpi-flatpickr-text-color);
+        color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month:hover svg,
     .flatpickr-months .flatpickr-next-month:hover svg {
-        fill: var(--glpi-flatpickr-accent-color);
+        fill: var(--zentra-flatpickr-accent-color);
     }
 
     .numInputWrapper:hover {
@@ -105,15 +105,15 @@ body {
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowUp::after {
-        border-bottom-color: var(--glpi-flatpickr-text-color);
+        border-bottom-color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowDown::after {
-        border-top-color: var(--glpi-flatpickr-text-color);
+        border-top-color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months {
-        background: var(--glpi-flatpickr-bg);
+        background: var(--zentra-flatpickr-bg);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -121,21 +121,21 @@ body {
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
-        background-color: var(--glpi-flatpickr-bg);
+        background-color: var(--zentra-flatpickr-bg);
     }
 
     span.flatpickr-weekday {
-        background: var(--glpi-flatpickr-bg);
-        color: var(--glpi-flatpickr-text-color);
+        background: var(--zentra-flatpickr-bg);
+        color: var(--zentra-flatpickr-text-color);
     }
 
     .dayContainer + .dayContainer {
-        -webkit-box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
-        box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
+        -webkit-box-shadow: -1px 0 0 var(--zentra-flatpickr-shadow-color);
+        box-shadow: -1px 0 0 var(--zentra-flatpickr-shadow-color);
     }
 
     .flatpickr-day {
-        color: var(--glpi-flatpickr-text-color);
+        color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-day.inRange,
@@ -150,19 +150,19 @@ body {
     .flatpickr-day:focus,
     .flatpickr-day.prevMonthDay:focus,
     .flatpickr-day.nextMonthDay:focus {
-        background: var(--glpi-flatpickr-date-hover-bg);
-        border-color: var(--glpi-flatpickr-date-hover-bg);
+        background: var(--zentra-flatpickr-date-hover-bg);
+        border-color: var(--zentra-flatpickr-date-hover-bg);
     }
 
     .flatpickr-day.today {
-        border-color: var(--glpi-flatpickr-text-color);
+        border-color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-day.today:hover,
     .flatpickr-day.today:focus {
-        border-color: var(--glpi-flatpickr-text-color);
-        background: var(--glpi-flatpickr-text-color);
-        color: var(--glpi-flatpickr-bg);
+        border-color: var(--zentra-flatpickr-text-color);
+        background: var(--zentra-flatpickr-text-color);
+        color: var(--zentra-flatpickr-bg);
     }
 
     .flatpickr-day.selected,
@@ -183,16 +183,16 @@ body {
     .flatpickr-day.selected.nextMonthDay,
     .flatpickr-day.startRange.nextMonthDay,
     .flatpickr-day.endRange.nextMonthDay {
-        background: var(--glpi-flatpickr-date-selection-hover-bg);
-        color: var(--glpi-flatpickr-date-selection-fg);
-        border-color: var(--glpi-flatpickr-date-selection-hover-bg);
+        background: var(--zentra-flatpickr-date-selection-hover-bg);
+        color: var(--zentra-flatpickr-date-selection-fg);
+        border-color: var(--zentra-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n+1)) {
-        -webkit-box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
-        box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
+        -webkit-box-shadow: -10px 0 0 var(--zentra-flatpickr-date-selection-hover-bg);
+        box-shadow: -10px 0 0 var(--zentra-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-day.flatpickr-disabled,
@@ -202,44 +202,44 @@ body {
     .flatpickr-day.notAllowed,
     .flatpickr-day.notAllowed.prevMonthDay,
     .flatpickr-day.notAllowed.nextMonthDay {
-        color: var(--glpi-flatpickr-faded-color);
+        color: var(--zentra-flatpickr-faded-color);
     }
 
     .flatpickr-day.inRange {
-        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
-        box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
+        -webkit-box-shadow: -5px 0 0 var(--zentra-flatpickr-date-hover-bg), 5px 0 0 var(--zentra-flatpickr-date-hover-bg);
+        box-shadow: -5px 0 0 var(--zentra-flatpickr-date-hover-bg), 5px 0 0 var(--zentra-flatpickr-date-hover-bg);
     }
 
     .flatpickr-day.week.selected {
-        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
-        box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
+        -webkit-box-shadow: -5px 0 0 var(--zentra-flatpickr-date-selection-hover-bg), 5px 0 0 var(--zentra-flatpickr-date-selection-hover-bg);
+        box-shadow: -5px 0 0 var(--zentra-flatpickr-date-selection-hover-bg), 5px 0 0 var(--zentra-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-weekwrapper .flatpickr-weeks {
-        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
-        box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
+        -webkit-box-shadow: 1px 0 0 var(--zentra-flatpickr-shadow-color);
+        box-shadow: 1px 0 0 var(--zentra-flatpickr-shadow-color);
     }
 
     .flatpickr-weekwrapper span.flatpickr-day,
     .flatpickr-weekwrapper span.flatpickr-day:hover {
-        color: var(--glpi-flatpickr-faded-color);
+        color: var(--zentra-flatpickr-faded-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowUp::after {
-        border-bottom-color: var(--glpi-flatpickr-text-color);
+        border-bottom-color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowDown::after {
-        border-top-color: var(--glpi-flatpickr-text-color);
+        border-top-color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-time input {
-        color: var(--glpi-flatpickr-text-color);
+        color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-time .flatpickr-time-separator,
     .flatpickr-time .flatpickr-am-pm {
-        color: var(--glpi-flatpickr-text-color);
+        color: var(--zentra-flatpickr-text-color);
     }
 
     .flatpickr-time input:hover,

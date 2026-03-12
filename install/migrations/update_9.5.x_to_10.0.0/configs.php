@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,18 +51,18 @@ $migration->addConfig([
     'noreply_email_name'    => '',
     'replyto_email'         => '',
     'replyto_email_name'    => '',
-    'support_legacy_data'   => 1, // GLPI instances updated from GLPI < 10.0 should support legacy data
+    'support_legacy_data'   => 1, // ZENTRA instances updated from ZENTRA < 10.0 should support legacy data
 ]);
-$migration->addField("glpi_users", "default_central_tab", "tinyint DEFAULT 0");
-$migration->addField('glpi_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);
-$migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
-$migration->addField('glpi_users', 'fold_search', 'tinyint DEFAULT NULL', ['after' => 'fold_menu']);
-$migration->addField('glpi_users', 'savedsearches_pinned', 'text', ['after' => 'fold_search', 'nodefault' => true]);
-$migration->addField('glpi_users', 'richtext_layout', 'char(20) DEFAULT NULL', ['after' => 'savedsearches_pinned']);
-$migration->addField("glpi_users", "timeline_order", "char(20) DEFAULT NULL", ['after' => 'savedsearches_pinned']);
-$migration->addField('glpi_users', 'itil_layout', 'text', ['after' => 'timeline_order']);
+$migration->addField("zentra_users", "default_central_tab", "tinyint DEFAULT 0");
+$migration->addField('zentra_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);
+$migration->addField('zentra_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
+$migration->addField('zentra_users', 'fold_search', 'tinyint DEFAULT NULL', ['after' => 'fold_menu']);
+$migration->addField('zentra_users', 'savedsearches_pinned', 'text', ['after' => 'fold_search', 'nodefault' => true]);
+$migration->addField('zentra_users', 'richtext_layout', 'char(20) DEFAULT NULL', ['after' => 'savedsearches_pinned']);
+$migration->addField("zentra_users", "timeline_order", "char(20) DEFAULT NULL", ['after' => 'savedsearches_pinned']);
+$migration->addField('zentra_users', 'itil_layout', 'text', ['after' => 'timeline_order']);
 
-$migration->dropField('glpi_users', 'layout');
+$migration->dropField('zentra_users', 'layout');
 $migration->removeConfig(['layout']);
 $migration->removeConfig(['use_ajax_autocompletion']);
 $migration->removeConfig(['transfers_id_auto']);

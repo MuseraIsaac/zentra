@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
@@ -75,7 +75,7 @@ final class LocalesExtractCommand extends AbstractCommand
         if ($this->isPluginCommand()) {
             $working_dir = $this->getPluginDirectory();
         } else {
-            $working_dir = dirname(__DIR__, 3); // glpi
+            $working_dir = dirname(__DIR__, 3); // zentra
         }
 
         $finder = new ExecutableFinder();
@@ -110,7 +110,7 @@ final class LocalesExtractCommand extends AbstractCommand
             $args['F_ARGS_SN'] .= ',4t';
         } else {
             // core
-            $name = 'GLPI';
+            $name = 'ZENTRA';
             $exclude_regex = '/^\.\/(\..*|(config|files|lib|marketplace|node_modules|plugins|public|tests|tools|vendor)\/).*/';
         }
 
@@ -135,7 +135,7 @@ final class LocalesExtractCommand extends AbstractCommand
         // Append locales from Twig templates
         if (is_dir($working_dir . '/templates')) {
             $this->io->section('Processing Twig templates...');
-            $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
+            $temp_twig_dir = sys_get_temp_dir() . '/zentra-locales-' . uniqid();
             if (!mkdir($temp_twig_dir . '/templates', 0o777, true)) {
                 $this->io->error(sprintf('Unable to create the `%s/templates` dir.', $temp_twig_dir));
                 return Command::FAILURE;

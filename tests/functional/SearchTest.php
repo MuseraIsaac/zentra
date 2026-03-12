@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,10 +44,10 @@ use Document;
 use Document_Item;
 use DropdownTranslation;
 use Entity;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasDocumentsCapacity;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasDocumentsCapacity;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use Group;
 use Group_Item;
 use Group_User;
@@ -63,22 +63,22 @@ class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // check param itemtype exists (to avoid search errors)
         if ($itemtype !== 'AllAssets') {
             $this->assertTrue(is_subclass_of($itemtype, CommonDBTM::class));
         }
 
-        // login to glpi if needed
-        if (!isset($_SESSION['glpiname'])) {
+        // login to zentra if needed
+        if (!isset($_SESSION['zentraname'])) {
             $this->login();
         }
 
         // force item lock
-        if (in_array($itemtype, $CFG_GLPI['lock_lockable_objects'])) {
-            $CFG_GLPI["lock_use_lock_item"] = 1;
-            $CFG_GLPI["lock_item_list"] = [$itemtype];
+        if (in_array($itemtype, $CFG_ZENTRA['lock_lockable_objects'])) {
+            $CFG_ZENTRA["lock_use_lock_item"] = 1;
+            $CFG_ZENTRA["lock_item_list"] = [$itemtype];
         }
 
         // don't compute last request from session
@@ -119,19 +119,19 @@ class SearchTest extends DbTestCase
         //try to find LEFT JOIN clauses
         $this->assertMatchesRegularExpression(
             "/"
-            . "LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
-            . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
-            . "AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
-            . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*'0'\s*\)\s*"
-            . "LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
-            . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
+            . "LEFT\s*JOIN\s*`zentra_items_operatingsystems`\s*AS\s*`zentra_items_operatingsystems_OperatingSystem`\s*"
+            . "ON\s*\(`zentra_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`zentra_computers`\.`id`\s*"
+            . "AND `zentra_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
+            . "AND `zentra_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*'0'\s*\)\s*"
+            . "LEFT\s*JOIN\s*`zentra_operatingsystems`\s*"
+            . "ON\s*\(`zentra_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`zentra_operatingsystems`\.`id`\s*\)"
             . "/im",
             $data['sql']['search']
         );
 
         //try to match WHERE clause
         $this->assertMatchesRegularExpression(
-            "/(\(`glpi_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im",
+            "/(\(`zentra_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im",
             $data['sql']['search']
         );
     }
@@ -165,10 +165,10 @@ class SearchTest extends DbTestCase
 
         $this->assertMatchesRegularExpression(
             '/'
-            . 'LEFT JOIN\s*`glpi_items_softwareversions`\s*AS\s*`glpi_items_softwareversions_[^`]+_Software`\s*ON\s*\('
-            . '`glpi_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`glpi_computers`.`id`'
-            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
-            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*\'0\''
+            . 'LEFT JOIN\s*`zentra_items_softwareversions`\s*AS\s*`zentra_items_softwareversions_[^`]+_Software`\s*ON\s*\('
+            . '`zentra_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`zentra_computers`.`id`'
+            . '\s*AND\s*`zentra_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
+            . '\s*AND\s*`zentra_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*\'0\''
             . '\)/im',
             $data['sql']['search']
         );
@@ -346,15 +346,15 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('Computer', $search_params);
 
         $this->assertStringContainsString(
-            "LEFT JOIN `glpi_users`",
+            "LEFT JOIN `zentra_users`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "LEFT JOIN `glpi_profiles` AS `glpi_profiles_",
+            "LEFT JOIN `zentra_profiles` AS `zentra_profiles_",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "LEFT JOIN `glpi_entities` AS `glpi_entities_",
+            "LEFT JOIN `zentra_entities` AS `zentra_entities_",
             $data['sql']['search']
         );
     }
@@ -440,13 +440,13 @@ class SearchTest extends DbTestCase
 
         $regexps = [
             // join parts
-            '/LEFT JOIN\s*`glpi_items_softwareversions`\s*AS `glpi_items_softwareversions_Software`/im',
-            '/LEFT JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im',
-            '/LEFT JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im',
-            '/LEFT JOIN\s*`glpi_infocoms`\s*AS\s*`glpi_infocoms_Budget`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms_Budget`\.`items_id`\s*AND\s*`glpi_infocoms_Budget`.`itemtype`\s*=\s*\'Computer\'\)/im',
-            '/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms_Budget`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`/im',
-            '/LEFT JOIN\s*`glpi_assets_assets_peripheralassets`\s*AS `glpi_assets_assets_peripheralassets_Printer`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im',
-            '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`glpi_printers`\.`id`/im',
+            '/LEFT JOIN\s*`zentra_items_softwareversions`\s*AS `zentra_items_softwareversions_Software`/im',
+            '/LEFT JOIN\s*`zentra_softwareversions`\s*AS `zentra_softwareversions_Software`/im',
+            '/LEFT JOIN\s*`zentra_softwares`\s*ON\s*\(`zentra_softwareversions_Software`\.`softwares_id`\s*=\s*`zentra_softwares`\.`id`\)/im',
+            '/LEFT JOIN\s*`zentra_infocoms`\s*AS\s*`zentra_infocoms_Budget`\s*ON\s*\(`zentra_computers`\.`id`\s*=\s*`zentra_infocoms_Budget`\.`items_id`\s*AND\s*`zentra_infocoms_Budget`.`itemtype`\s*=\s*\'Computer\'\)/im',
+            '/LEFT JOIN\s*`zentra_budgets`\s*ON\s*\(`zentra_infocoms_Budget`\.`budgets_id`\s*=\s*`zentra_budgets`\.`id`/im',
+            '/LEFT JOIN\s*`zentra_assets_assets_peripheralassets`\s*AS `zentra_assets_assets_peripheralassets_Printer`\s*ON\s*\(`zentra_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`zentra_computers`\.`id`\s*AND\s*`zentra_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`zentra_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`zentra_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im',
+            '/LEFT JOIN\s*`zentra_printers`\s*ON\s*\(`zentra_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`zentra_printers`\.`id`/im',
             // match having
             "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/",
         ];
@@ -460,16 +460,16 @@ class SearchTest extends DbTestCase
 
         // match where parts
         $contains = [
-            "`glpi_computers`.`is_deleted` = 0",
-            "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
-            "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
-            "`glpi_computers`.`name` LIKE '%test%'",
-            "AND `glpi_softwares`.`id` = '10784'",
-            "OR (`glpi_computers`.`serial` LIKE '%test2%'",
-            "AND (`glpi_locations`.`id` = '11')",
-            "(`glpi_users`.`id` = '2')",
-            "OR (`glpi_users`.`id` = '3')",
+            "`zentra_computers`.`is_deleted` = 0",
+            "AND `zentra_computers`.`is_template` = 0",
+            "`zentra_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
+            "OR (`zentra_computers`.`is_recursive`='1' AND `zentra_computers`.`entities_id` IN (0))",
+            "`zentra_computers`.`name` LIKE '%test%'",
+            "AND `zentra_softwares`.`id` = '10784'",
+            "OR (`zentra_computers`.`serial` LIKE '%test2%'",
+            "AND (`zentra_locations`.`id` = '11')",
+            "(`zentra_users`.`id` = '2')",
+            "OR (`zentra_users`.`id` = '3')",
         ];
 
         foreach ($contains as $contain) {
@@ -505,10 +505,10 @@ class SearchTest extends DbTestCase
         $default_charset = DBConnection::getDefaultCharset();
 
         $contains = [
-            "`glpi_computers`.`is_deleted` = 0",
-            "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
-            "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
+            "`zentra_computers`.`is_deleted` = 0",
+            "AND `zentra_computers`.`is_template` = 0",
+            "`zentra_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
+            "OR (`zentra_computers`.`is_recursive`='1' AND `zentra_computers`.`entities_id` IN (0))",
         ];
 
         foreach ($contains as $contain) {
@@ -519,14 +519,14 @@ class SearchTest extends DbTestCase
         }
 
         $regexps = [
-            "/`glpi_computers`\.`name` LIKE '%test%'/",
-            "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_computers`\.`serial`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/`zentra_computers`\.`name` LIKE '%test%'/",
+            "/OR\s*\(`zentra_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_states`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_computers`\.`serial`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
         ];
 
         foreach ($regexps as $regexp) {
@@ -537,7 +537,7 @@ class SearchTest extends DbTestCase
         }
 
         $this->assertDoesNotMatchRegularExpression(
-            "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
+            "/OR\s*\(CONVERT\(`zentra_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
             $data['sql']['search']
         );
     }
@@ -756,9 +756,9 @@ class SearchTest extends DbTestCase
 
     public function testAllCriterionWithEmptyValue()
     {
-        global $CFG_GLPI;
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['allow_search_all'] = 1;
+        global $CFG_ZENTRA;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['allow_search_all'] = 1;
 
         $data = $this->doSearch('Ticket', [
             'reset'      => 'reset',
@@ -775,7 +775,7 @@ class SearchTest extends DbTestCase
             ],
         ]);
 
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         $this->assertArrayHasKey('totalcount', $data['data']);
     }
@@ -797,9 +797,9 @@ class SearchTest extends DbTestCase
     #[DataProvider('allCriterionProvider')]
     public function testAllCriterionNew(string $link, string $searchtype)
     {
-        global $CFG_GLPI;
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['allow_search_all'] = 1;
+        global $CFG_ZENTRA;
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA['allow_search_all'] = 1;
 
         $this->createItem('Project', [
             'name'        => 'test_all_search_criterion',
@@ -821,7 +821,7 @@ class SearchTest extends DbTestCase
             ],
         ]);
 
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         // Search must complete without error
         $this->assertArrayHasKey('totalcount', $data['data']);
@@ -850,15 +850,15 @@ class SearchTest extends DbTestCase
         ]);
 
         $this->assertStringContainsString(
-            "`glpi_changes`.`id` AS `ITEM_Change_Ticket_3`",
+            "`zentra_changes`.`id` AS `ITEM_Change_Ticket_3`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`",
+            "`zentra_changes_tickets`.`changes_id` = `zentra_changes`.`id`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "`glpi_changes`.`id` = '1'",
+            "`zentra_changes`.`id` = '1'",
             $data['sql']['search']
         );
     }
@@ -877,7 +877,7 @@ class SearchTest extends DbTestCase
                 1 => ['link'       => 'AND',
                     'field'      => '1',
                     'searchtype' => 'contains',
-                    'value'      => 'glpi',
+                    'value'      => 'zentra',
                 ],
                 // entity
                 2 => ['link'       => 'AND',
@@ -1638,15 +1638,15 @@ class SearchTest extends DbTestCase
             'special_fk' => [[
                 'itemtype'  => 'Computer',
                 'ID'        => 24, // users_id_tech
-                'sql'       => '`glpi_users_users_id_tech`.`name` AS `ITEM_Computer_24`, `glpi_users_users_id_tech`.`realname` AS `ITEM_Computer_24_realname`,
-                           `glpi_users_users_id_tech`.`id` AS `ITEM_Computer_24_id`, `glpi_users_users_id_tech`.`firstname` AS `ITEM_Computer_24_firstname`,',
+                'sql'       => '`zentra_users_users_id_tech`.`name` AS `ITEM_Computer_24`, `zentra_users_users_id_tech`.`realname` AS `ITEM_Computer_24_realname`,
+                           `zentra_users_users_id_tech`.`id` AS `ITEM_Computer_24_id`, `zentra_users_users_id_tech`.`firstname` AS `ITEM_Computer_24_firstname`,',
             ],
             ],
             'regular_fk' => [[
                 'itemtype'  => 'Computer',
                 'ID'        => 70, // users_id
-                'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`,
-                           `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,',
+                'sql'       => '`zentra_users`.`name` AS `ITEM_Computer_70`, `zentra_users`.`realname` AS `ITEM_Computer_70_realname`,
+                           `zentra_users`.`id` AS `ITEM_Computer_70_id`, `zentra_users`.`firstname` AS `ITEM_Computer_70_firstname`,',
             ],
             ],
         ];
@@ -1683,11 +1683,11 @@ class SearchTest extends DbTestCase
                         ],
                     ],
                 ],
-                'sql' => "LEFT JOIN `glpi_projectteams`
-                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`)
-                      LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
-                        ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
-                        AND `glpi_projectteams`.`itemtype` = 'Contact')",
+                'sql' => "LEFT JOIN `zentra_projectteams`
+                        ON (`zentra_projects`.`id` = `zentra_projectteams`.`projects_id`)
+                      LEFT JOIN `zentra_contacts`  AS `zentra_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
+                        ON (`zentra_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `zentra_projectteams`.`items_id`
+                        AND `zentra_projectteams`.`itemtype` = 'Contact')",
             ],
             ],
             'special_fk' => [[
@@ -1698,7 +1698,7 @@ class SearchTest extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id`)",
+                'sql' => "LEFT JOIN `zentra_users` AS `zentra_users_users_id_tech` ON (`zentra_computers`.`users_id_tech` = `zentra_users_users_id_tech`.`id`)",
             ],
             ],
             'regular_fk' => [[
@@ -1709,20 +1709,20 @@ class SearchTest extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)",
+                'sql' => "LEFT JOIN `zentra_users` ON (`zentra_computers`.`users_id` = `zentra_users`.`id`)",
             ],
             ],
 
             'linkfield in beforejoin' => [[
                 'itemtype'           => 'Ticket',
-                'table'              => 'glpi_validatorsubstitutes',
+                'table'              => 'zentra_validatorsubstitutes',
                 'field'              => 'name',
                 'linkfield'          => 'validatorsubstitutes_id',
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [
                     'beforejoin'         => [
-                        'table'          => 'glpi_validatorsubstitutes',
+                        'table'          => 'zentra_validatorsubstitutes',
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'beforejoin'         => [
@@ -1740,15 +1740,15 @@ class SearchTest extends DbTestCase
                         ],
                     ],
                 ],
-                // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see glpi_users_users_id_validate)
-                'sql' => "LEFT JOIN `glpi_ticketvalidations` "
-                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`) "
-                . "LEFT JOIN `glpi_users` AS `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4` "
-                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id`) "
-                . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
-                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id`) "
-                . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
-                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id`)",
+                // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see zentra_users_users_id_validate)
+                'sql' => "LEFT JOIN `zentra_ticketvalidations` "
+                . "ON (`zentra_tickets`.`id` = `zentra_ticketvalidations`.`tickets_id`) "
+                . "LEFT JOIN `zentra_users` AS `zentra_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4` "
+                . "ON (`zentra_ticketvalidations`.`users_id_validate` = `zentra_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id`) "
+                . "LEFT JOIN `zentra_validatorsubstitutes` AS `zentra_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
+                . "ON (`zentra_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `zentra_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id`) "
+                . "LEFT JOIN `zentra_validatorsubstitutes` AS `zentra_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
+                . "ON (`zentra_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `zentra_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id`)",
             ],
             ],
         ];
@@ -1824,7 +1824,7 @@ class SearchTest extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC',
                     ],
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC',
+                ], ' ORDER BY INET6_ATON(`zentra_ipaddresses`.`name`) ASC',
             ],
             [
                 'IPAddress',
@@ -1833,7 +1833,7 @@ class SearchTest extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC',
                     ],
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC',
+                ], ' ORDER BY INET6_ATON(`zentra_ipaddresses`.`name`) DESC',
             ],
             [
                 'User',
@@ -1842,7 +1842,7 @@ class SearchTest extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC',
                     ],
-                ], ' ORDER BY `glpi_users`.`name` ASC',
+                ], ' ORDER BY `zentra_users`.`name` ASC',
             ],
             [
                 'User',
@@ -1851,7 +1851,7 @@ class SearchTest extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC',
                     ],
-                ], ' ORDER BY `glpi_users`.`name` DESC',
+                ], ' ORDER BY `zentra_users`.`name` DESC',
             ],
             // Multiple sort cases
             [
@@ -1890,10 +1890,10 @@ class SearchTest extends DbTestCase
         $this->assertEquals($expected, $result);
 
         // Complex cases
-        $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
-        $table_ticket_user = 'glpi_tickets_users_019878060c6d5f06cbe3c4d7c31dec24';
+        $table_addtable = 'zentra_users_af1042e23ce6565cfe58c6db91f84692';
+        $table_ticket_user = 'zentra_tickets_users_019878060c6d5f06cbe3c4d7c31dec24';
 
-        $_SESSION['glpinames_format'] = User::FIRSTNAME_BEFORE;
+        $_SESSION['zentranames_format'] = User::FIRSTNAME_BEFORE;
         $user_order_1 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1935,7 +1935,7 @@ class SearchTest extends DbTestCase
             $user_order_2
         );
 
-        $_SESSION['glpinames_format'] = User::REALNAME_BEFORE;
+        $_SESSION['zentranames_format'] = User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1986,7 +1986,7 @@ class SearchTest extends DbTestCase
         global $DB;
 
         $user_1 = getItemByTypeName('User', TU_USER)->getID();
-        $user_2 = getItemByTypeName('User', 'glpi')->getID();
+        $user_2 = getItemByTypeName('User', 'zentra')->getID();
         $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
 
         $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
@@ -2070,8 +2070,8 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser group 1 (R)',              //  no requester
                 'testAddOrderByUser user 1 (R)',               //  _test_user
                 'testAddOrderByUser user 1 (R) + group 1 (R)', //  _test_user
-                'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, glpi
-                'testAddOrderByUser user 2 (R)',               //  glpi
+                'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, zentra
+                'testAddOrderByUser user 2 (R)',               //  zentra
                 'testAddOrderByUser anonymous user (R)',       //  myemail@email.com
             ],
             'row_name' => 'ITEM_Change_1',
@@ -2094,8 +2094,8 @@ class SearchTest extends DbTestCase
             ],
             'expected_order' => [
                 'testAddOrderByUser anonymous user (R)',       //  myemail@email.com
-                'testAddOrderByUser user 2 (R)',               //  glpi
-                'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, glpi
+                'testAddOrderByUser user 2 (R)',               //  zentra
+                'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, zentra
                 'testAddOrderByUser user 1 (R)',               //  _test_user
                 'testAddOrderByUser user 1 (R) + group 1 (R)', //  _test_user
                 'testAddOrderByUser group 1 (R)',              //  no requester
@@ -2140,7 +2140,7 @@ class SearchTest extends DbTestCase
             'expected_order' => [
                 'testAddOrderByUser no user',
                 'testAddOrderByUser user 1 (U)', // _test_user
-                'testAddOrderByUser user 2 (U)', // glpi
+                'testAddOrderByUser user 2 (U)', // zentra
             ],
             'row_name' => 'ITEM_Peripheral_1',
         ];
@@ -2161,7 +2161,7 @@ class SearchTest extends DbTestCase
                 'order' => 'DESC',
             ],
             'expected_order' => [
-                'testAddOrderByUser user 2 (U)', // glpi
+                'testAddOrderByUser user 2 (U)', // zentra
                 'testAddOrderByUser user 1 (U)', // _test_user
                 'testAddOrderByUser no user',
             ],
@@ -2169,10 +2169,10 @@ class SearchTest extends DbTestCase
         ];
 
         // Creates Problems with different writers
-        // Create by glpi user
+        // Create by zentra user
         $this->createItems('Problem', [
             [
-                'name' => 'testAddOrderByUser by glpi',
+                'name' => 'testAddOrderByUser by zentra',
                 'content' => '',
             ],
         ]);
@@ -2186,7 +2186,7 @@ class SearchTest extends DbTestCase
             ],
         ]);
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         yield [
             'itemtype' => 'Problem',
@@ -2204,7 +2204,7 @@ class SearchTest extends DbTestCase
                 'order' => 'ASC',
             ],
             'expected_order' => [
-                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by zentra',
                 'testAddOrderByUser by tech',
             ],
             'row_name' => 'ITEM_Problem_1',
@@ -2227,7 +2227,7 @@ class SearchTest extends DbTestCase
             ],
             'expected_order' => [
                 'testAddOrderByUser by tech',
-                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by zentra',
             ],
             'row_name' => 'ITEM_Problem_1',
         ];
@@ -2249,7 +2249,7 @@ class SearchTest extends DbTestCase
                 'order' => 'ASC',
             ],
             'expected_order' => [
-                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by zentra',
                 'testAddOrderByUser by tech',
             ],
             'row_name' => 'ITEM_Problem_1',
@@ -2272,7 +2272,7 @@ class SearchTest extends DbTestCase
             ],
             'expected_order' => [
                 'testAddOrderByUser by tech',
-                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by zentra',
             ],
             'row_name' => 'ITEM_Problem_1',
         ];
@@ -2280,7 +2280,7 @@ class SearchTest extends DbTestCase
 
     public function testAddOrderByUser()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $values = $this->testAddOrderByUserProvider();
         foreach ($values as $value) {
             $itemtype = $value['itemtype'];
@@ -2317,7 +2317,7 @@ class SearchTest extends DbTestCase
 
     public function testAllAssetsFields()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $needed_fields = [
             'id',
@@ -2335,7 +2335,7 @@ class SearchTest extends DbTestCase
             'entities_id',
         ];
 
-        foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["asset_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
 
             foreach ($needed_fields as $field) {
@@ -2555,7 +2555,7 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $_SESSION['glpi_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
+        $_SESSION['zentra_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
 
         $search_params = [
             'is_deleted'   => 0,
@@ -2574,7 +2574,7 @@ class SearchTest extends DbTestCase
 
         $this->assertSame(1, $data['data']['totalcount']);
 
-        unset($_SESSION['glpi_dropdowntranslations']);
+        unset($_SESSION['zentra_dropdowntranslations']);
     }
 
     public static function dataInfocomOptions()
@@ -2665,7 +2665,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'equals',
                 'val' => '5',
                 'meta' => false,
-                'expected' => "(`glpi_users_users_id_supervisor`.`id` = '5')",
+                'expected' => "(`zentra_users_users_id_supervisor`.`id` = '5')",
             ],
             [
                 'link' => ' AND ',
@@ -2675,7 +2675,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'equals',
                 'val' => '2',
                 'meta' => false,
-                'expected' => "AND (`glpi_users_users_id_tech`.`id` = '2')",
+                'expected' => "AND (`zentra_users_users_id_tech`.`id` = '2')",
             ],
             [
                 'link' => ' AND ',
@@ -2685,7 +2685,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70',
                 'meta' => false,
-                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.%')",
+                'expected' => "AND (`zentra_monitors`.`size` LIKE '%70.%')",
             ],
             [
                 'link' => ' AND ',
@@ -2695,7 +2695,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70.5',
                 'meta' => false,
-                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.5%')",
+                'expected' => "AND (`zentra_monitors`.`size` LIKE '%70.5%')",
             ],
             [
                 'link' => ' AND ',
@@ -2705,7 +2705,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>2022-10-25',
                 'meta' => false,
-                'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) > '2022-10-25'",
+                'expected' => "AND CONVERT(`zentra_computers`.`date_creation` USING utf8mb4) > '2022-10-25'",
             ],
             [
                 'link' => ' AND ',
@@ -2715,7 +2715,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<2022-10-25',
                 'meta' => false,
-                'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) < '2022-10-25'",
+                'expected' => "AND CONVERT(`zentra_computers`.`date_creation` USING utf8mb4) < '2022-10-25'",
             ],
             [
                 'link' => ' AND ',
@@ -2725,7 +2725,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>100',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` > '100'",
+                'expected' => "AND `zentra_items_disks`.`freesize` > '100'",
             ],
             [
                 'link' => ' AND ',
@@ -2735,7 +2735,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` < '10000'",
+                'expected' => "AND `zentra_items_disks`.`freesize` < '10000'",
             ],
             [
                 'link' => ' AND ',
@@ -2745,7 +2745,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '< 192.168.1.10',
                 'meta' => false,
-                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
+                'expected' => "AND (INET_ATON(`zentra_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
             ],
             [
                 'link' => ' AND ',
@@ -2755,7 +2755,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '> 192.168.1.10',
                 'meta' => false,
-                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
+                'expected' => "AND (INET_ATON(`zentra_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
             ],
             [
                 'link' => ' ',
@@ -2765,7 +2765,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'empty',
                 'val' => 'null',
                 'meta' => false,
-                'expected' => "((`glpi_computers`.`name` = '') OR `glpi_computers`.`name` IS NULL)",
+                'expected' => "((`zentra_computers`.`name` = '') OR `zentra_computers`.`name` IS NULL)",
             ],
         ];
     }
@@ -2861,22 +2861,22 @@ class SearchTest extends DbTestCase
 
         $contains = [
             // Check that we have two different joins
-            "LEFT JOIN `glpi_users` AS `glpi_users_users_id_lastupdater`",
-            "LEFT JOIN `glpi_users` AS `glpi_users_users_id_recipient`",
+            "LEFT JOIN `zentra_users` AS `zentra_users_users_id_lastupdater`",
+            "LEFT JOIN `zentra_users` AS `zentra_users_users_id_recipient`",
 
             // Check that SELECT criteria applies on corresponding table alias
-            "`glpi_users_users_id_lastupdater`.`realname` AS `ITEM_Ticket_64_realname`",
-            "`glpi_users_users_id_recipient`.`realname` AS `ITEM_Ticket_22_realname`",
+            "`zentra_users_users_id_lastupdater`.`realname` AS `ITEM_Ticket_64_realname`",
+            "`zentra_users_users_id_recipient`.`realname` AS `ITEM_Ticket_22_realname`",
 
             // Check that WHERE criteria applies on corresponding table alias
-            "`glpi_users_users_id_lastupdater`.`id` = '{$user_tech_id}'",
-            "`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'",
+            "`zentra_users_users_id_lastupdater`.`id` = '{$user_tech_id}'",
+            "`zentra_users_users_id_recipient`.`id` = '{$user_normal_id}'",
 
             // Check that ORDER applies on corresponding table alias
             "CONCAT(
-                                    IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                    IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                    IFNULL(`glpi_users_users_id_recipient`.`name`, '')
+                                    IFNULL(`zentra_users_users_id_recipient`.`realname`, ''),
+                                    IFNULL(`zentra_users_users_id_recipient`.`firstname`, ''),
+                                    IFNULL(`zentra_users_users_id_recipient`.`name`, '')
                                 ) ASC",
         ];
         foreach ($contains as $contain) {
@@ -2908,11 +2908,11 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('AllAssets', $search_params);
 
         $this->assertMatchesRegularExpression(
-            "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
             $data['sql']['search']
         );
         $this->assertMatchesRegularExpression(
-            "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(`zentra_states`\.`completename`\s*LIKE '%test%'\s*\)/",
             $data['sql']['search']
         );
 
@@ -2971,7 +2971,7 @@ class SearchTest extends DbTestCase
 
     public function testSearchWithNamespacedItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $search_params = [
             'is_deleted'   => 0,
@@ -2981,15 +2981,15 @@ class SearchTest extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $CFG_GLPI['state_types'][] = \SearchTest\Computer::class;
+        $CFG_ZENTRA['state_types'][] = \SearchTest\Computer::class;
         $data = $this->doSearch(\SearchTest\Computer::class, $search_params);
 
         $this->assertStringContainsString(
-            "`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`",
+            "`zentra_computers`.`name` AS `ITEM_SearchTest\Computer_1`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`",
+            "`zentra_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
@@ -3076,7 +3076,7 @@ class SearchTest extends DbTestCase
             [
                 '/^Common.*/', // Should be abstract
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
-                'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
+                'NotificationSettingConfig', // Stores its data in zentra_configs, does not acts as a CommonDBTM
                 'PendingReasonCron',
                 '/^[A-z]+Stencil/',
             ]
@@ -3326,8 +3326,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => 'test',
-            'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%test%' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computertypes`.`name` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_computertypes`.`name` NOT LIKE '%test%' OR `zentra_computertypes`.`name` IS NULL)",
         ];
 
         // datatype=dropdown (usehaving=true)
@@ -3344,8 +3344,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => 'test',
-            'expected_and'      => "(`glpi_computers`.`name` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%test%' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`name` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_computers`.`name` NOT LIKE '%test%' OR `zentra_computers`.`name` IS NULL)",
         ];
 
         // datatype=itemlink (usehaving=true)
@@ -3362,8 +3362,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => 'test',
-            'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%test%' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`uuid` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_computers`.`uuid` NOT LIKE '%test%' OR `zentra_computers`.`uuid` IS NULL)",
         ];
 
         // datatype=text
@@ -3371,8 +3371,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => 'test',
-            'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%test%' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`comment` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_computers`.`comment` NOT LIKE '%test%' OR `zentra_computers`.`comment` IS NULL)",
         ];
 
         // datatype=integer
@@ -3387,8 +3387,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => '123',
-            'expected_and'      => "`glpi_authldaps`.`port` = 123",
-            'expected_and_not'  => "`glpi_authldaps`.`port` <> 123",
+            'expected_and'      => "`zentra_authldaps`.`port` = 123",
+            'expected_and_not'  => "`zentra_authldaps`.`port` <> 123",
         ];
 
         // datatype=number
@@ -3403,8 +3403,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 32, // timeout
             'value'             => '30',
-            'expected_and'      => "`glpi_authldaps`.`timeout` = 30",
-            'expected_and_not'  => "`glpi_authldaps`.`timeout` <> 30",
+            'expected_and'      => "`zentra_authldaps`.`timeout` = 30",
+            'expected_and_not'  => "`zentra_authldaps`.`timeout` <> 30",
         ];
 
         // datatype=number (usehaving=true)
@@ -3435,15 +3435,15 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => '1500',
-            'expected_and'      => "(`glpi_budgets`.`value` LIKE '%1500.%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%1500.%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and'      => "(`zentra_budgets`.`value` LIKE '%1500.%')",
+            'expected_and_not'  => "(`zentra_budgets`.`value` NOT LIKE '%1500.%' OR `zentra_budgets`.`value` IS NULL)",
         ];
         yield [
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => '10.25',
-            'expected_and'      => "(`glpi_budgets`.`value` LIKE '%10.2%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%10.2%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and'      => "(`zentra_budgets`.`value` LIKE '%10.2%')",
+            'expected_and_not'  => "(`zentra_budgets`.`value` NOT LIKE '%10.2%' OR `zentra_budgets`.`value` IS NULL)",
         ];
 
         // datatype=decimal (usehaving=true)
@@ -3499,15 +3499,15 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => 'test',
-            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') LIKE '%test%')",
-            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') NOT LIKE '%test%' OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
+            'expected_and'      => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') LIKE '%test%')",
+            'expected_and_not'  => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') NOT LIKE '%test%' OR LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => '50',
-            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') >= 48 AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <= 52)",
-            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') < 48 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') > 52 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
+            'expected_and'      => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') >= 48 AND LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') <= 52)",
+            'expected_and_not'  => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') < 48 OR LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') > 52 OR LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
         ];
 
         // datatype=timestamp
@@ -3522,8 +3522,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \CronTask::class,
             'search_option'     => 6, // frequency
             'value'             => '3600',
-            'expected_and'      => "`glpi_crontasks`.`frequency` = 3600",
-            'expected_and_not'  => "`glpi_crontasks`.`frequency` <> 3600",
+            'expected_and'      => "`zentra_crontasks`.`frequency` = 3600",
+            'expected_and_not'  => "`zentra_crontasks`.`frequency` <> 3600",
         ];
 
         // datatype=timestamp (usehaving=true)
@@ -3554,8 +3554,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => '2023-06',
-            'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE '%2023-06%')",
-            'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE '%2023-06%' OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) LIKE '%2023-06%')",
+            'expected_and_not'  => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE '%2023-06%' OR CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
         ];
 
         // datatype=datetime (usehaving=true)
@@ -3586,8 +3586,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => '2023',
-            'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) LIKE '%2023%')",
-            'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) NOT LIKE '%2023%' OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) LIKE '%2023%')",
+            'expected_and_not'  => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) NOT LIKE '%2023%' OR CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) IS NULL)",
         ];
 
         // datatype=date_delay
@@ -3602,8 +3602,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
             'value'             => '2023-12',
-            'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) LIKE '%2023-12%')",
-            'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) NOT LIKE '%2023-12%' OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NULL)",
+            'expected_and'      => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) LIKE '%2023-12%')",
+            'expected_and_not'  => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) NOT LIKE '%2023-12%' OR DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) IS NULL)",
         ];
 
         // datatype=email
@@ -3611,8 +3611,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => 'test',
-            'expected_and'      => "(`glpi_contacts`.`email` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%test%' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and'      => "(`zentra_contacts`.`email` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_contacts`.`email` NOT LIKE '%test%' OR `zentra_contacts`.`email` IS NULL)",
         ];
 
         // datatype=weblink
@@ -3620,8 +3620,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => 'test',
-            'expected_and'      => "(`glpi_documents`.`link` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%test%' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and'      => "(`zentra_documents`.`link` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_documents`.`link` NOT LIKE '%test%' OR `zentra_documents`.`link` IS NULL)",
         ];
 
         // datatype=mac
@@ -3629,15 +3629,15 @@ class SearchTest extends DbTestCase
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => 'test',
-            'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%test%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE '%test%' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => 'a2:ef:00',
-            'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:ef:00%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%a2:ef:00%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE '%a2:ef:00%')",
+            'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE '%a2:ef:00%' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
         ];
 
         // datatype=color
@@ -3652,8 +3652,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => '#ffffff',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '%#ffffff%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%#ffffff%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(`zentra_cables`.`color` LIKE '%#ffffff%')",
+            'expected_and_not'  => "(`zentra_cables`.`color` NOT LIKE '%#ffffff%' OR `zentra_cables`.`color` IS NULL)",
         ];
 
         // datatype=language
@@ -3661,15 +3661,15 @@ class SearchTest extends DbTestCase
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => 'test',
-            'expected_and'      => "(`glpi_users`.`language` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%test%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`zentra_users`.`language` LIKE '%test%')",
+            'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE '%test%' OR `zentra_users`.`language` IS NULL)",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => 'en_',
-            'expected_and'      => "(`glpi_users`.`language` LIKE '%en\\\\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%en\\\\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`zentra_users`.`language` LIKE '%en\\\\_%')",
+            'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE '%en\\\\_%' OR `zentra_users`.`language` IS NULL)",
         ];
 
         // Check `NULL` special value
@@ -3679,8 +3679,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 4, // type
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computertypes`.`name` IS NULL OR `glpi_computertypes`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computertypes`.`name` IS NOT NULL AND `glpi_computertypes`.`name` <> '')",
+                'expected_and'      => "(`zentra_computertypes`.`name` IS NULL OR `zentra_computertypes`.`name` = '')",
+                'expected_and_not'  => "(`zentra_computertypes`.`name` IS NOT NULL AND `zentra_computertypes`.`name` <> '')",
             ];
 
             // datatype=dropdown (usehaving=true)
@@ -3697,8 +3697,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 1, // name
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`name` IS NULL OR `glpi_computers`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`name` IS NOT NULL AND `glpi_computers`.`name` <> '')",
+                'expected_and'      => "(`zentra_computers`.`name` IS NULL OR `zentra_computers`.`name` = '')",
+                'expected_and_not'  => "(`zentra_computers`.`name` IS NOT NULL AND `zentra_computers`.`name` <> '')",
             ];
 
             // datatype=itemlink (usehaving=true)
@@ -3715,8 +3715,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 47, // uuid
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`uuid` IS NULL OR `glpi_computers`.`uuid` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`uuid` IS NOT NULL AND `glpi_computers`.`uuid` <> '')",
+                'expected_and'      => "(`zentra_computers`.`uuid` IS NULL OR `zentra_computers`.`uuid` = '')",
+                'expected_and_not'  => "(`zentra_computers`.`uuid` IS NOT NULL AND `zentra_computers`.`uuid` <> '')",
             ];
 
             // datatype=text
@@ -3724,8 +3724,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 16, // comment
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`comment` IS NULL OR `glpi_computers`.`comment` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`comment` IS NOT NULL AND `glpi_computers`.`comment` <> '')",
+                'expected_and'      => "(`zentra_computers`.`comment` IS NULL OR `zentra_computers`.`comment` = '')",
+                'expected_and_not'  => "(`zentra_computers`.`comment` IS NOT NULL AND `zentra_computers`.`comment` <> '')",
             ];
 
             // datatype=integer
@@ -3733,8 +3733,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 4, // port
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`port` IS NULL OR `glpi_authldaps`.`port` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL AND `glpi_authldaps`.`port` <> '')",
+                'expected_and'      => "(`zentra_authldaps`.`port` IS NULL OR `zentra_authldaps`.`port` = '')",
+                'expected_and_not'  => "(`zentra_authldaps`.`port` IS NOT NULL AND `zentra_authldaps`.`port` <> '')",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3747,8 +3747,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 32, // timeout
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`timeout` IS NULL OR `glpi_authldaps`.`timeout` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL AND `glpi_authldaps`.`timeout` <> '')",
+                'expected_and'      => "(`zentra_authldaps`.`timeout` IS NULL OR `zentra_authldaps`.`timeout` = '')",
+                'expected_and_not'  => "(`zentra_authldaps`.`timeout` IS NOT NULL AND `zentra_authldaps`.`timeout` <> '')",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3770,8 +3770,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Budget::class,
                 'search_option'     => 7, // value
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_budgets`.`value` IS NULL OR `glpi_budgets`.`value` = '')",
-                'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL AND `glpi_budgets`.`value` <> '')",
+                'expected_and'      => "(`zentra_budgets`.`value` IS NULL OR `zentra_budgets`.`value` = '')",
+                'expected_and_not'  => "(`zentra_budgets`.`value` IS NOT NULL AND `zentra_budgets`.`value` <> '')",
             ];
             // log for both AND and AND NOT cases
             $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
@@ -3814,8 +3814,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 152, // harddrive freepercent
                 'value'             => $null_value,
-                'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
-                'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <> '')",
+                'expected_and'      => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
+                'expected_and_not'  => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') <> '')",
             ];
 
             // datatype=timestamp
@@ -3823,8 +3823,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \CronTask::class,
                 'search_option'     => 6, // frequency
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_crontasks`.`frequency` IS NULL OR `glpi_crontasks`.`frequency` = '')",
-                'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL AND `glpi_crontasks`.`frequency` <> '')",
+                'expected_and'      => "(`zentra_crontasks`.`frequency` IS NULL OR `zentra_crontasks`.`frequency` = '')",
+                'expected_and_not'  => "(`zentra_crontasks`.`frequency` IS NOT NULL AND `zentra_crontasks`.`frequency` <> '')",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3846,8 +3846,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 9, // last_inventory_update
                 'value'             => $null_value,
-                'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) = '')",
-                'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NOT NULL AND CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) <> '')",
+                'expected_and'      => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) IS NULL OR CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) = '')",
+                'expected_and_not'  => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) IS NOT NULL AND CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) <> '')",
             ];
 
             // datatype=datetime computed field
@@ -3864,8 +3864,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Budget::class,
                 'search_option'     => 5, // begin_date
                 'value'             => $null_value,
-                'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) = '')",
-                'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NOT NULL AND CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) <> '')",
+                'expected_and'      => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) IS NULL OR CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) = '')",
+                'expected_and_not'  => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) IS NOT NULL AND CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) <> '')",
             ];
 
             // datatype=date_delay
@@ -3875,8 +3875,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Contract::class,
                 'search_option'     => 20, // end_date
                 'value'             => $null_value,
-                'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS  NULL  OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) = '')",
-                'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NOT NULL  OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) = '')",
+                'expected_and'      => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) IS  NULL  OR DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) = '')",
+                'expected_and_not'  => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) IS NOT NULL  OR DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) = '')",
             ];
             */
 
@@ -3885,8 +3885,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Contact::class,
                 'search_option'     => 6, // email
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_contacts`.`email` IS NULL OR `glpi_contacts`.`email` = '')",
-                'expected_and_not'  => "(`glpi_contacts`.`email` IS NOT NULL AND `glpi_contacts`.`email` <> '')",
+                'expected_and'      => "(`zentra_contacts`.`email` IS NULL OR `zentra_contacts`.`email` = '')",
+                'expected_and_not'  => "(`zentra_contacts`.`email` IS NOT NULL AND `zentra_contacts`.`email` <> '')",
             ];
 
             // datatype=weblink
@@ -3894,8 +3894,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Document::class,
                 'search_option'     => 4, // link
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_documents`.`link` IS NULL OR `glpi_documents`.`link` = '')",
-                'expected_and_not'  => "(`glpi_documents`.`link` IS NOT NULL AND `glpi_documents`.`link` <> '')",
+                'expected_and'      => "(`zentra_documents`.`link` IS NULL OR `zentra_documents`.`link` = '')",
+                'expected_and_not'  => "(`zentra_documents`.`link` IS NOT NULL AND `zentra_documents`.`link` <> '')",
             ];
 
             // datatype=mac
@@ -3903,8 +3903,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \DeviceNetworkCard::class,
                 'search_option'     => 11, // mac_default
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` IS NULL OR `glpi_devicenetworkcards`.`mac_default` = '')",
-                'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` IS NOT NULL AND `glpi_devicenetworkcards`.`mac_default` <> '')",
+                'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` IS NULL OR `zentra_devicenetworkcards`.`mac_default` = '')",
+                'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` IS NOT NULL AND `zentra_devicenetworkcards`.`mac_default` <> '')",
             ];
 
             // datatype=color
@@ -3912,8 +3912,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Cable::class,
                 'search_option'     => 15, // color
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_cables`.`color` IS NULL OR `glpi_cables`.`color` = '')",
-                'expected_and_not'  => "(`glpi_cables`.`color` IS NOT NULL AND `glpi_cables`.`color` <> '')",
+                'expected_and'      => "(`zentra_cables`.`color` IS NULL OR `zentra_cables`.`color` = '')",
+                'expected_and_not'  => "(`zentra_cables`.`color` IS NOT NULL AND `zentra_cables`.`color` <> '')",
             ];
 
             // datatype=language
@@ -3921,8 +3921,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => User::class,
                 'search_option'     => 17, // language
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_users`.`language` IS NULL OR `glpi_users`.`language` = '')",
-                'expected_and_not'  => "(`glpi_users`.`language` IS NOT NULL AND `glpi_users`.`language` <> '')",
+                'expected_and'      => "(`zentra_users`.`language` IS NULL OR `zentra_users`.`language` = '')",
+                'expected_and_not'  => "(`zentra_users`.`language` IS NOT NULL AND `zentra_users`.`language` <> '')",
             ];
         }
 
@@ -3934,22 +3934,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => '^test',
-            'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE 'test%' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computertypes`.`name` LIKE 'test%')",
+            'expected_and_not'  => "(`zentra_computertypes`.`name` NOT LIKE 'test%' OR `zentra_computertypes`.`name` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => 'test$',
-            'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%test' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computertypes`.`name` LIKE '%test')",
+            'expected_and_not'  => "(`zentra_computertypes`.`name` NOT LIKE '%test' OR `zentra_computertypes`.`name` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => '^test$',
-            'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE 'test' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computertypes`.`name` LIKE 'test')",
+            'expected_and_not'  => "(`zentra_computertypes`.`name` NOT LIKE 'test' OR `zentra_computertypes`.`name` IS NULL)",
         ];
 
         // datatype=dropdown (usehaving=true)
@@ -3980,22 +3980,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => '^test',
-            'expected_and'      => "(`glpi_computers`.`name` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE 'test%' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`name` LIKE 'test%')",
+            'expected_and_not'  => "(`zentra_computers`.`name` NOT LIKE 'test%' OR `zentra_computers`.`name` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => 'test$',
-            'expected_and'      => "(`glpi_computers`.`name` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%test' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`name` LIKE '%test')",
+            'expected_and_not'  => "(`zentra_computers`.`name` NOT LIKE '%test' OR `zentra_computers`.`name` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => '^test$',
-            'expected_and'      => "(`glpi_computers`.`name` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE 'test' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`name` LIKE 'test')",
+            'expected_and_not'  => "(`zentra_computers`.`name` NOT LIKE 'test' OR `zentra_computers`.`name` IS NULL)",
         ];
 
         // datatype=itemlink (usehaving=true)
@@ -4026,22 +4026,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => '^test',
-            'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE 'test%' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`uuid` LIKE 'test%')",
+            'expected_and_not'  => "(`zentra_computers`.`uuid` NOT LIKE 'test%' OR `zentra_computers`.`uuid` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => 'test$',
-            'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%test' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`uuid` LIKE '%test')",
+            'expected_and_not'  => "(`zentra_computers`.`uuid` NOT LIKE '%test' OR `zentra_computers`.`uuid` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => '^test$',
-            'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE 'test' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`uuid` LIKE 'test')",
+            'expected_and_not'  => "(`zentra_computers`.`uuid` NOT LIKE 'test' OR `zentra_computers`.`uuid` IS NULL)",
         ];
 
         // datatype=text
@@ -4049,22 +4049,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => '^test',
-            'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE 'test%' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`comment` LIKE 'test%')",
+            'expected_and_not'  => "(`zentra_computers`.`comment` NOT LIKE 'test%' OR `zentra_computers`.`comment` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => 'test$',
-            'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%test' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`comment` LIKE '%test')",
+            'expected_and_not'  => "(`zentra_computers`.`comment` NOT LIKE '%test' OR `zentra_computers`.`comment` IS NULL)",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => '^test$',
-            'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE 'test' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and'      => "(`zentra_computers`.`comment` LIKE 'test')",
+            'expected_and_not'  => "(`zentra_computers`.`comment` NOT LIKE 'test' OR `zentra_computers`.`comment` IS NULL)",
         ];
 
         // datatype=email
@@ -4072,22 +4072,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => '^myname@',
-            'expected_and'      => "(`glpi_contacts`.`email` LIKE 'myname@%')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE 'myname@%' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and'      => "(`zentra_contacts`.`email` LIKE 'myname@%')",
+            'expected_and_not'  => "(`zentra_contacts`.`email` NOT LIKE 'myname@%' OR `zentra_contacts`.`email` IS NULL)",
         ];
         yield [
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => '@domain.tld$',
-            'expected_and'      => "(`glpi_contacts`.`email` LIKE '%@domain.tld')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%@domain.tld' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and'      => "(`zentra_contacts`.`email` LIKE '%@domain.tld')",
+            'expected_and_not'  => "(`zentra_contacts`.`email` NOT LIKE '%@domain.tld' OR `zentra_contacts`.`email` IS NULL)",
         ];
         yield [
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => '^myname@domain.tld$',
-            'expected_and'      => "(`glpi_contacts`.`email` LIKE 'myname@domain.tld')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE 'myname@domain.tld' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and'      => "(`zentra_contacts`.`email` LIKE 'myname@domain.tld')",
+            'expected_and_not'  => "(`zentra_contacts`.`email` NOT LIKE 'myname@domain.tld' OR `zentra_contacts`.`email` IS NULL)",
         ];
 
         // datatype=weblink
@@ -4095,22 +4095,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '^ftp://',
-            'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://%')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE 'ftp://%' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and'      => "(`zentra_documents`.`link` LIKE 'ftp://%')",
+            'expected_and_not'  => "(`zentra_documents`.`link` NOT LIKE 'ftp://%' OR `zentra_documents`.`link` IS NULL)",
         ];
         yield [
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '.pdf$',
-            'expected_and'      => "(`glpi_documents`.`link` LIKE '%.pdf')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%.pdf' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and'      => "(`zentra_documents`.`link` LIKE '%.pdf')",
+            'expected_and_not'  => "(`zentra_documents`.`link` NOT LIKE '%.pdf' OR `zentra_documents`.`link` IS NULL)",
         ];
         yield [
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '^ftp://domain.tld/document.pdf$',
-            'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://domain.tld/document.pdf')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE 'ftp://domain.tld/document.pdf' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and'      => "(`zentra_documents`.`link` LIKE 'ftp://domain.tld/document.pdf')",
+            'expected_and_not'  => "(`zentra_documents`.`link` NOT LIKE 'ftp://domain.tld/document.pdf' OR `zentra_documents`.`link` IS NULL)",
         ];
 
         // datatype=mac
@@ -4118,22 +4118,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => '^a2:e5:aa',
-            'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE 'a2:e5:aa%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE 'a2:e5:aa%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE 'a2:e5:aa%')",
+            'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE 'a2:e5:aa%' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => 'a2:e5:aa$',
-            'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:e5:aa')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%a2:e5:aa' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE '%a2:e5:aa')",
+            'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE '%a2:e5:aa' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => '^15:f4:q4:a2:e5:aa$',
-            'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '15:f4:q4:a2:e5:aa')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '15:f4:q4:a2:e5:aa' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE '15:f4:q4:a2:e5:aa')",
+            'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE '15:f4:q4:a2:e5:aa' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
         ];
 
         // datatype=color
@@ -4141,22 +4141,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => '^#00',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '#00%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '#00%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(`zentra_cables`.`color` LIKE '#00%')",
+            'expected_and_not'  => "(`zentra_cables`.`color` NOT LIKE '#00%' OR `zentra_cables`.`color` IS NULL)",
         ];
         yield [
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => 'ff$',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '%ff')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%ff' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(`zentra_cables`.`color` LIKE '%ff')",
+            'expected_and_not'  => "(`zentra_cables`.`color` NOT LIKE '%ff' OR `zentra_cables`.`color` IS NULL)",
         ];
         yield [
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => '^#00aaff$',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '#00aaff')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '#00aaff' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(`zentra_cables`.`color` LIKE '#00aaff')",
+            'expected_and_not'  => "(`zentra_cables`.`color` NOT LIKE '#00aaff' OR `zentra_cables`.`color` IS NULL)",
         ];
 
         // datatype=language
@@ -4164,22 +4164,22 @@ class SearchTest extends DbTestCase
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '^en_',
-            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`zentra_users`.`language` LIKE 'en\\\\_%')",
+            'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE 'en\\\\_%' OR `zentra_users`.`language` IS NULL)",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '_GB$',
-            'expected_and'      => "(`glpi_users`.`language` LIKE '%\\\\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%\\\\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`zentra_users`.`language` LIKE '%\\\\_GB')",
+            'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE '%\\\\_GB' OR `zentra_users`.`language` IS NULL)",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '^en_GB$',
-            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`zentra_users`.`language` LIKE 'en\\\\_GB')",
+            'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE 'en\\\\_GB' OR `zentra_users`.`language` IS NULL)",
         ];
 
         // Check `>`, `>=`, `<` and `<=` operators on textual fields.
@@ -4193,8 +4193,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => Computer::class,
                     'search_option'     => 4, // type
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%{$searched_value}%' OR `glpi_computertypes`.`name` IS NULL)",
+                    'expected_and'      => "(`zentra_computertypes`.`name` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_computertypes`.`name` NOT LIKE '%{$searched_value}%' OR `zentra_computertypes`.`name` IS NULL)",
                 ];
 
                 // datatype=dropdown (usehaving=true)
@@ -4211,8 +4211,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => Computer::class,
                     'search_option'     => 1, // name
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_computers`.`name` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`name` IS NULL)",
+                    'expected_and'      => "(`zentra_computers`.`name` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_computers`.`name` NOT LIKE '%{$searched_value}%' OR `zentra_computers`.`name` IS NULL)",
                 ];
 
                 // datatype=itemlink (usehaving=true)
@@ -4229,8 +4229,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => Computer::class,
                     'search_option'     => 47, // uuid
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`uuid` IS NULL)",
+                    'expected_and'      => "(`zentra_computers`.`uuid` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_computers`.`uuid` NOT LIKE '%{$searched_value}%' OR `zentra_computers`.`uuid` IS NULL)",
                 ];
 
                 // datatype=text
@@ -4238,8 +4238,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => Computer::class,
                     'search_option'     => 16, // comment
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_computers`.`comment` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`comment` IS NULL)",
+                    'expected_and'      => "(`zentra_computers`.`comment` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_computers`.`comment` NOT LIKE '%{$searched_value}%' OR `zentra_computers`.`comment` IS NULL)",
                 ];
 
                 // datatype=email
@@ -4247,8 +4247,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => \Contact::class,
                     'search_option'     => 6, // email
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_contacts`.`email` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%{$searched_value}%' OR `glpi_contacts`.`email` IS NULL)",
+                    'expected_and'      => "(`zentra_contacts`.`email` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_contacts`.`email` NOT LIKE '%{$searched_value}%' OR `zentra_contacts`.`email` IS NULL)",
                 ];
 
                 // datatype=weblink
@@ -4256,8 +4256,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => Document::class,
                     'search_option'     => 4, // link
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_documents`.`link` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%{$searched_value}%' OR `glpi_documents`.`link` IS NULL)",
+                    'expected_and'      => "(`zentra_documents`.`link` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_documents`.`link` NOT LIKE '%{$searched_value}%' OR `zentra_documents`.`link` IS NULL)",
                 ];
 
                 // datatype=mac
@@ -4265,8 +4265,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => \DeviceNetworkCard::class,
                     'search_option'     => 11, // mac_default
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%{$searched_value}%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+                    'expected_and'      => "(`zentra_devicenetworkcards`.`mac_default` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_devicenetworkcards`.`mac_default` NOT LIKE '%{$searched_value}%' OR `zentra_devicenetworkcards`.`mac_default` IS NULL)",
                 ];
 
                 // datatype=color
@@ -4283,8 +4283,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => User::class,
                     'search_option'     => 17, // language
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_users`.`language` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%{$searched_value}%' OR `glpi_users`.`language` IS NULL)",
+                    'expected_and'      => "(`zentra_users`.`language` LIKE '%{$searched_value}%')",
+                    'expected_and_not'  => "(`zentra_users`.`language` NOT LIKE '%{$searched_value}%' OR `zentra_users`.`language` IS NULL)",
                 ];
             }
         }
@@ -4312,8 +4312,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 4, // port
                         'value'             => $searched_value,
-                        'expected_and'      => "`glpi_authldaps`.`port` {$operator} {$signed_value}",
-                        'expected_and_not'  => "`glpi_authldaps`.`port` {$not_operator} {$signed_value}",
+                        'expected_and'      => "`zentra_authldaps`.`port` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`zentra_authldaps`.`port` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=number
@@ -4321,8 +4321,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 32, // timeout
                         'value'             => $searched_value,
-                        'expected_and'      => "`glpi_authldaps`.`timeout` {$operator} {$signed_value}",
-                        'expected_and_not'  => "`glpi_authldaps`.`timeout` {$not_operator} {$signed_value}",
+                        'expected_and'      => "`zentra_authldaps`.`timeout` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`zentra_authldaps`.`timeout` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=number (usehaving=true)
@@ -4339,8 +4339,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 7, // value
                         'value'             => $searched_value,
-                        'expected_and'      => "`glpi_budgets`.`value` {$operator} {$signed_value}",
-                        'expected_and_not'  => "`glpi_budgets`.`value` {$not_operator} {$signed_value}",
+                        'expected_and'      => "`zentra_budgets`.`value` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`zentra_budgets`.`value` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal (usehaving=true)
@@ -4375,8 +4375,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
-                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
-                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value})",
+                        'expected_and'      => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
+                        'expected_and_not'  => "(LPAD(ROUND(100*`zentra_items_disks`.freesize/NULLIF(`zentra_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=timestamp
@@ -4384,8 +4384,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \CronTask::class,
                         'search_option'     => 6, // frequency
                         'value'             => $searched_value,
-                        'expected_and'      => "`glpi_crontasks`.`frequency` {$operator} {$signed_value}",
-                        'expected_and_not'  => "`glpi_crontasks`.`frequency` {$not_operator} {$signed_value}",
+                        'expected_and'      => "`zentra_crontasks`.`frequency` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`zentra_crontasks`.`frequency` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=timestamp (usehaving=true)
@@ -4423,8 +4423,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 9, // last_inventory_update
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`zentra_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=datetime computed field
@@ -4442,8 +4442,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 5, // begin_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`zentra_budgets`.`begin_date` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=date_delay
@@ -4451,8 +4451,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 20, // end_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(DATE_ADD(`zentra_contracts`.`begin_date`, INTERVAL `zentra_contracts`.`duration` MONTH) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
                 }
             }
@@ -4750,8 +4750,8 @@ class SearchTest extends DbTestCase
 
     public function testDCRoomSearchOption()
     {
-        global $CFG_GLPI;
-        foreach ($CFG_GLPI['rackable_types'] as $rackable_type) {
+        global $CFG_ZENTRA;
+        foreach ($CFG_ZENTRA['rackable_types'] as $rackable_type) {
             $item = new $rackable_type();
             $so = $item->rawSearchOptions();
             //check if search option separator 'dcroom' exist
@@ -4765,8 +4765,8 @@ class SearchTest extends DbTestCase
 
     public function testDataCenterSearchOption()
     {
-        global $CFG_GLPI;
-        foreach ($CFG_GLPI['rackable_types'] as $rackable_type) {
+        global $CFG_ZENTRA;
+        foreach ($CFG_ZENTRA['rackable_types'] as $rackable_type) {
             $item = new $rackable_type();
             $so = $item->rawSearchOptions();
             //check if search option separator 'datacenter' exist
@@ -4780,7 +4780,7 @@ class SearchTest extends DbTestCase
 
     protected function testRichTextProvider(): iterable
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $this->createItems('Ticket', [
             [
@@ -4986,7 +4986,7 @@ class SearchTest extends DbTestCase
         $input = [
             'itemtype'  => 'Ticket',
             'users_id'  => Session::getLoginUserID(),
-            'num'       => 55, //Ticket glpi_ticketvalidations.status
+            'num'       => 55, //Ticket zentra_ticketvalidations.status
         ];
         $this->assertGreaterThan(
             0,
@@ -4996,40 +4996,40 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('Ticket', $search_params);
 
         $this->assertStringNotContainsString(
-            "`glpi_ticketvalidations`.`status` IN",
+            "`zentra_ticketvalidations`.`status` IN",
             $data['sql']['search']
         );
 
         $search_params['criteria'][0]['value'] = 1;
         $data = $this->doSearch('Ticket', $search_params);
         $this->assertStringContainsString(
-            "`glpi_ticketvalidations`.`status` IN",
+            "`zentra_ticketvalidations`.`status` IN",
             $data['sql']['search']
         );
 
         $search_params['criteria'][0]['value'] = 'all';
         $data = $this->doSearch('Ticket', $search_params);
         $this->assertStringNotContainsString(
-            "`glpi_ticketvalidations`.`status` IN",
+            "`zentra_ticketvalidations`.`status` IN",
             $data['sql']['search']
         );
 
         $search_params['criteria'][0]['value'] = 'can';
         $data = $this->doSearch('Ticket', $search_params);
         $this->assertStringContainsString(
-            "`glpi_ticketvalidations`.`status` IN",
+            "`zentra_ticketvalidations`.`status` IN",
             $data['sql']['search']
         );
     }
 
     public function testCommonITILSatisfactionEndDate()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $entity_root_id = getItemByTypeName('Entity', '_test_root_entity', true);
         $entity_child_1_id = getItemByTypeName('Entity', '_test_child_1', true);
         $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
-        $user_id = $_SESSION['glpiID'];
+        $user_id = $_SESSION['zentraID'];
 
         $this->updateItem(Entity::class, $entity_root_id, [
             'inquest_config'   => 1,
@@ -5060,7 +5060,7 @@ class SearchTest extends DbTestCase
                 'entities_id' => $entity_root_id,
                 'name' => __FUNCTION__ . ' 1',
                 'content' => __FUNCTION__ . ' 1 content',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -5068,7 +5068,7 @@ class SearchTest extends DbTestCase
                 'entities_id' => $entity_child_1_id,
                 'name' => __FUNCTION__ . ' 2',
                 'content' => __FUNCTION__ . ' 2 content',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -5076,7 +5076,7 @@ class SearchTest extends DbTestCase
                 'entities_id' => $entity_child_2_id,
                 'name' => __FUNCTION__ . ' 3',
                 'content' => __FUNCTION__ . ' 3 content',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -5084,7 +5084,7 @@ class SearchTest extends DbTestCase
                 'entities_id' => $entity_child_2_1_id,
                 'name' => __FUNCTION__ . ' 4',
                 'content' => __FUNCTION__ . ' 4 content',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -5092,7 +5092,7 @@ class SearchTest extends DbTestCase
                 'entities_id' => $entity_child_2_1_1_id,
                 'name' => __FUNCTION__ . ' 5',
                 'content' => __FUNCTION__ . ' 5 content',
-                'solvedate' => $_SESSION['glpi_currenttime'],
+                'solvedate' => $_SESSION['zentra_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
             ],
@@ -5103,27 +5103,27 @@ class SearchTest extends DbTestCase
             [
                 'tickets_id' => $tickets[0]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[1]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[2]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[3]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
             [
                 'tickets_id' => $tickets[4]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'date_begin' => $_SESSION['glpi_currenttime'],
+                'date_begin' => $_SESSION['zentra_currenttime'],
             ],
         ]);
 
@@ -5161,19 +5161,19 @@ class SearchTest extends DbTestCase
             ],
             [
                 $tickets[1]->getID(),
-                date('Y-m-d H:i:s', strtotime('+2 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+2 days', strtotime($_SESSION['zentra_currenttime']))),
             ],
             [
                 $tickets[2]->getID(),
-                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['zentra_currenttime']))),
             ],
             [
                 $tickets[3]->getID(),
-                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['zentra_currenttime']))),
             ],
             [
                 $tickets[4]->getID(),
-                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['zentra_currenttime']))),
             ],
         ];
         $this->assertEquals($expected, $items);
@@ -5181,10 +5181,10 @@ class SearchTest extends DbTestCase
 
     public function testSatisfactionSurveySearch()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
-        $user_id = $_SESSION['glpiID'];
+        $user_id = $_SESSION['zentraID'];
 
         // Configure entity for satisfaction survey
         $this->updateItem(Entity::class, $entity_id, [
@@ -5197,7 +5197,7 @@ class SearchTest extends DbTestCase
             'entities_id' => $entity_id,
             'name' => __FUNCTION__ . ' ticket',
             'content' => __FUNCTION__ . ' ticket content',
-            'solvedate' => $_SESSION['glpi_currenttime'],
+            'solvedate' => $_SESSION['zentra_currenttime'],
             'status' => \CommonITILObject::CLOSED,
             'users_id_recipient' => $user_id,
         ]);
@@ -5206,12 +5206,12 @@ class SearchTest extends DbTestCase
         $this->createItem(\TicketSatisfaction::class, [
             'tickets_id' => $ticket->getID(),
             'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date_begin' => $_SESSION['glpi_currenttime'],
+            'date_begin' => $_SESSION['zentra_currenttime'],
             'date_answered' => null,
         ]);
 
         // This search simulates clicking on "Satisfaction surveys to answer" in personal view
-        // It should not throw SQL error about unknown column 'glpi_entities.id'
+        // It should not throw SQL error about unknown column 'zentra_entities.id'
         $search_params = [
             'is_deleted' => 0,
             'start' => 0,
@@ -5234,7 +5234,7 @@ class SearchTest extends DbTestCase
                 [
                     'field' => 75, // satisfaction end date - this was causing the SQL error
                     'searchtype' => 'morethan',
-                    'value' => $_SESSION['glpi_currenttime'],
+                    'value' => $_SESSION['zentra_currenttime'],
                 ],
             ],
         ];
@@ -5782,7 +5782,7 @@ class SearchTest extends DbTestCase
             65, // Watcher group
             'contains',
             "",
-            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
+            // Not very logical but ZENTRA return the same results for a contains "" and not contains "" queries
             $all_tickets
         );
 
@@ -5913,7 +5913,7 @@ class SearchTest extends DbTestCase
             4, // Requester
             'contains',
             "",
-            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
+            // Not very logical but ZENTRA return the same results for a contains "" and not contains "" queries
             $all_tickets
         );
 
@@ -5999,7 +5999,7 @@ class SearchTest extends DbTestCase
 
         // Get tests users
         $user_1 = getItemByTypeName('User', TU_USER, true);
-        $user_2 = getItemByTypeName('User', 'glpi', true);
+        $user_2 = getItemByTypeName('User', 'zentra', true);
 
         // Set name to user_1 so we can test searching for ticket on firstname / lastname
         $this->updateItem('User', $user_1, [
@@ -6033,7 +6033,7 @@ class SearchTest extends DbTestCase
             'users_id'  => getItemByTypeName('User', TU_USER, true),
             'groups_id' => $group_1,
         ]);
-        $_SESSION['glpigroups'] = [$group_1];
+        $_SESSION['zentragroups'] = [$group_1];
 
         // Create test suppliers
         $this->createItems('Supplier', [
@@ -6296,7 +6296,7 @@ class SearchTest extends DbTestCase
     /**
      * Regression test to validate that external users requesters email are correctly rendered.
      *
-     * @see https://github.com/glpi-project/glpi/pull/21348
+     * @see https://github.com/zentra-project/zentra/pull/21348
      */
     public function testExternalRequesterColumnRenderingInSearchResults(): void
     {
@@ -6406,8 +6406,8 @@ class SearchTest extends DbTestCase
         $subcat_1_id = \getItemByTypeName(TaskCategory::class, '_subcat_1', true);
         $rnd_cat_id  = \getItemByTypeName(TaskCategory::class, 'R&D', true);
 
-        $_SESSION['glpilanguage'] = 'fr_FR';
-        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
+        $_SESSION['zentralanguage'] = 'fr_FR';
+        $_SESSION['zentra_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
 
         $result = \Search::getDatas(
             TaskCategory::class,
@@ -6441,7 +6441,7 @@ class SearchTest extends DbTestCase
     {
         $this->login();
 
-        $user_id    = \getItemByTypeName(User::class, 'glpi', true);
+        $user_id    = \getItemByTypeName(User::class, 'zentra', true);
         $group_1_id = \getItemByTypeName(Group::class, '_test_group_1', true);
         $group_2_id = \getItemByTypeName(Group::class, '_test_group_2', true);
 
@@ -6460,7 +6460,7 @@ class SearchTest extends DbTestCase
         );
 
         // Test with `use_flat_dropdowntree_on_search_result=1`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 1;
         $result = \Search::getDatas(
             User::class,
             [
@@ -6468,7 +6468,7 @@ class SearchTest extends DbTestCase
                     [
                         'field'      => '1',
                         'searchtype' => 'contains',
-                        'value'      => 'glpi',
+                        'value'      => 'zentra',
                     ],
                 ],
                 'forcetoview' => [13],
@@ -6484,7 +6484,7 @@ class SearchTest extends DbTestCase
         );
 
         // Test with `use_flat_dropdowntree_on_search_result=0`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 0;
         $result = \Search::getDatas(
             User::class,
             [
@@ -6492,7 +6492,7 @@ class SearchTest extends DbTestCase
                     [
                         'field'      => '1',
                         'searchtype' => 'contains',
-                        'value'      => 'glpi',
+                        'value'      => 'zentra',
                     ],
                 ],
                 'forcetoview' => [13],
@@ -6525,7 +6525,7 @@ class SearchTest extends DbTestCase
         );
 
         // Test with `use_flat_dropdowntree_on_search_result=1`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 1;
         $result = \Search::getDatas(
             Computer::class,
             [
@@ -6543,7 +6543,7 @@ class SearchTest extends DbTestCase
         $this->assertEquals('_location02 &gt; _sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
 
         // Test with `use_flat_dropdowntree_on_search_result=0`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 0;
         $result = \Search::getDatas(
             Computer::class,
             [
@@ -6594,7 +6594,7 @@ class SearchTest extends DbTestCase
         );
 
         // Test with `use_flat_dropdowntree_on_search_result=1`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 1;
         $result = \Search::getDatas(
             Computer::class,
             [
@@ -6616,7 +6616,7 @@ class SearchTest extends DbTestCase
         );
 
         // Test with `use_flat_dropdowntree_on_search_result=0`
-        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $_SESSION['zentrause_flat_dropdowntree_on_search_result'] = 0;
         $result = \Search::getDatas(
             Computer::class,
             [
@@ -6693,6 +6693,6 @@ class Computer extends \Computer
     // @codingStandardsIgnoreEnd
     public static function getTable($classname = null)
     {
-        return 'glpi_computers';
+        return 'zentra_computers';
     }
 }

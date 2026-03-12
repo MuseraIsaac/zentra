@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,14 +99,14 @@ class NotificationTargetReservation extends NotificationTarget
                                  = $item->getField('name');
                 $this->data['##reservation.item.entity##']
                                  = Dropdown::getDropdownName(
-                                     'glpi_entities',
+                                     'zentra_entities',
                                      $item->getField('entities_id')
                                  );
 
                 if ($item->isField('users_id_tech')) {
                     $this->data['##reservation.item.tech##']
                                 = Dropdown::getDropdownName(
-                                    'glpi_users',
+                                    'zentra_users',
                                     $item->getField('users_id_tech')
                                 );
                 }
@@ -125,7 +125,7 @@ class NotificationTargetReservation extends NotificationTarget
             }
         } else {
             $this->data['##reservation.entity##'] = Dropdown::getDropdownName(
-                'glpi_entities',
+                'zentra_entities',
                 $options['entities_id']
             );
 

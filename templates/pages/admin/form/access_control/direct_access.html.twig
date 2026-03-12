@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,15 +30,15 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
-{# @var \Glpi\Form\AccessControl\ControlType\DirectAccessConfig config #}
+{# @var \Zentra\Form\AccessControl\ControlType\FormAccessControl access_control #}
+{# @var \Zentra\Form\AccessControl\ControlType\DirectAccessConfig config #}
 {# @var string                                                  url #}
 
 {# Readonly input used to display the link, can be copied by clicking on it #}
 <div class="d-flex w-100 mb-3">
     <div
         class="input-icon cursor-pointer flex-grow-1"
-        data-glpi-clipboard-text="{{ url }}"
+        data-zentra-clipboard-text="{{ url }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
         title="{{ __("Click to copy to clipboard") }}"
@@ -49,7 +49,7 @@
             readonly=""
             value="{{ url }}"
             aria-label="{{ __("Direct access URL") }}"
-            data-glpi-direct-access-refresh-url
+            data-zentra-direct-access-refresh-url
         >
         <span class="input-icon-addon">
             <i class="ti ti-files"></i>
@@ -60,7 +60,7 @@
         data-bs-toggle="tooltip"
         data-bs-placement="top"
         title="{{ __("Click to change the token") }}"
-        data-glpi-direct-access-refresh-token
+        data-zentra-direct-access-refresh-token
     ></i>
 </div>
 
@@ -96,14 +96,14 @@
     type="hidden"
     name="{{ access_control.getNormalizedInputName("_token") }}"
     value="{{ config.getToken() }}"
-    data-glpi-direct-access-token-input
+    data-zentra-direct-access-token-input
 >
 
 <script>
     (() => {
-        const refresh_button = document.querySelector('[data-glpi-direct-access-refresh-token]');
-        const input = document.querySelector('[data-glpi-direct-access-token-input]');
-        const preview = document.querySelector('[data-glpi-direct-access-refresh-url]');
+        const refresh_button = document.querySelector('[data-zentra-direct-access-refresh-token]');
+        const input = document.querySelector('[data-zentra-direct-access-token-input]');
+        const preview = document.querySelector('[data-zentra-direct-access-refresh-url]');
 
         refresh_button.addEventListener('click', () => {
             const message = __("Are you sure? Any users using the old link will no longer be able to access the form.");

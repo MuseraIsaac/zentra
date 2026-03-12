@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 $is-dark: true;
 
-:root[data-glpi-theme="darker"] {
+:root[data-zentra-theme="darker"] {
     --tblr-dark: #242323;
     --tblr-light: #aaa;
     --tblr-body-bg: #1f1e1e;
@@ -49,28 +49,28 @@ $is-dark: true;
     --tblr-muted: #aaa;
     --tblr-badge-bg: var(--tblr-light);
     --tblr-badge-color: var(--tblr-dark);
-    --glpi-mainmenu-bg: #242323; // hsl(0deg, 1%, 14%)
-    --glpi-helpdesk-header: #1f1e1e;
-    --glpi-helpdesk-tiles-section-bg: hsl(0deg, 1.6%, 20%);
-    --glpi-helpdesk-tabs-section-bg: hsl(0deg, 1.6%, 10%);
-    --glpi-illustrations-header-light: hsl(40deg, 5%, 4%);
-    --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-form-header-border-color: transparent;
-    --glpi-form-header-fg: var(--tblr-light);
-    --glpi-tabs-bg: #222121;
-    --glpi-tabs-fg: var(--tblr-light);
-    --glpi-tabs-border-color: transparent;
-    --glpi-tabs-active-bg: #3a3938;
-    --glpi-tabs-active-fg: var(--tblr-muted);
-    --glpi-tabs-active-border-color: transparent;
-    --glpi-itil-secondary-bg: #222121;
-    --glpi-palette-color-1: #161514;
-    --glpi-palette-color-2: #131e21;
-    --glpi-palette-color-3: #585957;
-    --glpi-palette-color-4: #3f403e;
+    --zentra-mainmenu-bg: #242323; // hsl(0deg, 1%, 14%)
+    --zentra-helpdesk-header: #1f1e1e;
+    --zentra-helpdesk-tiles-section-bg: hsl(0deg, 1.6%, 20%);
+    --zentra-helpdesk-tabs-section-bg: hsl(0deg, 1.6%, 10%);
+    --zentra-illustrations-header-light: hsl(40deg, 5%, 4%);
+    --zentra-mainmenu-fg: #f4f6fa;
+    --zentra-form-header-border-color: transparent;
+    --zentra-form-header-fg: var(--tblr-light);
+    --zentra-tabs-bg: #222121;
+    --zentra-tabs-fg: var(--tblr-light);
+    --zentra-tabs-border-color: transparent;
+    --zentra-tabs-active-bg: #3a3938;
+    --zentra-tabs-active-fg: var(--tblr-muted);
+    --zentra-tabs-active-border-color: transparent;
+    --zentra-itil-secondary-bg: #222121;
+    --zentra-palette-color-1: #161514;
+    --zentra-palette-color-2: #131e21;
+    --zentra-palette-color-3: #585957;
+    --zentra-palette-color-4: #3f403e;
 
     // Helpdesk header
-    --glpi-illustrations-gradient-1: hsl(0deg, 1%, 70%);
-    --glpi-illustrations-gradient-2: hsl(0deg, 1%, 35%);
-    --glpi-illustrations-gradient-3: hsl(0deg, 1%, 20%);
+    --zentra-illustrations-gradient-1: hsl(0deg, 1%, 70%);
+    --zentra-illustrations-gradient-2: hsl(0deg, 1%, 35%);
+    --zentra-illustrations-gradient-3: hsl(0deg, 1%, 20%);
 }

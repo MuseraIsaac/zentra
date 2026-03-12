@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\RichText\RichText;
 
 /**
  * ReminderTranslation Class
@@ -68,14 +68,14 @@ class ReminderTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             $item instanceof Reminder
             && Session::getCurrentInterface() != "helpdesk"
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -84,7 +84,7 @@ class ReminderTranslation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Reminder) {
             self::showTranslations($item);
@@ -118,7 +118,7 @@ class ReminderTranslation extends CommonDBChild
                 <script>
                     function showTranslation{{ item.getID() ~ rand }}(translations_id) {
                         $.ajax({
-                            url: CFG_GLPI.root_doc + '/ajax/viewsubitem.php',
+                            url: CFG_ZENTRA.root_doc + '/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ReminderTranslation',
@@ -185,7 +185,7 @@ TWIG, $twig_params);
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
@@ -229,7 +229,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'reminders_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage'],
+            'language'           => $_SESSION['zentralanguage'],
         ]);
 
         if (

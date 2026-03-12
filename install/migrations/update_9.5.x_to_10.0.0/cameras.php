@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_devicecameras')) {
-    $query = "CREATE TABLE `glpi_devicecameras` (
+if (!$DB->tableExists('zentra_devicecameras')) {
+    $query = "CREATE TABLE `zentra_devicecameras` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `designation` varchar(255) DEFAULT NULL,
       `flashunit` tinyint NOT NULL DEFAULT '0',
@@ -68,12 +68,12 @@ if (!$DB->tableExists('glpi_devicecameras')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->dropKey('glpi_devicecameras', 'unicity');
-    $migration->addKey('glpi_devicecameras', 'manufacturers_id', 'manufacturers_id');
+    $migration->dropKey('zentra_devicecameras', 'unicity');
+    $migration->addKey('zentra_devicecameras', 'manufacturers_id', 'manufacturers_id');
 }
 
-if (!$DB->tableExists('glpi_devicecameramodels')) {
-    $query = "CREATE TABLE `glpi_devicecameramodels` (
+if (!$DB->tableExists('zentra_devicecameramodels')) {
+    $query = "CREATE TABLE `zentra_devicecameramodels` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -85,8 +85,8 @@ if (!$DB->tableExists('glpi_devicecameramodels')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_imageformats')) {
-    $query = "CREATE TABLE `glpi_imageformats` (
+if (!$DB->tableExists('zentra_imageformats')) {
+    $query = "CREATE TABLE `zentra_imageformats` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -104,8 +104,8 @@ if (!$DB->tableExists('glpi_imageformats')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_imageresolutions')) {
-    $query = "CREATE TABLE `glpi_imageresolutions` (
+if (!$DB->tableExists('zentra_imageresolutions')) {
+    $query = "CREATE TABLE `zentra_imageresolutions` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `is_video` tinyint NOT NULL DEFAULT '0',
@@ -125,8 +125,8 @@ if (!$DB->tableExists('glpi_imageresolutions')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_items_devicecameras')) {
-    $query = "CREATE TABLE `glpi_items_devicecameras` (
+if (!$DB->tableExists('zentra_items_devicecameras')) {
+    $query = "CREATE TABLE `zentra_items_devicecameras` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `itemtype` varchar(255) DEFAULT NULL,
@@ -147,8 +147,8 @@ if (!$DB->tableExists('glpi_items_devicecameras')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
-    $query = "CREATE TABLE `glpi_items_devicecameras_imageformats` (
+if (!$DB->tableExists('zentra_items_devicecameras_imageformats')) {
+    $query = "CREATE TABLE `zentra_items_devicecameras_imageformats` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `item_devicecameras_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `imageformats_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -161,8 +161,8 @@ if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_items_devicecameras_imageresolutions')) {
-    $query = "CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
+if (!$DB->tableExists('zentra_items_devicecameras_imageresolutions')) {
+    $query = "CREATE TABLE `zentra_items_devicecameras_imageresolutions` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `item_devicecameras_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `imageresolutions_id` int {$default_key_sign} NOT NULL DEFAULT '0',

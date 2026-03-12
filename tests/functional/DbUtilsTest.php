@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Dashboard\Dashboard;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
-use GlpiPlugin\Tester\Asset\Foo;
+use Zentra\Dashboard\Dashboard;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
+use ZentraPlugin\Tester\Asset\Foo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -49,11 +49,11 @@ class DbUtilsTest extends DbTestCase
 {
     public function setUp(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Clean the cache
-        unset($CFG_GLPI['glpiitemtypetables']);
-        unset($CFG_GLPI['glpitablesitemtype']);
+        unset($CFG_ZENTRA['zentraitemtypetables']);
+        unset($CFG_ZENTRA['zentratablesitemtype']);
         parent::setUp();
     }
 
@@ -61,10 +61,10 @@ class DbUtilsTest extends DbTestCase
     {
         return [
             ['foo', ''],
-            ['glpi_computers', 'computers_id'],
-            ['glpi_users', 'users_id'],
-            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
-            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id'],
+            ['zentra_computers', 'computers_id'],
+            ['zentra_users', 'users_id'],
+            ['zentra_plugin_foo_bars', 'plugin_foo_bars_id'],
+            ['zentra_plugin_foozentras', 'plugin_foozentras_id'],
         ];
     }
 
@@ -72,9 +72,9 @@ class DbUtilsTest extends DbTestCase
     {
 
         return [
-            ['glpi_computers', 'computers_id'],
-            ['glpi_users', 'users_id'],
-            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
+            ['zentra_computers', 'computers_id'],
+            ['zentra_users', 'users_id'],
+            ['zentra_plugin_foo_bars', 'plugin_foo_bars_id'],
         ];
     }
 
@@ -141,22 +141,22 @@ class DbUtilsTest extends DbTestCase
         require_once FIXTURE_DIR . '/test_a_b.php';
 
         return [
-            ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
-            ['glpi_computers', 'Computer', true],
-            ['glpi_appliances_items', 'Appliance_Item', true],
-            ['glpi_dashboards_dashboards', 'Glpi\Dashboard\Dashboard', true],
-            ['glpi_events', 'Glpi\Event', true],
-            ['glpi_users', 'User', true],
-            ['glpi_plugin_bar_foos', 'GlpiPlugin\Bar\Foo', true],
-            ['glpi_plugin_baz_foos', 'GlpiPlugin\Baz\Foo', false], // class not exists
-            ['glpi_plugin_foo_bars', 'PluginFooBar', true],
-            ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
-            ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
-            ['glpi_plugin_foo_searches_items_filters', 'GlpiPlugin\Foo\Search\Item_Filter', true], // Multi-level namespace + CommonDBRelation
-            ['glpi_plugin_foo_items_filters', 'GlpiPlugin\Foo\Item_Filter', true], // Single level namespace + CommonDBRelation
-            ['glpi_anothers_tests', 'Glpi\Another_Test', true], // Single level namespace + CommonDBRelation
-            ['glpi_tests_as_bs', 'Glpi\Test\A_B', true], // Multi-level namespace + CommonDBRelation
-            ['glpi_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long namespace
+            ['zentra_dbmysqls', 'DBmysql', false], // not a CommonZENTRA, should not be valid
+            ['zentra_computers', 'Computer', true],
+            ['zentra_appliances_items', 'Appliance_Item', true],
+            ['zentra_dashboards_dashboards', 'Zentra\Dashboard\Dashboard', true],
+            ['zentra_events', 'Zentra\Event', true],
+            ['zentra_users', 'User', true],
+            ['zentra_plugin_bar_foos', 'ZentraPlugin\Bar\Foo', true],
+            ['zentra_plugin_baz_foos', 'ZentraPlugin\Baz\Foo', false], // class not exists
+            ['zentra_plugin_foo_bars', 'PluginFooBar', true],
+            ['zentra_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
+            ['zentra_plugin_foo_services', 'PluginFooService', false], // not a CommonZENTRA should not be valid
+            ['zentra_plugin_foo_searches_items_filters', 'ZentraPlugin\Foo\Search\Item_Filter', true], // Multi-level namespace + CommonDBRelation
+            ['zentra_plugin_foo_items_filters', 'ZentraPlugin\Foo\Item_Filter', true], // Single level namespace + CommonDBRelation
+            ['zentra_anothers_tests', 'Zentra\Another_Test', true], // Single level namespace + CommonDBRelation
+            ['zentra_tests_as_bs', 'Zentra\Test\A_B', true], // Multi-level namespace + CommonDBRelation
+            ['zentra_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'ZentraPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long namespace
         ];
     }
 
@@ -169,28 +169,28 @@ class DbUtilsTest extends DbTestCase
             self::dataTableType()
         );
 
-        $table_types_mapping[] = ['glpi_configs', \NotificationSetting::class];
+        $table_types_mapping[] = ['zentra_configs', \NotificationSetting::class];
 
         $known_classes = self::getClasses();
 
         foreach ($known_classes as $known_class) {
             if (is_a($known_class, \NotificationTarget::class, true)) {
-                // Classes that extends NotificationTarget are always using the `glpi_notificationtargets` table
-                $table_types_mapping[] = ['glpi_notificationtargets', $known_class];
+                // Classes that extends NotificationTarget are always using the `zentra_notificationtargets` table
+                $table_types_mapping[] = ['zentra_notificationtargets', $known_class];
             }
             if (is_a($known_class, \Rule::class, true) && !in_array($known_class, [\OlaLevel::class, \SlaLevel::class])) {
-                // Classes that extends Rule are always using the `glpi_rules` table
-                $table_types_mapping[] = ['glpi_rules', $known_class];
+                // Classes that extends Rule are always using the `zentra_rules` table
+                $table_types_mapping[] = ['zentra_rules', $known_class];
             }
             if (is_a($known_class, \RuleCollection::class, true)) {
-                // Classes that extends RuleCollection are always using the `glpi_rules` table
-                $table_types_mapping[] = ['glpi_rules', $known_class];
+                // Classes that extends RuleCollection are always using the `zentra_rules` table
+                $table_types_mapping[] = ['zentra_rules', $known_class];
             }
         }
 
         // specific cases of classes that extends Rule
-        $table_types_mapping[] = ['glpi_olalevels', \OlaLevel::class];
-        $table_types_mapping[] = ['glpi_slalevels', \SlaLevel::class];
+        $table_types_mapping[] = ['zentra_olalevels', \OlaLevel::class];
+        $table_types_mapping[] = ['zentra_slalevels', \SlaLevel::class];
 
         return $table_types_mapping;
     }
@@ -335,9 +335,9 @@ class DbUtilsTest extends DbTestCase
         require_once FIXTURE_DIR . '/pluginbarabstractstuff.php';
 
         $instance = new \DbUtils();
-        $instance->getItemForItemtype('GlpiPlugin\Bar\AbstractStuff');
+        $instance->getItemForItemtype('ZentraPlugin\Bar\AbstractStuff');
         $this->hasPhpLogRecordThatContains(
-            'Cannot instanciate "GlpiPlugin\Bar\AbstractStuff" as it is an abstract class.',
+            'Cannot instanciate "ZentraPlugin\Bar\AbstractStuff" as it is an abstract class.',
             LogLevel::WARNING
         );
     }
@@ -479,42 +479,42 @@ class DbUtilsTest extends DbTestCase
     public function testCountElementsInTable()
     {
         $instance = new \DbUtils();
-        $this->assertGreaterThan(100, $instance->countElementsInTable('glpi_configs'));
-        $this->assertGreaterThan(100, $instance->countElementsInTable(['glpi_configs', 'glpi_users']));
-        $this->assertGreaterThan(100, $instance->countElementsInTable('glpi_configs', ['context' => 'core']));
-        $this->assertSame(1, $instance->countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']));
-        $this->assertSame(0, $instance->countElementsInTable('glpi_configs', ['context' => 'fakecontext']));
+        $this->assertGreaterThan(100, $instance->countElementsInTable('zentra_configs'));
+        $this->assertGreaterThan(100, $instance->countElementsInTable(['zentra_configs', 'zentra_users']));
+        $this->assertGreaterThan(100, $instance->countElementsInTable('zentra_configs', ['context' => 'core']));
+        $this->assertSame(1, $instance->countElementsInTable('zentra_configs', ['context' => 'core', 'name' => 'version']));
+        $this->assertSame(0, $instance->countElementsInTable('zentra_configs', ['context' => 'fakecontext']));
 
         //keep testing old method from db.function
         //the case of using an element that is not a table is not handle in the function :
-        $this->assertGreaterThan(100, countElementsInTable('glpi_configs'));
-        $this->assertGreaterThan(100, countElementsInTable(['glpi_configs', 'glpi_users']));
-        $this->assertGreaterThan(100, countElementsInTable('glpi_configs', ['context' => 'core']));
-        $this->assertSame(1, countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']));
-        $this->assertSame(0, countElementsInTable('glpi_configs', ['context' => 'fakecontext']));
+        $this->assertGreaterThan(100, countElementsInTable('zentra_configs'));
+        $this->assertGreaterThan(100, countElementsInTable(['zentra_configs', 'zentra_users']));
+        $this->assertGreaterThan(100, countElementsInTable('zentra_configs', ['context' => 'core']));
+        $this->assertSame(1, countElementsInTable('zentra_configs', ['context' => 'core', 'name' => 'version']));
+        $this->assertSame(0, countElementsInTable('zentra_configs', ['context' => 'fakecontext']));
     }
 
 
     public function testCountDistinctElementsInTable()
     {
         $instance = new \DbUtils();
-        $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'id'));
-        $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'context'));
-        $this->assertGreaterThanOrEqual(2, $instance->countDistinctElementsInTable('glpi_tickets', 'entities_id'));
-        $this->assertSame(21, $instance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']));
-        $this->assertSame(27, $instance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']));
-        $this->assertSame(1, $instance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']));
-        $this->assertSame(0, $instance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']));
+        $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('zentra_configs', 'id'));
+        $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('zentra_configs', 'context'));
+        $this->assertGreaterThanOrEqual(2, $instance->countDistinctElementsInTable('zentra_tickets', 'entities_id'));
+        $this->assertSame(21, $instance->countDistinctElementsInTable('zentra_crontasks', 'itemtype', ['frequency' => '86400']));
+        $this->assertSame(27, $instance->countDistinctElementsInTable('zentra_crontasks', 'id', ['frequency' => '86400']));
+        $this->assertSame(1, $instance->countDistinctElementsInTable('zentra_configs', 'context', ['name' => 'version']));
+        $this->assertSame(0, $instance->countDistinctElementsInTable('zentra_configs', 'id', ['context' => 'fakecontext']));
 
         //keep testing old method from db.function
         //the case of using an element that is not a table is not handle in the function :
         //testCountElementsInTable($table, $condition="")
-        $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs', 'id'));
-        $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs', 'context'));
+        $this->assertGreaterThan(0, countDistinctElementsInTable('zentra_configs', 'id'));
+        $this->assertGreaterThan(0, countDistinctElementsInTable('zentra_configs', 'context'));
         $this->assertSame(
             1,
             countDistinctElementsInTable(
-                'glpi_configs',
+                'zentra_configs',
                 'context',
                 ['name' => 'version']
             )
@@ -522,7 +522,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame(
             0,
             countDistinctElementsInTable(
-                'glpi_configs',
+                'zentra_configs',
                 'id',
                 ['context' => 'fakecontext']
             )
@@ -532,17 +532,17 @@ class DbUtilsTest extends DbTestCase
     public static function dataCountMyEntities()
     {
         return [
-            ['_test_root_entity', true, 'glpi_computers', [], 9],
-            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
-            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', true, 'zentra_computers', [], 9],
+            ['_test_root_entity', true, 'zentra_computers', ['name' => '_test_pc11'], 1],
+            ['_test_root_entity', true, 'zentra_computers', ['name' => '_test_pc01'], 1],
 
-            ['_test_root_entity', false, 'glpi_computers', [], 4],
-            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
-            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', false, 'zentra_computers', [], 4],
+            ['_test_root_entity', false, 'zentra_computers', ['name' => '_test_pc11'], 0],
+            ['_test_root_entity', false, 'zentra_computers', ['name' => '_test_pc01'], 1],
 
-            ['_test_child_1', false, 'glpi_computers', [], 3],
-            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
-            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
+            ['_test_child_1', false, 'zentra_computers', [], 3],
+            ['_test_child_1', false, 'zentra_computers', ['name' => '_test_pc11'], 1],
+            ['_test_child_1', false, 'zentra_computers', ['name' => '_test_pc01'], 0],
         ];
     }
 
@@ -567,13 +567,13 @@ class DbUtilsTest extends DbTestCase
     public static function dataCountEntities()
     {
         return [
-            ['_test_root_entity', 'glpi_computers', [], 4],
-            ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
-            ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
+            ['_test_root_entity', 'zentra_computers', [], 4],
+            ['_test_root_entity', 'zentra_computers', ['name' => '_test_pc11'], 0],
+            ['_test_root_entity', 'zentra_computers', ['name' => '_test_pc01'], 1],
 
-            ['_test_child_1', 'glpi_computers', [], 3],
-            ['_test_child_1', 'glpi_computers', ['name' => '_test_pc11'], 1],
-            ['_test_child_1', 'glpi_computers', ['name' => '_test_pc01'], 0],
+            ['_test_child_1', 'zentra_computers', [], 3],
+            ['_test_child_1', 'zentra_computers', ['name' => '_test_pc11'], 1],
+            ['_test_child_1', 'zentra_computers', ['name' => '_test_pc01'], 0],
         ];
     }
 
@@ -597,7 +597,7 @@ class DbUtilsTest extends DbTestCase
     public function testGetAllDataFromTable()
     {
         $instance = new \DbUtils();
-        $data = $instance->getAllDataFromTable('glpi_configs');
+        $data = $instance->getAllDataFromTable('zentra_configs');
         $this->assertGreaterThan(100, count($data));
 
         foreach ($data as $key => $array) {
@@ -605,8 +605,8 @@ class DbUtilsTest extends DbTestCase
         }
 
         $instance = new \DbUtils();
-        $this->assertCount(1, $instance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']));
-        $data = $instance->getAllDataFromTable('glpi_configs', ['ORDER' => 'name']);
+        $this->assertCount(1, $instance->getAllDataFromTable('zentra_configs', ['context' => 'core', 'name' => 'version']));
+        $data = $instance->getAllDataFromTable('zentra_configs', ['ORDER' => 'name']);
         $this->assertNotEmpty($data);
 
         $previousArrayName = "";
@@ -617,16 +617,16 @@ class DbUtilsTest extends DbTestCase
         //TODO: test with cache === true
 
         //keep testing old method from db.function
-        $data = getAllDataFromTable('glpi_configs');
+        $data = getAllDataFromTable('zentra_configs');
         $this->assertGreaterThan(100, count($data));
         foreach ($data as $key => $array) {
             $this->assertSame($key, $array['id']);
         }
 
-        $data = getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
+        $data = getAllDataFromTable('zentra_configs', ['context' => 'core', 'name' => 'version']);
         $this->assertCount(1, $data);
 
-        $data = getAllDataFromTable('glpi_configs', ['ORDER' => 'name']);
+        $data = getAllDataFromTable('zentra_configs', ['ORDER' => 'name']);
         $this->assertNotEmpty($data);
         $previousArrayName = "";
         foreach ($data as $key => $array) {
@@ -637,11 +637,11 @@ class DbUtilsTest extends DbTestCase
     public function testIsIndex()
     {
         $instance = new \DbUtils();
-        $this->assertFalse($instance->isIndex('glpi_configs', 'fakeField'));
-        $this->assertTrue($instance->isIndex('glpi_configs', 'name'));
-        $this->assertFalse($instance->isIndex('glpi_configs', 'value'));
-        $this->assertTrue($instance->isIndex('glpi_users', 'locations_id'));
-        $this->assertTrue($instance->isIndex('glpi_users', 'unicityloginauth'));
+        $this->assertFalse($instance->isIndex('zentra_configs', 'fakeField'));
+        $this->assertTrue($instance->isIndex('zentra_configs', 'name'));
+        $this->assertFalse($instance->isIndex('zentra_configs', 'value'));
+        $this->assertTrue($instance->isIndex('zentra_users', 'locations_id'));
+        $this->assertTrue($instance->isIndex('zentra_users', 'unicityloginauth'));
 
         $this->assertFalse($instance->isIndex('fakeTable', 'id'));
         $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', LogLevel::WARNING);
@@ -650,11 +650,11 @@ class DbUtilsTest extends DbTestCase
     public function testProceduralIsIndex()
     {
         //keep testing old method from db.function
-        $this->assertFalse(isIndex('glpi_configs', 'fakeField'));
-        $this->assertTrue(isIndex('glpi_configs', 'name'));
-        $this->assertFalse(isIndex('glpi_configs', 'value'));
-        $this->assertTrue(isIndex('glpi_users', 'locations_id'));
-        $this->assertTrue(isIndex('glpi_users', 'unicityloginauth'));
+        $this->assertFalse(isIndex('zentra_configs', 'fakeField'));
+        $this->assertTrue(isIndex('zentra_configs', 'name'));
+        $this->assertFalse(isIndex('zentra_configs', 'value'));
+        $this->assertTrue(isIndex('zentra_users', 'locations_id'));
+        $this->assertTrue(isIndex('zentra_users', 'unicityloginauth'));
 
         $this->assertFalse(isIndex('fakeTable', 'id'));
         $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', LogLevel::WARNING);
@@ -671,41 +671,41 @@ class DbUtilsTest extends DbTestCase
         $child3 = getItemByTypeName('Entity', '_test_child_3', true);
 
         // See all, really all
-        $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
+        $_SESSION['zentrashowallentities'] = 1; // will be restored by setEntity call
 
-        $this->assertEmpty($instance->getEntitiesRestrictRequest('AND', 'glpi_computers'));
+        $this->assertEmpty($instance->getEntitiesRestrictRequest('AND', 'zentra_computers'));
 
         $it = new \DBmysqlIterator(null);
 
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers` WHERE true', $it->getSql());
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers')]);
+        $this->assertSame('SELECT * FROM `zentra_computers` WHERE true', $it->getSql());
 
         //keep testing old method from db.function
-        $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers` WHERE (true)', $it->getSql());
+        $this->assertEmpty(getEntitiesRestrictRequest('AND', 'zentra_computers'));
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers')]);
+        $this->assertSame('SELECT * FROM `zentra_computers` WHERE (true)', $it->getSql());
 
         // See all
         $this->setEntity('_test_root_entity', true);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
+            $instance->getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')",
+            "SELECT * FROM `zentra_computers` WHERE `zentra_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
+            getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3'))",
+            "SELECT * FROM `zentra_computers` WHERE (`zentra_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3'))",
             $it->getSql()
         );
 
@@ -713,23 +713,23 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_root_entity', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$root')  ) ",
+            $instance->getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root')",
+            "SELECT * FROM `zentra_computers` WHERE `zentra_computers`.`entities_id` IN ('$root')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$root')  ) ",
+            getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root'))",
+            "SELECT * FROM `zentra_computers` WHERE (`zentra_computers`.`entities_id` IN ('$root'))",
             $it->getSql()
         );
 
@@ -737,23 +737,23 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_child_1', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$child1')  ) ",
+            $instance->getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$child1')",
+            "SELECT * FROM `zentra_computers` WHERE `zentra_computers`.`entities_id` IN ('$child1')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$child1')  ) ",
+            getEntitiesRestrictRequest('WHERE', 'zentra_computers')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child1'))",
+            "SELECT * FROM `zentra_computers` WHERE (`zentra_computers`.`entities_id` IN ('$child1'))",
             $it->getSql()
         );
 
@@ -762,9 +762,9 @@ class DbUtilsTest extends DbTestCase
             "WHERE ( `entities_id` IN ('$child1')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria()]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria()]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE `entities_id` IN ('$child1')",
+            "SELECT * FROM `zentra_computers` WHERE `entities_id` IN ('$child1')",
             $it->getSql()
         );
 
@@ -773,9 +773,9 @@ class DbUtilsTest extends DbTestCase
             "WHERE ( `entities_id` IN ('$child1')  ) ",
             getEntitiesRestrictRequest('WHERE')
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria()]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria()]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`entities_id` IN ('$child1'))",
+            "SELECT * FROM `zentra_computers` WHERE (`entities_id` IN ('$child1'))",
             $it->getSql()
         );
 
@@ -783,51 +783,51 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_child_2', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$child2')  OR (`zentra_computers`.`is_recursive`='1' AND `zentra_computers`.`entities_id` IN (0, $root)) ) ",
+            $instance->getEntitiesRestrictRequest('WHERE', 'zentra_computers', '', '', true)
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root')))",
+            "SELECT * FROM `zentra_computers` WHERE (`zentra_computers`.`entities_id` IN ('$child2') OR (`zentra_computers`.`is_recursive` = '1' AND `zentra_computers`.`entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
+            "WHERE ( `zentra_computers`.`entities_id` IN ('$child2')  OR (`zentra_computers`.`is_recursive`='1' AND `zentra_computers`.`entities_id` IN (0, $root)) ) ",
+            getEntitiesRestrictRequest('WHERE', 'zentra_computers', '', '', true)
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root'))))",
+            "SELECT * FROM `zentra_computers` WHERE ((`zentra_computers`.`entities_id` IN ('$child2') OR (`zentra_computers`.`is_recursive` = '1' AND `zentra_computers`.`entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
-        //Child + parent on glpi_entities
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', '', true)]);
+        //Child + parent on zentra_entities
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_entities', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN ('$child2', '0', '$root'))",
+            "SELECT * FROM `zentra_entities` WHERE (`zentra_entities`.`id` IN ('$child2', '0', '$root'))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', '', true)]);
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => getEntitiesRestrictCriteria('zentra_entities', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN ('$child2', '0', '$root')))",
+            "SELECT * FROM `zentra_entities` WHERE ((`zentra_entities`.`id` IN ('$child2', '0', '$root')))",
             $it->getSql()
         );
 
         //Child + parent -- automatic recusrivity detection
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_computers', '', '', 'auto')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root')))",
+            "SELECT * FROM `zentra_computers` WHERE (`zentra_computers`.`entities_id` IN ('$child2') OR (`zentra_computers`.`is_recursive` = '1' AND `zentra_computers`.`entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto')]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('zentra_computers', '', '', 'auto')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root'))))",
+            "SELECT * FROM `zentra_computers` WHERE ((`zentra_computers`.`entities_id` IN ('$child2') OR (`zentra_computers`.`is_recursive` = '1' AND `zentra_computers`.`entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
@@ -836,33 +836,33 @@ class DbUtilsTest extends DbTestCase
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
             $instance->getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('', '', '', true)]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root')))",
+            "SELECT * FROM `zentra_computers` WHERE (`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', $child1, true)]);
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_entities', '', $child1, true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN ('$child1', '0', '$root'))",
+            "SELECT * FROM `zentra_entities` WHERE (`zentra_entities`.`id` IN ('$child1', '0', '$root'))",
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', 9, true)]);
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('zentra_entities', '', 9, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = \'9\'',
+            'SELECT * FROM `zentra_entities` WHERE `zentra_entities`.`id` = \'9\'',
             $it->getSql()
         );
 
         // Entity value is empty array
-        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $it->execute('zentra_entities', $instance->getEntitiesRestrictCriteria('zentra_entities', '', [], true));
         $this->hasPhpLogRecordThatContains(
             'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
             LogLevel::INFO
         );
         $this->assertSame(0, $it->count());
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE false',
+            'SELECT * FROM `zentra_entities` WHERE false',
             $it->getSql()
         );
 
@@ -871,33 +871,33 @@ class DbUtilsTest extends DbTestCase
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
             getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
-        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('', '', '', true)]);
+        $it->execute(['FROM' => 'zentra_computers', 'WHERE' => getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE ((`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root'))))",
+            "SELECT * FROM `zentra_computers` WHERE ((`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', $child1, true)]);
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => getEntitiesRestrictCriteria('zentra_entities', '', $child1, true)]);
         $this->assertSame(
-            "SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN ('$child1', '0', '$root')))",
+            "SELECT * FROM `zentra_entities` WHERE ((`zentra_entities`.`id` IN ('$child1', '0', '$root')))",
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 9, true)]);
+        $it->execute(['FROM' => 'zentra_entities', 'WHERE' => getEntitiesRestrictCriteria('zentra_entities', '', 9, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'9\')',
+            'SELECT * FROM `zentra_entities` WHERE (`zentra_entities`.`id` = \'9\')',
             $it->getSql()
         );
 
         // Entity value is empty array
-        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $it->execute('zentra_entities', getEntitiesRestrictCriteria('zentra_entities', '', [], true));
         $this->hasPhpLogRecordThatContains(
             'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
             LogLevel::INFO
         );
         $this->assertSame(0, $it->count());
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (false)',
+            'SELECT * FROM `zentra_entities` WHERE (false)',
             $it->getSql()
         );
     }
@@ -912,7 +912,7 @@ class DbUtilsTest extends DbTestCase
      */
     private function runGetAncestorsOf($cache = false, $hit = false)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -923,53 +923,53 @@ class DbUtilsTest extends DbTestCase
         //- if $cache === 1; we expect cache to be empty before call, and populated after
         //- if $hit   === 1; we expect cache to be populated
 
-        $ckey_ent0 = 'ancestors_cache_glpi_entities_' . $ent0;
-        $ckey_ent1 = 'ancestors_cache_glpi_entities_' . $ent1;
-        $ckey_ent2 = 'ancestors_cache_glpi_entities_' . $ent2;
+        $ckey_ent0 = 'ancestors_cache_zentra_entities_' . $ent0;
+        $ckey_ent1 = 'ancestors_cache_zentra_entities_' . $ent1;
+        $ckey_ent2 = 'ancestors_cache_zentra_entities_' . $ent2;
 
         //test on ent0
         $expected = [0 => 0];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent0));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent0));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $ent0);
+        $ancestors = getAncestorsOf('zentra_entities', $ent0);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent0));
         }
 
         //test on ent1
         $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent1));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $ent1);
+        $ancestors = getAncestorsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         //test on ent2
         $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent2));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent2));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $ent2);
+        $ancestors = getAncestorsOf('zentra_entities', $ent2);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent2));
         }
 
         //test with new sub entity
@@ -985,18 +985,18 @@ class DbUtilsTest extends DbTestCase
             ]);
             $this->assertGreaterThan(0, $new_id);
         }
-        $ckey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
+        $ckey_new_id = 'ancestors_cache_zentra_entities_' . $new_id;
 
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_new_id));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $new_id);
+        $ancestors = getAncestorsOf('zentra_entities', $new_id);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_new_id));
         }
 
         //test with another new sub entity
@@ -1010,27 +1010,27 @@ class DbUtilsTest extends DbTestCase
             ]);
             $this->assertGreaterThan(0, $new_id2);
         }
-        $ckey_new_id2 = 'ancestors_cache_glpi_entities_' . $new_id2;
+        $ckey_new_id2 = 'ancestors_cache_zentra_entities_' . $new_id2;
 
         $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_new_id2));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $new_id2);
+        $ancestors = getAncestorsOf('zentra_entities', $new_id2);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_new_id2));
         }
 
         // test on multiple entities
         // getAncestorsOf was already called on $new_id and $new_id2 separately, so cache is already populated since we don't cache ancestors of multiple entities together anymore.
-        // Ex: getAncestorsOf('glpi_entities', [$new_id, $new_id2]) will populate ancestors_cache_glpi_entities_$new_id and ancestors_cache_glpi_entities_$new_id2
-        // but not ancestors_cache_glpi_entities_ . md5(implode('|', [$new_id, $new_id2]))
+        // Ex: getAncestorsOf('zentra_entities', [$new_id, $new_id2]) will populate ancestors_cache_zentra_entities_$new_id and ancestors_cache_zentra_entities_$new_id2
+        // but not ancestors_cache_zentra_entities_ . md5(implode('|', [$new_id, $new_id2]))
         // We will ignore the $cache and $hit parameters here and just ensure the combined result is correct.
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-        $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
+        $ancestors = getAncestorsOf('zentra_entities', [$new_id, $new_id2]);
         $this->assertSame($expected, $ancestors);
     }
 
@@ -1039,13 +1039,13 @@ class DbUtilsTest extends DbTestCase
         global $DB;
         $this->login();
         //ensure db cache is unset
-        $DB->update('glpi_entities', ['ancestors_cache' => null], [new QueryExpression('true')]);
+        $DB->update('zentra_entities', ['ancestors_cache' => null], [new QueryExpression('true')]);
         $this->runGetAncestorsOf();
 
         $this->assertGreaterThan(
             0,
             countElementsInTable(
-                'glpi_entities',
+                'zentra_entities',
                 [
                     'NOT' => ['ancestors_cache' => null],
                 ]
@@ -1060,8 +1060,8 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        global $GLPI_CACHE;
-        $GLPI_CACHE->clear(); // login produce cache, must be cleared
+        global $ZENTRA_CACHE;
+        $ZENTRA_CACHE->clear(); // login produce cache, must be cleared
 
         //run with cache
         //first run: no cache hit expected
@@ -1081,7 +1081,7 @@ class DbUtilsTest extends DbTestCase
      */
     private function runGetSonsOf($cache = false, $hit = false)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -1094,54 +1094,54 @@ class DbUtilsTest extends DbTestCase
         //- if $cache === 1; we expect cache to be empty before call, and populated after
         //- if $hit   === 1; we expect cache to be populated
 
-        $ckey_ent0 = 'sons_cache_glpi_entities_' . $ent0;
-        $ckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
-        $ckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
-        $ckey_ent3 = 'sons_cache_glpi_entities_' . $ent3;
+        $ckey_ent0 = 'sons_cache_zentra_entities_' . $ent0;
+        $ckey_ent1 = 'sons_cache_zentra_entities_' . $ent1;
+        $ckey_ent2 = 'sons_cache_zentra_entities_' . $ent2;
+        $ckey_ent3 = 'sons_cache_zentra_entities_' . $ent3;
 
         //test on ent0
         $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2, $ent3 => $ent3];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent0));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent0));
         }
 
-        $sons = $instance->getSonsOf('glpi_entities', $ent0);
+        $sons = $instance->getSonsOf('zentra_entities', $ent0);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent0));
         }
 
         //test on ent1
         $expected = [$ent1 => $ent1];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent1));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
-        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $sons = $instance->getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         //test on ent2
         $expected = [$ent2 => $ent2];
         if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
+            $this->assertFalse($ZENTRA_CACHE->has($ckey_ent2));
         } elseif ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent2));
         }
 
-        $sons = $instance->getSonsOf('glpi_entities', $ent2);
+        $sons = $instance->getSonsOf('zentra_entities', $ent2);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent2));
         }
 
         //test with new sub entity
@@ -1160,14 +1160,14 @@ class DbUtilsTest extends DbTestCase
 
         $expected = [$ent1 => $ent1, $new_id => $new_id];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
-        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $sons = $instance->getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         //test with another new sub entity
@@ -1184,44 +1184,44 @@ class DbUtilsTest extends DbTestCase
 
         $expected = [$ent1 => $ent1, $new_id => $new_id, $new_id2 => $new_id2];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
-        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $sons = $instance->getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         //drop sub entity
         $expected = [$ent1 => $ent1, $new_id2 => $new_id2];
         $this->assertTrue($entity->delete(['id' => $new_id], true));
         if ($cache === true) {
-            $this->assertSame(null, $GLPI_CACHE->get($ckey_ent1)); // cache has been cleared
+            $this->assertSame(null, $ZENTRA_CACHE->get($ckey_ent1)); // cache has been cleared
         }
-        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $sons = $instance->getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         $expected = [$ent1 => $ent1];
         $this->assertTrue($entity->delete(['id' => $new_id2], true));
         if ($cache === true) {
-            $this->assertSame(null, $GLPI_CACHE->get($ckey_ent1)); // cache has been cleared
+            $this->assertSame(null, $ZENTRA_CACHE->get($ckey_ent1)); // cache has been cleared
         }
-        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $sons = $instance->getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent1));
         }
 
         $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2, $ent3 => $ent3];
-        $sons = $instance->getSonsOf('glpi_entities', $ent0);
+        $sons = $instance->getSonsOf('zentra_entities', $ent0);
         $this->assertSame($expected, $sons);
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ckey_ent0));
         }
     }
 
@@ -1231,13 +1231,13 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $this->login();
         //ensure db cache is unset
-        $DB->update('glpi_entities', ['sons_cache' => null], [new QueryExpression('true')]);
+        $DB->update('zentra_entities', ['sons_cache' => null], [new QueryExpression('true')]);
         $this->runGetSonsOf();
 
         $this->assertGreaterThan(
             0,
             $instance->countElementsInTable(
-                'glpi_entities',
+                'zentra_entities',
                 [
                     'NOT' => ['sons_cache' => null],
                 ]
@@ -1252,8 +1252,8 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        global $GLPI_CACHE;
-        $GLPI_CACHE->clear(); // login produce cache, must be cleared
+        global $ZENTRA_CACHE;
+        $ZENTRA_CACHE->clear(); // login produce cache, must be cleared
 
         //run with cache
         //first run: no cache hit expected
@@ -1295,7 +1295,7 @@ class DbUtilsTest extends DbTestCase
                     if (is_array($target_field)) {
                         // Polymorphic relation
                         $this->assertCount(2, $target_field); // has only `itemtype*` and `items_id*` fields
-                        if ($target_table === 'glpi_ipaddresses') {
+                        if ($target_table === 'zentra_ipaddresses') {
                             $this->assertContains('mainitemtype', $target_field);
                             $this->assertContains('mainitems_id', $target_field);
                         } else {
@@ -1524,7 +1524,7 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertCount(2, $result[0]['date']);
         $this->assertSame('<=', $result[0]['date'][0]);
-        $this->assertInstanceOf('\Glpi\DBAL\QueryExpression', $result[0]['date'][1]);
+        $this->assertInstanceOf('\Zentra\DBAL\QueryExpression', $result[0]['date'][1]);
 
         $this->assertSame(
             "DATE_ADD('2018-11-09', INTERVAL 1 DAY)",
@@ -1537,7 +1537,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame(['date' => ['>=', '2018-11-08']], $result[0]);
         $this->assertCount(2, $result[1]['date']);
         $this->assertSame('<=', $result[1]['date'][0]);
-        $this->assertInstanceOf('\Glpi\DBAL\QueryExpression', $result[1]['date'][1]);
+        $this->assertInstanceOf('\Zentra\DBAL\QueryExpression', $result[1]['date'][1]);
 
         $this->assertSame(
             "DATE_ADD('2018-11-09', INTERVAL 1 DAY)",
@@ -1643,40 +1643,40 @@ class DbUtilsTest extends DbTestCase
                 'expected' => 'MyClass',
             ],
             [
-                'itemtype' => 'glpi\\appliCation\\CoNsOlE\\MyCommand',
-                'expected' => 'Glpi\\Application\\Console\\MyCommand',
+                'itemtype' => 'zentra\\appliCation\\CoNsOlE\\MyCommand',
+                'expected' => 'Zentra\\Application\\Console\\MyCommand',
             ],
             [
-                'itemtype' => 'Glpi\\Something\\Item_filter',
-                'expected' => 'Glpi\\Something\\Item_Filter',
+                'itemtype' => 'Zentra\\Something\\Item_filter',
+                'expected' => 'Zentra\\Something\\Item_Filter',
             ],
             [
                 'itemtype' => 'PluginFooBaritem',
                 'expected' => 'PluginFooBarItem',
             ],
             [
-                'itemtype' => 'GlpiPluGin\\Foo\\Namespacedbar',
-                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
+                'itemtype' => 'ZentraPluGin\\Foo\\Namespacedbar',
+                'expected' => 'ZentraPlugin\\Foo\\NamespacedBar',
             ],
             [
-                'itemtype' => 'glpiplugin\\foo\\models\\foo\\bar_item',
-                'expected' => 'GlpiPlugin\\Foo\\Models\\Foo\\Bar_Item',
+                'itemtype' => 'zentraplugin\\foo\\models\\foo\\bar_item',
+                'expected' => 'ZentraPlugin\\Foo\\Models\\Foo\\Bar_Item',
             ],
             [
-                'itemtype' => 'glpiplugin\\foo\\relation_item',
-                'expected' => 'GlpiPlugin\\Foo\\Relation_Item',
+                'itemtype' => 'zentraplugin\\foo\\relation_item',
+                'expected' => 'ZentraPlugin\\Foo\\Relation_Item',
             ],
             [
                 'itemtype' => 'PluginBarFooitem',
                 'expected' => 'PluginBarFooItem',
             ],
             [
-                'itemtype' => 'GlpiPluGin\\Bar\\Namespacedfoo',
-                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+                'itemtype' => 'ZentraPluGin\\Bar\\Namespacedfoo',
+                'expected' => 'ZentraPlugin\\Bar\\NamespacedFoo',
             ],
             [
-                'itemtype' => 'glpiplugin\\bar\\models\\bar\\foo_item',
-                'expected' => 'GlpiPlugin\\Bar\\Models\\Bar\\Foo_Item',
+                'itemtype' => 'zentraplugin\\bar\\models\\bar\\foo_item',
+                'expected' => 'ZentraPlugin\\Bar\\Models\\Bar\\Foo_Item',
             ],
             // Good case (should not be altered)
             [
@@ -1684,16 +1684,16 @@ class DbUtilsTest extends DbTestCase
                 'expected' => 'MyClass',
             ],
             [
-                'itemtype' => 'Glpi\\Application\\Console\\MyCommand',
-                'expected' => 'Glpi\\Application\\Console\\MyCommand',
+                'itemtype' => 'Zentra\\Application\\Console\\MyCommand',
+                'expected' => 'Zentra\\Application\\Console\\MyCommand',
             ],
             [
-                'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
-                'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
+                'itemtype' => 'ZentraPlugin\\Foo\\NamespacedBar',
+                'expected' => 'ZentraPlugin\\Foo\\NamespacedBar',
             ],
             [
-                'itemtype' => 'GlpiPlugin\\Bar\\NamespacedFoo',
-                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+                'itemtype' => 'ZentraPlugin\\Bar\\NamespacedFoo',
+                'expected' => 'ZentraPlugin\\Bar\\NamespacedFoo',
             ],
             // Not matching any class file (should not be altered)
             [
@@ -1701,8 +1701,8 @@ class DbUtilsTest extends DbTestCase
                 'expected' => 'notanitemtype',
             ],
             [
-                'itemtype' => 'GlpiPlugin\\Invalid\\itemtype',
-                'expected' => 'GlpiPlugin\\Invalid\\itemtype',
+                'itemtype' => 'ZentraPlugin\\Invalid\\itemtype',
+                'expected' => 'ZentraPlugin\\Invalid\\itemtype',
             ],
         ];
     }
@@ -1710,13 +1710,13 @@ class DbUtilsTest extends DbTestCase
     #[DataProvider('fixItemtypeCaseProvider')]
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
-        $name = 'glpi' . mt_rand();
+        $name = 'zentra' . mt_rand();
         vfsStream::setup(
             $name,
             null,
             [
                 'src' => [
-                    'Glpi' => [
+                    'Zentra' => [
                         'Application' => [
                             'Console' => [
                                 'MyCommand.php' => '',

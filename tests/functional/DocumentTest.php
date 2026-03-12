@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,14 +35,14 @@
 namespace tests\units;
 
 use DocumentCategory;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\Form;
-use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeLongText;
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Zentra\Form\AccessControl\ControlType\AllowList;
+use Zentra\Form\AccessControl\ControlType\AllowListConfig;
+use Zentra\Form\Form;
+use Zentra\Form\Question;
+use Zentra\Form\QuestionType\QuestionTypeLongText;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\FormBuilder;
+use Zentra\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -92,18 +92,18 @@ class DocumentTest extends DbTestCase
 
     public function testGetItemtypesThatCanHave()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $doc = new \Document();
         $itemtypes_doc = $doc->getItemtypesThatCanHave();
 
         $item_device_types = [];
-        foreach ($CFG_GLPI['device_types'] as $device_type) {
+        foreach ($CFG_ZENTRA['device_types'] as $device_type) {
             $item_device_types[] = $device_type::getItem_DeviceType();
         }
         $itemtypes = array_merge(
-            $CFG_GLPI['document_types'],
-            $CFG_GLPI['device_types'],
+            $CFG_ZENTRA['document_types'],
+            $CFG_ZENTRA['device_types'],
             $item_device_types,
         );
 
@@ -184,7 +184,7 @@ class DocumentTest extends DbTestCase
     }
 
     /** Cannot work without a real document uploaded.
-     *  Mock would be a solution but GLPI will try to use
+     *  Mock would be a solution but ZENTRA will try to use
      *  a table based on mocked class name, this is wrong.
      * public function testPost_addItem() {
      * $this->login();
@@ -410,12 +410,12 @@ class DocumentTest extends DbTestCase
             $document->add([
                 'name'     => 'basic document',
                 'filename' => 'doc.xls',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
-        // glpi can see all documents
-        $this->login('glpi', 'glpi');
+        // zentra can see all documents
+        $this->login('zentra', 'zentra');
         $this->assertTrue($document->canViewFile());
 
         // tech can see all documents
@@ -459,7 +459,7 @@ class DocumentTest extends DbTestCase
             $basicDocument->add([
                 'name'     => 'basic document',
                 'filename' => 'doc.xls',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -469,20 +469,20 @@ class DocumentTest extends DbTestCase
             $inlinedDocument->add([
                 'name'     => 'inlined document',
                 'filename' => 'inlined.png',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
         $this->login('post-only', 'postonly');
 
         // post-only cannot see documents only linked to someone else reminders
-        $glpiReminder = new \Reminder();
+        $zentraReminder = new \Reminder();
         $this->assertGreaterThan(
             0,
-            $glpiReminder->add([
-                'name'     => 'Glpi reminder',
+            $zentraReminder->add([
+                'name'     => 'Zentra reminder',
                 'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -491,7 +491,7 @@ class DocumentTest extends DbTestCase
             0,
             $document_item->add([
                 'documents_id' => $basicDocument->getID(),
-                'items_id'     => $glpiReminder->getID(),
+                'items_id'     => $zentraReminder->getID(),
                 'itemtype'     => \Reminder::class,
             ])
         );
@@ -500,7 +500,7 @@ class DocumentTest extends DbTestCase
             0,
             $document_item->add([
                 'documents_id' => $inlinedDocument->getID(),
-                'items_id'     => $glpiReminder->getID(),
+                'items_id'     => $zentraReminder->getID(),
                 'itemtype'     => \Reminder::class,
             ])
         );
@@ -547,7 +547,7 @@ class DocumentTest extends DbTestCase
      */
     public function testCanViewKnowbaseItemFile()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $basicDocument = new \Document();
         $this->assertGreaterThan(
@@ -555,7 +555,7 @@ class DocumentTest extends DbTestCase
             $basicDocument->add([
                 'name'     => 'basic document',
                 'filename' => 'doc.xls',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -565,7 +565,7 @@ class DocumentTest extends DbTestCase
             $inlinedDocument->add([
                 'name'     => 'inlined document',
                 'filename' => 'inlined.png',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -575,7 +575,7 @@ class DocumentTest extends DbTestCase
             $unrelatedDocument->add([
                 'name'     => 'unrelated document',
                 'filename' => 'unrelated.png',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -585,7 +585,7 @@ class DocumentTest extends DbTestCase
             $kbItem->add([
                 'name'     => 'Generic KB item',
                 'answer'   => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -626,7 +626,7 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous cannot see documents linked to FAQ items if public FAQ is not active
-        $CFG_GLPI['use_public_faq'] = 0;
+        $CFG_ZENTRA['use_public_faq'] = 0;
 
         $this->assertTrue(
             $kbItem->update(
@@ -651,13 +651,13 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous can see documents linked to FAQ items when public FAQ is active
-        $CFG_GLPI['use_public_faq'] = 1;
+        $CFG_ZENTRA['use_public_faq'] = 1;
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
         $this->assertFalse($unrelatedDocument->canViewFile());
 
-        $CFG_GLPI['use_public_faq'] = 0;
+        $CFG_ZENTRA['use_public_faq'] = 0;
 
         // post-only can see documents linked to FAQ items
         $this->login('post-only', 'postonly');
@@ -687,8 +687,8 @@ class DocumentTest extends DbTestCase
 
         // KB admin cannot see documents if not linked to FAQ items
         $this->login('tech', 'tech');
-        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove rights on documents
-        $_SESSION["glpiactiveprofile"][\KnowbaseItem::$rightname] = READ | \KnowbaseItem::KNOWBASEADMIN; // give KB admin rights
+        $_SESSION["zentraactiveprofile"][\Document::$rightname] = 0; // remove rights on documents
+        $_SESSION["zentraactiveprofile"][\KnowbaseItem::$rightname] = READ | \KnowbaseItem::KNOWBASEADMIN; // give KB admin rights
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
@@ -720,7 +720,7 @@ class DocumentTest extends DbTestCase
     public function testCanViewItilFile($itemtype)
     {
 
-        $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+        $this->login('zentra', 'zentra'); // Login with zentra to prevent link to post-only
 
         $basicDocument = new \Document();
         $this->assertGreaterThan(
@@ -728,7 +728,7 @@ class DocumentTest extends DbTestCase
             $basicDocument->add([
                 'name'     => 'basic document',
                 'filename' => 'doc.xls',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -738,7 +738,7 @@ class DocumentTest extends DbTestCase
             $inlinedDocument->add([
                 'name'     => 'inlined document',
                 'filename' => 'inlined.png',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -774,7 +774,7 @@ class DocumentTest extends DbTestCase
 
         // post-only cannot see documents if not able to view ITIL (ITIL content)
         $this->login('post-only', 'postonly');
-        $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ write for tested ITIL type
+        $_SESSION["zentraactiveprofile"][$item::$rightname] = READ; // force READ write for tested ITIL type
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
         $this->assertFalse($basicDocument->canViewFile([$fkey => $item->getID()]));
@@ -854,7 +854,7 @@ class DocumentTest extends DbTestCase
     public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype)
     {
 
-        $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+        $this->login('zentra', 'zentra'); // Login with zentra to prevent link to post-only
 
         $inlinedDocument = new \Document();
         $this->assertGreaterThan(
@@ -862,7 +862,7 @@ class DocumentTest extends DbTestCase
             $inlinedDocument->add([
                 'name'     => 'inlined document',
                 'filename' => 'inlined.png',
-                'users_id' => '2', // user "glpi"
+                'users_id' => '2', // user "zentra"
             ])
         );
 
@@ -884,7 +884,7 @@ class DocumentTest extends DbTestCase
                 $fkey        => $itil->getID(),
                 'items_id'   => $itil->getID(),
                 'itemtype'   => $itil_itemtype,
-                'users_id'   => '2', // user "glpi"
+                'users_id'   => '2', // user "zentra"
             ])
         );
 
@@ -900,7 +900,7 @@ class DocumentTest extends DbTestCase
 
         // post-only cannot see documents if not able to view ITIL
         $this->login('post-only', 'postonly');
-        $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
+        $_SESSION["zentraactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
         $this->assertFalse($inlinedDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile([$fkey => $itil->getID()]));
         $this->assertFalse($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]));
@@ -927,9 +927,9 @@ class DocumentTest extends DbTestCase
      */
     public function testCanViewFileFromItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $glpi_user_id   = \getItemByTypeName('User', 'glpi', true);
+        $zentra_user_id   = \getItemByTypeName('User', 'zentra', true);
         $normal_user_id = \getItemByTypeName('User', 'normal', true);
 
         $computer_id = \getItemByTypeName(\Computer::class, '_test_pc01', true);
@@ -940,7 +940,7 @@ class DocumentTest extends DbTestCase
             [
                 'name'     => 'document 1',
                 'filename' => 'doc.xls',
-                'users_id' => $glpi_user_id,
+                'users_id' => $zentra_user_id,
             ]
         );
         $this->createItem(
@@ -949,7 +949,7 @@ class DocumentTest extends DbTestCase
                 'documents_id' => $document_1->getID(),
                 'items_id'     => $computer_id,
                 'itemtype'     => \Computer::class,
-                'users_id'     => $glpi_user_id,
+                'users_id'     => $zentra_user_id,
             ]
         );
         $document_2 = $this->createItem(
@@ -965,12 +965,12 @@ class DocumentTest extends DbTestCase
                 'documents_id' => $document_2->getID(),
                 'items_id'     => $printer_id,
                 'itemtype'     => \Printer::class,
-                'users_id'     => $glpi_user_id,
+                'users_id'     => $zentra_user_id,
             ]
         );
 
-        // `glpi` user can access all documents, options does not alter the result
-        $this->login('glpi', 'glpi');
+        // `zentra` user can access all documents, options does not alter the result
+        $this->login('zentra', 'zentra');
         $this->assertTrue($document_1->canViewFile());
         $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
         $this->assertTrue($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
@@ -981,9 +981,9 @@ class DocumentTest extends DbTestCase
         // check that viewing document is only allowed if reading item specified in the options is allowed and
         // document is attached to it
         $this->login('normal', 'normal');
-        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove access to all documents
-        $_SESSION["glpiactiveprofile"][\Computer::$rightname] = 1; // give access to all computers
-        $_SESSION["glpiactiveprofile"][\Printer::$rightname] = 0; // remove access to all printers
+        $_SESSION["zentraactiveprofile"][\Document::$rightname] = 0; // remove access to all documents
+        $_SESSION["zentraactiveprofile"][\Computer::$rightname] = 1; // give access to all computers
+        $_SESSION["zentraactiveprofile"][\Printer::$rightname] = 0; // remove access to all printers
         $this->assertFalse($document_1->canViewFile());
         $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
         $this->assertFalse($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
@@ -1047,7 +1047,7 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($output);
 
         $filename = 'foo.png';
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
             'filename' => 'foo.png',
@@ -1084,7 +1084,7 @@ class DocumentTest extends DbTestCase
 
     public function testDefaultDocumentCategoryForOtherCommonDBTM()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $document = new \Document();
         $document_item = new \Document_Item();
@@ -1108,7 +1108,7 @@ class DocumentTest extends DbTestCase
             ],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $kb_id = $kb->add($input);
         $this->assertGreaterThan(0, $kb_id);
 
@@ -1129,7 +1129,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
         $this->assertGreaterThan(0, $documentCategory_id);
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1151,7 +1151,7 @@ class DocumentTest extends DbTestCase
             ],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $kb_id = $kb->add($input2);
 
         $data = $document_item->find([
@@ -1167,7 +1167,7 @@ class DocumentTest extends DbTestCase
 
     public function testDefaultDocumentCategoryFromDocumentForm()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -1199,7 +1199,7 @@ class DocumentTest extends DbTestCase
             'items_id' => $ticket_id,
         ];
 
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $document_id = $document->add($input2);
 
         // Verify document was created and linked to ticket with default category
@@ -1222,7 +1222,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
         $this->assertGreaterThan(0, $documentCategory_id);
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
         ///////////////////////////////////////////////////////////////////////////////////
         // Create Ticket, add new document via form with itemtype, check category is set //
@@ -1251,7 +1251,7 @@ class DocumentTest extends DbTestCase
             'items_id' => $ticket2_id,
         ];
 
-        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename2);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', ZENTRA_TMP_DIR . '/' . $filename2);
         $document2_id = $document->add($input4);
 
         // Verify document was created and linked to ticket with default category
@@ -1268,7 +1268,7 @@ class DocumentTest extends DbTestCase
 
     public function testDefaultDocumentCategoryForTicket()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $document = new \Document();
         $document_item = new \Document_Item();
@@ -1292,7 +1292,7 @@ class DocumentTest extends DbTestCase
             ],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $tickets_id = $ticket->add($input);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -1313,7 +1313,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
         $this->assertGreaterThan(0, $documentCategory_id);
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
 
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -1335,7 +1335,7 @@ class DocumentTest extends DbTestCase
             ],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $tickets_id = $ticket->add($input2);
 
         $data = $document_item->find([
@@ -1350,7 +1350,7 @@ class DocumentTest extends DbTestCase
 
     public function testDefaultDocumentCategoryForTicketWithChangeTask()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $documentCategory = new DocumentCategory();
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1360,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
         $this->assertGreaterThan(0, $documentCategory_id);
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
         $input = [
             'name' => 'Ticket 1',
@@ -1388,7 +1388,7 @@ class DocumentTest extends DbTestCase
             ],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $ticketTask_id = $ticketTask->add($input2);
         $this->assertGreaterThan(0, $ticketTask_id);
 
@@ -1409,7 +1409,7 @@ class DocumentTest extends DbTestCase
     public function testDefaultDocumentCategoryForTicketWithITILFollowup()
     {
         $this->login();
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $documentCategory = new DocumentCategory();
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -1419,7 +1419,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
 
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
@@ -1440,7 +1440,7 @@ class DocumentTest extends DbTestCase
             '_prefix_filename'  => ['itilfollowup_doc.999999'],
         ];
 
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $itilFollowups_id = $itilFollowup->add($inputFollowup);
         $this->assertGreaterThan(0, $itilFollowups_id);
 
@@ -1461,7 +1461,7 @@ class DocumentTest extends DbTestCase
     public function testDefaultDocumentCategoryForTicketWithITILSolution()
     {
         $this->login();
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $documentCategory = new DocumentCategory();
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -1471,7 +1471,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
 
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
@@ -1491,7 +1491,7 @@ class DocumentTest extends DbTestCase
             '_tag_filename'     => ['tag-itilsolution-888888'],
             '_prefix_filename'  => ['itilsolution_doc.888888'],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $itilSolutions_id = $itilSolution->add($inputSolution);
         $this->assertGreaterThan(0, $itilSolutions_id);
 
@@ -1542,7 +1542,7 @@ class DocumentTest extends DbTestCase
             'itemtype' => \Change::class,
             'items_id' => $changes_id,
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $doc_id = $document->add($input);
         $this->assertGreaterThan(0, $doc_id);
         $data = $document_item->find([
@@ -1591,7 +1591,7 @@ class DocumentTest extends DbTestCase
             'itemtype' => \ChangeTask::class,
             'items_id' => $changeTasks_id,
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $doc_id = $document->add($input);
         $this->assertGreaterThan(0, $doc_id);
         $data = $document_item->find([
@@ -1607,7 +1607,7 @@ class DocumentTest extends DbTestCase
     {
 
         $this->login();
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $documentCategory = new DocumentCategory();
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -1649,7 +1649,7 @@ class DocumentTest extends DbTestCase
             'itemtype' => \ITILFollowup::class,
             'items_id' => $itilFollowups_id,
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $doc_id = $document->add($input);
         $this->assertGreaterThan(0, $doc_id);
         $data = $document_item->find([
@@ -1664,7 +1664,7 @@ class DocumentTest extends DbTestCase
     public function testDefaultDocumentCategoryForChangeWithITILSolution()
     {
         $this->login();
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $documentCategory = new DocumentCategory();
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -1674,7 +1674,7 @@ class DocumentTest extends DbTestCase
             'name'        => 'Default Category',
         ]);
 
-        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+        $CFG_ZENTRA['documentcategories_id_forticket'] = $documentCategory_id;
 
         $change = new \Change();
         $changes_id = $change->add([
@@ -1693,7 +1693,7 @@ class DocumentTest extends DbTestCase
             '_tag_filename'     => ['tag-itilsolution-888888'],
             '_prefix_filename'  => ['itilsolution_doc.888888'],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $itilSolutions_id = $itilSolution->add($inputSolution);
         $this->assertGreaterThan(0, $itilSolutions_id);
 

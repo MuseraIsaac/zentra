@@ -30,7 +30,7 @@
                     "id": 1,
                     "uuid": "aaaaaaaa-bbbb-cccc-dddd-444444444444",
                     "name": "My item question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeItem",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -52,7 +52,7 @@
                     "id": 2,
                     "uuid": "bbbbbbbb-cccc-dddd-eeee-555555555555",
                     "name": "My user device question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUserDevice",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeUserDevice",
                     "is_mandatory": false,
                     "vertical_rank": 1,
                     "horizontal_rank": null,
@@ -71,7 +71,7 @@
                     "id": 3,
                     "uuid": "cccccccc-dddd-eeee-ffff-666666666666",
                     "name": "My multiple user device question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUserDevice",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeUserDevice",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,
@@ -89,7 +89,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": ["all"],
                         "group_ids": [],
@@ -101,7 +101,7 @@
             "destinations": [
                 {
                     "id": 1,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

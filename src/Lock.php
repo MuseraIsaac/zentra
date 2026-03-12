@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\SearchOption;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\SearchOption;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -51,14 +51,14 @@ use function Safe\ob_start;
  * item or link is locked
  * By setting is_deleted to 0 again, the item is unlocked.
  *
- * Note : GLPI's core supports locks for objects. It's up to the external inventory tool to manage
+ * Note : ZENTRA's core supports locks for objects. It's up to the external inventory tool to manage
  * locks for fields
  *
  * @since 0.84
  * @see ObjectLock - Object-level locks
  * @see Lockedfield - Field-level locks
  **/
-class Lock extends CommonGLPI
+class Lock extends CommonZENTRA
 {
     public static function getTypeName($nb = 0)
     {
@@ -82,7 +82,7 @@ class Lock extends CommonGLPI
      */
     public static function showForItem(CommonDBTM $item)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID       = $item->getID();
         $itemtype = $item::class;
@@ -133,7 +133,7 @@ TWIG;
             ]);
 
             // get locked field for other lockable object
-            foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
+            foreach ($CFG_ZENTRA['inventory_lockable_objects'] as $lockable_itemtype) {
                 $lockable_itemtype_table = getTableForItemType($lockable_itemtype);
                 $lockable_object = getItemForItemtype($lockable_itemtype);
                 $query  = [
@@ -171,7 +171,7 @@ TWIG;
                             $lockable_object::getTableField('is_deleted') => 0,
                         ];
                     }
-                } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
+                } elseif (in_array($lockable_itemtype, $CFG_ZENTRA['directconnect_types'], true)) {
                     //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
                     $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
                     = [
@@ -353,9 +353,9 @@ TWIG, $twig_params);
 
         if (
             in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
-            || $itemtype === Computer::class && count($CFG_GLPI['directconnect_types'])
+            || $itemtype === Computer::class && count($CFG_ZENTRA['directconnect_types'])
         ) {
-            $types = $CFG_GLPI['directconnect_types'];
+            $types = $CFG_ZENTRA['directconnect_types'];
             $it = $DB->request([
                 'SELECT' => ['id', 'itemtype_peripheral', 'items_id_peripheral'],
                 'FROM'   => Asset_PeripheralAsset::getTable(),
@@ -364,13 +364,13 @@ TWIG, $twig_params);
                     'items_id_asset'      => $ID,
                     'is_dynamic'          => 1,
                     'is_deleted'          => 1,
-                    'itemtype_peripheral' => $CFG_GLPI['directconnect_types'],
+                    'itemtype_peripheral' => $CFG_ZENTRA['directconnect_types'],
                 ],
             ]);
             $results = iterator_to_array($it);
             // Calculate reverse lookup array to avoid array_search in the callback
             $types_flipped = array_flip($types);
-            // Sort results to match the order of the types in $CFG_GLPI['directconnect_types']
+            // Sort results to match the order of the types in $CFG_ZENTRA['directconnect_types']
             usort($results, static fn($a, $b) => $types_flipped[$a['itemtype_peripheral']] - $types_flipped[$b['itemtype_peripheral']]);
 
             $subtable = [
@@ -399,7 +399,7 @@ TWIG, $twig_params);
                 $relation_item = new Asset_PeripheralAsset();
                 $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]'>" : '',
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Zentra\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]'>" : '',
                     'type' => $peripheral::getTypeName(),
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
@@ -410,7 +410,7 @@ TWIG, $twig_params);
             $subtables[] = $subtable;
         }
 
-        if (in_array($itemtype, $CFG_GLPI['disk_types'], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA['disk_types'], true)) {
             //items disks
             $item_disk = new Item_Disk();
             $item_disks = $DB->request([
@@ -453,7 +453,7 @@ TWIG, $twig_params);
             $subtables[] = $subtable;
         }
 
-        if (in_array($itemtype, $CFG_GLPI['remote_management_types'], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA['remote_management_types'], true)) {
             $iterator = $DB->request([
                 'FROM'  => Item_RemoteManagement::getTable(),
                 'WHERE' => [
@@ -569,13 +569,13 @@ TWIG, $twig_params);
             ],
             'FROM'      => "{$item_sv_table} AS isv",
             'LEFT JOIN' => [
-                'glpi_softwareversions AS sv' => [
+                'zentra_softwareversions AS sv' => [
                     'FKEY' => [
                         'isv' => 'softwareversions_id',
                         'sv'  => 'id',
                     ],
                 ],
-                'glpi_softwares AS s'         => [
+                'zentra_softwares AS s'         => [
                     'FKEY' => [
                         'sv'  => 'softwares_id',
                         's'   => 'id',
@@ -629,13 +629,13 @@ TWIG, $twig_params);
             ],
             'FROM'      => "{$item_sl_table} AS isl",
             'LEFT JOIN' => [
-                'glpi_softwarelicenses AS sl' => [
+                'zentra_softwarelicenses AS sl' => [
                     'FKEY' => [
                         'isl' => 'softwarelicenses_id',
                         'sl'  => 'id',
                     ],
                 ],
-                'glpi_softwares AS s'         => [
+                'zentra_softwares AS s'         => [
                     'FKEY' => [
                         'sl'  => 'softwares_id',
                         's'   => 'id',
@@ -731,25 +731,25 @@ TWIG, $twig_params);
 
         $networkname = new NetworkName();
         $networknames = $DB->request([
-            'SELECT' => ['glpi_networknames.*'],
+            'SELECT' => ['zentra_networknames.*'],
             'FROM'  => $networkname::getTable(),
             'INNER JOIN' => [ // These joins are used to filter the network names that are linked to the current item's network ports
-                'glpi_networkports' => [
+                'zentra_networkports' => [
                     'ON' => [
-                        'glpi_networknames' => 'items_id',
-                        'glpi_networkports' => 'id', [
+                        'zentra_networknames' => 'items_id',
+                        'zentra_networkports' => 'id', [
                             'AND' => [
-                                'glpi_networkports.itemtype'  => $itemtype,
+                                'zentra_networkports.itemtype'  => $itemtype,
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE' => [
-                'glpi_networkports.items_id'   => $ID,
-                'glpi_networknames.is_dynamic' => 1,
-                'glpi_networknames.is_deleted' => 1,
-                'glpi_networknames.itemtype'   => 'NetworkPort',
+                'zentra_networkports.items_id'   => $ID,
+                'zentra_networknames.is_dynamic' => 1,
+                'zentra_networknames.is_deleted' => 1,
+                'zentra_networknames.itemtype'   => 'NetworkPort',
             ],
         ]);
         $subtable = [
@@ -788,35 +788,35 @@ TWIG, $twig_params);
 
         $ipaddress = new IPAddress();
         $ipaddresses = $DB->request([
-            'SELECT' => ['glpi_ipaddresses.*'],
+            'SELECT' => ['zentra_ipaddresses.*'],
             'FROM'  => $ipaddress::getTable(),
             'INNER JOIN' => [ // These joins are used to filter the IP addresses that are linked to the current item's network ports
-                'glpi_networknames' => [
+                'zentra_networknames' => [
                     'ON' => [
-                        'glpi_ipaddresses' => 'items_id',
-                        'glpi_networknames' => 'id', [
+                        'zentra_ipaddresses' => 'items_id',
+                        'zentra_networknames' => 'id', [
                             'AND' => [
-                                'glpi_networknames.itemtype'  => 'NetworkPort',
+                                'zentra_networknames.itemtype'  => 'NetworkPort',
                             ],
                         ],
                     ],
                 ],
-                'glpi_networkports' => [
+                'zentra_networkports' => [
                     'ON' => [
-                        'glpi_networknames' => 'items_id',
-                        'glpi_networkports' => 'id', [
+                        'zentra_networknames' => 'items_id',
+                        'zentra_networkports' => 'id', [
                             'AND' => [
-                                'glpi_networkports.itemtype'  => $itemtype,
+                                'zentra_networkports.itemtype'  => $itemtype,
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE' => [
-                'glpi_networkports.items_id'  => $ID,
-                'glpi_ipaddresses.is_dynamic' => 1,
-                'glpi_ipaddresses.is_deleted' => 1,
-                'glpi_ipaddresses.itemtype'   => 'NetworkName',
+                'zentra_networkports.items_id'  => $ID,
+                'zentra_ipaddresses.is_dynamic' => 1,
+                'zentra_ipaddresses.is_deleted' => 1,
+                'zentra_ipaddresses.itemtype'   => 'NetworkName',
             ],
         ]);
         $subtable = [
@@ -1080,12 +1080,12 @@ TWIG, $twig_params);
         // Close the custom form used for the unlock item checkboxes (not using massive actions)
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
             </form>
 TWIG);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)
@@ -1097,7 +1097,7 @@ TWIG);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if (
@@ -1152,8 +1152,8 @@ TWIG);
 
             case 'NetworkPort':
                 $criteria = [
-                    'SELECT' => ['glpi_networkports.id'],
-                    'FROM' => 'glpi_networkports',
+                    'SELECT' => ['zentra_networkports.id'],
+                    'FROM' => 'zentra_networkports',
                     'WHERE' => [
                         'itemtype'   => $baseitemtype,
                         'is_dynamic' => 1,
@@ -1165,68 +1165,68 @@ TWIG);
 
             case 'NetworkName':
                 $criteria = [
-                    'SELECT' => ['glpi_networknames.id'],
-                    'FROM' => 'glpi_networknames',
+                    'SELECT' => ['zentra_networknames.id'],
+                    'FROM' => 'zentra_networknames',
                     'INNER JOIN' => [
-                        'glpi_networkports' => [
+                        'zentra_networkports' => [
                             'ON' => [
-                                'glpi_networknames' => 'items_id',
-                                'glpi_networkports' => 'id', [
+                                'zentra_networknames' => 'items_id',
+                                'zentra_networkports' => 'id', [
                                     'AND' => [
-                                        'glpi_networkports.itemtype'  => $baseitemtype,
+                                        'zentra_networkports.itemtype'  => $baseitemtype,
                                     ],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE' => [
-                        'glpi_networknames.is_dynamic' => 1,
-                        'glpi_networknames.is_deleted' => 1,
-                        'glpi_networknames.itemtype'   => 'NetworkPort',
+                        'zentra_networknames.is_dynamic' => 1,
+                        'zentra_networknames.is_deleted' => 1,
+                        'zentra_networknames.itemtype'   => 'NetworkPort',
                     ],
                 ];
-                $field     = 'glpi_networkports.items_id';
+                $field     = 'zentra_networkports.items_id';
                 break;
 
             case 'IPAddress':
                 $criteria = [
-                    'SELECT' => ['glpi_ipaddresses.id'],
-                    'FROM' => 'glpi_ipaddresses',
+                    'SELECT' => ['zentra_ipaddresses.id'],
+                    'FROM' => 'zentra_ipaddresses',
                     'INNER JOIN' => [
-                        'glpi_networknames' => [
+                        'zentra_networknames' => [
                             'ON' => [
-                                'glpi_ipaddresses' => 'items_id',
-                                'glpi_networknames' => 'id', [
+                                'zentra_ipaddresses' => 'items_id',
+                                'zentra_networknames' => 'id', [
                                     'AND' => [
-                                        'glpi_networknames.itemtype'  => 'NetworkPort',
+                                        'zentra_networknames.itemtype'  => 'NetworkPort',
                                     ],
                                 ],
                             ],
                         ],
-                        'glpi_networkports' => [
+                        'zentra_networkports' => [
                             'ON' => [
-                                'glpi_networknames' => 'items_id',
-                                'glpi_networkports' => 'id', [
+                                'zentra_networknames' => 'items_id',
+                                'zentra_networkports' => 'id', [
                                     'AND' => [
-                                        'glpi_networkports.itemtype'  => $baseitemtype,
+                                        'zentra_networkports.itemtype'  => $baseitemtype,
                                     ],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE' => [
-                        'glpi_ipaddresses.is_dynamic' => 1,
-                        'glpi_ipaddresses.is_deleted' => 1,
-                        'glpi_ipaddresses.itemtype'   => 'NetworkName',
+                        'zentra_ipaddresses.is_dynamic' => 1,
+                        'zentra_ipaddresses.is_deleted' => 1,
+                        'zentra_ipaddresses.itemtype'   => 'NetworkName',
                     ],
                 ];
-                $field     = 'glpi_networkports.items_id';
+                $field     = 'zentra_networkports.items_id';
                 break;
 
             case 'Item_Disk':
                 $criteria = [
-                    'SELECT' => ['glpi_items_disks.id'],
-                    'FROM' => 'glpi_items_disks',
+                    'SELECT' => ['zentra_items_disks.id'],
+                    'FROM' => 'zentra_items_disks',
                     'WHERE' => [
                         'is_dynamic' => 1,
                         'is_deleted' => 1,
@@ -1252,8 +1252,8 @@ TWIG);
 
             case 'SoftwareVersion':
                 $criteria = [
-                    'SELECT' => ['glpi_items_softwareversions.id'],
-                    'FROM' => 'glpi_items_softwareversions',
+                    'SELECT' => ['zentra_items_softwareversions.id'],
+                    'FROM' => 'zentra_items_softwareversions',
                     'WHERE' => [
                         'is_dynamic' => 1,
                         'is_deleted' => 1,
@@ -1301,7 +1301,7 @@ TWIG);
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
             return;
@@ -1312,7 +1312,7 @@ TWIG);
 
         if (
             Session::haveRight($itemtype::$rightname, UPDATE)
-            && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
+            && in_array($itemtype, $CFG_ZENTRA['inventory_types'] + $CFG_ZENTRA['inventory_lockable_objects'], true)
         ) {
             $actions[$action_unlock_component] = __s('Unlock components');
             $actions[$action_unlock_fields] = __s('Unlock fields');

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use Certificate;
 use Certificate_Item;
 use Computer;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Item_SoftwareVersion;
 use Software;
 use SoftwareVersion;
@@ -65,7 +65,7 @@ class TransferTest extends DbTestCase
                 '/^DB.*/',
                 '/^SlaLevel.*/',
                 '/^OlaLevel.*/',
-                '/^Glpi\\Event$/',
+                '/^Zentra\\Event$/',
                 '/^KnowbaseItem$/',
                 '/SavedSearch.*/',
                 '/.*Notification.*/',
@@ -146,7 +146,7 @@ class TransferTest extends DbTestCase
                 [$id]
             );
             $transfer->moveItems([$itemtype => [$id]], $dentity, [$id]);
-            unset($_SESSION['glpitransfer_list']);
+            unset($_SESSION['zentratransfer_list']);
 
             $this->assertTrue($obj->getFromDB($id));
             $this->assertSame(
@@ -176,7 +176,7 @@ class TransferTest extends DbTestCase
         $record = new \DomainRecord();
 
         $did = (int) $domain->add([
-            'name'         => 'glpi-project.org',
+            'name'         => 'zentra-project.org',
             'entities_id'  => $fentity,
         ]);
         $this->assertGreaterThan(0, $did);
@@ -185,7 +185,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $record->add([
-                'name'         => 'glpi-project.org.',
+                'name'         => 'zentra-project.org.',
                 'type'         => $type_a,
                 'data'         => '127.0.1.1',
                 'entities_id'  => $fentity,
@@ -196,9 +196,9 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $record->add([
-                'name'         => 'www.glpi-project.org.',
+                'name'         => 'www.zentra-project.org.',
                 'type'         => $type_cname,
-                'data'         => 'glpi-project.org.',
+                'data'         => 'zentra-project.org.',
                 'entities_id'  => $fentity,
                 'domains_id'   => $did,
             ])
@@ -207,9 +207,9 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $record->add([
-                'name'         => 'doc.glpi-project.org.',
+                'name'         => 'doc.zentra-project.org.',
                 'type'         => $type_cname,
-                'data'         => 'glpi-doc.rtfd.io',
+                'data'         => 'zentra-doc.rtfd.io',
                 'entities_id'  => $fentity,
                 'domains_id'   => $did,
             ])
@@ -228,7 +228,7 @@ class TransferTest extends DbTestCase
             [$did]
         );
         $transfer->moveItems(['Domain' => [$did]], $dentity, [$did]);
-        unset($_SESSION['glpitransfer_list']);
+        unset($_SESSION['zentratransfer_list']);
 
         $this->assertTrue($domain->getFromDB($did));
         $this->assertSame($dentity, (int) $domain->fields['entities_id']);
@@ -1180,7 +1180,7 @@ class TransferTest extends DbTestCase
         global $DB;
         $count = $DB->request([
             'COUNT' => 'cpt',
-            'FROM' => 'glpi_documents_items',
+            'FROM' => 'zentra_documents_items',
             'WHERE' => [
                 'documents_id' => $docId,
                 'itemtype' => \Ticket::class,

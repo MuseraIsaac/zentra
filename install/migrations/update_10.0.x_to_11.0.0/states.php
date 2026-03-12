@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_dropdownvisibilities')) {
+if (!$DB->tableExists('zentra_dropdownvisibilities')) {
     $known_visibilities = [
         'computer',
         'monitor',
@@ -64,7 +64,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         'unmanaged',
     ];
 
-    $query = "CREATE TABLE `glpi_dropdownvisibilities` (
+    $query = "CREATE TABLE `zentra_dropdownvisibilities` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(100) NOT NULL DEFAULT '',
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -76,7 +76,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->doQuery($query);
 
-    $states = $DB->request(['FROM' => 'glpi_states']);
+    $states = $DB->request(['FROM' => 'zentra_states']);
     foreach ($states as $state) {
         $insert_data = [
             'itemtype' => 'State',
@@ -87,14 +87,14 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
             if (isset($state['is_visible_' . $known_visibility])) {
                 $insert_data['visible_itemtype'] = $known_visibility;
                 $insert_data['is_visible'] = $state['is_visible_' . $known_visibility];
-                $DB->doQuery($DB->buildInsert('glpi_dropdownvisibilities', $insert_data));
+                $DB->doQuery($DB->buildInsert('zentra_dropdownvisibilities', $insert_data));
             }
         }
     }
 
     foreach ($known_visibilities as $known_visibility) {
-        if ($DB->fieldExists('glpi_states', 'is_visible_' . $known_visibility)) {
-            $migration->dropField('glpi_states', 'is_visible_' . $known_visibility);
+        if ($DB->fieldExists('zentra_states', 'is_visible_' . $known_visibility)) {
+            $migration->dropField('zentra_states', 'is_visible_' . $known_visibility);
         }
     }
 }
@@ -103,9 +103,9 @@ $migration->addInfoMessage(
 );
 
 // Add missing field
-$migration->addField('glpi_items_devicecameras', 'states_id', 'fkey');
-$migration->addKey('glpi_items_devicecameras', 'states_id');
+$migration->addField('zentra_items_devicecameras', 'states_id', 'fkey');
+$migration->addKey('zentra_items_devicecameras', 'states_id');
 
 // Drop unexpected fields
-$migration->dropField('glpi_devicegenerics', 'states_id');
-$migration->dropField('glpi_devicesensors', 'states_id');
+$migration->dropField('zentra_devicegenerics', 'states_id');
+$migration->dropField('zentra_devicesensors', 'states_id');

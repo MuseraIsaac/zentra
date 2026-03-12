@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,9 +50,9 @@ function update911to913()
     $migration->setVersion('9.1.3');
 
     //Fix duplicated search options
-    if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
+    if (countElementsInTable("zentra_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
         $DB->update(
-            "glpi_displaypreferences",
+            "zentra_displaypreferences",
             [
                 "num" => 17,
             ],
@@ -62,9 +62,9 @@ function update911to913()
             ]
         );
     }
-    if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
+    if (countElementsInTable("zentra_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
         $DB->update(
-            "glpi_displaypreferences",
+            "zentra_displaypreferences",
             [
                 "num" => 18,
             ],
@@ -76,12 +76,12 @@ function update911to913()
     }
 
     $migration->addField(
-        "glpi_softwarelicenses",
+        "zentra_softwarelicenses",
         "contact",
         "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"
     );
     $migration->addField(
-        "glpi_softwarelicenses",
+        "zentra_softwarelicenses",
         "contact_num",
         "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"
     );

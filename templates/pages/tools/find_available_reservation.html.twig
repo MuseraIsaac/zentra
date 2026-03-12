@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
 
 <div class="asset mb-3">
     <form action="{{ 'ReservationItem'|itemtype_search_path }}" method="post">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
         <div class="d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="row flex-row">
@@ -98,7 +98,7 @@
                     }) }}
 
                     {{ fields.dropdownField('Location', 'locations_id', default_location, __('Item location'), {
-                        entity: session('glpiactiveentities')
+                        entity: session('zentraactiveentities')
                     }) }}
                 </div>
                 <div class="d-flex flex-row-reverse">

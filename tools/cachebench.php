@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
+use Zentra\Kernel\Kernel;
 
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
@@ -49,15 +49,15 @@ define('PER_LEVEL', 8);
 define('COUNT', 1024);
 
 // To bypass various right checks
-$_SESSION['glpishowallentities'] = 1;
-$_SESSION['glpicronuserrunning'] = "cron_phpunit";
-$_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
-$_SESSION['glpiactiveentities']  = [0];
-$_SESSION['glpiactiveentities_string'] = "'0'";
-$CFG_GLPI['root_doc']            = '/glpi';
+$_SESSION['zentrashowallentities'] = 1;
+$_SESSION['zentracronuserrunning'] = "cron_phpunit";
+$_SESSION['zentra_use_mode']       = Session::NORMAL_MODE;
+$_SESSION['zentraactiveentities']  = [0];
+$_SESSION['zentraactiveentities_string'] = "'0'";
+$CFG_ZENTRA['root_doc']            = '/zentra';
 
 $ent = new Entity();
-$nb = countElementsInTable('glpi_entities');
+$nb = countElementsInTable('zentra_entities');
 if ($nb < 100000) {
     echo "+ Generate some entities\n";
     for ($a = 0; $a < PER_LEVEL; $a++) {
@@ -85,17 +85,17 @@ if ($nb < 100000) {
         }
     }
 
-    $nb = countElementsInTable('glpi_entities');
+    $nb = countElementsInTable('zentra_entities');
 }
 echo "+ Entities: $nb\n";
-if ($GLPI_CACHE) {
-    echo "+ Cache: " . get_class($GLPI_CACHE) . "\n";
+if ($ZENTRA_CACHE) {
+    echo "+ Cache: " . get_class($ZENTRA_CACHE) . "\n";
 } else {
     echo "+ Cache: disabled\n";
 }
 echo "+ Clear sons cache\n";
 $DB->update(
-    'glpi_entities',
+    'zentra_entities',
     ['sons_cache' => null],
     [true]
 );
@@ -107,8 +107,8 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $t[$i] = $id = mt_rand(0, $nb);
-    //$x = getSonsOf('glpi_entities', $id);
-    $x = getAncestorsOf('glpi_entities', $id);
+    //$x = getSonsOf('zentra_entities', $id);
+    $x = getAncestorsOf('zentra_entities', $id);
 }
 $tps = microtime(true) - $tps;
 printf("> time: %.4f\n", $tps);
@@ -120,8 +120,8 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $id = $t[$i];
-    //$x = getSonsOf('glpi_entities', $id);
-    $x = getAncestorsOf('glpi_entities', $id);
+    //$x = getSonsOf('zentra_entities', $id);
+    $x = getAncestorsOf('zentra_entities', $id);
 }
 $tps = microtime(true) - $tps;
 printf("> time: %.4f\n", $tps);

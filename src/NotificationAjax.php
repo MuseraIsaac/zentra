@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 /**
  *  NotificationAjax
@@ -84,7 +84,7 @@ class NotificationAjax implements NotificationInterface
         $data['name']                                 = $options['subject'];
         $data['body_text']                            = $options['content_text'];
         $data['recipient']                            = $options['to'];
-        $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
+        $data['event'] = $options['event'] ?? null; // `event` has been added in ZENTRA 10.0.7
         $data['mode'] = Notification_NotificationTemplate::MODE_AJAX;
 
         $queue = new QueuedNotification();
@@ -117,13 +117,13 @@ class NotificationAjax implements NotificationInterface
      */
     public static function getMyNotifications()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $return = [];
-        if ($CFG_GLPI['notifications_ajax']) {
-            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
+        if ($CFG_ZENTRA['notifications_ajax']) {
+            $secs = $CFG_ZENTRA["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
             $iterator = $DB->request([
-                'FROM'   => 'glpi_queuednotifications',
+                'FROM'   => 'zentra_queuednotifications',
                 'WHERE'  => [
                     'is_deleted'   => false,
                     'recipient'    => Session::getLoginUserID(),
@@ -138,7 +138,7 @@ class NotificationAjax implements NotificationInterface
             if ($iterator->numrows()) {
                 foreach ($iterator as $row) {
                     $url = null;
-                    if (is_a($row['itemtype'], CommonGLPI::class, true)) {
+                    if (is_a($row['itemtype'], CommonZENTRA::class, true)) {
                         $item = new $row['itemtype']();
                         $url = $item->getFormURLWithID($row['items_id'], true);
                     }
@@ -173,7 +173,7 @@ class NotificationAjax implements NotificationInterface
 
         $now = date('Y-m-d H:i:s');
         $DB->update(
-            'glpi_queuednotifications',
+            'zentra_queuednotifications',
             [
                 'sent_time'    => $now,
                 'is_deleted'   => 1,

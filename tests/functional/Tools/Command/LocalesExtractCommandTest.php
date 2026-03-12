@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
 
 namespace tests\functional\Tools\Command;
 
-use Glpi\Tests\GLPITestCase;
-use Glpi\Tools\Command\LocalesExtractCommand;
+use Zentra\Tests\ZENTRATestCase;
+use Zentra\Tools\Command\LocalesExtractCommand;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class LocalesExtractCommandTest extends GLPITestCase
+class LocalesExtractCommandTest extends ZENTRATestCase
 {
     private ?string $plugin_dir = null;
 
@@ -57,10 +57,10 @@ class LocalesExtractCommandTest extends GLPITestCase
         // Mimic plugin structure
         $plugin_name = 'testlocales_' . uniqid();
         $plugin_name_uc = strtoupper($plugin_name);
-        $this->plugin_dir = GLPI_ROOT . '/plugins/' . $plugin_name;
+        $this->plugin_dir = ZENTRA_ROOT . '/plugins/' . $plugin_name;
 
         if (!mkdir($this->plugin_dir)) {
-            $this->markTestSkipped('Could not create temp plugin directory in ' . GLPI_ROOT . '/plugins');
+            $this->markTestSkipped('Could not create temp plugin directory in ' . ZENTRA_ROOT . '/plugins');
         }
         mkdir($this->plugin_dir . '/locales');
 
@@ -73,11 +73,11 @@ function plugin_version_{$plugin_name}(): array
     return [
         'name'           => 'Test',
         'version'        => PLUGIN_{$plugin_name_uc}_VERSION,
-        'author'         => '<a href="https://services.glpi-network.com">Teclib\'</a>',
+        'author'         => '<a href="https://services.zentra-network.com">Teclib\'</a>',
         'license'        => 'GPLv3+',
         'homepage'       => '',
         'requirements'   => [
-            'glpi' => [
+            'zentra' => [
                 'min' => '11.0.0',
                 'max' => '11.0.99',
             ],

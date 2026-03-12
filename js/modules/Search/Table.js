@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@
 import GenericView from '/js/modules/Search/GenericView.js';
 
 // Explicitly bind to window so Jest tests work properly
-window.GLPI = window.GLPI || {};
-window.GLPI.Search = window.GLPI.Search || {};
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.Search = window.ZENTRA.Search || {};
 
-window.GLPI.Search.Table = class Table extends GenericView {
+window.ZENTRA.Search.Table = class Table extends GenericView {
     // track sort/order changes globally
     sort_state = {
         sort: [],
@@ -212,7 +212,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     action: 'display_results',
                     searchform_id: this.element_id,
                     itemtype: this.getItemtype(),
-                    glpilist_limit: limit,
+                    zentralist_limit: limit,
                 };
                 if (this.sort_state !== null) {
                     search_data['sort'] = this.sort_state['sort'];
@@ -227,7 +227,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }
 
             $.ajax({
-                url: `${CFG_GLPI.root_doc}/ajax/search.php`,
+                url: `${CFG_ZENTRA.root_doc}/ajax/search.php`,
                 method: 'GET',
                 data: search_data,
             }).then((content) => {
@@ -318,7 +318,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             this.setSortStateFromSelects();
             const sort_count = this.sort_state['sort'].length;
             const idor_token = sort_container.find('input[name="_idor_token"]').val();
-            $.post(`${CFG_GLPI.root_doc}/ajax/search.php`, {
+            $.post(`${CFG_ZENTRA.root_doc}/ajax/search.php`, {
                 action: 'display_sort_criteria',
                 itemtype: this.getItemtype(),
                 num: sort_count + 1,

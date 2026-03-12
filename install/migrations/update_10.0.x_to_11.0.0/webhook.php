@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_webhooks')) {
-    $query = "CREATE TABLE `glpi_webhooks` (
+if (!$DB->tableExists('zentra_webhooks')) {
+    $query = "CREATE TABLE `zentra_webhooks` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -81,19 +81,19 @@ if (!$DB->tableExists('glpi_webhooks')) {
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->changeField('glpi_webhooks', 'url', 'url', 'text');
+    $migration->changeField('zentra_webhooks', 'url', 'url', 'text');
 }
 
-if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
+if (!$DB->fieldExists('zentra_webhooks', 'webhookcategories_id')) {
     // Dev migration
-    $migration->addField('glpi_webhooks', 'webhookcategories_id', 'fkey', [
+    $migration->addField('zentra_webhooks', 'webhookcategories_id', 'fkey', [
         'after' => 'comment',
     ]);
-    $migration->addKey('glpi_webhooks', 'webhookcategories_id', 'webhookcategories_id');
+    $migration->addKey('zentra_webhooks', 'webhookcategories_id', 'webhookcategories_id');
 }
 
-if (!$DB->tableExists('glpi_webhookcategories')) {
-    $query = "CREATE TABLE `glpi_webhookcategories` (
+if (!$DB->tableExists('zentra_webhookcategories')) {
+    $query = "CREATE TABLE `zentra_webhookcategories` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -116,8 +116,8 @@ if (!$DB->tableExists('glpi_webhookcategories')) {
 
 $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
 
-if (!$DB->tableExists('glpi_queuedwebhooks')) {
-    $query = "CREATE TABLE `glpi_queuedwebhooks` (
+if (!$DB->tableExists('zentra_queuedwebhooks')) {
+    $query = "CREATE TABLE `zentra_queuedwebhooks` (
       `id` int unsigned NOT NULL AUTO_INCREMENT,
       `itemtype` varchar(100) DEFAULT NULL,
       `items_id` int unsigned NOT NULL DEFAULT '0',
@@ -148,7 +148,7 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 } else {
-    $migration->changeField('glpi_queuedwebhooks', 'url', 'url', 'text');
+    $migration->changeField('zentra_queuedwebhooks', 'url', 'url', 'text');
 }
 
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date

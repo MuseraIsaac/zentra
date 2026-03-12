@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
-use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\Features\Clonable;
-use Glpi\Features\PlanningEvent;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Zentra\CalDAV\Traits\VobjectConverterTrait;
+use Zentra\Features\Clonable;
+use Zentra\Features\PlanningEvent;
+use Zentra\RichText\RichText;
 use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
@@ -221,7 +221,7 @@ class Reminder extends CommonDBVisible implements
     {
         if (!Session::haveRight(self::$rightname, READ)) {
             return [
-                'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],
+                'WHERE' => ['zentra_reminders.users_id' => Session::getLoginUserID()],
             ];
         }
 
@@ -229,17 +229,17 @@ class Reminder extends CommonDBVisible implements
         $where = [];
 
         // Users
-        $join['glpi_reminders_users'] = [
+        $join['zentra_reminders_users'] = [
             'FKEY' => [
-                'glpi_reminders_users'  => 'reminders_id',
-                'glpi_reminders'        => 'id',
+                'zentra_reminders_users'  => 'reminders_id',
+                'zentra_reminders'        => 'id',
             ],
         ];
 
         if (Session::getLoginUserID()) {
             $where['OR'] = [
-                'glpi_reminders.users_id'        => Session::getLoginUserID(),
-                'glpi_reminders_users.users_id'  => Session::getLoginUserID(),
+                'zentra_reminders.users_id'        => Session::getLoginUserID(),
+                'zentra_reminders_users.users_id'  => Session::getLoginUserID(),
             ];
         } else {
             $where = [
@@ -250,28 +250,28 @@ class Reminder extends CommonDBVisible implements
         // Groups
         if (
             $forceall
-            || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))
+            || (isset($_SESSION["zentragroups"]) && count($_SESSION["zentragroups"]))
         ) {
-            $join['glpi_groups_reminders'] = [
+            $join['zentra_groups_reminders'] = [
                 'FKEY' => [
-                    'glpi_groups_reminders' => 'reminders_id',
-                    'glpi_reminders'        => 'id',
+                    'zentra_groups_reminders' => 'reminders_id',
+                    'zentra_reminders'        => 'id',
                 ],
             ];
 
-            $or = ['glpi_groups_reminders.no_entity_restriction' => 1];
+            $or = ['zentra_groups_reminders.no_entity_restriction' => 1];
             $restrict = getEntitiesRestrictCriteria(
-                'glpi_groups_reminders',
+                'zentra_groups_reminders',
                 '',
-                $_SESSION['glpiactiveentities'],
+                $_SESSION['zentraactiveentities'],
                 true
             );
             if (count($restrict)) {
                 $or += $restrict;
             }
             $where['OR'][] = [
-                'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
+                'zentra_groups_reminders.groups_id' => count($_SESSION["zentragroups"])
+                                                      ? $_SESSION["zentragroups"]
                                                       : [-1],
                 'OR' => $or,
             ];
@@ -280,28 +280,28 @@ class Reminder extends CommonDBVisible implements
         // Profiles
         if (
             $forceall
-            || (isset($_SESSION["glpiactiveprofile"])
-              && isset($_SESSION["glpiactiveprofile"]['id']))
+            || (isset($_SESSION["zentraactiveprofile"])
+              && isset($_SESSION["zentraactiveprofile"]['id']))
         ) {
-            $join['glpi_profiles_reminders'] = [
+            $join['zentra_profiles_reminders'] = [
                 'FKEY' => [
-                    'glpi_profiles_reminders'  => 'reminders_id',
-                    'glpi_reminders'           => 'id',
+                    'zentra_profiles_reminders'  => 'reminders_id',
+                    'zentra_reminders'           => 'id',
                 ],
             ];
 
-            $or = ['glpi_profiles_reminders.no_entity_restriction' => 1];
+            $or = ['zentra_profiles_reminders.no_entity_restriction' => 1];
             $restrict = getEntitiesRestrictCriteria(
-                'glpi_profiles_reminders',
+                'zentra_profiles_reminders',
                 '',
-                $_SESSION['glpiactiveentities'],
+                $_SESSION['zentraactiveentities'],
                 true
             );
             if (count($restrict)) {
                 $or += $restrict;
             }
             $where['OR'][] = [
-                'glpi_profiles_reminders.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
+                'zentra_profiles_reminders.profiles_id' => $_SESSION["zentraactiveprofile"]['id'],
                 'OR' => $or,
             ];
         }
@@ -309,17 +309,17 @@ class Reminder extends CommonDBVisible implements
         // Entities
         if (
             $forceall
-            || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))
+            || (isset($_SESSION["zentraactiveentities"]) && count($_SESSION["zentraactiveentities"]))
         ) {
-            $join['glpi_entities_reminders'] = [
+            $join['zentra_entities_reminders'] = [
                 'FKEY' => [
-                    'glpi_entities_reminders'  => 'reminders_id',
-                    'glpi_reminders'           => 'id',
+                    'zentra_entities_reminders'  => 'reminders_id',
+                    'zentra_reminders'           => 'id',
                 ],
             ];
         }
-        if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-            $restrict = getEntitiesRestrictCriteria('glpi_entities_reminders', '', '', true, true);
+        if (isset($_SESSION["zentraactiveentities"]) && count($_SESSION["zentraactiveentities"])) {
+            $restrict = getEntitiesRestrictCriteria('zentra_entities_reminders', '', '', true, true);
             if (count($restrict)) {
                 $where['OR'] += $restrict;
             }
@@ -354,7 +354,7 @@ class Reminder extends CommonDBVisible implements
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Writer'),
             'datatype'           => 'dropdown',
@@ -473,14 +473,14 @@ class Reminder extends CommonDBVisible implements
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
             switch (get_class($item)) {
                 case Reminder::class:
                     if (Session::haveRight('reminder_public', CREATE)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
                         return [1 => self::createTabEntry(_n(
@@ -507,7 +507,7 @@ class Reminder extends CommonDBVisible implements
         return $ong;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof self) {
             return $item->showVisibility();
@@ -555,7 +555,7 @@ class Reminder extends CommonDBVisible implements
      */
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $img      = "rdv_private.png"; // default icon for reminder
 
@@ -584,7 +584,7 @@ class Reminder extends CommonDBVisible implements
             'val' => $val,
             'rand' => mt_rand(),
             'user_name' => getUserName($val["users_id"]),
-            'planning_img' => $CFG_GLPI["root_doc"] . "/pics/" . $img,
+            'planning_img' => $CFG_ZENTRA["root_doc"] . "/pics/" . $img,
             'planning_recall' => $planning_recall,
             'complete' => $complete,
             'parent_link' => $parent->getLink(['icon' => true, 'forceid' => true]),
@@ -601,22 +601,22 @@ class Reminder extends CommonDBVisible implements
         $visibility_criteria = [
             [
                 'OR' => [
-                    ['glpi_reminders.begin_view_date' => null],
-                    ['glpi_reminders.begin_view_date' => ['<', $now]],
+                    ['zentra_reminders.begin_view_date' => null],
+                    ['zentra_reminders.begin_view_date' => ['<', $now]],
                 ],
             ], [
                 'OR' => [
-                    ['glpi_reminders.end_view_date'   => null],
-                    ['glpi_reminders.end_view_date'   => ['>', $now]],
+                    ['zentra_reminders.end_view_date'   => null],
+                    ['zentra_reminders.end_view_date'   => ['>', $now]],
                 ],
             ],
         ];
 
         $personal_criteria = [
-            'SELECT' => ['glpi_reminders.*'],
-            'FROM'   => 'glpi_reminders',
+            'SELECT' => ['zentra_reminders.*'],
+            'FROM'   => 'zentra_reminders',
             'WHERE'  => array_merge([
-                'glpi_reminders.users_id'  => $users_id,
+                'zentra_reminders.users_id'  => $users_id,
                 [
                     'OR'        => [
                         'end'          => ['>=', $today],
@@ -624,32 +624,32 @@ class Reminder extends CommonDBVisible implements
                     ],
                 ],
             ], $visibility_criteria),
-            'ORDER'  => 'glpi_reminders.name',
+            'ORDER'  => 'zentra_reminders.name',
         ];
 
         $public_criteria = array_merge_recursive(
             [
-                'SELECT'          => ['glpi_reminders.*'],
+                'SELECT'          => ['zentra_reminders.*'],
                 'DISTINCT'        => true,
-                'FROM'            => 'glpi_reminders',
+                'FROM'            => 'zentra_reminders',
                 'WHERE'           => $visibility_criteria,
-                'ORDERBY'         => 'glpi_reminders.name',
+                'ORDERBY'         => 'zentra_reminders.name',
             ],
             self::getVisibilityCriteria()
         );
         // Do not force the inclusion of reminders created by the current user
-        unset($public_criteria['WHERE']['glpi_reminders.users_id'], $public_criteria['WHERE']['OR']['glpi_reminders.users_id']);
+        unset($public_criteria['WHERE']['zentra_reminders.users_id'], $public_criteria['WHERE']['OR']['zentra_reminders.users_id']);
 
-        if (countElementsInTable('glpi_remindertranslations') > 0) {
+        if (countElementsInTable('zentra_remindertranslations') > 0) {
             $additional_criteria = [
-                'SELECT'    => ["glpi_remindertranslations.name AS transname", "glpi_remindertranslations.text AS transtext"],
+                'SELECT'    => ["zentra_remindertranslations.name AS transname", "zentra_remindertranslations.text AS transtext"],
                 'LEFT JOIN' => [
-                    'glpi_remindertranslations' => [
+                    'zentra_remindertranslations' => [
                         'ON'  => [
-                            'glpi_reminders'             => 'id',
-                            'glpi_remindertranslations'  => 'reminders_id', [
+                            'zentra_reminders'             => 'id',
+                            'zentra_remindertranslations'  => 'reminders_id', [
                                 'AND'                            => [
-                                    'glpi_remindertranslations.language' => $_SESSION['glpilanguage'],
+                                    'zentra_remindertranslations.language' => $_SESSION['zentralanguage'],
                                 ],
                             ],
                         ],
@@ -697,7 +697,7 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $criteria = self::getListCriteria();
         $personal_criteria = $criteria['personal'];
@@ -733,12 +733,12 @@ class Reminder extends CommonDBVisible implements
         }
 
         if ($personal) {
-            $title = '<a href="' . htmlescape($CFG_GLPI["root_doc"]) . '/front/reminder.php">'
+            $title = '<a href="' . htmlescape($CFG_ZENTRA["root_doc"]) . '/front/reminder.php">'
                 . _sn('Personal reminder', 'Personal reminders', Session::getPluralNumber())
                 . '</a>';
         } else {
             if (Session::getCurrentInterface() !== 'helpdesk') {
-                $title = '<a href="' . htmlescape($CFG_GLPI["root_doc"]) . '/front/reminder.php">'
+                $title = '<a href="' . htmlescape($CFG_ZENTRA["root_doc"]) . '/front/reminder.php">'
                     . _sn('Public reminder', 'Public reminders', Session::getPluralNumber())
                     . '</a>';
             } else {
@@ -799,7 +799,7 @@ class Reminder extends CommonDBVisible implements
                     );
                     $row['values'][] = sprintf(
                         '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="sr-only">%s</span></a>',
-                        htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
+                        htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_ZENTRA['root_doc'], $date_url)),
                         htmlescape($planning_text),
                         __s('Planning')
                     );

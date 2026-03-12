@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use Calendar;
 use CalendarSegment;
@@ -495,7 +495,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // If there are some specific dates for which these tests always fails,
         // it should be confirmed by using these dates as `current_date` in a
         // new entry of the data provider (and be fixed properly).
-        $_SESSION['glpi_currenttime'] = "2025-01-27 15:57:00";
+        $_SESSION['zentra_currenttime'] = "2025-01-27 15:57:00";
 
         $provider = $this->computeNextCreationDateProvider();
         foreach ($provider as $i => $row) {
@@ -510,7 +510,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
             // Handle dynamic date
             if (!is_null($current_date)) {
-                $_SESSION['glpi_currenttime'] = $current_date;
+                $_SESSION['zentra_currenttime'] = $current_date;
             }
 
             $child_class = $this->getChildClass();

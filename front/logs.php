@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\System\Log\LogViewer;
+use Zentra\System\Log\LogViewer;
 
 Session::checkRight("system_logs", READ);
 
@@ -43,7 +43,7 @@ Html::header(
     LogViewer::getTypeName(Session::getPluralNumber()),
     '',
     "admin",
-    'glpi\system\log\logviewer'
+    'zentra\system\log\logviewer'
 );
 
 $logviewer = new LogViewer();

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +34,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity\IsInventoriableCapacity;
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\MainAsset\GenericNetworkAsset;
-use Glpi\Inventory\MainAsset\GenericPrinterAsset;
-use Glpi\Inventory\MainAsset\MainAsset;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\Asset\Capacity\IsInventoriableCapacity;
+use Zentra\Inventory\Conf;
+use Zentra\Inventory\MainAsset\GenericNetworkAsset;
+use Zentra\Inventory\MainAsset\GenericPrinterAsset;
+use Zentra\Inventory\MainAsset\MainAsset;
+use Zentra\Plugin\Hooks;
 
 class RuleImportAsset extends Rule
 {
@@ -86,7 +86,7 @@ class RuleImportAsset extends Rule
 
         $criteria = [
             'entities_id' => [
-                'table'     => 'glpi_entities',
+                'table'     => 'zentra_entities',
                 'field'     => 'entities_id',
                 'name'      => __('Target entity for the asset'),
                 'linkfield' => 'entities_id',
@@ -104,7 +104,7 @@ class RuleImportAsset extends Rule
                 ],
             ],
             'virtualmachinetypes_id' => [
-                'table'     => 'glpi_virtualmachinetypes',
+                'table'     => 'zentra_virtualmachinetypes',
                 'field'     => 'name',
                 'name'      => VirtualMachineType::getTypeName(0),
                 'type'      => 'dropdown',
@@ -120,7 +120,7 @@ class RuleImportAsset extends Rule
                 ],
             ],
             'states_id'  => [
-                'table'     => 'glpi_states',
+                'table'     => 'zentra_states',
                 'field'     => 'name',
                 'name'      => __('Having the status'),
                 'linkfield' => 'state',
@@ -183,7 +183,7 @@ class RuleImportAsset extends Rule
                 ],
             ],
             'domains_id' => [
-                'table'           => 'glpi_domains',
+                'table'           => 'zentra_domains',
                 'field'           => 'name',
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), Domain::getTypeName(1)),
                 'linkfield'       => 'domain',
@@ -451,7 +451,7 @@ class RuleImportAsset extends Rule
 
     public function findWithGlobalCriteria($input)
     {
-        global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $DB, $PLUGIN_HOOKS;
 
         $this->complex_criteria = [];
         $this->only_these_criteria = false;
@@ -487,7 +487,7 @@ class RuleImportAsset extends Rule
         ) {
             $itemtypeselected[] = $input['itemtype'];
         } else {
-            foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+            foreach ($CFG_ZENTRA["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
                     && is_a($itemtype, CommonDBTM::class, true)
@@ -506,7 +506,7 @@ class RuleImportAsset extends Rule
             $item = new $itemtype(); //$itemtypeselected entries are filtered to contain only CommonDBTM classes - should be safe.
             $itemtable = $item->getTable();
 
-            // Build the request to check if the asset exists in GLPI
+            // Build the request to check if the asset exists in ZENTRA
             $where_entity = $input['entities_id'] ?? [];
             if (!empty($where_entity) && !is_array($where_entity)) {
                 $where_entity = [$where_entity];
@@ -556,11 +556,11 @@ class RuleImportAsset extends Rule
                 }
             }
 
-            $result_glpi = $DB->request($it_criteria);
+            $result_zentra = $DB->request($it_criteria);
 
-            if (count($result_glpi)) {
+            if (count($result_zentra)) {
                 $this->criterias_results['found_port'] = [];
-                foreach ($result_glpi as $data) {
+                foreach ($result_zentra as $data) {
                     $this->criterias_results['found_inventories'][$itemtype][] = $data['id'];
                     foreach ($data as $alias => $value) {
                         if (
@@ -618,36 +618,36 @@ class RuleImportAsset extends Rule
         }
 
         if ($is_ip) {
-            $it_criteria['LEFT JOIN']['glpi_networkports'] = [
+            $it_criteria['LEFT JOIN']['zentra_networkports'] = [
                 'ON'  => [
                     $itemtable           => 'id',
-                    'glpi_networkports'  => 'items_id', [
-                        'AND' => ['glpi_networkports.itemtype' => $itemtype],
+                    'zentra_networkports'  => 'items_id', [
+                        'AND' => ['zentra_networkports.itemtype' => $itemtype],
                     ],
                 ],
             ];
-            $it_criteria['LEFT JOIN']['glpi_networknames'] = [
+            $it_criteria['LEFT JOIN']['zentra_networknames'] = [
                 'ON'  => [
-                    'glpi_networkports'  => 'id',
-                    'glpi_networknames'  => 'items_id', [
-                        'AND' => ['glpi_networknames.itemtype' => 'NetworkPort'],
+                    'zentra_networkports'  => 'id',
+                    'zentra_networknames'  => 'items_id', [
+                        'AND' => ['zentra_networknames.itemtype' => 'NetworkPort'],
                     ],
                 ],
             ];
-            $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
+            $it_criteria['LEFT JOIN']['zentra_ipaddresses'] = [
                 'ON'  => [
-                    'glpi_networknames'  => 'id',
-                    'glpi_ipaddresses'   => 'items_id', [
-                        'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName'],
+                    'zentra_networknames'  => 'id',
+                    'zentra_ipaddresses'   => 'items_id', [
+                        'AND' => ['zentra_ipaddresses.itemtype' => 'NetworkName'],
                     ],
                 ],
             ];
         } elseif ($is_networkport) {
-            $it_criteria['LEFT JOIN']['glpi_networkports'] = [
+            $it_criteria['LEFT JOIN']['zentra_networkports'] = [
                 'ON'  => [
                     $itemtable           => 'id',
-                    'glpi_networkports'  => 'items_id', [
-                        'AND' => ['glpi_networkports.itemtype' => $itemtype],
+                    'zentra_networkports'  => 'items_id', [
+                        'AND' => ['zentra_networkports.itemtype' => $itemtype],
                     ],
                 ],
             ];
@@ -670,7 +670,7 @@ class RuleImportAsset extends Rule
         foreach ($this->complex_criteria as $criterion) {
             if ($criterion->fields['criteria'] == 'ip') {
                 $astable = 'networkports_' . $criterion->fields['criteria'];
-                $it_criteria['LEFT JOIN']['glpi_networkports AS ' . $astable] = [
+                $it_criteria['LEFT JOIN']['zentra_networkports AS ' . $astable] = [
                     'ON'  => [
                         $itemtable  => 'id',
                         $astable    => 'items_id', [
@@ -678,25 +678,25 @@ class RuleImportAsset extends Rule
                         ],
                     ],
                 ];
-                $it_criteria['LEFT JOIN']['glpi_networknames'] = [
+                $it_criteria['LEFT JOIN']['zentra_networknames'] = [
                     'ON'  => [
                         $astable  => 'id',
-                        'glpi_networknames'  => 'items_id', [
-                            'AND' => ['glpi_networknames.itemtype' => 'NetworkPort'],
+                        'zentra_networknames'  => 'items_id', [
+                            'AND' => ['zentra_networknames.itemtype' => 'NetworkPort'],
                         ],
                     ],
                 ];
-                $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
+                $it_criteria['LEFT JOIN']['zentra_ipaddresses'] = [
                     'ON'  => [
-                        'glpi_networknames'  => 'id',
-                        'glpi_ipaddresses'   => 'items_id', [
-                            'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName'],
+                        'zentra_networknames'  => 'id',
+                        'zentra_ipaddresses'   => 'items_id', [
+                            'AND' => ['zentra_ipaddresses.itemtype' => 'NetworkName'],
                         ],
                     ],
                 ];
             } elseif ($this->isNetPort($criterion->fields['criteria'])) {
                 $astable = 'networkports_' . $criterion->fields['criteria'];
-                $it_criteria['LEFT JOIN']['glpi_networkports AS ' . $astable] = [
+                $it_criteria['LEFT JOIN']['zentra_networkports AS ' . $astable] = [
                     'ON'  => [
                         $itemtable  => 'id',
                         $astable    => 'items_id', [
@@ -736,12 +736,12 @@ class RuleImportAsset extends Rule
                     break;
 
                 case 'mac':
-                    $ntable = 'glpi_networkports';
+                    $ntable = 'zentra_networkports';
                     if (!$this->link_criteria_port) {
                         $ntable = 'networkports_' . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
                     } else {
-                        $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
+                        $it_criteria['SELECT'][] = 'zentra_networkports.id AS portid';
                     }
 
                     if (!is_array($input['mac'])) {
@@ -757,51 +757,51 @@ class RuleImportAsset extends Rule
                         $input['ip'] = [$input['ip']];
                     }
 
-                    $ntable = 'glpi_networkports';
+                    $ntable = 'zentra_networkports';
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
-                        $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
+                    } elseif (!in_array('zentra_networkports.id AS portid', $it_criteria['SELECT'])) {
+                        $it_criteria['SELECT'][] = 'zentra_networkports.id AS portid';
                     }
 
-                    $it_criteria['WHERE'][] = ['glpi_ipaddresses.name' => $input['ip']];
+                    $it_criteria['WHERE'][] = ['zentra_ipaddresses.name' => $input['ip']];
                     break;
 
                 case 'ifdescr':
-                    $ntable = 'glpi_networkports';
+                    $ntable = 'zentra_networkports';
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
-                        $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
+                    } elseif (!in_array('zentra_networkports.id AS portid', $it_criteria['SELECT'])) {
+                        $it_criteria['SELECT'][] = 'zentra_networkports.id AS portid';
                     }
 
                     $it_criteria['WHERE'][] = [$ntable . '.ifdescr' => $input['ifdescr']];
                     break;
 
                 case 'ifnumber':
-                    $ntable = 'glpi_networkports';
+                    $ntable = 'zentra_networkports';
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
-                        $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
+                    } elseif (!in_array('zentra_networkports.id AS portid', $it_criteria['SELECT'])) {
+                        $it_criteria['SELECT'][] = 'zentra_networkports.id AS portid';
                     }
                     $it_criteria['WHERE'][] = [$ntable . '.logical_number' => $input['ifnumber']];
                     break;
 
                 case 'tag':
                     if (isset($input['tag']) && isset($input['deviceid'])) {
-                        $it_criteria['LEFT JOIN']['glpi_agents'] = [
+                        $it_criteria['LEFT JOIN']['zentra_agents'] = [
                             'ON'  => [
-                                'glpi_agents'  => 'items_id',
+                                'zentra_agents'  => 'items_id',
                                 $itemtable     => 'id',
                             ],
                         ];
                         $it_criteria['WHERE'][] = [
-                            'glpi_agents.deviceid' => $input['deviceid'],
-                            'glpi_agents.tag' => $input['tag'],
+                            'zentra_agents.deviceid' => $input['deviceid'],
+                            'zentra_agents.tag' => $input['tag'],
                         ];
                     }
                     break;
@@ -888,26 +888,26 @@ class RuleImportAsset extends Rule
                     break;
 
                 case 'device_id':
-                    $it_criteria['LEFT JOIN']['glpi_agents'] = [
+                    $it_criteria['LEFT JOIN']['zentra_agents'] = [
                         'ON'  => [
-                            'glpi_agents'  => 'items_id',
+                            'zentra_agents'  => 'items_id',
                             $itemtable     => 'id',
                         ],
                     ];
                     $it_criteria['WHERE'][] = [
-                        'glpi_agents.device_id' => $input['device_id'],
+                        'zentra_agents.device_id' => $input['device_id'],
                     ];
                     break;
 
                 case 'domain':
-                    $it_criteria['LEFT JOIN']['glpi_domains'] = [
+                    $it_criteria['LEFT JOIN']['zentra_domains'] = [
                         'ON'  => [
-                            'glpi_domains' => 'id',
+                            'zentra_domains' => 'id',
                             $itemtable     => 'domains_id',
                         ],
                     ];
                     $it_criteria['WHERE'][] = [
-                        'glpi_domains.name'  => $input['domains_id'],
+                        'zentra_domains.name'  => $input['domains_id'],
                     ];
                     break;
 
@@ -1097,15 +1097,15 @@ TWIG, $twig_params);
     /**
      * Get itemtypes
      *
-     * @global array $CFG_GLPI
+     * @global array $CFG_ZENTRA
      * @return array
      */
     public static function getItemTypesForRules()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $types = [];
-        foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["ruleimportasset_types"] as $itemtype) {
             if (is_a($itemtype, CommonDBTM::class, true)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();

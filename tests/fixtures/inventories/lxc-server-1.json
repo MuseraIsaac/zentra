@@ -18,12 +18,12 @@
          "uuid": "647f5d51-261e-5113-dce0-d02788d8a3ff",
          "vmsystem": "Physical"
       },
-      "versionclient": "GLPI-Inventory_v1.4-1",
+      "versionclient": "ZENTRA-Inventory_v1.4-1",
       "virtualmachines": [
          {
             "mac": "00:16:3e:ec:95:69",
             "memory": 2048,
-            "name": "glpi-10-rc1",
+            "name": "zentra-10-rc1",
             "status": "off",
             "uuid": "487dfdb542a4bfb23670b8d4e76d8b6886c2ed35",
             "vcpu": 2,

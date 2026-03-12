@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Wi-Fi instantitation of NetworkPort
@@ -127,7 +127,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_wifinetworks',
+            'table'              => 'zentra_wifinetworks',
             'field'              => 'name',
             'name'               => WifiNetwork::getTypeName(1),
             'massiveaction'      => false,
@@ -182,7 +182,7 @@ TWIG, $twig_params);
     {
         $tab[] = [
             'id'                 => '157',
-            'table'              => 'glpi_wifinetworks',
+            'table'              => 'zentra_wifinetworks',
             'field'              => 'name',
             'name'               => WifiNetwork::getTypeName(1),
             'forcegroupby'       => true,
@@ -190,7 +190,7 @@ TWIG, $twig_params);
             'joinparams'         => [
                 'jointype'           => 'standard',
                 'beforejoin'         => [
-                    'table'              => 'glpi_networkportwifis',
+                    'table'              => 'zentra_networkportwifis',
                     'joinparams'         => $joinparams,
                 ],
             ],
@@ -198,7 +198,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '158',
-            'table'              => 'glpi_wifinetworks',
+            'table'              => 'zentra_wifinetworks',
             'field'              => 'essid',
             'name'               => __('ESSID'),
             'forcegroupby'       => true,
@@ -206,7 +206,7 @@ TWIG, $twig_params);
             'joinparams'         => [
                 'jointype'           => 'standard',
                 'beforejoin'         => [
-                    'table'              => 'glpi_networkportwifis',
+                    'table'              => 'zentra_networkportwifis',
                     'joinparams'         => $joinparams,
                 ],
             ],

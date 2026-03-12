@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,11 @@ function update953to954()
     $migration->setVersion('9.5.4');
 
     /* Remove invalid Profile SO */
-    $DB->delete('glpi_displaypreferences', ['itemtype' => 'Profile', 'num' => 62]);
+    $DB->delete('zentra_displaypreferences', ['itemtype' => 'Profile', 'num' => 62]);
     /* /Remove invalid Profile SO */
 
     /* Add is_default_profile */
-    $migration->addField("glpi_profiles_users", "is_default_profile", "bool");
+    $migration->addField("zentra_profiles_users", "is_default_profile", "bool");
     /* /Add is_default_profile */
 
     // ************ Keep it at the end **************

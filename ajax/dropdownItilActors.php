@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -71,7 +71,7 @@ if (
                     'toupdate'    => null,
                 ];
 
-                if ($CFG_GLPI["notifications_mailing"]) {
+                if ($CFG_ZENTRA["notifications_mailing"]) {
                     $paramscomment = [
                         'value' => '__VALUE__',
                         'allow_email' => $withemail,
@@ -83,7 +83,7 @@ if (
                         $options['toupdate'] = [
                             'value_fieldname' => 'value',
                             'to_update'       => "notif_user_$rand",
-                            'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                            'url'             => $CFG_ZENTRA["root_doc"] . "/ajax/uemailUpdate.php",
                             'moreparams'      => $paramscomment,
                         ];
                     }
@@ -100,7 +100,7 @@ if (
                     $toupdate[] = [
                         'value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
+                        'url'             => $CFG_ZENTRA["root_doc"] . "/ajax/actorinformation.php",
                         'moreparams'      => ['users_id_assign' => '__VALUE__'],
                     ];
                     $options['toupdate'] = $toupdate;
@@ -118,7 +118,7 @@ if (
                     echo "</span>";
                 }
 
-                if ($CFG_GLPI["notifications_mailing"]) {
+                if ($CFG_ZENTRA["notifications_mailing"]) {
                     echo "<br><span id='notif_user_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';
@@ -157,7 +157,7 @@ if (
                     $param['toupdate'] = [
                         'value_fieldname' => 'value',
                         'to_update'       => "countgroupassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
+                        'url'             => $CFG_ZENTRA["root_doc"] . "/ajax/actorinformation.php",
                         'moreparams'      => ['groups_id_assign' => '__VALUE__'],
                     ];
                 }
@@ -181,7 +181,7 @@ if (
                     'rand'      => $rand,
                     'to_update' => null,
                 ];
-                if ($CFG_GLPI["notifications_mailing"]) {
+                if ($CFG_ZENTRA["notifications_mailing"]) {
                     $paramscomment = [
                         'value'       => '__VALUE__',
                         'allow_email' => $withemail,
@@ -193,7 +193,7 @@ if (
                         $options['toupdate'] = [
                             'value_fieldname' => 'value',
                             'to_update'       => "notif_supplier_$rand",
-                            'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                            'url'             => $CFG_ZENTRA["root_doc"] . "/ajax/uemailUpdate.php",
                             'moreparams'      => $paramscomment,
                         ];
                     }
@@ -203,7 +203,7 @@ if (
                     $toupdate[] = [
                         'value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
+                        'url'             => $CFG_ZENTRA["root_doc"] . "/ajax/actorinformation.php",
                         'moreparams'      => ['suppliers_id_assign' => '__VALUE__'],
                     ];
                     $options['toupdate'] = $toupdate;
@@ -217,7 +217,7 @@ if (
                     echo "<span id='countassign_$rand'>";
                     echo "</span>";
                 }
-                if ($CFG_GLPI["notifications_mailing"]) {
+                if ($CFG_ZENTRA["notifications_mailing"]) {
                     echo "<br><span id='notif_supplier_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';

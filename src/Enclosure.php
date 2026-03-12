@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\DCBreadcrumbInterface;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\DCBreadcrumb;
+use Zentra\Features\DCBreadcrumbInterface;
+use Zentra\Features\StateInterface;
 
 /**
  * Enclosure Class
@@ -49,7 +49,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
     use DCBreadcrumb;
     /** @use Clonable<static> */
     use Clonable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
@@ -142,7 +142,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
         $tab[] = [
             'id'                 => '40',
-            'table'              => 'glpi_enclosuremodels',
+            'table'              => 'zentra_enclosuremodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -201,7 +201,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -209,7 +209,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -219,14 +219,14 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -251,7 +251,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',

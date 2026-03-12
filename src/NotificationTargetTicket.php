@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             ));
 
             if (empty($perso_tag)) {
-                $perso_tag = 'GLPI';
+                $perso_tag = 'ZENTRA';
             }
             return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
         }
@@ -176,7 +176,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         = Ticket::getTicketTypeName($item->getField('type'));
         $data['##ticket.requesttype##'] = '';
         if ($requesttype_id = $item->getField('requesttypes_id')) {
-            $data['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes', $requesttype_id);
+            $data['##ticket.requesttype##'] = Dropdown::getDropdownName('zentra_requesttypes', $requesttype_id);
         }
 
         $autoclose_value  = Entity::getUsedConfig(
@@ -205,14 +205,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.sla_tto##'] = '';
         if ($item->getField('slas_id_tto')) {
             $data['##ticket.sla_tto##'] = Dropdown::getDropdownName(
-                'glpi_slas',
+                'zentra_slas',
                 $item->getField('slas_id_tto')
             );
         }
         $data['##ticket.sla_ttr##'] = '';
         if ($item->getField('slas_id_ttr')) {
             $data['##ticket.sla_ttr##'] = Dropdown::getDropdownName(
-                'glpi_slas',
+                'zentra_slas',
                 $item->getField('slas_id_ttr')
             );
         }
@@ -221,14 +221,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.ola_tto##'] = '';
         if ($item->getField('olas_id_tto')) {
             $data['##ticket.ola_tto##'] = Dropdown::getDropdownName(
-                'glpi_olas',
+                'zentra_olas',
                 $item->getField('olas_id_tto')
             );
         }
         $data['##ticket.ola_ttr##'] = '';
         if ($item->getField('olas_id_ttr')) {
             $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName(
-                'glpi_olas',
+                'zentra_olas',
                 $item->getField('olas_id_ttr')
             );
         }
@@ -236,7 +236,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.location##'] = '';
         if ($item->getField('locations_id')) {
             $data['##ticket.location##'] = Dropdown::getDropdownName(
-                'glpi_locations',
+                'zentra_locations',
                 $item->getField('locations_id')
             );
             $locations = new Location();
@@ -345,7 +345,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     if ($hardware->isField('locations_id')) {
                         $tmp['##ticket.item.location##'] = '';
                         if ($h_locations_id = $hardware->getField('locations_id')) {
-                            $tmp['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations', $h_locations_id);
+                            $tmp['##ticket.item.location##'] = Dropdown::getDropdownName('zentra_locations', $h_locations_id);
                         }
                         $locations = new Location();
                         $locations->getFromDB($h_locations_id);
@@ -397,7 +397,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     if ($hardware->isField('groups_id')) {
                         $tmp['##ticket.item.group##'] = '';
                         if ($h_group_id = $hardware->getField('groups_id')) {
-                            $tmp['##ticket.item.group##'] = Dropdown::getDropdownName('glpi_groups', $h_group_id);
+                            $tmp['##ticket.item.group##'] = Dropdown::getDropdownName('zentra_groups', $h_group_id);
                         }
                     }
 
@@ -421,7 +421,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         // Get followups, log, validation
         if (!$simple) {
             $restrict          = ['tickets_id' => $item->getField('id')];
-            $problems          = getAllDataFromTable('glpi_problems_tickets', $restrict);
+            $problems          = getAllDataFromTable('zentra_problems_tickets', $restrict);
             $data['problems'] = [];
             if (count($problems)) {
                 $problem = new Problem();
@@ -450,7 +450,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
             $data['##ticket.numberofproblems##'] = count($data['problems']);
 
-            $changes          = getAllDataFromTable('glpi_changes_tickets', $restrict);
+            $changes          = getAllDataFromTable('zentra_changes_tickets', $restrict);
             $data['changes'] = [];
             if (count($changes)) {
                 $change = new Change();
@@ -485,7 +485,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 'items_id' => $item->getField('id'),
             ];
             $replysolved = getAllDataFromTable(
-                'glpi_itilfollowups',
+                'zentra_itilfollowups',
                 [
                     'WHERE'  => $solution_restrict,
                     'ORDER'  => ['date_mod DESC', 'id ASC'],
@@ -500,11 +500,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             $restrict = ['tickets_id' => $item->getField('id')];
 
             if (isset($options['validation_id']) && $options['validation_id']) {
-                $restrict['glpi_ticketvalidations.id'] = $options['validation_id'];
+                $restrict['zentra_ticketvalidations.id'] = $options['validation_id'];
             }
 
             $validations = getAllDataFromTable(
-                'glpi_ticketvalidations',
+                'zentra_ticketvalidations',
                 [
                     'WHERE'  => $restrict,
                     'ORDER'  => ['submission_date DESC', 'id ASC'],

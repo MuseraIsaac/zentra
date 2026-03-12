@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@
         }
     }
 
-    [data-glpi-form-renderer-horizontal-blocks] {
+    [data-zentra-form-renderer-horizontal-blocks] {
         display: flex;
         flex-wrap: wrap;
         gap: 0 1.5rem;
@@ -93,12 +93,12 @@
     // Special tag used to mark an item as hidden by the condition engine.
     // It is safer than directly interacting the "display: none" class as it might
     // conflict with other features that hide items like the section pagination.
-    [data-glpi-form-renderer-hidden-by-condition] {
+    [data-zentra-form-renderer-hidden-by-condition] {
         display: none !important;
     }
 
     // Some questions may be hidden by design and should never be displayed.
-    [data-glpi-form-renderer-hidden-input] {
+    [data-zentra-form-renderer-hidden-input] {
         display: none !important;
     }
 
@@ -123,8 +123,8 @@
     }
 
     // Handle invalid states for specific inputs (select2 and tinymce)
-    [data-glpi-form-renderer-question] {
-        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
+    [data-zentra-form-renderer-question] {
+        scroll-margin-top: calc(var(--zentra-contextbar-height) + 16px);
 
         &:has(select.is-invalid) {
             .select2-container--default .select2-selection {
@@ -160,7 +160,7 @@
         }
     }
 
-    [data-glpi-form-renderer-section] {
-        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
+    [data-zentra-form-renderer-section] {
+        scroll-margin-top: calc(var(--zentra-contextbar-height) + 16px);
     }
 }

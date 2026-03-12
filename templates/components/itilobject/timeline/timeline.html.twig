@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -55,8 +55,8 @@
         {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
         {% set date_mod = entry_i['date_mod'] ?? date_creation %}
         {% set entry_rand = random() %}
-        {% set is_current_user = users_id == session('glpiID') %}
-        {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+        {% set is_current_user = users_id == session('zentraID') %}
+        {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('zentraactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
 
         {% set is_private_class = is_private ? "private-item" : "" %}
 
@@ -112,7 +112,7 @@
              data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
              {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
+            {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
 
             <div class="row">
                 <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto order-sm-last' : '' }}">
@@ -205,7 +205,7 @@
                 </div>
             </div>
 
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
+            {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
         </div>
     {% endfor %}
 

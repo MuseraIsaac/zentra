@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@ import {jest} from '@jest/globals';
 
 describe('Object Lock', () => {
     let window_reload_spy;
-    let glpi_confirm_spy;
-    let glpi_alert_spy;
+    let zentra_confirm_spy;
+    let zentra_alert_spy;
 
     beforeEach(() => {
         // Mock reload function
@@ -51,18 +51,18 @@ describe('Object Lock', () => {
         });
         window_reload_spy = jest.spyOn(window.location, 'reload');
 
-        window.glpi_confirm = jest.fn((opts) => {
+        window.zentra_confirm = jest.fn((opts) => {
             if (opts.confirm_callback) {
                 opts.confirm_callback();
             }
         });
-        window.glpi_alert = jest.fn((opts) => {
+        window.zentra_alert = jest.fn((opts) => {
             if (opts.ok_callback) {
                 opts.ok_callback();
             }
         });
-        glpi_confirm_spy = jest.spyOn(window, 'glpi_confirm');
-        glpi_alert_spy = jest.spyOn(window, 'glpi_alert');
+        zentra_confirm_spy = jest.spyOn(window, 'zentra_confirm');
+        zentra_alert_spy = jest.spyOn(window, 'zentra_alert');
 
         $('body').empty();
     });
@@ -118,8 +118,8 @@ describe('Object Lock', () => {
         jest.advanceTimersByTime(15000);
         expect(window.AjaxMock.response_stack).toHaveLength(0);
         await new Promise(process.nextTick);
-        expect(glpi_confirm_spy).toHaveBeenCalled();
-        expect(glpi_confirm_spy).toHaveBeenCalledWith(
+        expect(zentra_confirm_spy).toHaveBeenCalled();
+        expect(zentra_confirm_spy).toHaveBeenCalledWith(
             expect.objectContaining({
                 title: 'Item unlocked!',
                 message: 'Reload page?',
@@ -151,8 +151,8 @@ describe('Object Lock', () => {
 
         $('.ask-unlock-item').trigger('click');
         await new Promise(process.nextTick);
-        expect(glpi_confirm_spy).toHaveBeenCalled();
-        expect(glpi_confirm_spy).toHaveBeenCalledWith(
+        expect(zentra_confirm_spy).toHaveBeenCalled();
+        expect(zentra_confirm_spy).toHaveBeenCalledWith(
             expect.objectContaining({
                 title: 'Ticket #24',
                 message: 'Ask for unlock this item?',
@@ -160,7 +160,7 @@ describe('Object Lock', () => {
             })
         );
         await new Promise(process.nextTick);
-        expect(glpi_alert_spy).toHaveBeenCalledWith(
+        expect(zentra_alert_spy).toHaveBeenCalledWith(
             expect.objectContaining({
                 title: 'Unlock request sent!',
                 message: 'Request sent to John Doe',
@@ -196,7 +196,7 @@ describe('Object Lock', () => {
             headers: expect.objectContaining({
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded;',
-                'X-Glpi-Csrf-Token': 'token'
+                'X-Zentra-Csrf-Token': 'token'
             })
         }));
     });

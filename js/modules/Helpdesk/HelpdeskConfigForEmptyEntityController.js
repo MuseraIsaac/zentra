@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiHelpdeskConfigForEmptyEntityController
+export class ZentraHelpdeskConfigForEmptyEntityController
 {
     /** @type {HTMLElement} */
     #container;
@@ -64,7 +64,7 @@ export class GlpiHelpdeskConfigForEmptyEntityController
     #getDefineTilesButton()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tiles-empty-entity-define-tiles]'
+            '[data-zentra-helpdesk-config-tiles-empty-entity-define-tiles]'
         );
     }
 
@@ -72,7 +72,7 @@ export class GlpiHelpdeskConfigForEmptyEntityController
     #getCopyTilesButton()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tiles-empty-entity-copy-tiles]'
+            '[data-zentra-helpdesk-config-tiles-empty-entity-copy-tiles]'
         );
     }
 
@@ -80,7 +80,7 @@ export class GlpiHelpdeskConfigForEmptyEntityController
     #getOriginalHelpdeskConfigDiv()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tiles-empty-entity-original-content]'
+            '[data-zentra-helpdesk-config-tiles-empty-entity-original-content]'
         );
     }
 
@@ -88,7 +88,7 @@ export class GlpiHelpdeskConfigForEmptyEntityController
     #getSpecificConfigDiv()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tiles-empty-entity-specific]'
+            '[data-zentra-helpdesk-config-tiles-empty-entity-specific]'
         );
     }
 }

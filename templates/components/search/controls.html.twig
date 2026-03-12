@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@
                         this form which will only be used for sorting operations.
                         This mean we only mark this form as the "search form"
                         if the split search form is not enabled #}
-                        data-glpi-search-form
+                        data-zentra-search-form
                     {% endif %}
                 >
             {% endif %}
@@ -90,7 +90,7 @@
                             {% endif %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;">
-                            {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, original_params]) %}
+                            {% do call('Zentra\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, original_params]) %}
                         </div>
                     {% endif %}
                 </div>
@@ -106,7 +106,7 @@
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;">
-                        {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSort', [itemtype, original_params]) %}
+                        {% do call('Zentra\\Search\\Input\\QueryBuilder::showGenericSort', [itemtype, original_params]) %}
                     </div>
                 {% endif %}
             </div>
@@ -133,7 +133,7 @@
                 {% endif %}
             </div>
 
-            {% set submit_search_form = "this.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit()" %}
+            {% set submit_search_form = "this.closest('[data-zentra-search-container]').querySelector('[data-zentra-search-form]').submit()" %}
             <div class="secondary-controls">
                 {% if may_be_located %}
                     <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
@@ -378,12 +378,12 @@ $(document).ready(function() {
 
    // Callbacks for copy success/failure
    function copy_success() {
-      glpi_toast_info(__('Results copied to clipboard'));
+      zentra_toast_info(__('Results copied to clipboard'));
       $('#export_dropdown_icon').removeClass('spinner-border spinner-border-sm');
       $('#export_dropdown_icon').addClass('ti-file-download');
    }
    function copy_error() {
-      glpi_toast_error(__('Unexpected error'));
+      zentra_toast_error(__('Unexpected error'));
       $('#export_dropdown_icon').removeClass('spinner-border spinner-border-sm');
       $('#export_dropdown_icon').addClass('ti-file-download');
    }

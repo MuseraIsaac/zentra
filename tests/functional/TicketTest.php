@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,11 @@ use Computer;
 use Contract;
 use CronTask;
 use Entity;
-use Glpi\Search\SearchOption;
-use Glpi\Team\Team;
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\ITILTrait;
-use Glpi\Tests\Glpi\ValidationStepTrait;
+use Zentra\Search\SearchOption;
+use Zentra\Team\Team;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\Zentra\ITILTrait;
+use Zentra\Tests\Zentra\ValidationStepTrait;
 use Group;
 use Group_Ticket;
 use Group_User;
@@ -88,7 +88,7 @@ class TicketTest extends DbTestCase
     {
         $default_use_notifications = 1;
 
-        $admin_user_id    = getItemByTypeName(User::class, 'glpi', true);
+        $admin_user_id    = getItemByTypeName(User::class, 'zentra', true);
         $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
         $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
         $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
@@ -1106,7 +1106,7 @@ class TicketTest extends DbTestCase
     {
         $ticket = new Ticket();
         //to fix an undefined index
-        $_SESSION["glpiactiveprofile"]["interface"] = '';
+        $_SESSION["zentraactiveprofile"]["interface"] = '';
         $this->assertFalse((bool) $ticket->canAdminActors());
         $this->assertFalse((bool) $ticket->canAssign());
         $this->assertFalse((bool) $ticket->canAssignToMe());
@@ -1385,7 +1385,7 @@ class TicketTest extends DbTestCase
         //drop update ticket right from tech profile
         global $DB;
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 168965],
             [
                 'profiles_id'  => 6,
@@ -1397,7 +1397,7 @@ class TicketTest extends DbTestCase
 
         //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 168967],
             [
                 'profiles_id'  => 6,
@@ -1508,7 +1508,7 @@ class TicketTest extends DbTestCase
         global $DB;
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 168965],
                 [
                     'profiles_id'  => 6,
@@ -1522,7 +1522,7 @@ class TicketTest extends DbTestCase
         //reset rights. Done here so ACLs are reset even if tests fails.
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 168967],
                 [
                     'profiles_id'  => 6,
@@ -1782,7 +1782,7 @@ class TicketTest extends DbTestCase
         );
 
         // Display extra fields
-        $this->login('glpi', 'glpi'); // Need to be admin to update entities
+        $this->login('zentra', 'zentra'); // Need to be admin to update entities
         $this->updateItem(Entity::class, 0, [
             'show_tickets_properties_on_helpdesk' => 1,
         ]);
@@ -2035,7 +2035,7 @@ class TicketTest extends DbTestCase
             // set new rights
             $this->assertTrue(
                 $DB->update(
-                    'glpi_profilerights',
+                    'zentra_profilerights',
                     ['rights' => $value],
                     [
                         'profiles_id'  => 6,
@@ -2052,7 +2052,7 @@ class TicketTest extends DbTestCase
                 //reset rights. Done here so ACLs are reset even if tests fails.
                 $this->assertTrue(
                     $DB->update(
-                        'glpi_profilerights',
+                        'zentra_profilerights',
                         ['rights' => $default_value],
                         [
                             'profiles_id'  => 6,
@@ -2115,7 +2115,7 @@ class TicketTest extends DbTestCase
         global $DB;
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 234503],
                 [
                     'profiles_id'  => 6,
@@ -2130,7 +2130,7 @@ class TicketTest extends DbTestCase
         //reset rights. Done here so ACLs are reset even if tests fails.
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 168967],
                 [
                     'profiles_id'  => 6,
@@ -2204,7 +2204,7 @@ class TicketTest extends DbTestCase
         global $DB;
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 136199],
                 [
                     'profiles_id'  => 6,
@@ -2219,7 +2219,7 @@ class TicketTest extends DbTestCase
         //reset rights. Done here so ACLs are reset even if tests fails.
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 168967],
                 [
                     'profiles_id'  => 6,
@@ -2252,7 +2252,7 @@ class TicketTest extends DbTestCase
         //Add assign in charge from tech profile
         $this->assertTrue(
             $DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => 144391],
                 [
                     'profiles_id'  => 6,
@@ -2266,7 +2266,7 @@ class TicketTest extends DbTestCase
 
         //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 168967],
             [
                 'profiles_id'  => 6,
@@ -2378,7 +2378,7 @@ class TicketTest extends DbTestCase
         );
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Test item cloning
         $added = $ticket->clone();
@@ -2486,7 +2486,7 @@ class TicketTest extends DbTestCase
         );
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Test item cloning
         $added = $ticket->clone();
@@ -2719,7 +2719,7 @@ class TicketTest extends DbTestCase
         );
 
         $tlp = [
-            'glpi'      => ['pass' => 'glpi',     'pos' => CommonITILObject::TIMELINE_LEFT],
+            'zentra'      => ['pass' => 'zentra',     'pos' => CommonITILObject::TIMELINE_LEFT],
             'post-only' => ['pass' => 'postonly', 'pos' => CommonITILObject::TIMELINE_LEFT],
             'tech'      => ['pass' => 'tech',     'pos' => CommonITILObject::TIMELINE_RIGHT],
             'normal'    => ['pass' => 'normal',   'pos' => CommonITILObject::TIMELINE_RIGHT],
@@ -2890,11 +2890,11 @@ class TicketTest extends DbTestCase
         $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->fields['status']);
 
         // drop UPDATE right to TU_USER and redo "associate myself"
-        $saverights = $_SESSION['glpiactiveprofile'];
-        $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
+        $saverights = $_SESSION['zentraactiveprofile'];
+        $_SESSION['zentraactiveprofile']['ticket'] -= \UPDATE;
         $this->assertGreaterThan(0, (int) $ticket_user->add($input_ticket_user));
         // restore rights
-        $_SESSION['glpiactiveprofile'] = $saverights;
+        $_SESSION['zentraactiveprofile'] = $saverights;
         //check ticket creation
         $this->assertTrue($ticket_user->getFromDB($ticket_user->getId()));
 
@@ -2917,14 +2917,14 @@ class TicketTest extends DbTestCase
         ]);
 
         // check with very limited rights and redo "associate myself"
-        $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
+        $_SESSION['zentraactiveprofile']['ticket'] = \CREATE
                                                + Ticket::READMY
                                                + Ticket::READALL
                                                + Ticket::READGROUP
                                                + Ticket::OWN; // OWN right must allow self-assign
         $this->assertGreaterThan(0, (int) $ticket_user->add($input_ticket_user));
         // restore rights
-        $_SESSION['glpiactiveprofile'] = $saverights;
+        $_SESSION['zentraactiveprofile'] = $saverights;
         //check ticket creation
         $this->assertTrue($ticket_user->getFromDB($ticket_user->getId()));
 
@@ -3081,7 +3081,7 @@ class TicketTest extends DbTestCase
         $this->assertSame(3, $result['impact']);
         $this->assertSame(4, $result['priority']);
 
-        $_SESSION['glpiactiveprofile']['ticket'] |= Ticket::CHANGEPRIORITY;
+        $_SESSION['zentraactiveprofile']['ticket'] |= Ticket::CHANGEPRIORITY;
         $this->assertTrue((bool) Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY));
 
         $result = $ticket->prepareInputForUpdate([
@@ -3312,7 +3312,7 @@ class TicketTest extends DbTestCase
     {
         // Create a ticket
         $this->login();
-        $_SESSION['glpiset_default_tech'] = false;
+        $_SESSION['zentraset_default_tech'] = false;
         $ticket = new Ticket();
         $ticketId = $ticket->add(
             $input + [
@@ -3332,7 +3332,7 @@ class TicketTest extends DbTestCase
         // Apply specific rights if defined
         if (array_key_exists('rights', $user)) {
             foreach ($user['rights'] as $rightname => $rightvalue) {
-                $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
+                $_SESSION['zentraactiveprofile'][$rightname] = $rightvalue;
             }
         }
         // Verify result
@@ -3366,7 +3366,7 @@ class TicketTest extends DbTestCase
             $this->assertEquals(null, $ticket->fields['takeintoaccountdate']);
         } else {
             $this->assertGreaterThan(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
-            $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
+            $this->assertEquals($_SESSION['zentra_currenttime'], $ticket->fields['takeintoaccountdate']);
         }
     }
 
@@ -3377,7 +3377,7 @@ class TicketTest extends DbTestCase
     {
         // Create a ticket
         $this->login();
-        $_SESSION['glpiset_default_tech'] = false;
+        $_SESSION['zentraset_default_tech'] = false;
         $ticket = new Ticket();
         $ticket_id = $ticket->add(
             [
@@ -3432,7 +3432,7 @@ class TicketTest extends DbTestCase
             'status'      => CommonITILObject::SOLVED,
         ]);
         $this->assertGreaterThan(0, (int) $tickets_id_1);
-        $DB->update('glpi_tickets', [
+        $DB->update('zentra_tickets', [
             'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
         ], [
             'id' => $tickets_id_1,
@@ -3443,7 +3443,7 @@ class TicketTest extends DbTestCase
             'entities_id' => 0,
             'status'      => CommonITILObject::SOLVED,
         ]);
-        $DB->update('glpi_tickets', [
+        $DB->update('zentra_tickets', [
             'solvedate' => date('Y-m-d 10:00:00', time()),
         ], [
             'id' => $tickets_id_2,
@@ -3500,7 +3500,7 @@ class TicketTest extends DbTestCase
                 ],
                 'computed' => false, // not computed as new actor is not assigned
             ],
-            /* Triggers PHP error "Uncaught Error: [] operator not supported for strings in /var/www/glpi/inc/ticket.class.php:1162"
+            /* Triggers PHP error "Uncaught Error: [] operator not supported for strings in /var/www/zentra/inc/ticket.class.php:1162"
          [
             'input'    => [
                '_users_id_requester' => '3', // "post-only"
@@ -3610,7 +3610,7 @@ class TicketTest extends DbTestCase
             $computed = $row['computed'];
 
             // Create a ticket
-            $_SESSION['glpiset_default_tech'] = false;
+            $_SESSION['zentraset_default_tech'] = false;
             $ticket = new Ticket();
             $ticketId = $ticket->add(
                 $input + [
@@ -3628,7 +3628,7 @@ class TicketTest extends DbTestCase
                 $this->assertEquals(null, $ticket->fields['takeintoaccountdate']);
             } else {
                 $this->assertGreaterThan(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
-                $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
+                $this->assertEquals($_SESSION['zentra_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
     }
@@ -3646,7 +3646,7 @@ class TicketTest extends DbTestCase
             $computed = $row['computed'];
 
             // Create a ticket
-            $_SESSION['glpiset_default_tech'] = false;
+            $_SESSION['zentraset_default_tech'] = false;
             $ticket = new Ticket();
             $ticketId = $ticket->add(
                 [
@@ -3683,7 +3683,7 @@ class TicketTest extends DbTestCase
                 $this->assertEquals(null, $ticket->fields['takeintoaccountdate']);
             } else {
                 $this->assertGreaterThan(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
-                $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
+                $this->assertEquals($_SESSION['zentra_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
     }
@@ -3780,7 +3780,7 @@ class TicketTest extends DbTestCase
 
             // Create a ticket
             $this->login();
-            $_SESSION['glpiset_default_tech'] = false;
+            $_SESSION['zentraset_default_tech'] = false;
             $ticket = new Ticket();
             $ticketId = (int) $ticket->add([
                 'name' => '',
@@ -3899,7 +3899,7 @@ class TicketTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, (int) $tickets_id_1);
         $this->assertTrue(
-            $DB->update('glpi_tickets', [
+            $DB->update('zentra_tickets', [
                 'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
             ], [
                 'id' => $tickets_id_1,
@@ -3918,7 +3918,7 @@ class TicketTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, (int) $tickets_id_2);
         $this->assertTrue(
-            $DB->update('glpi_tickets', [
+            $DB->update('zentra_tickets', [
                 'closedate' => date('Y-m-d 10:00:00', time()),
             ], [
                 'id' => $tickets_id_2,
@@ -3952,7 +3952,7 @@ class TicketTest extends DbTestCase
         ]));
         // Set closedate to 15 days ago
         $this->assertTrue(
-            $DB->update('glpi_tickets', [
+            $DB->update('zentra_tickets', [
                 'closedate' => date('Y-m-d 10:00:00', time() - 15 * DAY_TIMESTAMP),
             ], [
                 'id' => $tickets_id_3,
@@ -3985,7 +3985,7 @@ class TicketTest extends DbTestCase
     public function testMerge()
     {
         $this->login();
-        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $_SESSION['zentraactiveprofile']['interface'] = '';
         $this->setEntity('Root entity', true);
 
         $ticket = new Ticket();
@@ -4033,17 +4033,17 @@ class TicketTest extends DbTestCase
         $documents_id = $document->add([
             'name'     => 'basic document in both',
             'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+            'users_id' => '2', // user "zentra"
         ]);
         $documents_id2 = $document->add([
             'name'     => 'basic document in target',
             'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+            'users_id' => '2', // user "zentra"
         ]);
         $documents_id3 = $document->add([
             'name'     => 'basic document in sources',
             'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+            'users_id' => '2', // user "zentra"
         ]);
 
         $document_item = new \Document_Item();
@@ -4099,25 +4099,25 @@ class TicketTest extends DbTestCase
             'tickets_id'         => $ticket1,
             'users_id'           => 0,
             'type'               => Ticket_User::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_user->add([ // Duplicate with #3
             'tickets_id'         => $ticket2,
             'users_id'           => 0,
             'type'               => Ticket_User::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_user->add([ // Duplicate with #1
             'tickets_id'         => $ticket2,
             'users_id'           => 2,
             'type'               => Ticket_User::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_user->add([
             'tickets_id'         => $ticket3,
             'users_id'           => 2,
             'type'               => Ticket_User::ASSIGN,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
 
         $ticket_group = new Group_Ticket();
@@ -4152,25 +4152,25 @@ class TicketTest extends DbTestCase
             'tickets_id'         => $ticket1,
             'suppliers_id'       => 0,
             'type'               => Supplier_Ticket::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_supplier->add([ // Duplicate with #3
             'tickets_id'         => $ticket2,
             'suppliers_id'       => 0,
             'type'               => Supplier_Ticket::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_supplier->add([ // Duplicate with #1
             'tickets_id'         => $ticket2,
             'suppliers_id'       => 2,
             'type'               => Supplier_Ticket::REQUESTER,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
         $ticket_supplier->add([
             'tickets_id'         => $ticket3,
             'suppliers_id'       => 2,
             'type'               => Supplier_Ticket::ASSIGN,
-            'alternative_email'  => 'test@glpi.com',
+            'alternative_email'  => 'test@zentra.com',
         ]);
 
         $status = [];
@@ -4235,7 +4235,7 @@ class TicketTest extends DbTestCase
     public function testResponsesAfterMerge(): void
     {
         $this->login();
-        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $_SESSION['zentraactiveprofile']['interface'] = '';
         $this->setEntity('Root entity', true);
 
         $ticket = new Ticket();
@@ -4316,7 +4316,7 @@ class TicketTest extends DbTestCase
         $documents_id = $document->add([
             'name'     => 'Child ticket document',
             'filename' => 'doc.xls',
-            'users_id' => '2', // user "glpi"
+            'users_id' => '2', // user "zentra"
         ]);
         $this->assertGreaterThan(0, $documents_id);
 
@@ -4386,7 +4386,7 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
@@ -4395,7 +4395,7 @@ HTML,
         // Test uploads for item update
         $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/bar.png'));
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', ZENTRA_TMP_DIR . '/' . $filename);
         $instance->update([
             'id' => $instance->getID(),
             'content' => <<<HTML
@@ -4438,7 +4438,7 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->assertStringContainsString('testUploadDocuments', $instance->fields['content']);
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
@@ -4449,7 +4449,7 @@ HTML,
 
         // Test uploads for item update (adds a 2nd document)
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
-        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', ZENTRA_TMP_DIR . '/' . $filename);
         $instance->update([
             'id' => $instance->getID(),
             'content' => 'update testUploadDocuments',
@@ -4521,7 +4521,7 @@ HTML,
 
         // Drop all followup rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -4539,7 +4539,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADDMY,
             ],
@@ -4575,7 +4575,7 @@ HTML,
 
         // Drop all followup rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -4610,7 +4610,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADDMY,
             ],
@@ -4646,7 +4646,7 @@ HTML,
 
         // Drop all followup rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -4693,7 +4693,7 @@ HTML,
 
         // Add user rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_GROUP,
             ],
@@ -4711,7 +4711,7 @@ HTML,
 
         // Add user rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_GROUP | ITILFollowup::ADDMY,
             ],
@@ -4747,7 +4747,7 @@ HTML,
 
         // Drop all followup rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -4782,7 +4782,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_TECHNICIAN,
             ],
@@ -4818,7 +4818,7 @@ HTML,
 
         // Drop all followup rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -4865,7 +4865,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_TECHNICIAN,
             ],
@@ -4924,7 +4924,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_OBSERVER,
             ],
@@ -4979,7 +4979,7 @@ HTML,
 
         // Add user right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_GROUP,
             ],
@@ -5048,7 +5048,7 @@ HTML,
             // Content with leading external image that will not be replaced by a tag.
             yield [
                 'content'  => <<<HTML
-<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
+<img src={$quote_style}http://test.zentra-project.org/logo.png{$quote_style} />
 Here is the screenshot:
 <img src={$quote_style}img.jpg{$quote_style} />
 blabla
@@ -5060,7 +5060,7 @@ HTML,
                     'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
                 ],
                 'expected' => <<<HTML
-<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
+<img src={$quote_style}http://test.zentra-project.org/logo.png{$quote_style} />
 Here is the screenshot:
 <img id="3eaff0a6-f37490bd-60e2a59721f420.96500246">
 blabla
@@ -5266,7 +5266,7 @@ HTML,
         ]);
 
         // Build test params
-        $user1 = getItemByTypeName('User', 'glpi', true);
+        $user1 = getItemByTypeName('User', 'zentra', true);
         $user2 = getItemByTypeName('User', 'tech', true);
         $user3 = getItemByTypeName('User', 'post-only', true);
         $user4 = getItemByTypeName('User', 'normal', true);
@@ -5314,7 +5314,7 @@ HTML,
         yield $tickets_base_params;
 
         // Try from the opposite side of the relation
-        $user = getItemByTypeName('User', 'glpi');
+        $user = getItemByTypeName('User', 'zentra');
 
         // Build test data
         $this->createItems('Ticket', [
@@ -5605,7 +5605,7 @@ HTML,
             Entity::class,
             0,
             [
-                'inquest_config' => 1, // GLPI native survey
+                'inquest_config' => 1, // ZENTRA native survey
                 'inquest_rate'   => 100, // always generate a survey for closed tickets
                 'inquest_delay'  => 0, // instant survey generation
             ]
@@ -5628,7 +5628,7 @@ HTML,
             Entity::class,
             $child_2_entity_id,
             [
-                'inquest_config' => 1, // GLPI native survey
+                'inquest_config' => 1, // ZENTRA native survey
                 'inquest_rate'   => 100, // always generate a survey for closed tickets
                 'inquest_delay'  => 0, // instant survey generation
             ]
@@ -5646,7 +5646,7 @@ HTML,
         }
 
         // Create a closed ticket on test root entity
-        $_SESSION['glpi_currenttime'] = $six_hours_ago;
+        $_SESSION['zentra_currenttime'] = $six_hours_ago;
         $root_ticket = $this->createItem(
             Ticket::class,
             [
@@ -5658,7 +5658,7 @@ HTML,
         );
 
         // Create a closed ticket on test child entity 1
-        $_SESSION['glpi_currenttime'] = $four_hours_ago;
+        $_SESSION['zentra_currenttime'] = $four_hours_ago;
         $child_1_ticket = $this->createItem(
             Ticket::class,
             [
@@ -5670,7 +5670,7 @@ HTML,
         );
 
         // Create a closed ticket on test child entity 2
-        $_SESSION['glpi_currenttime'] = $two_hours_ago;
+        $_SESSION['zentra_currenttime'] = $two_hours_ago;
         $child_1_ticket = $this->createItem(
             Ticket::class,
             [
@@ -5907,8 +5907,8 @@ HTML,
         $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::ASSIGN, $params));
 
         // disable autoactor in session
-        $_SESSION['glpiset_default_requester'] = false;
-        $_SESSION['glpiset_default_tech']      = false;
+        $_SESSION['zentraset_default_requester'] = false;
+        $_SESSION['zentraset_default_tech']      = false;
         $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::REQUESTER));
         $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::OBSERVER));
         $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
@@ -5916,8 +5916,8 @@ HTML,
         // ## 2nd - test load actors from templates (simulated)
         // ####################################################
         //reset session
-        $_SESSION['glpiset_default_requester'] = true;
-        $_SESSION['glpiset_default_tech']      = true;
+        $_SESSION['zentraset_default_requester'] = true;
+        $_SESSION['zentraset_default_tech']      = true;
         //prepare params
         $params = [
             '_template_changed'  => true,
@@ -5931,8 +5931,8 @@ HTML,
         $this->assertCount(1, $ticket->getActorsForType(CommonITILActor::OBSERVER, $params));
         $this->assertCount(2, $ticket->getActorsForType(CommonITILActor::ASSIGN, $params));
 
-        $_SESSION['glpiset_default_requester'] = false;
-        $_SESSION['glpiset_default_tech']      = false;
+        $_SESSION['zentraset_default_requester'] = false;
+        $_SESSION['zentraset_default_tech']      = false;
 
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER, $params);
         $this->assertCount(1, $actors);
@@ -5966,8 +5966,8 @@ HTML,
         // ## 2nd - test load actors from _actors key (reload simulated)
         // #############################################################
         //reset session
-        $_SESSION['glpiset_default_requester'] = true;
-        $_SESSION['glpiset_default_tech']      = true;
+        $_SESSION['zentraset_default_requester'] = true;
+        $_SESSION['zentraset_default_tech']      = true;
         //prepare params
         $params = [
             '_skip_default_actor' => true,
@@ -6141,7 +6141,7 @@ HTML,
     protected function assignFromCategoryOrItemProvider(): iterable
     {
         $tech_id    = getItemByTypeName('User', 'tech', true);
-        $glpi_id    = getItemByTypeName('User', 'glpi', true);
+        $zentra_id    = getItemByTypeName('User', 'zentra', true);
         $normal_id  = getItemByTypeName('User', 'normal', true);
 
         $group_1_id = getItemByTypeName('Group', '_test_group_1', true);
@@ -6165,7 +6165,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6183,7 +6183,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6202,7 +6202,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6210,7 +6210,7 @@ HTML,
             'expected_actors'  => [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $glpi_id,
+                    'items_id' => $zentra_id,
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6258,7 +6258,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => 0,
             ],
             'ticket_input'     => [
@@ -6266,7 +6266,7 @@ HTML,
             'expected_actors'  => [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $glpi_id,
+                    'items_id' => $zentra_id,
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6313,7 +6313,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6341,14 +6341,14 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
                 '_users_id_assign' => [0],
                 '_users_id_assign_notif' => [
                     'use_notification'  => [1],
-                    'alternative_email' => ['test@glpi-project.org'],
+                    'alternative_email' => ['test@zentra-project.org'],
                 ],
             ],
             'expected_actors'  => [
@@ -6356,7 +6356,7 @@ HTML,
                     'itemtype' => User::class,
                     'items_id' => 0,
                     'use_notification'  => 1,
-                    'alternative_email' => 'test@glpi-project.org',
+                    'alternative_email' => 'test@zentra-project.org',
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6375,7 +6375,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6384,7 +6384,7 @@ HTML,
             'expected_actors'  => [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $glpi_id,
+                    'items_id' => $zentra_id,
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6403,7 +6403,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6431,7 +6431,7 @@ HTML,
                 'groups_id' => 0,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6459,7 +6459,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6467,7 +6467,7 @@ HTML,
             'expected_actors'  => [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $glpi_id,
+                    'items_id' => $zentra_id,
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6487,7 +6487,7 @@ HTML,
                 'groups_id' => 0,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6495,7 +6495,7 @@ HTML,
             'expected_actors'  => [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $glpi_id,
+                    'items_id' => $zentra_id,
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6514,7 +6514,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6542,14 +6542,14 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
                 '_users_id_assign' => [0],
                 '_users_id_assign_notif' => [
                     'use_notification'  => [1],
-                    'alternative_email' => ['test@glpi-project.org'],
+                    'alternative_email' => ['test@zentra-project.org'],
                 ],
             ],
             'expected_actors'  => [
@@ -6557,7 +6557,7 @@ HTML,
                     'itemtype' => User::class,
                     'items_id' => 0,
                     'use_notification'  => 1,
-                    'alternative_email' => 'test@glpi-project.org',
+                    'alternative_email' => 'test@zentra-project.org',
                 ],
                 [
                     'itemtype' => Group::class,
@@ -6576,7 +6576,7 @@ HTML,
                 'groups_id' => $group_1_id,
             ],
             'computer_input'   => [
-                'users_id_tech'  => $glpi_id,
+                'users_id_tech'  => $zentra_id,
                 'groups_id_tech' => $group_2_id,
             ],
             'ticket_input'     => [
@@ -6705,7 +6705,7 @@ HTML,
                 'requester'       => [
                     [
                         'itemtype'          => User::class,
-                        'items_id'          => $_SESSION['glpiID'],
+                        'items_id'          => $_SESSION['zentraID'],
                         'use_notification'  => 0,
                         'alternative_email' => '',
                     ],
@@ -6714,11 +6714,11 @@ HTML,
         ]);
         yield [
             'ticket' => $ticket,
-            'expected' => $_SESSION['glpiID'],
+            'expected' => $_SESSION['zentraID'],
         ];
 
-        $glpi_user = new User();
-        $glpi_user->getFromDBbyName('glpi');
+        $zentra_user = new User();
+        $zentra_user->getFromDBbyName('zentra');
         $normal_user = new User();
         $normal_user->getFromDBbyName('normal');
         $ticket = new Ticket();
@@ -6735,7 +6735,7 @@ HTML,
                         'alternative_email' => '',
                     ], [
                         'itemtype'          => User::class,
-                        'items_id'          => $glpi_user->getID(),
+                        'items_id'          => $zentra_user->getID(),
                         'use_notification'  => 0,
                         'alternative_email' => '',
                     ],
@@ -6914,12 +6914,12 @@ HTML,
                             'itemtype'          => User::class,
                             'items_id'          => 0,
                             'use_notification'  => 1,
-                            'alternative_email' => 'notaglpiuser@domain.tld',
+                            'alternative_email' => 'notazentrauser@domain.tld',
                         ],
                     ],
                 ],
             ],
-            'expected' => array_values($_SESSION['glpiactiveentities']),
+            'expected' => array_values($_SESSION['zentraactiveentities']),
         ];
     }
 
@@ -7004,7 +7004,7 @@ HTML,
 
         //add a followup to the ticket without assigning to me (tech)
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 0;
+        $_SESSION['zentraset_followup_tech'] = 0;
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -7019,7 +7019,7 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a private followup to the ticket and NOT assign to me (tech)
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $_SESSION['zentraset_followup_tech'] = 1;
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -7049,8 +7049,8 @@ HTML,
         $this->assertCount(1, $actors);
 
         //add a solution to the ticket and assign to me
-        $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->login('zentra', 'zentra');
+        $_SESSION['zentraset_solution_tech'] = 1;
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
@@ -7076,7 +7076,7 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_solution_tech'] = 0;
+        $_SESSION['zentraset_solution_tech'] = 0;
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
@@ -7096,7 +7096,7 @@ HTML,
             'content'               => __METHOD__,
             'entities_id'           => $entity_id,
             '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
+            '_users_id_requester'   => getItemByTypeName('User', 'zentra', true),
             '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
         ]);
         $this->assertGreaterThan(0, $ticket_id);
@@ -7105,8 +7105,8 @@ HTML,
         $this->assertCount(1, $actors);
 
         //add a followup to the ticket without assigning to me
-        $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $this->login('zentra', 'zentra');
+        $_SESSION['zentraset_followup_tech'] = 1;
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -7118,7 +7118,7 @@ HTML,
 
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $_SESSION['zentraset_followup_tech'] = 1;
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -7133,8 +7133,8 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a solution to the ticket without assigning to me
-        $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
+        $this->login('zentra', 'zentra');
+        $_SESSION['zentraset_solution_tech'] = 1;
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
@@ -7313,7 +7313,7 @@ HTML,
         $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
         $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
         $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
-        $glpi_user_id     = getItemByTypeName(User::class, 'glpi', true);
+        $zentra_user_id     = getItemByTypeName(User::class, 'zentra', true);
 
         $profile_id = getItemByTypeName(Profile::class, 'Observer', true);
 
@@ -7373,7 +7373,7 @@ HTML,
                 'content'             => __FUNCTION__,
                 '_users_id_requester' => $postonly_user_id,
                 '_users_id_observer'  => $normal_user_id,
-                '_users_id_assign'    => [$tech_user_id, $glpi_user_id],
+                '_users_id_assign'    => [$tech_user_id, $zentra_user_id],
                 '_groups_id_assign'   => $seegroup_id,
             ]
         );
@@ -7527,10 +7527,10 @@ HTML,
             ]
         );
 
-        // glpi has rights to see all private followups/tasks
+        // zentra has rights to see all private followups/tasks
         yield [
-            'login'              => 'glpi',
-            'pass'               => 'glpi',
+            'login'              => 'zentra',
+            'pass'               => 'zentra',
             'ticket_id'          => $ticket->getID(),
             'options'            => [],
             'expected_followups' => [
@@ -7707,7 +7707,7 @@ HTML,
     /**
      * Check that when a ticket has multiple timeline items with the same creation date, they are ordered by ID
      * @return void
-     * @see https://github.com/glpi-project/glpi/issues/15761
+     * @see https://github.com/zentra-project/zentra/issues/15761
      */
     public function testGetTimelineItemsSameDate()
     {
@@ -7790,7 +7790,7 @@ HTML,
     /**
      * Check that timeline items with NULL document dates don't cause strtotime errors
      * @return void
-     * @see https://github.com/glpi-project/glpi/issues/22134
+     * @see https://github.com/zentra-project/zentra/issues/22134
      */
     public function testTimelineSortingWithNullDocumentDates(): void
     {
@@ -7819,7 +7819,7 @@ HTML,
         global $DB;
 
         // Document with both dates NULL (bug #22134 scenario)
-        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+        $this->assertNotFalse($DB->insert('zentra_documents_items', [
             'documents_id' => $document1->getID(),
             'items_id' => $ticket_id,
             'itemtype' => 'Ticket',
@@ -7830,7 +7830,7 @@ HTML,
         ]));
 
         // Document with date_creation NULL but date valid (fallback scenario)
-        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+        $this->assertNotFalse($DB->insert('zentra_documents_items', [
             'documents_id' => $document2->getID(),
             'items_id' => $ticket_id,
             'itemtype' => 'Ticket',
@@ -7841,7 +7841,7 @@ HTML,
         ]));
 
         // Document with valid dates (regression check)
-        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+        $this->assertNotFalse($DB->insert('zentra_documents_items', [
             'documents_id' => $document3->getID(),
             'items_id' => $ticket_id,
             'itemtype' => 'Ticket',
@@ -7876,7 +7876,7 @@ HTML,
         $root = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Get tests users
-        $user_1 = getItemByTypeName('User', 'glpi', true);
+        $user_1 = getItemByTypeName('User', 'zentra', true);
         $user_2 = getItemByTypeName('User', 'tech', true);
 
         // Create groups
@@ -8031,7 +8031,7 @@ HTML,
         $root = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Get tests users
-        $user_1 = getItemByTypeName('User', 'glpi', true);
+        $user_1 = getItemByTypeName('User', 'zentra', true);
         $user_2 = getItemByTypeName('User', 'tech', true);
 
         // Create tests groups
@@ -8194,7 +8194,7 @@ HTML,
     protected function ageSearchOptionDataProvider()
     {
         $this->login();
-        $_SESSION['glpi_currenttime'] = '2023-11-27 10:00:00';
+        $_SESSION['zentra_currenttime'] = '2023-11-27 10:00:00';
 
         $entity = $this->createItem(
             Entity::class,
@@ -8306,7 +8306,7 @@ HTML,
     public function testAgeSearchOption()
     {
         $this->login();
-        $_SESSION['glpi_currenttime'] = '2023-11-27 10:00:00';
+        $_SESSION['zentra_currenttime'] = '2023-11-27 10:00:00';
 
         $provider = $this->ageSearchOptionDataProvider();
         foreach ($provider as $row) {
@@ -8371,7 +8371,7 @@ HTML,
             $not_my_tickets_id = $ticket->add([
                 'name'      => __FUNCTION__,
                 'content'   => __FUNCTION__,
-                'users_id'  => $_SESSION['glpiID'] + 1, // Not current user
+                'users_id'  => $_SESSION['zentraID'] + 1, // Not current user
                 '_skip_auto_assign' => true,
                 'entities_id' => $this->getTestRootEntity(true),
             ])
@@ -8388,7 +8388,7 @@ HTML,
         $this->assertTrue($fn_dropdown_has_id($values['results'], $not_my_tickets_id));
 
         // Remove permission to see all tickets
-        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $_SESSION['zentraactiveprofile']['ticket'] = READ;
         $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
         $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
         $this->assertGreaterThan(1, count($values['results']));
@@ -8398,7 +8398,7 @@ HTML,
         $ticket_user = new Ticket_User();
         $ticket_user->add([
             'tickets_id' => $not_my_tickets_id,
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => $_SESSION['zentraID'],
             'type' => CommonITILActor::REQUESTER,
         ]);
         $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
@@ -8451,7 +8451,7 @@ HTML,
         $this->assertCount(0, $users);
 
         $this->login('post-only', 'postonly');
-        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = TicketValidation::VALIDATEINCIDENT + TicketValidation::VALIDATEREQUEST;
+        $_SESSION['zentraactiveprofile'][TicketValidation::$rightname] = TicketValidation::VALIDATEINCIDENT + TicketValidation::VALIDATEREQUEST;
 
         // Check the ticket is not found
         $request['WHERE'] = $this->callPrivateMethod(new Ticket(), 'getListForItemRestrict', $item);
@@ -8762,10 +8762,10 @@ HTML,
 
     public function testDoNotComputeStatusFollowup()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $user1 = new User();
-        $user1->getFromDBbyName('glpi');
+        $user1->getFromDBbyName('zentra');
         $this->assertGreaterThan(0, $user1->getID());
 
         $user2 = new User();
@@ -9012,7 +9012,7 @@ HTML,
 
         foreach ($profilerights as $right => $value) {
             $this->assertTrue($DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => $value],
                 [
                     'profiles_id'  => 4,
@@ -9068,11 +9068,11 @@ HTML,
 
     public function testRequesterHaveDoubleSolvedTicketNotification()
     {
-        global $CFG_GLPI;
-        $CFG_GLPI['use_notifications'] = 1;
-        $CFG_GLPI['notifications_mailing'] = 1;
+        global $CFG_ZENTRA;
+        $CFG_ZENTRA['use_notifications'] = 1;
+        $CFG_ZENTRA['notifications_mailing'] = 1;
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $user = getItemByTypeName(User::class, 'tech');
 
@@ -9209,11 +9209,11 @@ HTML,
 
     public function testShowCentralListSurvey()
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $this->login();
 
-        $DB->insert('glpi_tickets', [
+        $DB->insert('zentra_tickets', [
             'name' => __FUNCTION__ . ' old',
             'content' => '',
             'users_id_recipient' => Session::getLoginUserID(),
@@ -9221,11 +9221,11 @@ HTML,
             'status' => CommonITILObject::CLOSED,
             'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 181 days')),
         ]);
-        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+        $this->assertNotFalse($DB->insert('zentra_ticketsatisfactions', [
             'tickets_id' => $DB->insertId(),
             'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 181 days')),
         ]));
-        $DB->insert('glpi_tickets', [
+        $DB->insert('zentra_tickets', [
             'name' => __FUNCTION__ . ' 1',
             'content' => '',
             'users_id_recipient' => Session::getLoginUserID(),
@@ -9233,11 +9233,11 @@ HTML,
             'status' => CommonITILObject::CLOSED,
             'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 10 days')),
         ]);
-        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+        $this->assertNotFalse($DB->insert('zentra_ticketsatisfactions', [
             'tickets_id' => $DB->insertId(),
             'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 10 days')),
         ]));
-        $DB->insert('glpi_tickets', [
+        $DB->insert('zentra_tickets', [
             'name' => __FUNCTION__ . ' 2',
             'content' => '',
             'users_id_recipient' => Session::getLoginUserID(),
@@ -9245,47 +9245,47 @@ HTML,
             'status' => CommonITILObject::CLOSED,
             'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 5 days')),
         ]);
-        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+        $this->assertNotFalse($DB->insert('zentra_ticketsatisfactions', [
             'tickets_id' => $DB->insertId(),
             'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 5 days')),
         ]));
 
-        $this->assertNotFalse($DB->update('glpi_entities', [
+        $this->assertNotFalse($DB->update('zentra_entities', [
             'inquest_config' => Entity::CONFIG_PARENT,
         ], [
             'id' => getItemByTypeName('Entity', '_test_child_1', true),
         ]));
-        $this->assertNotFalse($DB->update('glpi_entities', [
+        $this->assertNotFalse($DB->update('zentra_entities', [
             'inquest_config' => 1,
             'inquest_duration' => 7,
         ], [
             'id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
-        $GLPI_CACHE->clear();
+        $ZENTRA_CACHE->clear();
 
         $result = Ticket::showCentralList(0, 'survey', false, false);
         $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
         $this->assertStringNotContainsString(__FUNCTION__ . ' 1', $result);
         $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
 
-        $DB->update('glpi_entities', [
+        $DB->update('zentra_entities', [
             'inquest_duration' => 11,
         ], [
             'id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $GLPI_CACHE->clear();
+        $ZENTRA_CACHE->clear();
         $result = Ticket::showCentralList(0, 'survey', false, false);
 
         $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
         $this->assertStringContainsString(__FUNCTION__ . ' 1', $result);
         $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
 
-        $DB->update('glpi_entities', [
+        $DB->update('zentra_entities', [
             'inquest_duration' => 200,
         ], [
             'id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $GLPI_CACHE->clear();
+        $ZENTRA_CACHE->clear();
         $result = Ticket::showCentralList(0, 'survey', false, false);
 
         $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
@@ -9295,9 +9295,9 @@ HTML,
 
     public function testShowListForItem(): void
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
-        $user = getItemByTypeName(User::class, 'glpi');
+        $user = getItemByTypeName(User::class, 'zentra');
         $normal = getItemByTypeName(User::class, 'normal');
 
         // Ticket not visible for normal user
@@ -9336,7 +9336,7 @@ HTML,
         $this->login('normal', 'normal');
 
         // Remove permission to see all tickets
-        $_SESSION['glpiactiveprofile']['ticket'] = Ticket::READMY;
+        $_SESSION['zentraactiveprofile']['ticket'] = Ticket::READMY;
 
         ob_start();
         Ticket::showListForItem($user);
@@ -9395,7 +9395,7 @@ HTML,
     /**
      * Ensure that there is no error triggered when refusing solutions or reopening tickets
      * with a SLA assigned on a specific calendar.
-     * @see https://github.com/glpi-project/glpi/pull/21337
+     * @see https://github.com/zentra-project/zentra/pull/21337
      */
     public function testTicketUnsolveWithSLA()
     {
@@ -9874,7 +9874,7 @@ HTML,
         ]);
 
         $search_option_id = match ($mandatory_field) {
-            'content' => (new Ticket())->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
+            'content' => (new Ticket())->getSearchOptionIDByField('field', 'content', 'zentra_tickets'),
             '_users_id_requester' => 4,
             '_groups_id_requester' => 71,
             '_users_id_assign' => 5,
@@ -10121,7 +10121,7 @@ HTML,
 
         // Simulate cron context: logout to clear session rights
         Session::destroy();
-        $_SESSION['glpiactiveprofile'] = [];
+        $_SESSION['zentraactiveprofile'] = [];
 
         // Reload parent item from DB
         $parent_item->getFromDB($parent_item->getID());

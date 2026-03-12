@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
-if (!$DB->fieldExists('glpi_authldaps', 'tls_certfile')) {
+if (!$DB->fieldExists('zentra_authldaps', 'tls_certfile')) {
     $migration->addField(
-        'glpi_authldaps',
+        'zentra_authldaps',
         'tls_certfile',
         'text',
         [
@@ -50,9 +50,9 @@ if (!$DB->fieldExists('glpi_authldaps', 'tls_certfile')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_authldaps', 'tls_keyfile')) {
+if (!$DB->fieldExists('zentra_authldaps', 'tls_keyfile')) {
     $migration->addField(
-        'glpi_authldaps',
+        'zentra_authldaps',
         'tls_keyfile',
         'text',
         [
@@ -61,9 +61,9 @@ if (!$DB->fieldExists('glpi_authldaps', 'tls_keyfile')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
+if (!$DB->fieldExists('zentra_authldaps', 'use_bind')) {
     $migration->addField(
-        'glpi_authldaps',
+        'zentra_authldaps',
         'use_bind',
         'bool',
         [
@@ -73,9 +73,9 @@ if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_authldaps', 'timeout')) {
+if (!$DB->fieldExists('zentra_authldaps', 'timeout')) {
     $migration->addField(
-        'glpi_authldaps',
+        'zentra_authldaps',
         'timeout',
         'int',
         [
@@ -85,9 +85,9 @@ if (!$DB->fieldExists('glpi_authldaps', 'timeout')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_authldapreplicates', 'timeout')) {
+if (!$DB->fieldExists('zentra_authldapreplicates', 'timeout')) {
     $migration->addField(
-        'glpi_authldapreplicates',
+        'zentra_authldapreplicates',
         'timeout',
         'int',
         [

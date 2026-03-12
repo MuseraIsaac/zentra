@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
+if (!$DB->tableExists('zentra_dropdowns_dropdowndefinitions')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
+        CREATE TABLE `zentra_dropdowns_dropdowndefinitions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `system_name` varchar(255) DEFAULT NULL,
             `label` varchar(255) NOT NULL,
@@ -65,26 +65,26 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    $migration->addField('glpi_dropdowns_dropdowndefinitions', 'label', 'string', [
+    $migration->addField('zentra_dropdowns_dropdowndefinitions', 'label', 'string', [
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
-    $migration->addKey('glpi_dropdowns_dropdowndefinitions', 'label');
+    $migration->addKey('zentra_dropdowns_dropdowndefinitions', 'label');
 
     // Add `Dropdown` suffix to custom asset classes.
-    $definitions_iterator = $DB->request(['FROM' => 'glpi_dropdowns_dropdowndefinitions']);
+    $definitions_iterator = $DB->request(['FROM' => 'zentra_dropdowns_dropdowndefinitions']);
     foreach ($definitions_iterator as $definition_data) {
         $migration->renameItemtype(
-            'Glpi\\CustomDropdown\\' . $definition_data['system_name'],
-            'Glpi\\CustomDropdown\\' . $definition_data['system_name'] . 'Dropdown',
+            'Zentra\\CustomDropdown\\' . $definition_data['system_name'],
+            'Zentra\\CustomDropdown\\' . $definition_data['system_name'] . 'Dropdown',
             false
         );
     }
 }
 
-if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
+if (!$DB->tableExists('zentra_dropdowns_dropdowns')) {
     $query = <<<SQL
-        CREATE TABLE `glpi_dropdowns_dropdowns` (
+        CREATE TABLE `zentra_dropdowns_dropdowns` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `dropdowns_dropdowndefinitions_id` int {$default_key_sign} NOT NULL,
             `name` varchar(255) DEFAULT NULL,
@@ -111,5 +111,5 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    $migration->dropField('glpi_dropdowns_dropdowns', 'is_deleted');
+    $migration->dropField('zentra_dropdowns_dropdowns', 'is_deleted');
 }

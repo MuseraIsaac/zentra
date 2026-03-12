@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,26 +52,26 @@ $subType = [
     'os_name' => 'RuleDictionnaryOperatingSystem',
 ];
 
-//Get all glpi_rulecriteria with 'name' criteria for OS Dictionnary
+//Get all zentra_rulecriteria with 'name' criteria for OS Dictionnary
 $result = $DB->request(
     [
         'SELECT'    => [
-            'glpi_rulecriterias.id AS criteria_id',
-            'glpi_rulecriterias.criteria',
-            'glpi_rules.sub_type',
+            'zentra_rulecriterias.id AS criteria_id',
+            'zentra_rulecriterias.criteria',
+            'zentra_rules.sub_type',
         ],
-        'FROM'      => 'glpi_rulecriterias',
+        'FROM'      => 'zentra_rulecriterias',
         'LEFT JOIN' => [
-            'glpi_rules' => [
+            'zentra_rules' => [
                 'FKEY' => [
-                    'glpi_rulecriterias'   => 'rules_id',
-                    'glpi_rules'            => 'id',
+                    'zentra_rulecriterias'   => 'rules_id',
+                    'zentra_rules'            => 'id',
                 ],
             ],
         ],
         'WHERE'     => [
-            'glpi_rulecriterias.criteria'      => 'name',
-            'glpi_rules.sub_type' => array_values($subType),
+            'zentra_rulecriterias.criteria'      => 'name',
+            'zentra_rules.sub_type' => array_values($subType),
         ],
     ]
 );
@@ -80,7 +80,7 @@ $result = $DB->request(
 foreach ($result as $data) {
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_rulecriterias',
+            'zentra_rulecriterias',
             [
                 'criteria' => array_search($data['sub_type'], $subType),
             ],
@@ -99,7 +99,7 @@ $migration->addConfig(['initialized_rules_collections' => '[]']);
 /** Fix 'contact' rule criteria */
 $migration->addPostQuery(
     $DB->buildUpdate(
-        'glpi_rulecriterias',
+        'zentra_rulecriterias',
         [
             'pattern' => $DB->escape('/(.*)[,|\/]/'),
         ],

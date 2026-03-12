@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Event;
-use Glpi\Features\ParentStatus;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\TreeBrowseInterface;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Comment;
-use Glpi\Form\Form;
-use Glpi\Form\Question;
-use Glpi\Form\Section;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Event;
+use Zentra\Features\ParentStatus;
+use Zentra\Features\TreeBrowse;
+use Zentra\Features\TreeBrowseInterface;
+use Zentra\Form\AccessControl\FormAccessControlManager;
+use Zentra\Form\AccessControl\FormAccessParameters;
+use Zentra\Form\Comment;
+use Zentra\Form\Form;
+use Zentra\Form\Question;
+use Zentra\Form\Section;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -113,10 +113,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function getItemtypesThatCanHave(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         return array_merge(
-            $CFG_GLPI['document_types'],
+            $CFG_ZENTRA['document_types'],
             CommonDevice::getDeviceTypes(),
             Item_Devices::getDeviceTypes()
         );
@@ -175,15 +175,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // Unlink/delete the file
         if (!empty($this->fields["filepath"])) {
             if (
-                is_file(GLPI_DOC_DIR . "/" . $this->fields["filepath"])
-                && !is_dir(GLPI_DOC_DIR . "/" . $this->fields["filepath"])
+                is_file(ZENTRA_DOC_DIR . "/" . $this->fields["filepath"])
+                && !is_dir(ZENTRA_DOC_DIR . "/" . $this->fields["filepath"])
                 && (countElementsInTable(
                     static::getTable(),
                     ['sha1sum' => $this->fields["sha1sum"] ]
                 ) <= 1)
             ) {
                 try {
-                    unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"]);
+                    unlink(ZENTRA_DOC_DIR . "/" . $this->fields["filepath"]);
                     Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('Successful deletion of the file %s'),
                         $this->fields["filepath"]
@@ -192,7 +192,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                     trigger_error(
                         sprintf(
                             'Failed to delete the file %s',
-                            GLPI_DOC_DIR . "/" . $this->fields["filepath"]
+                            ZENTRA_DOC_DIR . "/" . $this->fields["filepath"]
                         ),
                         E_USER_WARNING
                     );
@@ -222,7 +222,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForAdd($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // security (don't accept filename from $_REQUEST)
         if (array_key_exists('filename', $_REQUEST)) {
@@ -248,7 +248,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         } elseif (!empty($input["upload_file"])) {
             // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
-        } elseif (isset($input['filepath']) && file_exists(GLPI_DOC_DIR . '/' . $input['filepath'])) {
+        } elseif (isset($input['filepath']) && file_exists(ZENTRA_DOC_DIR . '/' . $input['filepath'])) {
             // Document is created using an existing document file
             $upload_ok = true;
         }
@@ -288,7 +288,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             isset($input['itemtype']) && ($input['itemtype'] === Ticket::class)
             && (!isset($input['documentcategories_id']) || ($input['documentcategories_id'] == 0))
         ) {
-            $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
+            $input['documentcategories_id'] = $CFG_ZENTRA["documentcategories_id_forticket"];
         }
 
         if (!empty($input['link']) && !Toolbox::isValidWebUrl($input['link'])) {
@@ -329,7 +329,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 4,
                 "document",
                 //TRANS: %s is the user login
-                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+                sprintf(__('%s adds a link with an item'), $_SESSION["zentraname"])
             );
         }
     }
@@ -389,10 +389,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function getMaxUploadSize()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //TRANS: %s is a size
-        return sprintf(__('%s Mio max'), $CFG_GLPI['document_max_size']);
+        return sprintf(__('%s Mio max'), $CFG_ZENTRA['document_max_size']);
     }
 
     /**
@@ -400,7 +400,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public function getAsResponse(): Response
     {
-        $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
+        $file = ZENTRA_DOC_DIR . "/" . $this->fields['filepath'];
         return Toolbox::getFileAsResponse($file, $this->fields['filename'], $this->fields['mime']);
     }
 
@@ -427,7 +427,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public function getDownloadLink($linked_item = null, $len = 20): string
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $link_params = '';
         if (is_string($linked_item)) {
@@ -468,7 +468,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             : ['itemtype' => Ticket::class, 'items_id' => $this->fields['tickets_id']];
 
         if (self::canView() || $this->canViewFile($can_view_options)) {
-            $open  = "<a href='" . htmlescape($CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
+            $open  = "<a href='" . htmlescape($CFG_ZENTRA["root_doc"] . "/front/document.send.php?docid="
                     . $this->fields['id'] . $link_params) . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
@@ -478,7 +478,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (count($splitter)) {
             $iterator = $DB->request([
                 'SELECT' => 'icon',
-                'FROM'   => 'glpi_documenttypes',
+                'FROM'   => 'zentra_documenttypes',
                 'WHERE'  => [
                     'ext'    => ['LIKE', $splitter[0]],
                     'icon'   => ['<>', ''],
@@ -488,12 +488,12 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             if (count($iterator) > 0) {
                 $result = $iterator->current();
                 $icon = $result['icon'];
-                if (!file_exists(GLPI_ROOT . "/public/pics/icones/$icon")) {
+                if (!file_exists(ZENTRA_ROOT . "/public/pics/icones/$icon")) {
                     $icon = "defaut-dist.png";
                 }
                 $out .= "<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\""
                               . $initfileout . "\" title=\"" . $initfileout . "\" src='"
-                              . htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/$icon") . "'>";
+                              . htmlescape($CFG_ZENTRA["typedoc_icon_dir"] . "/$icon") . "'>";
             }
         }
         $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";
@@ -662,21 +662,21 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $criteria = array_merge_recursive(
             [
                 'COUNT'     => 'cpt',
-                'FROM'      => 'glpi_documents_items',
+                'FROM'      => 'zentra_documents_items',
                 'LEFT JOIN' => [
-                    'glpi_reminders'  => [
+                    'zentra_reminders'  => [
                         'ON' => [
-                            'glpi_documents_items'  => 'items_id',
-                            'glpi_reminders'        => 'id', [
+                            'zentra_documents_items'  => 'items_id',
+                            'zentra_reminders'        => 'id', [
                                 'AND' => [
-                                    'glpi_documents_items.itemtype'  => 'Reminder',
+                                    'zentra_documents_items.itemtype'  => 'Reminder',
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'     => [
-                    'glpi_documents_items.documents_id' => $this->fields['id'],
+                    'zentra_documents_items.documents_id' => $this->fields['id'],
                 ],
             ],
             Reminder::getVisibilityCriteria()
@@ -689,24 +689,24 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Check if file of current instance can be viewed from a KnowbaseItem.
      *
-     * @global array $CFG_GLPI
+     * @global array $CFG_ZENTRA
      * @global DBmysql $DB
      * @return bool
      */
     private function canViewFileFromKnowbaseItem()
     {
 
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Knowbase items can be viewed by non connected user in case of public FAQ
-        if (!Session::getLoginUserID() && !$CFG_GLPI['use_public_faq']) {
+        if (!Session::getLoginUserID() && !$CFG_ZENTRA['use_public_faq']) {
             return false;
         }
 
         if (
             !Session::haveRight(KnowbaseItem::$rightname, READ)
             && !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)
-            && !$CFG_GLPI['use_public_faq']
+            && !$CFG_ZENTRA['use_public_faq']
         ) {
             return false;
         }
@@ -714,19 +714,19 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $visibilityCriteria = KnowbaseItem::getVisibilityCriteria();
 
         $request = [
-            'FROM'      => 'glpi_documents_items',
+            'FROM'      => 'zentra_documents_items',
             'COUNT'     => 'cpt',
             'INNER JOIN' => [
-                'glpi_knowbaseitems' => [
+                'zentra_knowbaseitems' => [
                     'FKEY' => [
-                        'glpi_knowbaseitems'   => 'id',
-                        'glpi_documents_items' => 'items_id',
-                        ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']],
+                        'zentra_knowbaseitems'   => 'id',
+                        'zentra_documents_items' => 'items_id',
+                        ['AND' => ['zentra_documents_items.itemtype' => 'KnowbaseItem']],
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_documents_items.documents_id' => $this->fields['id'],
+                'zentra_documents_items.documents_id' => $this->fields['id'],
             ],
         ];
 
@@ -847,7 +847,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $tab[] = [
             'id'                 => '119',
-            'table'              => 'glpi_documents_items',
+            'table'              => 'zentra_documents_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of documents'),
             'forcegroupby'       => true,
@@ -925,7 +925,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_documentcategories',
+            'table'              => 'zentra_documentcategories',
             'field'              => 'completename',
             'name'               => __('Heading'),
             'datatype'           => 'dropdown',
@@ -933,7 +933,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -985,7 +985,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $tab[] = [
             'id'                 => '72',
-            'table'              => 'glpi_documents_items',
+            'table'              => 'zentra_documents_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of associated items'),
             'forcegroupby'       => true,
@@ -1032,7 +1032,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Move an uploaded document (files in GLPI_DOC_DIR."/_uploads" dir)
+     * Move an uploaded document (files in ZENTRA_DOC_DIR."/_uploads" dir)
      *
      * @param array  $input     array of datas used in adding process (need current_filepath)
      * @param string $filename  filename to move
@@ -1052,10 +1052,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $prefix = array_shift($input['_prefix_filename']);
         }
 
-        $fullpath = GLPI_UPLOAD_DIR . "/" . $filename;
+        $fullpath = ZENTRA_UPLOAD_DIR . "/" . $filename;
         $filename = str_replace($prefix, '', $filename);
 
-        if (!is_dir(GLPI_UPLOAD_DIR)) {
+        if (!is_dir(ZENTRA_UPLOAD_DIR)) {
             Session::addMessageAfterRedirect(__s("Upload directory doesn't exist"), false, ERROR);
             return false;
         }
@@ -1084,16 +1084,16 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (
             isset($input['current_filepath'])
             && !empty($input['current_filepath'])
-            && is_file(GLPI_DOC_DIR . "/" . $input['current_filepath'])
+            && is_file(ZENTRA_DOC_DIR . "/" . $input['current_filepath'])
             && (countElementsInTable(
-                'glpi_documents',
-                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/"
+                'zentra_documents',
+                ['sha1sum' => sha1_file(ZENTRA_DOC_DIR . "/"
                 . $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
             try {
-                unlink(GLPI_DOC_DIR . "/" . $input['current_filepath']);
+                unlink(ZENTRA_DOC_DIR . "/" . $input['current_filepath']);
                 Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('Successful deletion of the file %s'),
                     $input['current_filename']
@@ -1104,7 +1104,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                     sprintf(
                         'Failed to delete the file %1$s (%2$s)',
                         $input['current_filename'],
-                        GLPI_DOC_DIR . "/" . $input['current_filepath']
+                        ZENTRA_DOC_DIR . "/" . $input['current_filepath']
                     ),
                     E_USER_WARNING
                 );
@@ -1123,10 +1123,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $input['mime'] = Toolbox::getMime($fullpath);
 
         if (
-            is_writable(GLPI_UPLOAD_DIR)
+            is_writable(ZENTRA_UPLOAD_DIR)
             && is_writable($fullpath)
         ) { // Move if allowed
-            if (self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
+            if (self::renameForce($fullpath, ZENTRA_DOC_DIR . "/" . $new_path)) {
                 Session::addMessageAfterRedirect(__s('Document move succeeded.'));
             } else {
                 Session::addMessageAfterRedirect(__s('File move failed.'), false, ERROR);
@@ -1134,7 +1134,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             }
         } else { // Copy (will overwrite dest file is present)
             try {
-                copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
+                copy($fullpath, ZENTRA_DOC_DIR . "/" . $new_path);
                 Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
             } catch (FilesystemException $e) {
                 Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
@@ -1152,7 +1152,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
+     * Move a document (files in ZENTRA_DOC_DIR."/_tmp" dir)
      *
      * @param array  $input     array of datas used in adding process (need current_filepath)
      * @param string $filename  filename to move
@@ -1172,9 +1172,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $prefix = array_shift($input['_prefix_filename']);
         }
 
-        $fullpath = GLPI_TMP_DIR . "/" . $filename;
+        $fullpath = ZENTRA_TMP_DIR . "/" . $filename;
         $filename = str_replace($prefix, '', $filename);
-        if (!is_dir(GLPI_TMP_DIR)) {
+        if (!is_dir(ZENTRA_TMP_DIR)) {
             Session::addMessageAfterRedirect(__s("Temporary directory doesn't exist"), false, ERROR);
             return false;
         }
@@ -1203,16 +1203,16 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // Delete old file (if not used by another doc)
         if (
             !empty($input['current_filepath'])
-            && is_file(GLPI_DOC_DIR . "/" . $input['current_filepath'])
+            && is_file(ZENTRA_DOC_DIR . "/" . $input['current_filepath'])
             && (countElementsInTable(
-                'glpi_documents',
-                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/"
+                'zentra_documents',
+                ['sha1sum' => sha1_file(ZENTRA_DOC_DIR . "/"
                 . $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
             try {
-                unlink(GLPI_DOC_DIR . "/" . $input['current_filepath']);
+                unlink(ZENTRA_DOC_DIR . "/" . $input['current_filepath']);
                 Session::addMessageAfterRedirect(sprintf(
                     __s('Successful deletion of the file %s'),
                     htmlescape($input['current_filename'])
@@ -1223,7 +1223,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                     sprintf(
                         'Failed to delete the file %1$s (%2$s)',
                         $input['current_filename'],
-                        GLPI_DOC_DIR . "/" . $input['current_filepath']
+                        ZENTRA_DOC_DIR . "/" . $input['current_filepath']
                     ),
                     E_USER_WARNING
                 );
@@ -1243,7 +1243,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         // Copy (will overwrite dest file if present)
         try {
-            copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
+            copy($fullpath, ZENTRA_DOC_DIR . "/" . $new_path);
             Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
         } catch (FilesystemException $e) {
             Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
@@ -1281,11 +1281,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return '';
         }
 
-        if (!is_dir(GLPI_DOC_DIR)) {
+        if (!is_dir(ZENTRA_DOC_DIR)) {
             trigger_error(
                 sprintf(
                     "The directory %s doesn't exist.",
-                    GLPI_DOC_DIR
+                    ZENTRA_DOC_DIR
                 ),
                 E_USER_WARNING
             );
@@ -1298,9 +1298,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
         $subdir = $dir . '/' . substr($sha1sum, 0, 2);
 
-        if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
+        if (!is_dir(ZENTRA_DOC_DIR . "/" . $subdir)) {
             try {
-                mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true);
+                mkdir(ZENTRA_DOC_DIR . "/" . $subdir, 0o777, true);
                 Session::addMessageAfterRedirect(sprintf(
                     __s('Create the directory %s'),
                     $subdir
@@ -1310,11 +1310,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
+        if (!is_dir(ZENTRA_DOC_DIR . "/" . $subdir)) {
             trigger_error(
                 sprintf(
                     'Failed to create the directory %s.',
-                    GLPI_DOC_DIR . "/" . $subdir
+                    ZENTRA_DOC_DIR . "/" . $subdir
                 ),
                 E_USER_WARNING
             );
@@ -1337,7 +1337,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     private static function getUploadedFiles()
     {
         $uploaded_files = [];
-        if ($handle = opendir(GLPI_UPLOAD_DIR)) {
+        if ($handle = opendir(ZENTRA_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
                 if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
                     $dir = self::isValidDoc($file);
@@ -1367,7 +1367,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $iterator = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_documenttypes',
+            'FROM'   => 'zentra_documenttypes',
             'WHERE'  => [
                 'is_uploadable'   => 1,
                 'ext'             => ['LIKE', $ext],
@@ -1382,7 +1382,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // Not found try with regex one
         $iterator = $DB->request([
             'SELECT' => ['ext'],
-            'FROM'   => 'glpi_documenttypes',
+            'FROM'   => 'zentra_documenttypes',
             'WHERE'  => [
                 'is_uploadable'   => 1,
                 'ext'             => ['LIKE', '/%/'],
@@ -1417,7 +1417,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function dropdown($options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $p['name']    = 'documents_id';
         $p['entity']  = '';
@@ -1439,20 +1439,20 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $subwhere = [
-            'glpi_documents.is_deleted'   => 0,
-        ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
+            'zentra_documents.is_deleted'   => 0,
+        ] + getEntitiesRestrictCriteria('zentra_documents', '', $p['entity'], true);
 
         if (count($p['used'])) {
             $subwhere['NOT'] = ['id' => array_merge([0], $p['used'])];
         }
 
         $criteria = [
-            'FROM'   => 'glpi_documentcategories',
+            'FROM'   => 'zentra_documentcategories',
             'WHERE'  => [
                 'id' => new QuerySubQuery([
                     'SELECT'          => 'documentcategories_id',
                     'DISTINCT'        => true,
-                    'FROM'            => 'glpi_documents',
+                    'FROM'            => 'zentra_documents',
                     'WHERE'           => $subwhere,
                 ]),
             ],
@@ -1501,7 +1501,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $out .= Ajax::updateItemOnSelectEvent(
             $field_id,
             "show_" . $p['name'] . $rand,
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownRubDocument.php",
             $params,
             false
         );
@@ -1530,7 +1530,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         } else {
             $out .= Ajax::updateItem(
                 toupdate  : "show_" . $p['name'] . $rand,
-                url       : $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",
+                url       : $CFG_ZENTRA["root_doc"] . "/ajax/dropdownRubDocument.php",
                 parameters: $params,
                 display   : false,
             );
@@ -1759,7 +1759,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public function checkAvailability(string $filename): bool
     {
-        $file = GLPI_DOC_DIR . '/' . $filename;
+        $file = ZENTRA_DOC_DIR . '/' . $filename;
         return file_exists($file) && is_readable($file);
     }
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\Converter;
-use Glpi\Inventory\Inventory;
+use Zentra\Inventory\Conf;
+use Zentra\Inventory\Converter;
+use Zentra\Inventory\Inventory;
 use Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class InventoryTestCase extends DbTestCase
 {
-    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    protected const INV_FIXTURES = ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/';
 
     /**
      * Path to use to test inventory archive manipulations.
      * File will be removed before/after tests.
      * @var string
      */
-    protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
+    protected const INVENTORY_ARCHIVE_PATH = ZENTRA_TMP_DIR . '/to_inventory.zip';
 
     /** @var int */
     protected int $nblogs;
@@ -112,7 +112,7 @@ class InventoryTestCase extends DbTestCase
         }
 
         $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+            new RecursiveDirectoryIterator(ZENTRA_INVENTORY_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -42,12 +42,12 @@
         aria-label="{{ __("Change profile") }}"
     >
         <i class="ti ti-user-check"></i>
-        {{ (session('glpiactiveprofile')['name'] ?? '') }}
+        {{ (session('zentraactiveprofile')['name'] ?? '') }}
     </button>
     <div class="dropdown-menu" data-bs-popper="none">
         <span class="dropdown-header">{{ __('Profiles') }}</span>
-        {% for profile_id, profile in session('glpiprofiles') %}
-            {% set is_active = profile_id == (session('glpiactiveprofile')['id'] ?? 0) %}
+        {% for profile_id, profile in session('zentraprofiles') %}
+            {% set is_active = profile_id == (session('zentraactiveprofile')['id'] ?? 0) %}
             <form action="{{ path('/Session/ChangeProfile') }}" method="POST">
                 <button
                     class="dropdown-item {{ is_active ? 'active' : '' }}"
@@ -57,14 +57,14 @@
                     {{ profile['name'] }}
                 </button>
                 <input type="hidden" name="id" value="{{ profile_id }}" />
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             </form>
         {% endfor %}
     </div>
 </div>
 
-{% set current_entity = session('glpiactive_entity_name') %}
-{% set current_entity_short = session('glpiactive_entity_shortname') %}
+{% set current_entity = session('zentraactive_entity_name') %}
+{% set current_entity_short = session('zentraactive_entity_shortname') %}
 {% if current_entity != current_entity_short %}
     {% set current_entity_short = '... > ' ~ current_entity_short %}
 {% endif %}
@@ -97,7 +97,7 @@
                 action="{{ path('/Session/ChangeEntity') }}"
             >
                 <input type="hidden" name="full_structure" value="true">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             </form>
 
             <form
@@ -106,7 +106,7 @@
                 action="{{ path('/Session/ChangeEntity') }}"
             >
                 <input type="hidden" name="is_recursive" value="0">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             </form>
 
             <form
@@ -115,7 +115,7 @@
                 action="{{ path('/Session/ChangeEntity') }}"
             >
                 <input type="hidden" name="is_recursive" value="1">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             </form>
 
             <div class="input-group">

@@ -30,7 +30,7 @@
                     "id": 504,
                     "uuid": "b6bd71d5-4ff8-4d00-98a3-843f44bc084e",
                     "name": "My plugin question",
-                    "type": "GlpiPlugin\\Tester\\Form\\QuestionTypeColor",
+                    "type": "ZentraPlugin\\Tester\\Form\\QuestionTypeColor",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -46,7 +46,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"

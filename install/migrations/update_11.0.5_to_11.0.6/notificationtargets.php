@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,13 @@ $duplicates_targets_iterator = $DB->request([
         'MIN' => 'id AS min_id',
         'COUNT' => '* AS count',
     ],
-    'FROM' => 'glpi_notificationtargets',
+    'FROM' => 'zentra_notificationtargets',
     'GROUPBY' => ['notifications_id', 'items_id', 'type'],
     'HAVING' => ['count' => ['>', 1]],
 ]);
 
 foreach ($duplicates_targets_iterator as $target) {
-    $DB->delete('glpi_notificationtargets', [
+    $DB->delete('zentra_notificationtargets', [
         'notifications_id' => $target['notifications_id'],
         'items_id' => $target['items_id'],
         'type' => $target['type'],
@@ -60,5 +60,5 @@ foreach ($duplicates_targets_iterator as $target) {
     ]);
 }
 
-$migration->dropKey('glpi_notificationtargets', 'notifications_id');
-$migration->addKey('glpi_notificationtargets', ['notifications_id', 'items_id', 'type'], 'unicity', 'UNIQUE');
+$migration->dropKey('zentra_notificationtargets', 'notifications_id');
+$migration->addKey('zentra_notificationtargets', ['notifications_id', 'items_id', 'type'], 'unicity', 'UNIQUE');

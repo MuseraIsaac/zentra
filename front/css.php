@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Application\Environment;
-use Glpi\UI\ThemeManager;
+use Zentra\Application\Environment;
+use Zentra\UI\ThemeManager;
 
 use function Safe\preg_match;
 
-if (preg_match('~^css/glpi(\.scss)?$~', $_GET['file'] ?? '') === 1) {
+if (preg_match('~^css/zentra(\.scss)?$~', $_GET['file'] ?? '') === 1) {
     // Ensure to have enough memory to not reach memory limit.
     $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
     if (Toolbox::getMemoryLimit() < $max_memory) {

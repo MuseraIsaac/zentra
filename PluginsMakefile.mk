@@ -15,12 +15,12 @@ USE_NPM = $(shell test -f package.json && echo true || echo false)
 # Docker commands
 COMPOSE = docker compose
 PHP = $(COMPOSE) exec app
-PLUGIN = $(COMPOSE) exec -w /var/www/glpi/plugins/$(PLUGIN_DIR) app
+PLUGIN = $(COMPOSE) exec -w /var/www/zentra/plugins/$(PLUGIN_DIR) app
 DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
 
 # Check which binaries we need to use for some tools that can be suplied by
-# either GLPI's core or the plugin itself.
+# either ZENTRA's core or the plugin itself.
 PHPSTAN_BIN    = $(shell test -f vendor/bin/phpstan      && echo vendor/bin/phpstan      || echo ../../vendor/bin/phpstan)
 PHPUNIT_BIN    = $(shell test -f vendor/bin/phpunit      && echo vendor/bin/phpunit      || echo ../../vendor/bin/phpunit)
 RECTOR_BIN     = $(shell test -f vendor/bin/rector       && echo vendor/bin/rector       || echo ../../vendor/bin/rector)
@@ -30,7 +30,7 @@ PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/
 
 ##
 ##This Makefile is used for *local development* only.
-##Production or deployment should be handled following GLPI's documentation.
+##Production or deployment should be handled following ZENTRA's documentation.
 ##
 
 # helper: $(call run_if_exists,<file>,<target>)
@@ -57,7 +57,7 @@ bash: ## Start a shell inside the php container, in the plugin directory
 
 ##—— Plugin actions ————————————————————————————————————————————————————————————
 install: ## Install the plugin
-	@$(CONSOLE) plugin:install $(PLUGIN_DIR) -u glpi
+	@$(CONSOLE) plugin:install $(PLUGIN_DIR) -u zentra
 .PHONY: install
 
 uninstall: ## Uninstall the plugin
@@ -73,7 +73,7 @@ disable: ## Disable the plugin
 .PHONY: disable
 
 test-setup: ## Setup the plugin for tests
-	@$(CONSOLE) plugin:install --env=testing $(PLUGIN_DIR) -u glpi --force
+	@$(CONSOLE) plugin:install --env=testing $(PLUGIN_DIR) -u zentra --force
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
@@ -86,7 +86,7 @@ locales-compile: ## Compile locales
 .PHONY: locales-compile
 
 plugin-release: ## Build and create plugin release based on HEAD ref, example: make plugin-release
-	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --dest=/var/www/glpi/plugins/$(PLUGIN_DIR)/dist/glpi-$(PLUGIN_DIR)-$(shell date +%Y%m%d).tar.bz2
+	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --dest=/var/www/zentra/plugins/$(PLUGIN_DIR)/dist/zentra-$(PLUGIN_DIR)-$(shell date +%Y%m%d).tar.bz2
 .PHONY: plugin-release
 
 
@@ -130,7 +130,7 @@ test:  ## Run all our lints/tests/static analysis
 	@$(call run_if_exists, phpunit.xml, phpunit)
 .PHONY: test
 
-phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/MySpecificTest.php'
+phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Zentra/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit

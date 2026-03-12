@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var item   Glpi\Form\Form #}
+{# @var item   Zentra\Form\Form #}
 {# @var params array #}
-{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
+{# @var question_types_manager Zentra\Form\QuestionType\QuestionTypesManager #}
 {# @var allow_unauthenticated_access bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -45,7 +45,7 @@
 
 <form
     id="main-form"
-    data-glpi-form-editor-container
+    data-zentra-form-editor-container
     class="
         form-editor-container
         d-flex
@@ -61,28 +61,28 @@
     method="POST"
     action="{{ item.getFormURL() }}"
     data-ajax-submit {# Form will be submitted using AJAX #}
-    data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
+    data-ajax-submit-itemtype="Zentra\Form\Form" {# Target itemtype #}
     data-track-changes="true"
 >
 
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
     {# Need more elements (questions, sections) before finalizing the design #}
-    <div data-glpi-form-editor class="form-editor row flex-reverse">
+    <div data-zentra-form-editor class="form-editor row flex-reverse">
 
         <div class="designer col-12">
             <div class="row h-full">
                 <div class="d-flex">
                     <div
                         class="flex-grow-1 d-flex px-4 py-3 me-6"
-                        data-glpi-form-editor-form
-                        data-glpi-form-editor-active-form
+                        data-zentra-form-editor-form
+                        data-zentra-form-editor-active-form
                         data-testid="form-editor-left-panel"
                     >
                         <div class="flex-grow-1">
                             <section
-                                data-glpi-form-editor-form-details
-                                data-glpi-form-editor-on-click="set-active"
+                                data-zentra-form-editor-form-details
+                                data-zentra-form-editor-on-click="set-active"
                                 aria-label="{{ __("Form details") }}"
                             >
                                 {% if invalid_questions|length %}
@@ -107,7 +107,7 @@
                                 <div class="card form-details">
                                     <div
                                         class="card-status-start bg-primary"
-                                        data-glpi-form-editor-active-form-status-indicator
+                                        data-zentra-form-editor-active-form-status-indicator
                                     ></div>
                                     <div class="card-body">
 
@@ -120,7 +120,7 @@
                                                 class="form-control content-editable-h1"
                                                 name="name"
                                                 value="{{ item.fields.name }}"
-                                                data-glpi-form-editor-form-details-name
+                                                data-zentra-form-editor-form-details-name
                                                 maxlength="255"
                                             >
 
@@ -139,7 +139,7 @@
                                         </div>
 
                                         {# Form's header #}
-                                        <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
+                                        <div class="content-editable-tinymce" data-zentra-form-editor-header-description>
                                             {{ fields.textareaField(
                                                 'header',
                                                 item.fields.header,
@@ -163,7 +163,7 @@
                             </section>
 
                             {# Display all questions here #}
-                            <div data-glpi-form-editor-blocks>
+                            <div data-zentra-form-editor-blocks>
                                 {% set number_of_sections = item.getSections()|length %}
                                 {% for section in item.getSections() %}
                                     {{ include('pages/admin/form/form_section.html.twig', {
@@ -181,7 +181,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-3" data-glpi-form-editor-form-extra-details>
+                        <div class="mb-3" data-zentra-form-editor-form-extra-details>
                             {{ include('pages/admin/form/form_toolbar.html.twig', {
                                 'can_update'     : can_update,
                                 'form'           : item,
@@ -193,7 +193,7 @@
 
                     <section class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0 ms-auto">
                         <section
-                            id="glpi-form-properties-accordion"
+                            id="zentra-form-properties-accordion"
                             class="accordion open accordion-flush h-full"
                             aria-label="Form properties accordion"
                         >
@@ -213,11 +213,11 @@
                                         <span class="item-title">{{ __('Form properties') }}</span>
                                     </button>
                                 </div>
-                                <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
+                                <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#zentra-form-properties-accordion">
                                     <div class="accordion-body d-flex flex-column">
                                         <script>
                                             function renderLayoutTemplateResult(data) {
-                                                const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
+                                                const icons = {{ enum('Zentra\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
 
                                                 return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}"></i>${_.escape(data.text)}</span>`);
                                             }
@@ -227,12 +227,12 @@
                                             }
                                         </script>
 
-                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+                                        {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
                                         {{ fields.dropdownArrayField(
                                             'render_layout',
                                             item.fields.render_layout,
-                                            enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getLabel()})|reduce((carry, item) => carry|merge(item), {}),
+                                            enum('Zentra\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getLabel()})|reduce((carry, item) => carry|merge(item), {}),
                                             __('Render layout'),
                                             {
                                                 'is_horizontal' : false,
@@ -257,12 +257,12 @@
                                                 'is_horizontal'    : false,
                                                 'full_width'       : true,
                                                 'add_field_attribs': {
-                                                    'data-glpi-form-editor-submit-button-conditional-visibility-field': '',
+                                                    'data-zentra-form-editor-submit-button-conditional-visibility-field': '',
                                                 },
                                             }
                                         ) }}
 
-                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+                                        {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 
                                     </div>
                                 </section>
@@ -363,7 +363,7 @@
         {% endif %}
 
         {# Preview form action #}
-        <div class="me-auto" data-glpi-form-editor-preview-actions>
+        <div class="me-auto" data-zentra-form-editor-preview-actions>
             <a
                 href="{{ path('/Form/Render/' ~ item.fields.id) }}"
                 target="_blank"
@@ -372,7 +372,7 @@
                 name="preview"
                 form="main-form"
                 title="{{ __("Preview") }}"
-                data-glpi-form-editor-preview-action
+                data-zentra-form-editor-preview-action
             >
                 <i class="ti ti-eye me-1"></i>
                 <span class="d-none d-xl-block">{{ __("Preview") }}</span>
@@ -383,9 +383,9 @@
                 name="update"
                 form="main-form"
                 title="{{ __("Save and preview") }}"
-                data-glpi-form-editor-on-click="queue-preview"
-                data-glpi-form-editor-save-and-preview-action
-                data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
+                data-zentra-form-editor-on-click="queue-preview"
+                data-zentra-form-editor-save-and-preview-action
+                data-zentra-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
                 <i class="ti ti-eye me-1"></i>
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
@@ -425,11 +425,11 @@
 
 {% if can_update %}
     {# Templates, must be outside the main form to avoid submitting their inputs #}
-    <div data-glpi-form-editor-templates class="d-none">
+    <div data-zentra-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
         {% for question_type in question_types_manager.getQuestionTypes() %}
-            <div data-glpi-form-editor-question-template="{{ get_class(question_type) }}">
+            <div data-zentra-form-editor-question-template="{{ get_class(question_type) }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'form'                        : item,
@@ -444,7 +444,7 @@
         {% endfor %}
 
         {# Load new title and description template #}
-        <div data-glpi-form-editor-comment-template>
+        <div data-zentra-form-editor-comment-template>
             {{ include('pages/admin/form/form_comment.html.twig', {
                 'form'                   : item,
                 'section'                : null,
@@ -453,7 +453,7 @@
         </div>
 
         {# Load new section template #}
-        <div data-glpi-form-editor-section-template>
+        <div data-zentra-form-editor-section-template>
             {{ include('pages/admin/form/form_section.html.twig', {
                 'form'                        : item,
                 'section'                     : null,
@@ -465,7 +465,7 @@
         </div>
 
         {# Load new horizontal block template #}
-        <div data-glpi-form-editor-horizontal-block-template>
+        <div data-zentra-form-editor-horizontal-block-template>
             {{ include('pages/admin/form/form_horizontal_block.html.twig', {
                 'blocks'                      : null,
                 'can_update'                  : true,
@@ -475,7 +475,7 @@
         </div>
 
         {# Load new horizontal block placeholder template #}
-        <div data-glpi-form-editor-horizontal-block-placeholder-template>
+        <div data-zentra-form-editor-horizontal-block-placeholder-template>
             {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
                 'can_update': true,
                 'form'      : item,
@@ -483,13 +483,13 @@
         </div>
 
         {# Load all possible question types values #}
-        <select data-glpi-form-editor-question-types-values>
+        <select data-zentra-form-editor-question-types-values>
             {% for question_type in question_types_manager.getQuestionTypes() %}
                 {% set parent_category = question_types_manager.getCategoryKey(
                     question_type.getCategory()
                 ) %}
                 <option
-                    data-glpi-form-editor-question-type="{{ parent_category }}"
+                    data-zentra-form-editor-question-type="{{ parent_category }}"
                     value="{{ get_class(question_type) }}"
                 >
                     {{ question_type.getName() }}
@@ -507,16 +507,16 @@
         import("/js/modules/Forms/EditorConvertedExtractedDefaultValue.js"),
         import("/js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js")
     ]);
-    const GlpiFormEditorController = modules[0].GlpiFormEditorController;
-    const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
-    const EditorConvertedExtractedSelectableDefaultValue = modules[2].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
+    const ZentraFormEditorController = modules[0].ZentraFormEditorController;
+    const EditorConvertedExtractedDefaultValue = modules[1].ZentraFormEditorConvertedExtractedDefaultValue;
+    const EditorConvertedExtractedSelectableDefaultValue = modules[2].ZentraFormEditorConvertedExtractedSelectableDefaultValue;
 
-    const container_selector = "[data-glpi-form-editor-container]";
-    const controller = new GlpiFormEditorController(
+    const container_selector = "[data-zentra-form-editor-container]";
+    const controller = new ZentraFormEditorController(
         container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]",
+        "[data-zentra-form-editor-templates]",
         {{ item.getDestinations()|map(destination => {
             'id': destination.fields.id,
             'name': destination.fields.name,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,9 +51,9 @@ function update954to955()
 
     /* Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
     $tables = [
-        'glpi_alerts',
-        'glpi_crontasklogs',
-        'glpi_notimportedemails',
+        'zentra_alerts',
+        'zentra_crontasklogs',
+        'zentra_notimportedemails',
     ];
     foreach ($tables as $table) {
         $type_result = $DB->request(

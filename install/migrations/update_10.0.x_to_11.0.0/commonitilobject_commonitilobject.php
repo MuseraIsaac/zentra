@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-$to_add_link = ['glpi_changes_problems', 'glpi_changes_tickets', 'glpi_problems_tickets'];
+$to_add_link = ['zentra_changes_problems', 'zentra_changes_tickets', 'zentra_problems_tickets'];
 
 foreach ($to_add_link as $table) {
     if (!$DB->fieldExists($table, 'link')) {
@@ -52,8 +52,8 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Create new tables
 
-if (!$DB->tableExists('glpi_changes_changes')) {
-    $query = "CREATE TABLE `glpi_changes_changes` (
+if (!$DB->tableExists('zentra_changes_changes')) {
+    $query = "CREATE TABLE `zentra_changes_changes` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `changes_id_1` int {$default_key_sign} NOT NULL DEFAULT '0',
         `changes_id_2` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -65,8 +65,8 @@ if (!$DB->tableExists('glpi_changes_changes')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_problems_problems')) {
-    $query = "CREATE TABLE `glpi_problems_problems` (
+if (!$DB->tableExists('zentra_problems_problems')) {
+    $query = "CREATE TABLE `zentra_problems_problems` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `problems_id_1` int {$default_key_sign} NOT NULL DEFAULT '0',
         `problems_id_2` int {$default_key_sign} NOT NULL DEFAULT '0',

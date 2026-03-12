@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,14 +47,14 @@ $DEFAULT_PLURAL_NUMBER = 2;
  * @since 0.84
  *
  * @param string $str    String to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
+ * @param string $domain domain used (default is zentra, may be plugin name)
  *
  * @return string translated string
  *
  * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
  * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
-function __($str, $domain = 'glpi')
+function __($str, $domain = 'zentra')
 {
     global $TRANSLATE;
 
@@ -68,7 +68,7 @@ function __($str, $domain = 'glpi')
             $trans = $trans[0];
         }
     } catch (Throwable $e) {
-        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Error may happen when overrided translation files does not use same plural rules as ZENTRA.
         // Silently fail to not flood error log.
     }
 
@@ -82,11 +82,11 @@ function __($str, $domain = 'glpi')
  * @since 0.84
  *
  * @param string $str    String to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
+ * @param string $domain domain used (default is zentra, may be plugin name)
  *
  * @return string
  */
-function __s($str, $domain = 'glpi')
+function __s($str, $domain = 'zentra')
 {
     return htmlspecialchars(__($str, $domain));
 }
@@ -99,11 +99,11 @@ function __s($str, $domain = 'glpi')
  *
  * @param string $ctx    context
  * @param string $str    to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
+ * @param string $domain domain used (default is zentra, may be plugin name)
  *
  * @return string
  */
-function _sx($ctx, $str, $domain = 'glpi')
+function _sx($ctx, $str, $domain = 'zentra')
 {
     return htmlspecialchars(_x($ctx, $str, $domain));
 }
@@ -117,14 +117,14 @@ function _sx($ctx, $str, $domain = 'glpi')
  * @param string  $sing   in singular
  * @param string  $plural in plural
  * @param int $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string  $domain domain used (default is zentra, may be plugin name)
  *
  * @return string translated string
  *
  * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
  * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
-function _n($sing, $plural, $nb, $domain = 'glpi')
+function _n($sing, $plural, $nb, $domain = 'zentra')
 {
     /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
@@ -134,7 +134,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
     try {
         $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
     } catch (Throwable $e) {
-        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Error may happen when overrided translation files does not use same plural rules as ZENTRA.
         // Silently fail to not flood error log.
     }
 
@@ -150,11 +150,11 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
  * @param string  $sing   in singular
  * @param string  $plural in plural
  * @param int $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string  $domain domain used (default is zentra, may be plugin name)
  *
  * @return string
  */
-function _sn($sing, $plural, $nb, $domain = 'glpi')
+function _sn($sing, $plural, $nb, $domain = 'zentra')
 {
     return htmlspecialchars(_n($sing, $plural, $nb, $domain));
 }
@@ -167,11 +167,11 @@ function _sn($sing, $plural, $nb, $domain = 'glpi')
  *
  * @param string $ctx    context
  * @param string $str    to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
+ * @param string $domain domain used (default is zentra, may be plugin name)
  *
  * @return string
  */
-function _x($ctx, $str, $domain = 'glpi')
+function _x($ctx, $str, $domain = 'zentra')
 {
 
     // simulate pgettext
@@ -195,11 +195,11 @@ function _x($ctx, $str, $domain = 'glpi')
  * @param string  $sing   in singular
  * @param string  $plural in plural
  * @param int $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string  $domain domain used (default is zentra, may be plugin name)
  *
  * @return string
  */
-function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
+function _nx($ctx, $sing, $plural, $nb, $domain = 'zentra')
 {
 
     // simulate pgettext

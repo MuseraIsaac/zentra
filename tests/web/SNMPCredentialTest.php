@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\FrontBaseClass;
+use Zentra\Tests\FrontBaseClass;
 
 class SNMPCredentialTest extends FrontBaseClass
 {
@@ -58,7 +58,7 @@ class SNMPCredentialTest extends FrontBaseClass
                 'username' => 'snmpuser',
                 'auth_passphrase' => $auth_passphrase,
                 'priv_passphrase' => $priv_passphrase,
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value'),
+                '_zentra_csrf_token' => $crawler->filter('input[name=_zentra_csrf_token]')->attr('value'),
             ]
         );
 
@@ -66,8 +66,8 @@ class SNMPCredentialTest extends FrontBaseClass
         $this->assertTrue($credential->getFromDBByCrit(['name' => 'thetestuuidtoremove']));
 
         $this->assertNotEquals($auth_passphrase, $credential->fields['auth_passphrase']);
-        $this->assertSame($auth_passphrase, (new \GLPIKey())->decrypt($credential->fields['auth_passphrase']));
+        $this->assertSame($auth_passphrase, (new \ZENTRAKey())->decrypt($credential->fields['auth_passphrase']));
         $this->assertNotEquals($priv_passphrase, $credential->fields['priv_passphrase']);
-        $this->assertSame($priv_passphrase, (new \GLPIKey())->decrypt($credential->fields['priv_passphrase']));
+        $this->assertSame($priv_passphrase, (new \ZENTRAKey())->decrypt($credential->fields['priv_passphrase']));
     }
 }

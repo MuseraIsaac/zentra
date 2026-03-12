@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class RuleRightCollectionTest extends DbTestCase
@@ -44,23 +44,23 @@ class RuleRightCollectionTest extends DbTestCase
         return [
             [
                 [],
-                ['type' => \Auth::DB_GLPI, 'login' => 'glpi'],
-                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi'],
+                ['type' => \Auth::DB_ZENTRA, 'login' => 'zentra'],
+                ['TYPE' => \Auth::DB_ZENTRA, 'LOGIN' => 'zentra'],
             ],
             [
                 [],
-                ['TYPE' => \Auth::DB_GLPI, 'loGin' => 'glpi'],
-                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi'],
+                ['TYPE' => \Auth::DB_ZENTRA, 'loGin' => 'zentra'],
+                ['TYPE' => \Auth::DB_ZENTRA, 'LOGIN' => 'zentra'],
             ],
             [
                 [],
-                ['type' => \Auth::MAIL, 'login' => 'glpi', 'mail_server' => 'mail.example.com'],
-                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com'],
+                ['type' => \Auth::MAIL, 'login' => 'zentra', 'mail_server' => 'mail.example.com'],
+                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'zentra', 'MAIL_SERVER' => 'mail.example.com'],
             ],
             [
                 [],
-                ['type' => \Auth::MAIL, 'login' => 'glpi', 'MAIL_server' => 'mail.example.com'],
-                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com'],
+                ['type' => \Auth::MAIL, 'login' => 'zentra', 'MAIL_server' => 'mail.example.com'],
+                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'zentra', 'MAIL_SERVER' => 'mail.example.com'],
             ],
         ];
     }

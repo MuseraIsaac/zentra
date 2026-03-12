@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ if (isset($_POST["projects_id"])) {
     if ($_POST["projects_id"] > 0) {
 
         $condition = [
-            'glpi_projecttasks.projects_id' => $_POST['projects_id'],
+            'zentra_projecttasks.projects_id' => $_POST['projects_id'],
         ];
 
         $finished_states_it = $DB->request(
@@ -65,11 +65,11 @@ if (isset($_POST["projects_id"])) {
         }
 
         if ($finished_states_ids !== []) {
-            $condition['glpi_projecttasks.projectstates_id'] = ['NOT IN', $finished_states_ids];
+            $condition['zentra_projecttasks.projectstates_id'] = ['NOT IN', $finished_states_ids];
         }
 
         if (!empty($_POST['used'])) {
-            $condition['glpi_projecttasks.id'] = ['NOT IN', $_POST['used']];
+            $condition['zentra_projecttasks.id'] = ['NOT IN', $_POST['used']];
         }
 
         $dropdown_params = [

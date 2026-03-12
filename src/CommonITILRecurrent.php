@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -85,7 +85,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     abstract public static function getPredefinedFieldsClass();
 
     public static function displayTabContentForItem(
-        CommonGLPI $item,
+        CommonZENTRA $item,
         $tabnum = 1,
         $withtemplate = 0
     ) {
@@ -102,7 +102,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return false;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         // Only display tab if user can read ITILTemplates
         if (!Session::haveRight('itiltemplate', READ)) {
@@ -344,7 +344,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
         $tab[] = [
             'id'       => '18',
-            'table'    => 'glpi_calendars',
+            'table'    => 'zentra_calendars',
             'field'    => 'name',
             'name'     => _n('Calendar', 'Calendars', 1),
             'datatype' => 'itemlink',

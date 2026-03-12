@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Error\ErrorHandler;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Error\ErrorHandler;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
@@ -63,7 +63,7 @@ use function Safe\strtotime;
 /**
  * MailCollector class
  *
- * Merge with collect GLPI system after big modification in it
+ * Merge with collect ZENTRA system after big modification in it
  *
  * modif and debug by  INDEPNET Development Team.
  * Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
@@ -187,9 +187,9 @@ class MailCollector extends CommonDBTM
 
     public function post_getEmpty()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
+        $this->fields['filesize_max'] = $CFG_ZENTRA['default_mailcollector_filesize_max'];
         $this->fields['is_active']    = 1;
     }
 
@@ -226,7 +226,7 @@ class MailCollector extends CommonDBTM
             if (empty($input["passwd"])) {
                 unset($input["passwd"]);
             } else {
-                $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
+                $input["passwd"] = (new ZENTRAKey())->encrypt($input["passwd"]);
             }
         }
 
@@ -286,9 +286,9 @@ class MailCollector extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         // warning and no form if can't read keyfile
-        $glpi_encryption_key = new GLPIKey();
-        if ($glpi_encryption_key->hasReadErrors()) {
-            $glpi_encryption_key->showReadErrors();
+        $zentra_encryption_key = new ZENTRAKey();
+        if ($zentra_encryption_key->hasReadErrors()) {
+            $zentra_encryption_key->showReadErrors();
 
             return false;
         }
@@ -600,7 +600,7 @@ class MailCollector extends CommonDBTM
      **/
     public function collect($mailgateID, $display = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->getFromDB($mailgateID)) {
             $this->uid          = -1;
@@ -621,7 +621,7 @@ class MailCollector extends CommonDBTM
                 // crontask process queue.
                 $this->update([
                     'id' => $this->getID(),
-                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                    'last_collect_date' => $_SESSION["zentra_currenttime"],
                 ]);
 
                 return;
@@ -665,7 +665,7 @@ class MailCollector extends CommonDBTM
                             'mailgate',
                             sprintf(
                                 __('Emails retrieve limit reached. Check in "%s" for more details.') . "\n",
-                                GLPI_LOG_DIR . '/php-errors.log'
+                                ZENTRA_LOG_DIR . '/php-errors.log'
                             )
                         );
                         break;
@@ -693,7 +693,7 @@ class MailCollector extends CommonDBTM
                             sprintf(
                                 __('Message is invalid (%s). Check in "%s" for more details') . "\n",
                                 $e->getMessage(),
-                                GLPI_LOG_DIR . '/php-errors.log'
+                                ZENTRA_LOG_DIR . '/php-errors.log'
                             )
                         );
                         $error++;
@@ -707,7 +707,7 @@ class MailCollector extends CommonDBTM
                         'from'              => '',
                         'to'                => '',
                         'messageid'         => '',
-                        'date'              => $_SESSION["glpi_currenttime"],
+                        'date'              => $_SESSION["zentra_currenttime"],
                     ];
 
                     try {
@@ -740,7 +740,7 @@ class MailCollector extends CommonDBTM
                             sprintf(
                                 __('Error during message parsing (%s). Check in "%s" for more details') . "\n",
                                 $e->getMessage(),
-                                GLPI_LOG_DIR . '/php-errors.log'
+                                ZENTRA_LOG_DIR . '/php-errors.log'
                             )
                         );
                         $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
@@ -754,7 +754,7 @@ class MailCollector extends CommonDBTM
                                           && $tkt['_supplier_email']);
 
                     // Keep track of the mail author so we can check his
-                    // notifications preferences later (glpinotification_to_myself)
+                    // notifications preferences later (zentranotification_to_myself)
                     if (isset($tkt['users_id']) && $tkt['users_id']) {
                         $_SESSION['mailcollector_user'] = $tkt['users_id'];
                     } elseif (isset($tkt['_users_id_requester_notif']['alternative_email'][0])) {
@@ -776,7 +776,7 @@ class MailCollector extends CommonDBTM
                     } elseif (
                         isset($tkt['entities_id'])
                           && !isset($tkt['tickets_id'])
-                          && ($CFG_GLPI["use_anonymous_helpdesk"]
+                          && ($CFG_ZENTRA["use_anonymous_helpdesk"]
                               || !$is_user_anonymous
                               || !$is_supplier_anonymous)
                     ) {
@@ -784,7 +784,7 @@ class MailCollector extends CommonDBTM
                         $ticket = new Ticket();
 
                         if (
-                            !$CFG_GLPI["use_anonymous_helpdesk"]
+                            !$CFG_ZENTRA["use_anonymous_helpdesk"]
                             && !Profile::haveUserRight(
                                 $tkt['_users_id_requester'],
                                 Ticket::$rightname,
@@ -805,7 +805,7 @@ class MailCollector extends CommonDBTM
                         }
                     } elseif (
                         isset($tkt['tickets_id'])
-                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
+                          && ($CFG_ZENTRA['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
                     ) {
                         // Followup case
                         $ticket = new Ticket();
@@ -848,7 +848,7 @@ class MailCollector extends CommonDBTM
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
                         } elseif (
-                            !$CFG_GLPI['use_anonymous_followups']
+                            !$CFG_ZENTRA['use_anonymous_followups']
                              && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
                              && !$tkt['_supplier_email']
                         ) {
@@ -864,7 +864,7 @@ class MailCollector extends CommonDBTM
                             $rejected->add($rejinput);
                         }
                     } else {
-                        if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
+                        if ($is_user_anonymous && !$CFG_ZENTRA["use_anonymous_helpdesk"]) {
                             $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
                         } else {
                             $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
@@ -885,7 +885,7 @@ class MailCollector extends CommonDBTM
 
                 $this->update([
                     'id' => $this->getID(),
-                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                    'last_collect_date' => $_SESSION["zentra_currenttime"],
                 ]);
 
                 //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
@@ -907,7 +907,7 @@ class MailCollector extends CommonDBTM
                 $msg = __('Could not connect to mailgate server');
                 if ($display) {
                     Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
-                    GLPINetwork::addErrorMessageAfterRedirect();
+                    ZENTRANetwork::addErrorMessageAfterRedirect();
                 } else {
                     return $msg;
                 }
@@ -917,7 +917,7 @@ class MailCollector extends CommonDBTM
             $msg = sprintf(__('Could not find mailgate %d'), $mailgateID);
             if ($display) {
                 Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
-                GLPINetwork::addErrorMessageAfterRedirect();
+                ZENTRANetwork::addErrorMessageAfterRedirect();
             } else {
                 return $msg;
             }
@@ -936,7 +936,7 @@ class MailCollector extends CommonDBTM
      */
     public function buildTicket($uid, Message $message, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $play_rules = (isset($options['play_rules']) && $options['play_rules']);
         $headers = $this->getHeaders($message);
@@ -956,8 +956,8 @@ class MailCollector extends CommonDBTM
         }
 
         if ($this->isItilNotificationFromSelf($message)) {
-            // Message was sent by current instance of GLPI.
-            // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
+            // Message was sent by current instance of ZENTRA.
+            // Message is blacklisted to avoid infinite loop (where ZENTRA creates a ticket from its own notification).
             $tkt['_blacklisted'] = true;
             return $tkt;
         }
@@ -973,12 +973,12 @@ class MailCollector extends CommonDBTM
 
         // max size = 0 : no import attachments
         if ($this->fields['filesize_max'] > 0) {
-            if (is_writable(GLPI_TMP_DIR)) {
-                $tkt['_filename'] = $this->getAttached($message, GLPI_TMP_DIR . "/", $this->fields['filesize_max']);
+            if (is_writable(ZENTRA_TMP_DIR)) {
+                $tkt['_filename'] = $this->getAttached($message, ZENTRA_TMP_DIR . "/", $this->fields['filesize_max']);
                 $tkt['_tag']      = $this->tags;
             } else {
                 //TRANS: %s is a directory
-                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/") . "\n");
+                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), ZENTRA_TMP_DIR . "/") . "\n");
             }
         }
 
@@ -1006,7 +1006,7 @@ class MailCollector extends CommonDBTM
                 ) {
                     // Skip if user is anonymous and anonymous users are not allowed
                     $user_id = User::getOrImportByEmail($cc);
-                    if (!$user_id && !$CFG_GLPI['use_anonymous_helpdesk']) {
+                    if (!$user_id && !$CFG_ZENTRA['use_anonymous_helpdesk']) {
                         continue;
                     }
 
@@ -1027,7 +1027,7 @@ class MailCollector extends CommonDBTM
                 ) {
                     // Skip if user is anonymous and anonymous users are not allowed
                     $user_id = User::getOrImportByEmail($to);
-                    if (!$user_id && !$CFG_GLPI['use_anonymous_helpdesk']) {
+                    if (!$user_id && !$CFG_ZENTRA['use_anonymous_helpdesk']) {
                         continue;
                     }
 
@@ -1073,12 +1073,12 @@ class MailCollector extends CommonDBTM
 
             $tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'], $requester);
 
-            // Check if ticket  exists and users_id exists in GLPI
+            // Check if ticket  exists and users_id exists in ZENTRA
             if (
                 $job->getFromDB($tkt['tickets_id'])
                 && ($job->fields['status'] != CommonITILObject::CLOSED)
                 && (
-                    $CFG_GLPI['use_anonymous_followups']
+                    $CFG_ZENTRA['use_anonymous_followups']
                     || ($tkt['_users_id_requester'] > 0)
                     || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
                     || $tkt['_supplier_email']
@@ -1290,7 +1290,7 @@ class MailCollector extends CommonDBTM
         $params = [
             'host'      => $config['address'],
             'user'      => $this->fields['login'],
-            'password'  => (new GLPIKey())->decrypt($this->fields['passwd']),
+            'password'  => (new ZENTRAKey())->decrypt($this->fields['passwd']),
             'port'      => $config['port'],
         ];
 
@@ -1839,7 +1839,7 @@ class MailCollector extends CommonDBTM
 
         NotImportedEmail::deleteLog();
         $iterator = $DB->request([
-            'FROM'   => 'glpi_mailcollectors',
+            'FROM'   => 'zentra_mailcollectors',
             'WHERE'  => ['is_active' => 1],
             'ORDER'  => 'last_collect_date ASC',
             'LIMIT'  => 100,
@@ -1869,7 +1869,7 @@ class MailCollector extends CommonDBTM
 
         if ($max == $task->fields['param']) {
             return 0; // Nothing to do
-        } elseif ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
+        } elseif ($max === 0 || count($iterator) < countElementsInTable('zentra_mailcollectors', ['is_active' => 1])) {
             return -1; // still messages to retrieve
         }
 
@@ -1907,15 +1907,15 @@ class MailCollector extends CommonDBTM
      */
     public static function cronMailgateError($task)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
         $cron_status   = 0;
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_mailcollectors',
+            'FROM'   => 'zentra_mailcollectors',
             'WHERE'  => [
                 'errors'    => ['>', 0],
                 'is_active' => 1,
@@ -1946,11 +1946,11 @@ class MailCollector extends CommonDBTM
      */
     public function getSystemInformation()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // No need to translate, this part always display in english (for copy/paste to forum)
         $content = 'Way of sending emails: ';
-        switch ($CFG_GLPI['smtp_mode']) {
+        switch ($CFG_ZENTRA['smtp_mode']) {
             case MAIL_MAIL:
                 $content .= 'PHP';
                 break;
@@ -1965,8 +1965,8 @@ class MailCollector extends CommonDBTM
                 $content .= 'SMTP+OAUTH';
                 break;
         }
-        if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-            $mailer = new GLPIMailer();
+        if ($CFG_ZENTRA['smtp_mode'] != MAIL_MAIL) {
+            $mailer = new ZENTRAMailer();
             $content .= sprintf('(%s)', $mailer::buildDsn(false));
         }
 
@@ -1995,18 +1995,18 @@ class MailCollector extends CommonDBTM
      */
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $mmail = new GLPIMailer();
+        $mmail = new ZENTRAMailer();
         $mail = $mmail->getEmail();
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-replied');
-        $mail->from(new Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->from(new Symfony\Component\Mime\Address($CFG_ZENTRA["admin_email"], $CFG_ZENTRA["admin_email_name"]));
         $mail->to($to);
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);
         $mail->text(
             __("Your email could not be processed.\nIf the problem persists, contact the administrator")
-             . "\n-- \n" . $CFG_GLPI["mailing_signature"]
+             . "\n-- \n" . $CFG_ZENTRA["mailing_signature"]
         );
         $mmail->send();
     }
@@ -2058,7 +2058,7 @@ class MailCollector extends CommonDBTM
 
         $criteria = [
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_mailcollectors',
+            'FROM'   => 'zentra_mailcollectors',
         ];
 
         if (true === $active) {
@@ -2082,7 +2082,7 @@ class MailCollector extends CommonDBTM
 
     /**
      * Try to retrieve an existing item from references in message headers.
-     * References corresponds to original MessageId sent by GLPI.
+     * References corresponds to original MessageId sent by ZENTRA.
      *
      * @param Message $message
      *
@@ -2092,7 +2092,7 @@ class MailCollector extends CommonDBTM
      */
     public function getItemFromHeaders(Message $message): ?CommonDBTM
     {
-        if ($this->isResponseToMessageSentByAnotherGlpi($message)) {
+        if ($this->isResponseToMessageSentByAnotherZentra($message)) {
             return null;
         }
 
@@ -2167,20 +2167,20 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Check if message was sent by current instance of GLPI and corresponds to a notification related to an ITIL object.
+     * Check if message was sent by current instance of ZENTRA and corresponds to a notification related to an ITIL object.
      */
     private function isItilNotificationFromSelf(Message $message): bool
     {
         $message_id = $this->getMessageIdFromHeaders($message);
         if ($message_id === null) {
-            // Messages sent by GLPI now have always a message-id header.
+            // Messages sent by ZENTRA now have always a message-id header.
             return false;
         }
 
         $matches = $this->extractValuesFromRefHeader($message_id);
 
         if ($matches === null) {
-            // message-id header does not match GLPI format.
+            // message-id header does not match ZENTRA format.
             return false;
         }
 
@@ -2191,8 +2191,8 @@ class MailCollector extends CommonDBTM
         $uuid = $matches['uuid'];
         if ($uuid === null) {
             // message-id corresponds to old format, without uuid.
-            // We assume that in most environments this message have been sent by this instance of GLPI,
-            // as only one instance of GLPI will be installed.
+            // We assume that in most environments this message have been sent by this instance of ZENTRA,
+            // as only one instance of ZENTRA will be installed.
             return true;
         }
 
@@ -2200,8 +2200,8 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Check if message is a response to a message sent by another Glpi instance.
-     * Responses to GLPI messages should contains a InReplyTo or a References header
+     * Check if message is a response to a message sent by another Zentra instance.
+     * Responses to ZENTRA messages should contains a InReplyTo or a References header
      * that matches the MessageId from original message.
      *
      * @param Message $message
@@ -2210,10 +2210,10 @@ class MailCollector extends CommonDBTM
      *
      * @return bool
      */
-    public function isResponseToMessageSentByAnotherGlpi(Message $message): bool
+    public function isResponseToMessageSentByAnotherZentra(Message $message): bool
     {
-        $has_uuid_from_another_glpi = false;
-        $has_uuid_from_current_glpi = false;
+        $has_uuid_from_another_zentra = false;
+        $has_uuid_from_current_zentra = false;
         foreach (['in-reply-to', 'references'] as $header_name) {
             if (!$message->getHeaders()->has($header_name)) {
                 continue;
@@ -2224,17 +2224,17 @@ class MailCollector extends CommonDBTM
                     continue;
                 }
                 if ($matches['uuid'] == Config::getUuid('notification')) {
-                    $has_uuid_from_current_glpi = true;
+                    $has_uuid_from_current_zentra = true;
                 } elseif ($matches['uuid'] != Config::getUuid('notification')) {
-                    $has_uuid_from_another_glpi = true;
+                    $has_uuid_from_another_zentra = true;
                 }
             }
         }
 
         // Matches if one of following conditions matches:
-        // - no UUID found matching current GLPI instance;
+        // - no UUID found matching current ZENTRA instance;
         // - at least one unknown UUID.
-        return !$has_uuid_from_current_glpi && $has_uuid_from_another_glpi;
+        return !$has_uuid_from_current_zentra && $has_uuid_from_another_zentra;
     }
 
     /**
@@ -2249,12 +2249,12 @@ class MailCollector extends CommonDBTM
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {
-        // Message-Id generated in GLPI >= 10.0.7
-        // - without related item:                  GLPI_{$uuid}/{$event}.{$time}.{$rand}@{$uname}
-        // - with related item (reference event):   GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}@{$uname}
-        // - with related item (other events):      GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}.{$time}.{$rand}@{$uname}
+        // Message-Id generated in ZENTRA >= 10.0.7
+        // - without related item:                  ZENTRA_{$uuid}/{$event}.{$time}.{$rand}@{$uname}
+        // - with related item (reference event):   ZENTRA_{$uuid}-{$itemtype}-{$items_id}/{$event}@{$uname}
+        // - with related item (other events):      ZENTRA_{$uuid}-{$itemtype}-{$items_id}/{$event}.{$time}.{$rand}@{$uname}
         $new_pattern = '/'
-            . 'GLPI'
+            . 'ZENTRA'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
@@ -2271,11 +2271,11 @@ class MailCollector extends CommonDBTM
             ];
         }
 
-        // Message-Id generated by GLPI >= 10.0.0 < 10.0.7
-        // - without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
-        // - with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+        // Message-Id generated by ZENTRA >= 10.0.0 < 10.0.7
+        // - without related item:  ZENTRA_{$uuid}.{$time}.{$rand}@{$uname}
+        // - with related item:     ZENTRA_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
         $old_pattern_1 = '/'
-            . 'GLPI'
+            . 'ZENTRA'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optionnal itemtype + items_id
             . '\.[0-9]+' // time()
@@ -2292,12 +2292,12 @@ class MailCollector extends CommonDBTM
             ];
         }
 
-        // Message-Id generated by GLPI < 10.0.0
-        // - for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
-        // - without related item:  GLPI.{$time}.{$rand}@{$uname}
-        // - with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+        // Message-Id generated by ZENTRA < 10.0.0
+        // - for tickets:           ZENTRA-{$items_id}.{$time}.{$rand}@{$uname}
+        // - without related item:  ZENTRA.{$time}.{$rand}@{$uname}
+        // - with related item:     ZENTRA-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
         $old_pattern_2 = '/'
-            . 'GLPI'
+            . 'ZENTRA'
             . '(-(?<itemtype>[a-z]+))?' // optionnal itemtype
             . '(-(?<items_id>[0-9]+))?' // optionnal items_id
             . '\.[0-9]+' // time()

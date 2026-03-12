@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Event;
-use Glpi\Tests\DbTestCase;
+use Zentra\Event;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class EventTest extends DbTestCase
@@ -44,11 +44,11 @@ class EventTest extends DbTestCase
     public function testEventLogThreshold(int $level, int $threshold, bool $should_be_logged_in_file, bool $should_be_logged_in_db): void
     {
         // --- arrange
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $CFG_GLPI["use_log_in_files"] = 1; // ensure file logging is enabled
-        $CFG_GLPI["event_loglevel"] = $threshold;
-        $log_file = GLPI_LOG_DIR . "/event.log"; // event.log is hardcoded \Glpi\Event::log()
+        $CFG_ZENTRA["use_log_in_files"] = 1; // ensure file logging is enabled
+        $CFG_ZENTRA["event_loglevel"] = $threshold;
+        $log_file = ZENTRA_LOG_DIR . "/event.log"; // event.log is hardcoded \Zentra\Event::log()
         $log_service = $this->getUniqueString();
         file_put_contents($log_file, ""); // empty log file for easier debugging
 
@@ -81,7 +81,7 @@ class EventTest extends DbTestCase
                     'level' => $level,
                     'threshold' => $threshold,
                     'should_be_logged_in_file'
-                        => ($level <= $threshold) // should be logged if level is equal or more critical than threshold (notice glpi level are inverted compared to PSR)
+                        => ($level <= $threshold) // should be logged if level is equal or more critical than threshold (notice zentra level are inverted compared to PSR)
                         && $level <= 3, // no logging for level higher than 3
                     'should_be_logged_in_db' => $level <= $threshold,
                 ];

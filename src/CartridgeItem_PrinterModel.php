@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch (true) {
             case $item instanceof CartridgeItem:
@@ -69,7 +69,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -79,7 +79,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             $nb = 0;
             switch ($item->getType()) {
                 case 'CartridgeItem':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -141,7 +141,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             if ($canedit) {
                 $rand     = mt_rand();
                 Html::openMassiveActionsForm('mass' . self::class . $rand);
-                $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
+                $massiveactionparams = ['num_displayed' => min($_SESSION['zentralist_limit'], count($used)),
                     'container'     => 'mass' . self::class . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\CustomFieldDefinition;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\SearchOption;
+use Zentra\Asset\CustomFieldDefinition;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\SearchOption;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
@@ -249,7 +249,7 @@ class MassiveAction
                         if (empty($POST['actions']) && $items_id === null) {
                             throw new Exception(__('No action available'));
                         }
-                        // Initial items is used to define $_SESSION['glpimassiveactionselected']
+                        // Initial items is used to define $_SESSION['zentramassiveactionselected']
                         $POST['initial_items'] = $POST['items'];
                         $remove_from_post[]    = 'item';
                         break;
@@ -325,9 +325,9 @@ class MassiveAction
 
                     case 'process':
                         if (isset($POST['initial_items'])) {
-                            $_SESSION['glpimassiveactionselected'] = $POST['initial_items'];
+                            $_SESSION['zentramassiveactionselected'] = $POST['initial_items'];
                         } else {
-                            $_SESSION['glpimassiveactionselected'] = [];
+                            $_SESSION['zentramassiveactionselected'] = [];
                         }
 
                         $remove_from_post = ['items', 'action', 'action_name', 'processor',
@@ -1091,7 +1091,7 @@ class MassiveAction
 
                 if (
                     empty($search["linkfield"])
-                    || ($search['table'] == 'glpi_infocoms')
+                    || ($search['table'] == 'zentra_infocoms')
                 ) {
                     $fieldname = $search["field"];
                 } else {
@@ -1338,7 +1338,7 @@ class MassiveAction
         CommonDBTM $item,
         array $ids
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $action = $ma->getAction();
 
@@ -1460,7 +1460,7 @@ class MassiveAction
                         $link_entity_type = -1;
                         $is_recursive     = 0;
                         // Specific entity item
-                        if ($searchopt[$index]["table"] == "glpi_suppliers") {
+                        if ($searchopt[$index]["table"] == "zentra_suppliers") {
                             $ent = new Supplier();
                             if ($ent->getFromDB($input[$input["field"]])) {
                                 $link_entity_type = $ent->fields["entities_id"];
@@ -1476,7 +1476,7 @@ class MassiveAction
                                     && in_array(
                                         $link_entity_type,
                                         getAncestorsOf(
-                                            "glpi_entities",
+                                            "zentra_entities",
                                             $item->getEntityID()
                                         )
                                     ))
@@ -1567,7 +1567,7 @@ class MassiveAction
                                                 && $related_item->fields["is_recursive"]
                                             ) {
                                                 $link_entity_type = getSonsOf(
-                                                    "glpi_entities",
+                                                    "zentra_entities",
                                                     $related_item->fields["entities_id"]
                                                 );
                                             } else {
@@ -1646,17 +1646,17 @@ class MassiveAction
 
             case 'add_transfer_list':
                 $itemtype = $item->getType();
-                if (!isset($_SESSION['glpitransfer_list'])) {
-                    $_SESSION['glpitransfer_list'] = [];
+                if (!isset($_SESSION['zentratransfer_list'])) {
+                    $_SESSION['zentratransfer_list'] = [];
                 }
-                if (!isset($_SESSION['glpitransfer_list'][$itemtype])) {
-                    $_SESSION['glpitransfer_list'][$itemtype] = [];
+                if (!isset($_SESSION['zentratransfer_list'][$itemtype])) {
+                    $_SESSION['zentratransfer_list'][$itemtype] = [];
                 }
                 foreach ($ids as $id) {
-                    $_SESSION['glpitransfer_list'][$itemtype][$id] = $id;
+                    $_SESSION['zentratransfer_list'][$itemtype][$id] = $id;
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
-                $ma->setRedirect($CFG_GLPI['root_doc'] . '/front/transfer.action.php');
+                $ma->setRedirect($CFG_ZENTRA['root_doc'] . '/front/transfer.action.php');
                 break;
 
             case 'amend_comment':
@@ -1869,7 +1869,7 @@ class MassiveAction
             };
             $message = sprintf(
                 $translation_key,
-                $_SESSION["glpiname"],
+                $_SESSION["zentraname"],
                 $item->getTypeName(1)
             );
             Event::log(
@@ -1889,7 +1889,7 @@ class MassiveAction
             };
             $message = sprintf(
                 $translation_key,
-                $_SESSION["glpiname"],
+                $_SESSION["zentraname"],
                 $count,
                 implode(', ', $ids)
             );

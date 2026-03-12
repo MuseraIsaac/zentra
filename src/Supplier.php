@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\AssetImage;
-use Glpi\Features\Clonable;
-use Glpi\Toolbox\URL;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\AssetImage;
+use Zentra\Features\Clonable;
+use Zentra\Toolbox\URL;
 
 /**
  * Supplier class (suppliers)
@@ -255,7 +255,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_suppliertypes',
+            'table'              => 'zentra_suppliertypes',
             'field'              => 'name',
             'name'               => SupplierType::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -279,7 +279,7 @@ class Supplier extends CommonDBTM
             'massiveaction'      => false,
         ];
 
-        if (($_SESSION["glpinames_format"] ?? User::REALNAME_BEFORE) === User::FIRSTNAME_BEFORE) {
+        if (($_SESSION["zentranames_format"] ?? User::REALNAME_BEFORE) === User::FIRSTNAME_BEFORE) {
             $name1 = 'firstname';
             $name2 = 'name';
         } else {
@@ -289,7 +289,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => 'glpi_contacts',
+            'table'              => 'zentra_contacts',
             'field'              => 'completename',
             'name'               => _n('Associated contact', 'Associated contacts', Session::getPluralNumber()),
             'forcegroupby'       => true,
@@ -299,7 +299,7 @@ class Supplier extends CommonDBTM
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contacts_suppliers',
+                    'table'              => 'zentra_contacts_suppliers',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -317,7 +317,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -334,7 +334,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '29',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'name',
             'name'               => _n('Associated contract', 'Associated contracts', Session::getPluralNumber()),
             'forcegroupby'       => true,
@@ -342,7 +342,7 @@ class Supplier extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contracts_suppliers',
+                    'table'              => 'zentra_contracts_suppliers',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -419,11 +419,11 @@ class Supplier extends CommonDBTM
 
         $criteria = [
             'SELECT'       => [],
-            'FROM'         => 'glpi_infocoms',
+            'FROM'         => 'zentra_infocoms',
             'INNER JOIN'   => [
                 $itemtable  => [
                     'ON' => [
-                        'glpi_infocoms'   => 'items_id',
+                        'zentra_infocoms'   => 'items_id',
                         $itemtable        => 'id',
                     ],
                 ],
@@ -432,10 +432,10 @@ class Supplier extends CommonDBTM
 
         // Set $linktype for entity restriction AND link to search engine
         if ($itemtype === Cartridge::class) {
-            $criteria['INNER JOIN']['glpi_cartridgeitems'] = [
+            $criteria['INNER JOIN']['zentra_cartridgeitems'] = [
                 'ON' => [
-                    'glpi_cartridgeitems'   => 'id',
-                    'glpi_cartridges'       => 'cartridgeitems_id',
+                    'zentra_cartridgeitems'   => 'id',
+                    'zentra_cartridges'       => 'cartridgeitems_id',
                 ],
             ];
 
@@ -444,10 +444,10 @@ class Supplier extends CommonDBTM
         }
 
         if ($itemtype === Consumable::class) {
-            $criteria['INNER JOIN']['glpi_consumableitems'] = [
+            $criteria['INNER JOIN']['zentra_consumableitems'] = [
                 'ON' => [
-                    'glpi_consumableitems'  => 'id',
-                    'glpi_consumables'      => 'consumableitems_id',
+                    'zentra_consumableitems'  => 'id',
+                    'zentra_consumables'      => 'consumableitems_id',
                 ],
             ];
 
@@ -456,10 +456,10 @@ class Supplier extends CommonDBTM
         }
 
         if ($itemtype === Item_DeviceControl::class) {
-            $criteria['INNER JOIN']['glpi_devicecontrols'] = [
+            $criteria['INNER JOIN']['zentra_devicecontrols'] = [
                 'ON' => [
-                    'glpi_items_devicecontrols'   => 'devicecontrols_id',
-                    'glpi_devicecontrols'         => 'id',
+                    'zentra_items_devicecontrols'   => 'devicecontrols_id',
+                    'zentra_devicecontrols'         => 'id',
                 ],
             ];
 
@@ -488,14 +488,14 @@ class Supplier extends CommonDBTM
 
         $criteria['SELECT'] = [
             new QueryExpression($DB::quoteValue($linktype), 'linktype'),
-            'glpi_infocoms.entities_id',
+            'zentra_infocoms.entities_id',
             $linktype::getNameField() . ' AS name',
             ...$itemtable_fields,
         ];
 
         $where = [
-            'glpi_infocoms.itemtype'      => $itemtype,
-            'glpi_infocoms.suppliers_id'  => $this->getID(),
+            'zentra_infocoms.itemtype'      => $itemtype,
+            'zentra_infocoms.suppliers_id'  => $this->getID(),
         ];
         if ($item->maybeTemplate()) {
             $where[$itemtable . '.is_template'] = 0;
@@ -503,7 +503,7 @@ class Supplier extends CommonDBTM
         $criteria['WHERE'] = $where + getEntitiesRestrictCriteria($linktable);
 
         $criteria['ORDERBY'] = [
-            'glpi_infocoms.entities_id',
+            'zentra_infocoms.entities_id',
             "$linktable." . $linktype::getNameField(),
         ];
 
@@ -553,7 +553,7 @@ class Supplier extends CommonDBTM
             $nb = count($items);
             $itemtype_name = $itemtype::getTypeName($nb);
 
-            if ($nb > $_SESSION['glpilist_limit']) {
+            if ($nb > $_SESSION['zentralist_limit']) {
                 $first_item = reset($items);
                 $linktype = $first_item['linktype'];
                 $link_params = Toolbox::append_params([
@@ -583,14 +583,14 @@ class Supplier extends CommonDBTM
                 foreach ($items as $data) {
                     $name = $data['name'];
                     $linktype = $data['linktype'];
-                    if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                    if ($_SESSION["zentrais_ids_visible"] || empty($data["name"])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data['id']);
                     }
                     $link = htmlescape($linktype::getFormURLWithID($data['id']));
                     $name = "<a href='$link'>" . htmlescape($name) . "</a>";
 
                     if (!isset($entity_names_cache[$data["entities_id"]])) {
-                        $entity_names_cache[$data["entities_id"]] = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                        $entity_names_cache[$data["entities_id"]] = Dropdown::getDropdownName("zentra_entities", $data["entities_id"]);
                     }
                     $entries[] = [
                         'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
@@ -630,7 +630,7 @@ class Supplier extends CommonDBTM
 
         return $DB->request([
             'SELECT' => ["id"],
-            'FROM' => 'glpi_suppliers',
+            'FROM' => 'zentra_suppliers',
             'WHERE' => ['email' => $email],
         ]);
     }

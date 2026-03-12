@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  *  This class manages the ajax notifications settings
@@ -58,9 +58,9 @@ class NotificationAjaxSetting extends NotificationSetting
 
     public function showFormConfig()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if ($CFG_GLPI['notifications_ajax']) {
+        if ($CFG_ZENTRA['notifications_ajax']) {
             $crontask = new CronTask();
             $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -80,7 +80,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Cannot add task from my ITIL items without rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights'        => 0,
             ],
@@ -95,7 +95,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Can add task from my ITIL items with the ADDMY right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights'        => \CommonITILTask::ADDMY,
             ],
@@ -168,7 +168,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Cannot add task without rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -183,7 +183,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Can add task with the expected right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => $right,
             ],
@@ -268,7 +268,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Cannot add task without rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -283,7 +283,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Can add task with the expected right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => $right,
             ],
@@ -348,7 +348,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Cannot update task from my ITIL items without rights
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => 0,
             ],
@@ -363,7 +363,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         // Can update task from my ITIL items with the UPDATEMY right
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             [
                 'rights' => \CommonITILTask::UPDATEMY,
             ],

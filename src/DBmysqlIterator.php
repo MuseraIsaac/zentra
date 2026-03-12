@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryParam;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryParam;
+use Zentra\DBAL\QuerySubQuery;
 
 use function Safe\preg_replace;
 use function Safe\preg_split;
@@ -527,7 +527,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
             /**
              * Delegate the safeness check to the caller.
-             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
+             * There is no such usage in ZENTRA, it is the plugin developer responsibility to switch to safer criteria specs.
              * @psalm-taint-escape sql
              */
             $safe_crit = $crit;
@@ -558,7 +558,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
                     Toolbox::deprecated(
                         sprintf(
-                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
+                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Zentra\DBAL\QueryExpression("%s");`.',
                             $value ? 'true' : 'false'
                         ),
                         version: '11.1'

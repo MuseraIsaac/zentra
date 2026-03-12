@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Debug\Profiler;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Form\FormTranslation;
-use Glpi\Helpdesk\HelpdeskTranslation;
-use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
-use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\UI\IllustrationManager;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Debug\Profiler;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Form\FormTranslation;
+use Zentra\Helpdesk\HelpdeskTranslation;
+use Zentra\Helpdesk\Tile\LinkableToTilesInterface;
+use Zentra\Helpdesk\Tile\TilesManager;
+use Zentra\ItemTranslation\Context\ProvideTranslationsInterface;
+use Zentra\ItemTranslation\Context\TranslationHandler;
+use Zentra\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
@@ -235,7 +235,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public function pre_deleteItem()
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         // Security do not delete root entity
         if ($this->getID() === 0) {
@@ -255,7 +255,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         // Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
         $this->cleanParentsSons();
         $ckey = 'ancestors_cache_' . static::getTable() . '_' . $this->getID();
-        $GLPI_CACHE->delete($ckey);
+        $ZENTRA_CACHE->delete($ckey);
 
         return true;
     }
@@ -287,7 +287,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             return true;
         }
 
-        return !empty($_SESSION["glpiactive_entity_recursive"]);
+        return !empty($_SESSION["zentraactive_entity_recursive"]);
     }
 
     public static function canCreate(): bool
@@ -408,7 +408,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         $input = $this->handleConfigStrategyFields($input);
 
-        $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+        $input['max_closedate'] = $_SESSION["zentra_currenttime"];
 
         if (
             empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude'])
@@ -424,7 +424,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         if (!array_key_exists('custom_css_code', $input) || $input['custom_css_code'] === null) {
             // The `custom_css_code` field is a textfield and therefore has no default value.
             // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
-            // See https://github.com/glpi-project/glpi/pull/17648
+            // See https://github.com/zentra-project/zentra/pull/17648
             $input['custom_css_code'] = '';
         }
 
@@ -453,7 +453,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         if (array_key_exists('custom_css_code', $input) && $input['custom_css_code'] === null) {
             // The `custom_css_code` field is a textfield and therefore has no default value.
             // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
-            // See https://github.com/glpi-project/glpi/pull/17648
+            // See https://github.com/zentra-project/zentra/pull/17648
             $input['custom_css_code'] = '';
         }
 
@@ -541,8 +541,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     private function handleCustomScenesSubmittedFile(string $file): ?string
     {
         // Read file path
-        $path = realpath(GLPI_TMP_DIR . "/$file");
-        if (!$path || !str_starts_with($path, realpath(GLPI_TMP_DIR))) {
+        $path = realpath(ZENTRA_TMP_DIR . "/$file");
+        if (!$path || !str_starts_with($path, realpath(ZENTRA_TMP_DIR))) {
             // File doest not exist or is outside upload directory
             $message = __s("An unexpected error occurred");
             Session::addMessageAfterRedirect($message);
@@ -622,7 +622,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                     && $input[$config_key] != $this->fields[$config_key]
                 )
             ) {
-                $input[$max_key] = $_SESSION['glpi_currenttime'];
+                $input[$max_key] = $_SESSION['zentra_currenttime'];
             }
 
             // `max_closedate` cannot be empty (cron would not work).
@@ -650,7 +650,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -683,7 +683,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;
@@ -796,19 +796,19 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         // The entity didn't initially had children, we switch to recursive mode
         $active_entity = Entity::getById(Session::getActiveEntity());
         if ($active_entity && $active_entity->countChildren() === 1) {
-            $_SESSION["glpiactive_entity_recursive"] = true;
+            $_SESSION["zentraactive_entity_recursive"] = true;
         }
 
         // Add right to current user - Hack to avoid login/logout
-        $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
-        $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
-        // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        $_SESSION['zentraactiveentities'][$this->fields['id']] = $this->fields['id'];
+        $_SESSION['zentraactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
+        // Root entity cannot be deleted, so if we added an entity this means ZENTRA is now multi-entity
+        $_SESSION['zentra_multientitiesmode'] = 1;
     }
 
     public function post_updateItem($history = true)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         parent::post_updateItem($history);
 
@@ -834,7 +834,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 $cache_entries[] = sprintf('entity_%d_config_%s', $entity_id, $field);
             }
         }
-        $GLPI_CACHE->deleteMultiple($cache_entries);
+        $ZENTRA_CACHE->deleteMultiple($cache_entries);
     }
 
     public function cleanDBonPurge()
@@ -1064,7 +1064,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_authldaps',
+            'table'              => 'zentra_authldaps',
             'field'              => 'name',
             'name'               => __('LDAP directory of an entity'),
             'massiveaction'      => false,
@@ -1677,7 +1677,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             4,
             "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s adds the item'), $_SESSION["glpiname"])
+            sprintf(__('%s adds the item'), $_SESSION["zentraname"])
         );
 
         Html::back();
@@ -1772,7 +1772,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             return false;
         }
 
-        $states = getAllDataFromTable('glpi_states');
+        $states = getAllDataFromTable('zentra_states');
         $state_options[0] = __('No autofill');
         if ($ID > 0) {
             $state_options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -1810,7 +1810,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $entities = [];
         if ($ID > 0) {
             $entities = [$entity->fields['entities_id']];
-            foreach (getAncestorsOf('glpi_entities', $entity->fields['entities_id']) as $ent) {
+            foreach (getAncestorsOf('zentra_entities', $entity->fields['entities_id']) as $ent) {
                 if (Session::haveAccessToEntity($ent)) {
                     $entities[] = $ent;
                 }
@@ -2193,7 +2193,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $id_using_strategy = [
             'calendars_id',
@@ -2224,8 +2224,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $ref_cache_key = sprintf('entity_%d_config_%s', $entities_id, $fieldref);
         $val_cache_key = sprintf('entity_%d_config_%s', $entities_id, $fieldval);
 
-        $ref = $GLPI_CACHE->get($ref_cache_key);
-        $val = $fieldref === $fieldval ? $ref : $GLPI_CACHE->get($val_cache_key);
+        $ref = $ZENTRA_CACHE->get($ref_cache_key);
+        $val = $fieldref === $fieldval ? $ref : $ZENTRA_CACHE->get($val_cache_key);
 
         if ($ref === null || $val === null) {
             $entities_query = [
@@ -2259,7 +2259,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             }
         }
 
-        $GLPI_CACHE->setMultiple(
+        $ZENTRA_CACHE->setMultiple(
             [
                 $ref_cache_key => $ref,
                 $val_cache_key => $val,
@@ -2315,7 +2315,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 $url = str_replace(
                     "[REQUESTTYPE_NAME]",
                     urlencode(Dropdown::getDropdownName(
-                        'glpi_requesttypes',
+                        'zentra_requesttypes',
                         $item->fields['requesttypes_id']
                     )),
                     $url
@@ -2348,7 +2348,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $url = str_replace(
                 "[TICKETCATEGORY_NAME]",
                 urlencode(Dropdown::getDropdownName(
-                    'glpi_itilcategories',
+                    'zentra_itilcategories',
                     $item->fields['itilcategories_id']
                 )),
                 $url
@@ -2358,7 +2358,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $url = str_replace(
                 "[ITILCATEGORY_NAME]",
                 urlencode(Dropdown::getDropdownName(
-                    'glpi_itilcategories',
+                    'zentra_itilcategories',
                     $item->fields['itilcategories_id']
                 )),
                 $url
@@ -2387,7 +2387,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $url = str_replace(
                 "[SOLUTIONTYPE_NAME]",
                 urlencode(Dropdown::getDropdownName(
-                    'glpi_solutiontypes',
+                    'zentra_solutiontypes',
                     $item->fields['solutiontypes_id']
                 )),
                 $url
@@ -2403,7 +2403,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 $url = str_replace(
                     "[SLA_TTO_NAME]",
                     urlencode(Dropdown::getDropdownName(
-                        'glpi_slas',
+                        'zentra_slas',
                         $item->fields['slas_id_tto']
                     )),
                     $url
@@ -2418,7 +2418,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 $url = str_replace(
                     "[SLA_TTR_NAME]",
                     urlencode(Dropdown::getDropdownName(
-                        'glpi_slas',
+                        'zentra_slas',
                         $item->fields['slas_id_ttr']
                     )),
                     $url
@@ -2433,7 +2433,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 $url = str_replace(
                     "[SLALEVEL_NAME]",
                     urlencode(Dropdown::getDropdownName(
-                        'glpi_slalevels',
+                        'zentra_slalevels',
                         $item->fields['slalevels_id_ttr']
                     )),
                     $url
@@ -2646,7 +2646,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                                 return htmlescape(
                                     sprintf(
                                         __('Fill when shifting to state %s'),
-                                        Dropdown::getDropdownName(table: 'glpi_states', id: (int) $sid, default: __('None'))
+                                        Dropdown::getDropdownName(table: 'zentra_states', id: (int) $sid, default: __('None'))
                                     )
                                 );
                             }
@@ -2703,7 +2703,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 return match ($strategy) {
                     self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
                     self::CONFIG_NEVER => __s('No change of entity'),
-                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_entities', id: $values[$field], default: __('None'))),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'zentra_entities', id: $values[$field], default: __('None'))),
                 };
 
             case 'tickettemplates_id':
@@ -2718,7 +2718,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 return match ($strategy) {
                     self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
                     self::CONFIG_NEVER => __s('24/7'),
-                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_calendars', id: $values[$field], default: __('None'))),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'zentra_calendars', id: $values[$field], default: __('None'))),
                 };
 
             case 'transfers_id':
@@ -2726,7 +2726,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 return match (true) {
                     $strategy === self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
                     $strategy === self::CONFIG_NEVER, $values[$field] === 0 => __s('No automatic transfer'),
-                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_transfers', id: $values[$field], default: __('None'))),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'zentra_transfers', id: $values[$field], default: __('None'))),
                 };
 
             case 'contracts_id_default':
@@ -2734,7 +2734,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 return match ($strategy) {
                     self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
                     self::CONFIG_AUTO => __s('Contract in ticket entity'),
-                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_contracts', id: $values[$field], default: __('None'))),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'zentra_contracts', id: $values[$field], default: __('None'))),
                 };
 
             case 'is_contact_autoupdate':
@@ -2839,7 +2839,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             case 'autofill_decommission_date':
                 $tab[0]                   = __('No autofill');
                 $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-                $states = getAllDataFromTable('glpi_states');
+                $states = getAllDataFromTable('zentra_states');
                 foreach ($states as $state) {
                     $tab[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
                            //TRANS: %s is the name of the state
@@ -2865,7 +2865,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                     Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
                     self::CONFIG_PARENT         => __('Inheritance of the parent entity'),
                 ];
-                $states = getAllDataFromTable('glpi_states');
+                $states = getAllDataFromTable('zentra_states');
                 foreach ($states as $state) {
                     $tab[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
                         //TRANS: %s is the name of the state
@@ -3083,7 +3083,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             )
         );
 
-        return '<span class="glpi-badge" title="' . htmlescape($title) . '">' . $breadcrumbs . "</span>";
+        return '<span class="zentra-badge" title="' . htmlescape($title) . '">' . $breadcrumbs . "</span>";
     }
 
     /**
@@ -3126,7 +3126,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         $last_url  = '<i class="ti ti-caret-right-filled mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
 
-        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
+        return '<span class="zentra-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }
 
     /**
@@ -3150,14 +3150,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     {
         global $DB;
 
-        $sons = getSonsOf('glpi_entities', $entities_id_root);
+        $sons = getSonsOf('zentra_entities', $entities_id_root);
         if (!isset($sons[$entities_id_root])) {
             $sons[$entities_id_root] = $entities_id_root;
         }
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'name', 'entities_id'],
-            'FROM'   => 'glpi_entities',
+            'FROM'   => 'zentra_entities',
             'WHERE'  => ['entities_id' => $sons],
             'ORDER'  => 'name',
         ]);
@@ -3191,7 +3191,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         Profiler::getInstance()->stop('constructTreeFromList');
         return [
             $entities_id_root => [
-                'name' => Dropdown::getDropdownName('glpi_entities', $entities_id_root),
+                'name' => Dropdown::getDropdownName('zentra_entities', $entities_id_root),
                 'tree' => $constructed,
             ],
         ];
@@ -3205,11 +3205,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     {
         $twig = TemplateRenderer::getInstance();
 
-        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+        $ancestors = getAncestorsOf('zentra_entities', $_SESSION['zentraactive_entity']);
 
         Profiler::getInstance()->start('Generate entity tree');
         $entitiestree = [];
-        foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+        foreach ($_SESSION['zentraactiveprofile']['entities'] as $default_entity) {
             $default_entity_id = $default_entity['id'];
             $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
@@ -3253,7 +3253,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 if (isset($ancestors[$entity['key']])) {
                     $entity['expanded'] = 'true';
                 }
-                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
+                if ($entity['key'] == $_SESSION['zentraactive_entity']) {
                     $entity['selected'] = 'true';
                 }
                 if (isset($entity['children'])) {

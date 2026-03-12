@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,10 +39,10 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
-use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Tests\DbTestCase;
+use Zentra\Event;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
@@ -150,7 +150,7 @@ class CommonDBTMTest extends DbTestCase
         $instance = new Computer();
 
         $this->expectExceptionMessage(
-            '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".'
+            '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `zentra_computers`.* FROM `zentra_computers` WHERE `contact` = \'johndoe\'".'
         );
         $instance->getFromDbByRequest([
             'WHERE' => ['contact' => 'johndoe'],
@@ -192,9 +192,9 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($comp->getEmpty());
         $this->assertSame(0, $comp->fields['entities_id']);
 
-        $_SESSION["glpiactive_entity"] = 12;
+        $_SESSION["zentraactive_entity"] = 12;
         $this->assertTrue($comp->getEmpty());
-        unset($_SESSION['glpiactive_entity']);
+        unset($_SESSION['zentraactive_entity']);
         $this->assertSame(12, $comp->fields['entities_id']);
     }
 
@@ -207,9 +207,9 @@ class CommonDBTMTest extends DbTestCase
     {
         return [
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
-            [\Config::class, 'glpi_configs'],
-            [Computer::class, 'glpi_computers'],
-            [\User::class, 'glpi_users'],
+            [\Config::class, 'zentra_configs'],
+            [Computer::class, 'zentra_computers'],
+            [\User::class, 'zentra_users'],
         ];
     }
 
@@ -233,12 +233,12 @@ class CommonDBTMTest extends DbTestCase
     public function testGetTableField()
     {
         // Base case
-        $this->assertSame('glpi_computers.serial', Computer::getTableField('serial'));
-        $this->assertSame('glpi_computers.serial', CommonDBTM::getTableField('serial', Computer::class));
+        $this->assertSame('zentra_computers.serial', Computer::getTableField('serial'));
+        $this->assertSame('zentra_computers.serial', CommonDBTM::getTableField('serial', Computer::class));
 
         // Wildcard case
-        $this->assertSame('glpi_configs.*', \Config::getTableField('*'));
-        $this->assertSame('glpi_configs.*', CommonDBTM::getTableField('*', \Config::class));
+        $this->assertSame('zentra_configs.*', \Config::getTableField('*'));
+        $this->assertSame('zentra_configs.*', CommonDBTM::getTableField('*', \Config::class));
     }
 
     /**
@@ -461,9 +461,9 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $id[3]);
 
         // Super admin
-        $this->login('glpi', 'glpi');
-        $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-        $this->assertEquals(4095, $_SESSION['glpiactiveprofile']['printer']);
+        $this->login('zentra', 'zentra');
+        $this->assertEquals(4, $_SESSION['zentraactiveprofile']['id']);
+        $this->assertEquals(4095, $_SESSION['zentraactiveprofile']['printer']);
 
         // See all
         $this->assertTrue(\Session::changeActiveEntities('all'));
@@ -529,9 +529,9 @@ class CommonDBTMTest extends DbTestCase
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
         // Super admin
-        $this->login('glpi', 'glpi');
-        $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-        $this->assertEquals(255, $_SESSION['glpiactiveprofile']['contact_enterprise']);
+        $this->login('zentra', 'zentra');
+        $this->assertEquals(4, $_SESSION['zentraactiveprofile']['id']);
+        $this->assertEquals(255, $_SESSION['zentraactiveprofile']['contact_enterprise']);
 
         // See all
         $this->assertTrue(\Session::changeActiveEntities('all'));
@@ -841,8 +841,8 @@ class CommonDBTMTest extends DbTestCase
     {
         $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
-        $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
+        $bkp_current = $_SESSION['zentra_currenttime'];
+        $_SESSION['zentra_currenttime'] = '2000-01-01 00:00:00';
 
         //test with date set
         $computerID = $computer->add([
@@ -878,15 +878,15 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals('2000-01-01 00:00:00', $computer->fields['date_mod']);
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
-        $_SESSION['glpi_currenttime'] = $bkp_current;
+        $_SESSION['zentra_currenttime'] = $bkp_current;
     }
 
     public function testUpdate()
     {
         $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
-        $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
+        $bkp_current = $_SESSION['zentra_currenttime'];
+        $_SESSION['zentra_currenttime'] = '2000-01-01 00:00:00';
 
         //test with date set
         $computerID = $computer->add([
@@ -960,14 +960,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($comp->getFromDB($cid));
         $this->assertSame('2019-03-04 10:00:00', $comp->fields['date_creation']);
 
-        $user = getItemByTypeName('User', 'glpi');
+        $user = getItemByTypeName('User', 'zentra');
         $this->assertTrue($user->update(['id' => $user->fields['id'], 'timezone' => 'Europe/Paris']));
 
         //check tz is set
         $this->assertTrue($user->getFromDB($user->fields['id']));
         $this->assertSame('Europe/Paris', $user->fields['timezone']);
 
-        $this->realLogin('glpi', 'glpi');
+        $this->realLogin('zentra', 'zentra');
         $this->assertTrue($comp->getFromDB($cid));
         $this->assertMatchesRegularExpression('/2019-03-04 1[12]:00:00/', $comp->fields['date_creation']);
     }
@@ -1037,7 +1037,7 @@ class CommonDBTMTest extends DbTestCase
         $config_name,
         $linked_itemtype = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -1093,10 +1093,10 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $relation_item_2_id);
         $this->assertTrue($relation_item->getFromDB($relation_item_2_id));
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI[$config_name] = [$computer->getType()];
+        $cfg_backup = $CFG_ZENTRA;
+        $CFG_ZENTRA[$config_name] = [$computer->getType()];
         $computer->delete(['id' => $computer_1_id], true);
-        $CFG_GLPI = $cfg_backup;
+        $CFG_ZENTRA = $cfg_backup;
 
         // Relation with deleted item has been cleaned
         $this->assertFalse($relation_item->getFromDB($relation_item_1_id));
@@ -1280,13 +1280,13 @@ class CommonDBTMTest extends DbTestCase
         array $active_entities,
         array $expected
     ) {
-        $_SESSION['glpiactiveentities'] = $active_entities;
+        $_SESSION['zentraactiveentities'] = $active_entities;
 
         $res = CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
         $this->assertEquals($expected, $res);
 
         // Reset session
-        unset($_SESSION['glpiactiveentities']);
+        unset($_SESSION['zentraactiveentities']);
     }
 
     public function testGetById()
@@ -1464,7 +1464,7 @@ class CommonDBTMTest extends DbTestCase
 
         $filename_txt = '65292dc32d6a87.46654965' . 'foo.txt';
         $content = $this->getUniqueString();
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename_txt, $content);
 
         $input = [
             'name' => 'Upload new file',
@@ -1481,7 +1481,7 @@ class CommonDBTMTest extends DbTestCase
         $item->input = $input;
         $item->addFiles($input);
 
-        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+        unlink(ZENTRA_TMP_DIR . '/' . $filename_txt);
 
         // Check the document exists and is linked to the computer
         $document_item = new Document_Item();
@@ -1503,7 +1503,7 @@ class CommonDBTMTest extends DbTestCase
 
         // Create the document
         $filename1_txt = '6079908c4be820.58460925' . 'foo.txt';
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename1_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename1_txt, $content);
 
         $document = new Document();
         $init_document_id = $document->add([
@@ -1519,7 +1519,7 @@ class CommonDBTMTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $init_document_id);
 
-        unlink(GLPI_TMP_DIR . '/' . $filename1_txt);
+        unlink(ZENTRA_TMP_DIR . '/' . $filename1_txt);
 
         $this->assertTrue($document->getFromDB($init_document_id));
 
@@ -1527,7 +1527,7 @@ class CommonDBTMTest extends DbTestCase
         $item = getItemByTypeName(Computer::class, '_test_pc01');
 
         $filename2_txt = '65292dc32d6a87.22222222' . 'bar.txt';
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename2_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename2_txt, $content);
 
         $input = [
             'name' => 'Upload new file',
@@ -1544,7 +1544,7 @@ class CommonDBTMTest extends DbTestCase
         $item->input = $input;
         $item->addFiles($input);
 
-        unlink(GLPI_TMP_DIR . '/' . $filename2_txt);
+        unlink(ZENTRA_TMP_DIR . '/' . $filename2_txt);
 
         // Check the document is linked to the computer
         $document_item = new Document_Item();
@@ -1571,7 +1571,7 @@ class CommonDBTMTest extends DbTestCase
 
         $filename_txt = '65292dc32d6a87.46654965' . 'image_paste12345678.png';
         $content = $this->getUniqueString();
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename_txt, $content);
 
         $tag = '0bf32119-761764d0-65292dc0770083.87619309';
 
@@ -1592,7 +1592,7 @@ class CommonDBTMTest extends DbTestCase
         $item->addFiles($input);
 
         // Temporary file should be cleaned up by the fix
-        $this->assertFileDoesNotExist(GLPI_TMP_DIR . '/' . $filename_txt);
+        $this->assertFileDoesNotExist(ZENTRA_TMP_DIR . '/' . $filename_txt);
 
         // No document should be created since tag is not in content
         $document_item = new Document_Item();
@@ -1605,7 +1605,7 @@ class CommonDBTMTest extends DbTestCase
      * Test that files are processed normally when their tag is present in content.
      * This is a non-regression test for the fix of issue #22276.
      *
-     * @see https://github.com/glpi-project/glpi/issues/22276
+     * @see https://github.com/zentra-project/zentra/issues/22276
      *
      * @return void
      */
@@ -1619,7 +1619,7 @@ class CommonDBTMTest extends DbTestCase
 
         $filename_txt = '65292dc32d6a87.46654965' . 'image_paste87654321.png';
         $content = $this->getUniqueString();
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename_txt, $content);
 
         $tag = '0bf32119-761764d0-65292dc0770083.87619309';
 
@@ -1639,7 +1639,7 @@ class CommonDBTMTest extends DbTestCase
         $item->input = $input;
         $item->addFiles($input);
 
-        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+        unlink(ZENTRA_TMP_DIR . '/' . $filename_txt);
 
         // Document should be created and linked since tag is in content
         $document_item = new Document_Item();
@@ -1664,7 +1664,7 @@ class CommonDBTMTest extends DbTestCase
         // File picker files do NOT have the image_paste pattern
         $filename_txt = '65292dc32d6a87.46654965' . 'user_document.pdf';
         $content = $this->getUniqueString();
-        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . $filename_txt, $content);
 
         $tag = '0bf32119-761764d0-65292dc0770083.87619309';
 
@@ -1685,7 +1685,7 @@ class CommonDBTMTest extends DbTestCase
         $item->input = $input;
         $item->addFiles($input);
 
-        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+        unlink(ZENTRA_TMP_DIR . '/' . $filename_txt);
 
         // Document should be created and linked even though tag is not in content
         // because this is a file picker upload, not a pasted image
@@ -1923,11 +1923,11 @@ class CommonDBTMTest extends DbTestCase
         $this->login();
 
         $this->assertTrue($itemtype::canView());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->assertTrue($itemtype::canView());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $this->assertTrue($itemtype::canView());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
         $this->assertFalse($itemtype::canView());
     }
 
@@ -1949,7 +1949,7 @@ class CommonDBTMTest extends DbTestCase
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['zentraID']])
         );
         \Session::loadGroups();
 
@@ -1965,20 +1965,20 @@ class CommonDBTMTest extends DbTestCase
         );
 
         // User cannot access the item without any right
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = 0;
         $this->assertFalse($item->canViewItem());
 
         // User can access the item with the global right, even if not own/assigned
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ;
         $this->assertTrue($item->canViewItem());
 
         // User can access the item with the assigned right, but only if item is assigned to himself or one of its groups
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->assertFalse($item->canViewItem());
 
         $this->assertTrue($item->update([
             'id' => $item->getID(),
-            'users_id_tech' => $_SESSION['glpiID'],
+            'users_id_tech' => $_SESSION['zentraID'],
         ]));
         $this->assertTrue($item->canViewItem());
 
@@ -1995,12 +1995,12 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($item->canViewItem());
 
         // User can access the item with the own right, but only if item is owned by himself or one of its groups
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $this->assertFalse($item->canViewItem());
 
         $this->assertTrue($item->update([
             'id' => $item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => $_SESSION['zentraID'],
         ]));
         $this->assertTrue($item->canViewItem());
 
@@ -2023,11 +2023,11 @@ class CommonDBTMTest extends DbTestCase
         $this->login();
 
         $this->assertTrue($itemtype::canUpdate());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->assertTrue($itemtype::canUpdate());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
         $this->assertTrue($itemtype::canUpdate());
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
         $this->assertFalse($itemtype::canUpdate());
     }
 
@@ -2047,7 +2047,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         $group_user = new \Group_User();
-        $this->assertGreaterThan(0, $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]));
+        $this->assertGreaterThan(0, $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['zentraID']]));
         \Session::loadGroups();
 
         // Create the item
@@ -2062,20 +2062,20 @@ class CommonDBTMTest extends DbTestCase
         );
 
         // User cannot update the item without any right
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = 0;
         $this->assertFalse($item->canUpdateItem());
 
         // User can update the item with the global right, even if not own/assigned
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = UPDATE;
         $this->assertTrue($item->canUpdateItem());
 
         // User can update the item with the assigned right, but only if item is assigned to himself or one of its groups
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->assertFalse($item->canUpdateItem());
 
         $this->assertTrue($item->update([
             'id' => $item->getID(),
-            'users_id_tech' => $_SESSION['glpiID'],
+            'users_id_tech' => $_SESSION['zentraID'],
         ]));
         $this->assertTrue($item->canUpdateItem());
 
@@ -2092,12 +2092,12 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($item->canUpdateItem());
 
         // User can update the item with the own right, but only if item is owned by himself or one of its groups
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
         $this->assertFalse($item->canUpdateItem());
 
         $this->assertTrue($item->update([
             'id' => $item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => $_SESSION['zentraID'],
         ]));
         $this->assertTrue($item->canUpdateItem());
 
@@ -2363,7 +2363,7 @@ class CommonDBTMTest extends DbTestCase
     ): void {
         $this->login();
         foreach ($rights as $rightname => $right) {
-            $_SESSION['glpiactiveprofile'][$rightname] = $right;
+            $_SESSION['zentraactiveprofile'][$rightname] = $right;
         }
         $item = new $itemtype();
         $actions = $item->getSpecificMassiveActions();

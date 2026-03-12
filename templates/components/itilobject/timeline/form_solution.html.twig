@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             {% if item.getType() == 'Ticket' and item.countOpenChildrenOfSameType() > 0 %}
                <div class="alert alert-important alert-warning">
@@ -219,7 +219,7 @@
             </div>
 
          {% if not noform %}
-               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
                   {% if (subitem.fields['id'] ?? 0) <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">
@@ -235,7 +235,7 @@
                   {% endif %}
                </div>
 
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+               <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
             </form>
          {% endif %}
       </div>
@@ -243,7 +243,7 @@
       <script type="text/javascript">
          function solutiontemplate_update{{ rand }}(value) {
             $.ajax({
-               url: `${CFG_GLPI.root_doc}/ajax/solution.php`,
+               url: `${CFG_ZENTRA.root_doc}/ajax/solution.php`,
                type: 'POST',
                data: {
                   solutiontemplates_id: value,

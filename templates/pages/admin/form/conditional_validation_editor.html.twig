@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@
     {% for condition in defined_conditions %}
         <div
             class="row mt-3"
-            data-glpi-conditions-editor-condition
-            data-glpi-conditions-editor-condition-index="{{ loop.index0 }}"
+            data-zentra-conditions-editor-condition
+            data-zentra-conditions-editor-condition-index="{{ loop.index0 }}"
             data-testid="validation-condition"
         >
             <div class="col-12">
@@ -54,7 +54,7 @@
                                     'value': condition.getLogicOperator().value,
                                     'aria_label' : __('Logic operator'),
                                     'add_data_attributes': {
-                                        'glpi-conditions-editor-logic-operator': '',
+                                        'zentra-conditions-editor-logic-operator': '',
                                     },
                             }]) %}
                         </span>
@@ -65,19 +65,19 @@
                         type="hidden"
                         value="{{ question_key }}"
                         name="_validation_conditions[{{ loop.index0 }}][item]"
-                        data-glpi-conditions-editor-item
+                        data-zentra-conditions-editor-item
                     />
                     <input
                         type="hidden"
                         value="{{ condition.getItemUuid() }}"
                         name="_validation_conditions[{{ loop.index0 }}][item_uuid]"
-                        data-glpi-conditions-editor-item-uuid
+                        data-zentra-conditions-editor-item-uuid
                     />
                     <input
                         type="hidden"
-                        value="{{ enum('Glpi\\Form\\Condition\\Type').QUESTION.value }}"
+                        value="{{ enum('Zentra\\Form\\Condition\\Type').QUESTION.value }}"
                         name="_validation_conditions[{{ loop.index0 }}][item_type]"
-                        data-glpi-conditions-editor-item-type
+                        data-zentra-conditions-editor-item-type
                     />
 
                     <span class="me-2 value-operator-selector">
@@ -92,7 +92,7 @@
                                 'value': value_op,
                                 'aria_label' : __('Value operator'),
                                 'add_data_attributes': {
-                                    'glpi-conditions-editor-value-operator': '',
+                                    'zentra-conditions-editor-value-operator': '',
                                 },
                             }
                         ]) %}
@@ -119,7 +119,7 @@
                         role="button"
                         aria-label="{{ __("Delete criteria") }}"
                         class="ti ti-trash text-danger cursor-pointer ms-auto"
-                        data-glpi-condition-editor-delete-condition
+                        data-zentra-condition-editor-delete-condition
                     ></i>
                 </div>
             </div>
@@ -127,7 +127,7 @@
     {% endfor %}
 
     <button
-        data-glpi-condition-editor-add-condition
+        data-zentra-condition-editor-add-condition
         type="button"
         class="d-flex align-items-center btn btn-sm btn-ghost-secondary mt-3"
         aria-label="{{ __("Add another criteria") }}"

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  *  Class KnowbaseItem_Item
@@ -59,11 +59,11 @@ class KnowbaseItem_Item extends CommonDBRelation
         return _n('Knowledge base item', 'Knowledge base items', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (static::canView() && $item instanceof CommonDBTM) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::getCountForItem($item);
             }
 
@@ -78,7 +78,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -132,7 +132,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             ]);
         }
 
-        $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+        $linked_items = self::getItems($item, $start, $_SESSION['zentralist_limit']);
         $entries = [];
         foreach ($linked_items as $data) {
             $linked_item = null;
@@ -160,7 +160,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
@@ -197,7 +197,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      */
     public static function dropdownAllTypes(CommonDBTM $item, $name)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $onlyglobal = 0;
         $entity_restrict = -1;
@@ -206,7 +206,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return Dropdown::showSelectItemFromItemtypes([
             'items_id_name'   => $name,
             'entity_restrict' => $entity_restrict,
-            'itemtypes'       => $CFG_GLPI['kb_types'],
+            'itemtypes'       => $CFG_ZENTRA['kb_types'],
             'onlyglobal'      => $onlyglobal,
             'checkright'      => $checkright,
         ]);
@@ -227,28 +227,28 @@ class KnowbaseItem_Item extends CommonDBRelation
         global $DB;
 
         $criteria = [
-            'FROM'      => ['glpi_knowbaseitems_items'],
-            'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
+            'FROM'      => ['zentra_knowbaseitems_items'],
+            'FIELDS'    => ['zentra_knowbaseitems_items' => '*'],
             'ORDER'     => ['itemtype', 'items_id DESC'],
             'GROUPBY'   => [
-                'glpi_knowbaseitems_items.id',
-                'glpi_knowbaseitems_items.knowbaseitems_id',
-                'glpi_knowbaseitems_items.itemtype',
-                'glpi_knowbaseitems_items.items_id',
-                'glpi_knowbaseitems_items.date_creation',
-                'glpi_knowbaseitems_items.date_mod',
+                'zentra_knowbaseitems_items.id',
+                'zentra_knowbaseitems_items.knowbaseitems_id',
+                'zentra_knowbaseitems_items.itemtype',
+                'zentra_knowbaseitems_items.items_id',
+                'zentra_knowbaseitems_items.date_creation',
+                'zentra_knowbaseitems_items.date_mod',
             ],
         ];
 
         if ($item::class === KnowbaseItem::class) {
             $criteria['WHERE'][] = [
-                'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
+                'zentra_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
             ];
         } else {
             $criteria = array_merge_recursive($criteria, self::getVisibilityCriteriaForItem($item));
             $criteria['WHERE'][] = [
-                'glpi_knowbaseitems_items.items_id' => $item->getID(),
-                'glpi_knowbaseitems_items.itemtype' => $item::class,
+                'zentra_knowbaseitems_items.items_id' => $item->getID(),
+                'zentra_knowbaseitems_items.itemtype' => $item::class,
             ];
         }
 
@@ -345,17 +345,17 @@ class KnowbaseItem_Item extends CommonDBRelation
     {
         if ($item::class === KnowbaseItem::class) {
             $criteria['WHERE'] = [
-                'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
+                'zentra_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
             ];
         } else {
             $criteria = self::getVisibilityCriteriaForItem($item);
             $criteria['WHERE'][] = [
-                'glpi_knowbaseitems_items.itemtype' => $item::class,
-                'glpi_knowbaseitems_items.items_id' => $item->getId(),
+                'zentra_knowbaseitems_items.itemtype' => $item::class,
+                'zentra_knowbaseitems_items.items_id' => $item->getId(),
             ];
         }
 
-        return countElementsInTable('glpi_knowbaseitems_items', $criteria);
+        return countElementsInTable('zentra_knowbaseitems_items', $criteria);
     }
 
     /**
@@ -366,10 +366,10 @@ class KnowbaseItem_Item extends CommonDBRelation
         $criteria = array_merge_recursive(
             [
                 'INNER JOIN' => [
-                    'glpi_knowbaseitems' => [
+                    'zentra_knowbaseitems' => [
                         'ON' => [
-                            'glpi_knowbaseitems_items' => 'knowbaseitems_id',
-                            'glpi_knowbaseitems'       => 'id',
+                            'zentra_knowbaseitems_items' => 'knowbaseitems_id',
+                            'zentra_knowbaseitems'       => 'id',
                         ],
                     ],
                 ],
@@ -382,7 +382,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         if (!empty($entity_criteria)) {
             $criteria['INNER JOIN'][$item_table] = [
                 'ON' => [
-                    'glpi_knowbaseitems_items' => 'items_id',
+                    'zentra_knowbaseitems_items' => 'items_id',
                     $item_table                => 'id',
                 ],
             ];

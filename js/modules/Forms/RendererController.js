@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_info, tinymce, glpi_toast_error, _ */
+/* global zentra_toast_info, tinymce, zentra_toast_error, _ */
 
-import { GlpiFormConditionEngine } from '/js/modules/Forms/Condition/Engine.js';
+import { ZentraFormConditionEngine } from '/js/modules/Forms/Condition/Engine.js';
 
 /**
  * Client code to handle users actions on the form_renderer template
  */
-export class GlpiFormRendererController
+export class ZentraFormRendererController
 {
     /**
      * Target form
@@ -53,7 +53,7 @@ export class GlpiFormRendererController
     #section_index;
 
     /**
-     * @type {GlpiFormConditionEngine}
+     * @type {ZentraFormConditionEngine}
      */
     #condition_engine;
 
@@ -64,7 +64,7 @@ export class GlpiFormRendererController
     #render_layout;
 
     /**
-     * Create a new GlpiFormRendererController instance for the given target.
+     * Create a new ZentraFormRendererController instance for the given target.
      * The target must be a valid form.
      *
      * @param {string} target
@@ -78,7 +78,7 @@ export class GlpiFormRendererController
         }
 
         // Get render layout from data attribute
-        this.#render_layout = this.#target.dataset.glpiFormRenderLayout || 'step_by_step';
+        this.#render_layout = this.#target.dataset.zentraFormRenderLayout || 'step_by_step';
 
         // Init section data
         this.#section_index = 0;
@@ -88,21 +88,21 @@ export class GlpiFormRendererController
 
         // Make "Send form" button clickable
         $(this.#target)
-            .find("[data-glpi-form-renderer-action=submit]")
+            .find("[data-zentra-form-renderer-action=submit]")
             .removeAttr("disabled");
 
         // Load condition engine
-        this.#condition_engine = new GlpiFormConditionEngine(form_id);
+        this.#condition_engine = new ZentraFormConditionEngine(form_id);
         this.#enableActions();
         this.#updateActionsVisiblity();
     }
 
     /**
      * Init event handlers for each possible actions, identified by the data
-     * attribute "data-glpi-form-renderer-action".
+     * attribute "data-zentra-form-renderer-action".
      */
     #initEventHandlers() {
-        const action_attribute = "data-glpi-form-renderer-action";
+        const action_attribute = "data-zentra-form-renderer-action";
 
         // Submit form action
         $(this.#target)
@@ -124,7 +124,7 @@ export class GlpiFormRendererController
             () => this.#computeItemsVisibilities(),
             400,
         );
-        $(document).on('input tinyMCEInput glpi_fileupload_remove', this.#target, () => {
+        $(document).on('input tinyMCEInput zentra_fileupload_remove', this.#target, () => {
             // Disable actions immediately to avoid someone clicking on the actions
             // while the conditions have not been computed yet.
             this.#disableActions();
@@ -135,7 +135,7 @@ export class GlpiFormRendererController
         // Handle delegation form update
         $(this.#target).on(
             'change',
-            '[data-glpi-form-renderer-delegation-container] select[name="delegation_users_id"]',
+            '[data-zentra-form-renderer-delegation-container] select[name="delegation_users_id"]',
             (e) => this.#renderDelegation(e)
         );
 
@@ -162,11 +162,11 @@ export class GlpiFormRendererController
         }
 
         // Get the UUID of the current section
-        const currentSectionElement = $(this.#target).find(`[data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"]`);
-        const currentSectionUuid = currentSectionElement.data('glpi-form-renderer-uuid');
+        const currentSectionElement = $(this.#target).find(`[data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"]`);
+        const currentSectionUuid = currentSectionElement.data('zentra-form-renderer-uuid');
 
         const response = await $.ajax({
-            url: `${CFG_GLPI.root_doc}/Form/ValidateAnswers`,
+            url: `${CFG_ZENTRA.root_doc}/Form/ValidateAnswers`,
             type: 'POST',
             data: `${$(this.#target).serialize()}&section_uuid=${currentSectionUuid}`,
             dataType: 'json',
@@ -177,7 +177,7 @@ export class GlpiFormRendererController
 
     async #checkAllSectionsValidity() {
         const response = await $.ajax({
-            url: `${CFG_GLPI.root_doc}/Form/ValidateAnswers`,
+            url: `${CFG_ZENTRA.root_doc}/Form/ValidateAnswers`,
             type: 'POST',
             data: $(this.#target).serialize(),
             dataType: 'json',
@@ -201,7 +201,7 @@ export class GlpiFormRendererController
             let is_first_error = true;
             Object.values(response.errors).forEach(error => {
                 // Highlight the field with error
-                const question = $(`[data-glpi-form-renderer-id="${CSS.escape(error.question_id)}"][data-glpi-form-renderer-question]`);
+                const question = $(`[data-zentra-form-renderer-id="${CSS.escape(error.question_id)}"][data-zentra-form-renderer-question]`);
                 if (!question.length) {
                     return;
                 }
@@ -261,7 +261,7 @@ export class GlpiFormRendererController
                 // can see it properly.
                 if (is_first_error) {
                     targetElement
-                        .closest('[data-glpi-form-renderer-question]')[0]
+                        .closest('[data-zentra-form-renderer-question]')[0]
                         .scrollIntoView()
                     ;
                     is_first_error = false;
@@ -278,7 +278,7 @@ export class GlpiFormRendererController
      * Submit the target form using an AJAX request.
      */
     async #submitForm() {
-        const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+        const submit = $(this.#target).find('button[data-zentra-form-renderer-action=submit]');
 
         // Form will be sumitted using an AJAX request instead
         try {
@@ -302,7 +302,7 @@ export class GlpiFormRendererController
             });
 
             // Show toast with link to answers set
-            glpi_toast_info(
+            zentra_toast_info(
                 __("Item successfully created: %s").replace(
                     "%s",
                     response.links_to_created_items.join(", ")
@@ -311,24 +311,24 @@ export class GlpiFormRendererController
 
             // Show final confirmation step
             $(this.#target)
-                .find("[data-glpi-form-renderer-success]")
+                .find("[data-zentra-form-renderer-success]")
                 .removeClass("d-none");
 
             // Hide everything else
             let hideSelector = `
-                [data-glpi-form-renderer-form-header],
-                [data-glpi-form-renderer-delegation-container],
-                [data-glpi-form-renderer-actions]
+                [data-zentra-form-renderer-form-header],
+                [data-zentra-form-renderer-delegation-container],
+                [data-zentra-form-renderer-actions]
             `;
 
             if (this.#render_layout === 'single_page') {
                 // In single page mode, hide all sections
-                hideSelector += `, [data-glpi-form-renderer-section]`;
+                hideSelector += `, [data-zentra-form-renderer-section]`;
             } else {
                 // In step-by-step mode, hide only current section
                 hideSelector += `,
-                    [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
-                    [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
+                    [data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                    [data-zentra-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
                 `;
             }
 
@@ -350,7 +350,7 @@ export class GlpiFormRendererController
                 errorMessage = `${errorMessage}<br><br><strong>${__("Details:")}</strong><br>${specificErrors}`;
             }
 
-            glpi_toast_error(errorMessage);
+            zentra_toast_error(errorMessage);
         } finally {
             this.#enableActions();
             submit.removeClass('btn-loading');
@@ -373,8 +373,8 @@ export class GlpiFormRendererController
         // Hide current section and its questions
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
-                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
+                [data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-zentra-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .addClass("d-none");
 
@@ -387,8 +387,8 @@ export class GlpiFormRendererController
         this.#section_index = next_section_index;
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
-                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
+                [data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-zentra-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .removeClass("d-none");
 
@@ -396,7 +396,7 @@ export class GlpiFormRendererController
         this.#updateActionsVisiblity();
 
         // Scroll to the top of the section
-        $('[data-glpi-form-renderer-section]:visible')[0].scrollIntoView();
+        $('[data-zentra-form-renderer-section]:visible')[0].scrollIntoView();
     }
 
     /**
@@ -411,8 +411,8 @@ export class GlpiFormRendererController
         // Hide current section and its questions
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
-                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
+                [data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-zentra-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .addClass("d-none");
 
@@ -425,8 +425,8 @@ export class GlpiFormRendererController
         this.#section_index = previous_section_index;
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
-                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
+                [data-zentra-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-zentra-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .removeClass("d-none");
 
@@ -434,7 +434,7 @@ export class GlpiFormRendererController
         this.#updateActionsVisiblity();
 
         // Scroll to the top of the section
-        $('[data-glpi-form-renderer-section]:visible')[0].scrollIntoView();
+        $('[data-zentra-form-renderer-section]:visible')[0].scrollIntoView();
     }
 
     /**
@@ -451,29 +451,29 @@ export class GlpiFormRendererController
         if (this.#hasOneVisibleSectionAfterCurrentIndex()) {
             // Show "next" button if at least one other following section is visible
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="submit"]')
+                .find('[data-zentra-form-renderer-action="submit"]')
                 .addClass("d-none");
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="next-section"]')
+                .find('[data-zentra-form-renderer-action="next-section"]')
                 .removeClass("d-none");
         } else {
             // Show "submit" button instead
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="submit"]')
+                .find('[data-zentra-form-renderer-action="submit"]')
                 .removeClass("d-none");
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="next-section"]')
+                .find('[data-zentra-form-renderer-action="next-section"]')
                 .addClass("d-none");
         }
 
         if (this.#hasOneVisibleSectionBeforeCurrentIndex()) {
             // Show "back" button if at least one previous section is visible
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="previous-section"]')
+                .find('[data-zentra-form-renderer-action="previous-section"]')
                 .removeClass("d-none");
         } else {
             $(this.#target)
-                .find('[data-glpi-form-renderer-action="previous-section"]')
+                .find('[data-zentra-form-renderer-action="previous-section"]')
                 .addClass("d-none");
         }
     }
@@ -493,7 +493,7 @@ export class GlpiFormRendererController
 
         // Apply submit button visibility
         const submit_button = container.querySelector(
-            '[data-glpi-form-renderer-action="submit"]'
+            '[data-zentra-form-renderer-action="submit"]'
         );
         if (submit_button !== null) {
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
@@ -504,14 +504,14 @@ export class GlpiFormRendererController
             results.sections_visibility
         )) {
             const section = container.querySelector(
-                `[data-glpi-form-renderer-section][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
+                `[data-zentra-form-renderer-section][data-zentra-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (section === null) {
                 continue;
             }
 
             // Can't change the visibility of the current section
-            if ($(section).data('glpi-form-renderer-section') == this.#section_index) {
+            if ($(section).data('zentra-form-renderer-section') == this.#section_index) {
                 continue;
             }
 
@@ -523,7 +523,7 @@ export class GlpiFormRendererController
             results.questions_visibility
         )) {
             const question = container.querySelector(
-                `[data-glpi-form-renderer-question][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
+                `[data-zentra-form-renderer-question][data-zentra-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (question === null) {
                 continue;
@@ -536,7 +536,7 @@ export class GlpiFormRendererController
             results.comments_visibility
         )) {
             const comment = container.querySelector(
-                `[data-glpi-form-renderer-comment][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
+                `[data-zentra-form-renderer-comment][data-zentra-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (comment === null) {
                 continue;
@@ -550,9 +550,9 @@ export class GlpiFormRendererController
     #applyVisibilityToItem(item, must_be_visible)
     {
         if (must_be_visible) {
-            item.removeAttribute("data-glpi-form-renderer-hidden-by-condition");
+            item.removeAttribute("data-zentra-form-renderer-hidden-by-condition");
         } else {
-            item.setAttribute("data-glpi-form-renderer-hidden-by-condition", "");
+            item.setAttribute("data-zentra-form-renderer-hidden-by-condition", "");
         }
     }
 
@@ -560,16 +560,16 @@ export class GlpiFormRendererController
     {
         let index = null;
 
-        const sections = $(this.#target).find('[data-glpi-form-renderer-section]');
+        const sections = $(this.#target).find('[data-zentra-form-renderer-section]');
         sections.each((_i, section) => {
             // Ignore previous and current section
-            if (parseInt(section.dataset.glpiFormRendererSection) <= this.#section_index) {
+            if (parseInt(section.dataset.zentraFormRendererSection) <= this.#section_index) {
                 return;
             }
 
             // A visible section won't have the following data property
-            if (section.dataset.glpiFormRendererHiddenByCondition === undefined) {
-                index = parseInt(section.dataset.glpiFormRendererSection);
+            if (section.dataset.zentraFormRendererHiddenByCondition === undefined) {
+                index = parseInt(section.dataset.zentraFormRendererSection);
                 return false; // Break
             }
         });
@@ -581,16 +581,16 @@ export class GlpiFormRendererController
     {
         let index = null;
 
-        const sections = $(this.#target).find('[data-glpi-form-renderer-section]');
+        const sections = $(this.#target).find('[data-zentra-form-renderer-section]');
         sections.each((_i, section) => {
             // Ignore next and current section
-            if (section.dataset.glpiFormRendererSection >= this.#section_index) {
+            if (section.dataset.zentraFormRendererSection >= this.#section_index) {
                 return false; // Break
             }
 
             // A visible section won't have the following data property
-            if (section.dataset.glpiFormRendererHiddenByCondition === undefined) {
-                index = section.dataset.glpiFormRendererSection;
+            if (section.dataset.zentraFormRendererHiddenByCondition === undefined) {
+                index = section.dataset.zentraFormRendererSection;
             }
         });
 
@@ -612,7 +612,7 @@ export class GlpiFormRendererController
         // Do not use "disable" prop to avoid the button "flashing" back and
         // forth.
         $(this.#target)
-            .find("button[data-glpi-form-renderer-action]")
+            .find("button[data-zentra-form-renderer-action]")
             .addClass("pointer-events-none")
         ;
     }
@@ -620,7 +620,7 @@ export class GlpiFormRendererController
     #enableActions()
     {
         $(this.#target)
-            .find("button[data-glpi-form-renderer-action]")
+            .find("button[data-zentra-form-renderer-action]")
             .removeClass("pointer-events-none")
         ;
     }
@@ -628,7 +628,7 @@ export class GlpiFormRendererController
     async #renderDelegation()
     {
         const selected_user_id = $(this.#target)
-            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('[data-zentra-form-renderer-delegation-container]')
             .find('select[name="delegation_users_id"]')
             .val();
 
@@ -638,7 +638,7 @@ export class GlpiFormRendererController
 
         // Replace only the inner content of the delegation container
         $(this.#target)
-            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('[data-zentra-form-renderer-delegation-container]')
             .html(response);
     }
 }

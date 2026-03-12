@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,13 +41,13 @@
 /* eslint no-var: 0 */
 
 (function (window, $) {
-    function GLPINotificationsAjax(options) {
+    function ZENTRANotificationsAjax(options) {
 
         var _this = this;
         var _queue = $('<div></div>');
         var _queue_audio = $('<div></div>');
 
-        this.options = $.extend({}, GLPINotificationsAjax.default, options);
+        this.options = $.extend({}, ZENTRANotificationsAjax.default, options);
 
         this.showNotification = function(id, title, body, url) {
             _queue.queue(function () {
@@ -72,7 +72,7 @@
                 }
 
                 $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`,
+                    url: `${CFG_ZENTRA.root_doc}/ajax/notifications_ajax.php`,
                     method: 'GET',
                     data: {
                         delete: id
@@ -90,11 +90,11 @@
             var audioElement = new Audio();
 
             $(audioElement).append($('<source />', {
-                src: `${CFG_GLPI.root_doc}/sound/${sound}.mp3`,
+                src: `${CFG_ZENTRA.root_doc}/sound/${sound}.mp3`,
                 type: 'audio/mpeg'
             }));
             $(audioElement).append($('<source />', {
-                src: `${CFG_GLPI.root_doc}/sound/${sound}.ogg`,
+                src: `${CFG_ZENTRA.root_doc}/sound/${sound}.ogg`,
                 type: 'audio/ogg'
             }));
 
@@ -114,7 +114,7 @@
                 return false;
             }
 
-            var ajax = $.getJSON(`${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`);
+            var ajax = $.getJSON(`${CFG_ZENTRA.root_doc}/ajax/notifications_ajax.php`);
             ajax.done((data) => {
                 if (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -132,9 +132,9 @@
 
         this.checkConcurrence = function() {
             //simple concurrency check
-            //prevent multiple call to 'notifications_ajax.php' if GLPI is openned in multiple browser tabs
+            //prevent multiple call to 'notifications_ajax.php' if ZENTRA is openned in multiple browser tabs
 
-            var lastcheck_key = `glpi_ajaxnotification_lastcheck_${this.options.user_id}`;
+            var lastcheck_key = `zentra_ajaxnotification_lastcheck_${this.options.user_id}`;
             var lastCheck = localStorage.getItem(lastcheck_key);
 
             if (!lastCheck) {
@@ -183,12 +183,12 @@
         };
     }
 
-    GLPINotificationsAjax.default = {
+    ZENTRANotificationsAjax.default = {
         interval : 10000,
         sound    : false,
         icon     : false,
         user_id  : 0
     };
 
-    window.GLPINotificationsAjax = GLPINotificationsAjax;
+    window.ZENTRANotificationsAjax = ZENTRANotificationsAjax;
 })(window, jQuery);

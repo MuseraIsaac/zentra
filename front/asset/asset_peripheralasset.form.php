@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 
 require_once(__DIR__ . '/../_check_webserver_config.php');
 
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Event;
+use Zentra\Exception\Http\BadRequestHttpException;
 
 /**
  * @since 0.84
@@ -56,7 +56,7 @@ if (isset($_POST['add'], $_POST['itemtype_asset'], $_POST['items_id_asset'], $_P
             5,
             'inventory',
             //TRANS: %s is the user login
-            sprintf(__('%s connects an item'), $_SESSION['glpiname'])
+            sprintf(__('%s connects an item'), $_SESSION['zentraname'])
         );
     }
     Html::back();

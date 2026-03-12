@@ -1,13 +1,13 @@
 services:
   app:
-    container_name: "glpi-app"
+    container_name: "zentra-app"
     build:
       context: ".docker/app"
       args:
         PHP_VERSION: "8.4"
     restart: "unless-stopped"
     volumes:
-      - ".:/var/www/glpi:rw"
+      - ".:/var/www/zentra:rw"
       - "custom_php_ini:/usr/local/etc/php/custom_conf.d/:rw"
     ports:
       - "8080:80"
@@ -22,22 +22,22 @@ services:
       - "host.docker.internal:host-gateway"
 
   db:
-    container_name: "glpi-db"
+    container_name: "zentra-db"
     image: "mariadb:11.8"
     restart: "unless-stopped"
     volumes:
       - "db:/var/lib/mysql"
       - ".docker/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
     environment:
-      MARIADB_ROOT_PASSWORD: "glpi"
-      MARIADB_DATABASE: "glpi"
-      MARIADB_USER: "glpi"
-      MARIADB_PASSWORD: "glpi"
+      MARIADB_ROOT_PASSWORD: "zentra"
+      MARIADB_DATABASE: "zentra"
+      MARIADB_USER: "zentra"
+      MARIADB_PASSWORD: "zentra"
     expose:
       - "3306"
 
   mailpit:
-    container_name: "glpi-mailpit"
+    container_name: "zentra-mailpit"
     image: "axllent/mailpit"
     restart: "unless-stopped"
     expose:
@@ -46,29 +46,29 @@ services:
       - "8025:8025"
 
   dbgate:
-    container_name: "glpi-dbgate"
+    container_name: "zentra-dbgate"
     image: "dbgate/dbgate:latest"
     restart: "unless-stopped"
     ports:
       - "9000:3000"
     environment:
-      CONNECTIONS: "glpi"
+      CONNECTIONS: "zentra"
 
-      LABEL_glpi: "GLPI Mysql Server"
-      SERVER_glpi: "db"
-      USER_glpi: "glpi"
-      PASSWORD_glpi: "glpi"
-      PORT_glpi: 3306
-      ENGINE_glpi: "mysql@dbgate-plugin-mysql"
+      LABEL_zentra: "ZENTRA Mysql Server"
+      SERVER_zentra: "db"
+      USER_zentra: "zentra"
+      PASSWORD_zentra: "zentra"
+      PORT_zentra: 3306
+      ENGINE_zentra: "mysql@dbgate-plugin-mysql"
 
-  # To create a preconfigured LDAP object in GLPI, run `make console c='tools:generate_dev_ldap'`
+  # To create a preconfigured LDAP object in ZENTRA, run `make console c='tools:generate_dev_ldap'`
   openldap:
-    container_name: "glpi-openldap"
+    container_name: "zentra-openldap"
     image: "osixia/openldap:latest"
     restart: "unless-stopped"
     environment:
-      LDAP_ORGANISATION: "GLPI"
-      LDAP_DOMAIN: "glpi.org"
+      LDAP_ORGANISATION: "ZENTRA"
+      LDAP_DOMAIN: "zentra.org"
       LDAP_ADMIN_USERNAME: "admin"
       LDAP_ADMIN_PASSWORD: "admin"
     command: "--copy-service"

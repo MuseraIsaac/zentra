@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_width")) {
+if (!$DB->fieldExists("zentra_dcrooms", "vis_cell_width")) {
     $migration->addField(
-        "glpi_dcrooms",
+        "zentra_dcrooms",
         "vis_cell_width",
         "int",
         [
@@ -47,9 +47,9 @@ if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_width")) {
         ]
     );
 }
-if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_height")) {
+if (!$DB->fieldExists("zentra_dcrooms", "vis_cell_height")) {
     $migration->addField(
-        "glpi_dcrooms",
+        "zentra_dcrooms",
         "vis_cell_height",
         "int",
         [

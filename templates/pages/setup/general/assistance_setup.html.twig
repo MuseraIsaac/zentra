@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@
                {% for impact in 5..1 %}
                   {% set priority = config['priority_matrix'][urgency][impact]|default(((urgency + impact) / 2)|round) %}
                   {% if is_urgency[urgency] and is_impact[impact] %}
-                     {% set bg_color = session('glpipriority_' ~ priority) %}
+                     {% set bg_color = session('zentrapriority_' ~ priority) %}
                      <td class="center" style="background-color: {{ bg_color }}">
                         {% do call('Ticket::dropdownPriority', [{
                            value: priority,

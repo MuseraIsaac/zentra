@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
@@ -135,7 +135,7 @@ class IPAddressTest extends DbTestCase
             $this->assertGreaterThan(0, $id);
 
             //check name store in DB
-            $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
+            $all_IP = getAllDataFromTable('zentra_ipaddresses', ['ORDER' => 'id']);
             $currentIP = end($all_IP);
             unset($currentIP['id']);
             unset($currentIP['entities_id']);
@@ -159,7 +159,7 @@ class IPAddressTest extends DbTestCase
             "1..3.4",
         ];
 
-        unset($_SESSION['glpicronuserrunning']);
+        unset($_SESSION['zentracronuserrunning']);
         foreach ($IPV4ShouldNotWork as $name) {
             $ipAdress = new \IPAddress();
             $id = $ipAdress->add([
@@ -247,7 +247,7 @@ class IPAddressTest extends DbTestCase
             $this->assertGreaterThan(0, $id);
 
             //check name store in DB
-            $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
+            $all_IP = getAllDataFromTable('zentra_ipaddresses', ['ORDER' => 'id']);
             $currentIP = end($all_IP);
             unset($currentIP['id']);
             unset($currentIP['entities_id']);
@@ -273,7 +273,7 @@ class IPAddressTest extends DbTestCase
             "12345::6:7:8", //more than 4 digit
         ];
 
-        unset($_SESSION['glpicronuserrunning']);
+        unset($_SESSION['zentracronuserrunning']);
         foreach ($IPV6ShouldNotWork as $name) {
             $ipAdress = new \IPAddress();
             $id = $ipAdress->add([

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 /**
  * @var Migration $migration
  */
-// Remove '' default values on glpi_impactcontexts.positions
+// Remove '' default values on zentra_impactcontexts.positions
 // MySQL does not allow default values on TEXT fields, while MariaDB does
-// Default was removed in installation file GLPI 9.5.4, see #8415
-$migration->changeField('glpi_impactcontexts', 'positions', 'positions', 'mediumtext NOT NULL');
+// Default was removed in installation file ZENTRA 9.5.4, see #8415
+$migration->changeField('zentra_impactcontexts', 'positions', 'positions', 'mediumtext NOT NULL');

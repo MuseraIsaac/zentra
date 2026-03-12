@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $DB->update(
-    'glpi_crontasks',
+    'zentra_crontasks',
     [
         'itemtype' => 'CommonITILRecurrentCron',
         'name'     => 'RecurrentItems',
@@ -52,7 +52,7 @@ $DB->update(
     ]
 );
 
-$recurrent_change_table = 'glpi_recurrentchanges';
+$recurrent_change_table = 'zentra_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
     $DB->doQuery("CREATE TABLE `$recurrent_change_table` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,

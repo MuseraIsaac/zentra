@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 use function Safe\json_encode;
 use function Safe\preg_match;
@@ -368,7 +368,7 @@ class Ajax
                             <a
                                 class='nav-link justify-content-between $navlinkp $display_class'
                                 data-bs-toggle='tab'
-                                data-glpi-ajax-content='" . htmlescape($tab_content_url) . "'
+                                data-zentra-ajax-content='" . htmlescape($tab_content_url) . "'
                                 href='" . htmlescape($direct_link_url) . "'
                                 data-bs-target='#" . htmlescape($target) . "'
                                 aria-label='{$title_clean}'
@@ -395,7 +395,7 @@ HTML;
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='" . htmlescape($id) . "'></div>";
+                echo "<div data-zentra-tab-content class='tab-pane fade' role='tabpanel' id='" . htmlescape($id) . "'></div>";
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
@@ -408,22 +408,22 @@ HTML;
             $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
-            var url = tablink.data('glpi-ajax-content');
-            var base_url = CFG_GLPI.url_base;
+            var url = tablink.data('zentra-ajax-content');
+            var base_url = CFG_ZENTRA.url_base;
             if (base_url === '') {
-                // If base URL is not configured, fallback to current URL domain + GLPI base dir.
-                base_url = window.location.origin + '/' + CFG_GLPI.root_doc;
+                // If base URL is not configured, fallback to current URL domain + ZENTRA base dir.
+                base_url = window.location.origin + '/' + CFG_ZENTRA.root_doc;
             }
             const href_url_params = new URL(url, base_url).searchParams;
             var target = tablink.attr('data-bs-target');
 
             const updateCurrentTab = () => {
                 $.get(
-                  CFG_GLPI.root_doc + '/ajax/updatecurrenttab.php',
+                  CFG_ZENTRA.root_doc + '/ajax/updatecurrenttab.php',
                   {
                      itemtype: '$type',
                      id: '$ID',
-                     tab_key: href_url_params.get('_glpi_tab'),
+                     tab_key: href_url_params.get('_zentra_tab'),
                      withtemplate: $withtemplate
                   }
                );
@@ -437,7 +437,7 @@ HTML;
             $.get(url, function(data) {
                $(target).html(data);
 
-               $(target).closest('main').trigger('glpi.tab.loaded');
+               $(target).closest('main').trigger('zentra.tab.loaded');
 
                if (update_session_tab) {
                    updateCurrentTab();
@@ -464,12 +464,12 @@ HTML;
             var active_link = $('main #tabspanel .nav-item .nav-link.active');
 
             // Update target AJAX endpoint URL and load tab contents
-            var current_url = active_link.data('glpi-ajax-content');
-            active_link.data('glpi-ajax-content', current_url + '&' + add);
+            var current_url = active_link.data('zentra-ajax-content');
+            active_link.data('zentra-ajax-content', current_url + '&' + add);
             loadTabContents(active_link, true);
 
             // Restore URL
-            active_link.data('glpi-ajax-content', current_url);
+            active_link.data('zentra-ajax-content', current_url);
          };
 
          var loadAllTabs = () => {

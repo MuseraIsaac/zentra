@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Plugin\Hooks;
 
 /**
  * NotificationTarget Class
  *
- * @template T of CommonGLPI
+ * @template T of CommonZENTRA
  */
 class NotificationTarget extends CommonDBChild
 {
@@ -51,7 +51,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @var string
      */
-    public $table                       = 'glpi_notificationtargets';
+    public $table                       = 'zentra_notificationtargets';
 
     /**
      * @var array<string, string>
@@ -98,7 +98,7 @@ class NotificationTarget extends CommonDBChild
     public $obj                         = null;
 
     /**
-     * @var array<CommonGLPI> Object which is associated with the event
+     * @var array<CommonZENTRA> Object which is associated with the event
      */
     public $target_object               = [];
 
@@ -144,13 +144,13 @@ class NotificationTarget extends CommonDBChild
     public const TAG_FOR_ALL_EVENTS         = 0;
 
     public const ANONYMOUS_USER             = 0;
-    public const GLPI_USER                  = 1;
+    public const ZENTRA_USER                  = 1;
     public const EXTERNAL_USER              = 2;
 
     /**
      * @param int|null        $entity
      * @param string          $event
-     * @param CommonGLPI|null $object
+     * @param CommonZENTRA|null $object
      * @param array{
      *      _old_user?: array{
      *           type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
@@ -163,7 +163,7 @@ class NotificationTarget extends CommonDBChild
     public function __construct($entity = null, $event = '', $object = null, $options = [])
     {
         if ($entity === null) {
-            $this->entity = ($_SESSION['glpiactive_entity'] ?? 0);
+            $this->entity = ($_SESSION['zentraactive_entity'] ?? 0);
         } else {
             $this->entity = $entity;
         }
@@ -306,7 +306,7 @@ class NotificationTarget extends CommonDBChild
             ''
         ));
         if (empty($perso_tag)) {
-            $perso_tag = "GLPI";
+            $perso_tag = "ZENTRA";
         }
         return "[$perso_tag] ";
     }
@@ -363,7 +363,7 @@ class NotificationTarget extends CommonDBChild
         }
         $is_item_related = !empty($itemtype) && is_a($itemtype, CommonDBTM::class, true);
 
-        $message_id  = 'GLPI';
+        $message_id  = 'ZENTRA';
         $message_id .= sprintf('_%s', Config::getUuid('notification'));
 
         $reference_event = null;
@@ -403,7 +403,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @template Item of CommonGLPI
+     * @template Item of CommonZENTRA
      *
      * @param Item        $item    Object which raises the event
      * @param string|null $event
@@ -433,7 +433,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @template Item of CommonGLPI
+     * @template Item of CommonZENTRA
      *
      * @param class-string<Item> $itemtype
      * @return class-string<NotificationTarget<Item>>
@@ -459,7 +459,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving an itemtype
      *
-     * @template Item of CommonGLPI
+     * @template Item of CommonZENTRA
      *
      * @param class-string<Item> $itemtype the itemtype of the object which raises the event
      * @param string|null        $event    Event which will be used
@@ -645,7 +645,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addToRecipientsList(array $data)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $new_lang = '';
 
         // Default USER TYPE is ANONYMOUS
@@ -665,15 +665,15 @@ class NotificationTarget extends CommonDBChild
                 || ($user->getField('is_deleted') == 1)
                 || ($user->getField('is_active') == 0)
                 || (!is_null($user->getField('begin_date'))
-                  && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
+                  && ($user->getField('begin_date') > $_SESSION["zentra_currenttime"]))
                 || (!is_null($user->getField('end_date'))
-                  && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
+                  && ($user->getField('end_date') < $_SESSION["zentra_currenttime"]))
             ) {
                 // unknown, deleted or disabled user
                 return;
             }
             $filt = getEntitiesRestrictCriteria(
-                'glpi_profiles_users',
+                'zentra_profiles_users',
                 '',
                 $this->getEntity(),
                 true
@@ -703,8 +703,8 @@ class NotificationTarget extends CommonDBChild
                     force_config: true
                 );
             }
-            // It is a GLPI user :
-            $notificationoption['usertype'] = self::GLPI_USER;
+            // It is a ZENTRA user :
+            $notificationoption['usertype'] = self::ZENTRA_USER;
             if (
                 $user->fields['authtype'] == Auth::LDAP
                 || Auth::isAlternateAuth($user->fields['authtype'])
@@ -731,7 +731,7 @@ class NotificationTarget extends CommonDBChild
         );
 
         $param = [
-            'language'           => (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang),
+            'language'           => (empty($new_lang) ? $CFG_ZENTRA["language"] : $new_lang),
             'additionnaloption'  => $notificationoption,
             'username'           => $username,
         ];
@@ -757,7 +757,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @return self::EXTERNAL_USER|self::GLPI_USER
+     * @return self::EXTERNAL_USER|self::ZENTRA_USER
      *
      * @since 0.84
      */
@@ -765,11 +765,11 @@ class NotificationTarget extends CommonDBChild
     {
         return Auth::isAlternateAuth(Auth::checkAlternateAuthSystems())
             ? self::EXTERNAL_USER
-            : self::GLPI_USER;
+            : self::ZENTRA_USER;
     }
 
     /**
-     * @param self::EXTERNAL_USER|self::GLPI_USER|self::ANONYMOUS_USER $usertype
+     * @param self::EXTERNAL_USER|self::ZENTRA_USER|self::ANONYMOUS_USER $usertype
      * @param string                                                   $redirect
      *
      * @return string
@@ -780,7 +780,7 @@ class NotificationTarget extends CommonDBChild
     {
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
-            // Prior to GLPI 10.0.3, method caller was responsible for this encoding,
+            // Prior to ZENTRA 10.0.3, method caller was responsible for this encoding,
             // so we have to ensure that param is not already encoded before encoding it,
             // to prevent BC breaks.
             $redirect = rawurlencode($redirect);
@@ -795,7 +795,7 @@ class NotificationTarget extends CommonDBChild
 
         switch ($usertype) {
             case self::EXTERNAL_USER:
-            case self::GLPI_USER:
+            case self::ZENTRA_USER:
                 return "$base_url/index.php?redirect={$redirect}{$anchor}";
 
                 // case self::ANONYMOUS_USER:
@@ -807,7 +807,7 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Add GLPI's global administrator email
+     * Add ZENTRA's global administrator email
      *
      * @return void
      */
@@ -980,9 +980,9 @@ class NotificationTarget extends CommonDBChild
         );
 
         if ($manager == 1) {
-            $criteria['WHERE']['glpi_groups_users.is_manager'] = 1;
+            $criteria['WHERE']['zentra_groups_users.is_manager'] = 1;
         } elseif ($manager == 2) {
-            $criteria['WHERE']['glpi_groups_users.is_manager'] = 0;
+            $criteria['WHERE']['zentra_groups_users.is_manager'] = 0;
         }
 
         $iterator = $DB->request($criteria);
@@ -1071,7 +1071,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * Return all (GLPI + plugins) notification events for the object type
+     * Return all (ZENTRA + plugins) notification events for the object type
      *
      * @return array<string, string> [event => event label, ...]
      **/
@@ -1134,7 +1134,7 @@ class NotificationTarget extends CommonDBChild
             'WHERE'  => [
                 'is_usergroup' => 1,
                 'is_notify'    => 1,
-            ] + getEntitiesRestrictCriteria('glpi_groups', 'entities_id', $entity, true),
+            ] + getEntitiesRestrictCriteria('zentra_groups', 'entities_id', $entity, true),
             'ORDER'  => 'name',
         ]);
 
@@ -1374,14 +1374,14 @@ class NotificationTarget extends CommonDBChild
      */
     public function getUrlBase()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
         if ($url_base !== '') {
             return $url_base;
         }
 
-        return $CFG_GLPI['url_base'];
+        return $CFG_ZENTRA['url_base'];
     }
 
     /**
@@ -1400,7 +1400,7 @@ class NotificationTarget extends CommonDBChild
             //Notifications for one people
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
-                    //Send to glpi's global admin (as defined in the mailing configuration)
+                    //Send to zentra's global admin (as defined in the mailing configuration)
                     case Notification::GLOBAL_ADMINISTRATOR:
                         if ($this->isMailMode()) {
                             $this->addAdmin();
@@ -1667,7 +1667,7 @@ class NotificationTarget extends CommonDBChild
     private function registerGlobalTags(): void
     {
         $this->addTagToList([
-            'tag'   => 'glpi.url',
+            'tag'   => 'zentra.url',
             'value' => true,
             'label' => __('URL of the application'),
             'lang'  => false,
@@ -1682,7 +1682,7 @@ class NotificationTarget extends CommonDBChild
     private function getGlobalTagsData(): array
     {
         return [
-            '##glpi.url##' => $this->getUrlBase(),
+            '##zentra.url##' => $this->getUrlBase(),
         ];
     }
 
@@ -1755,14 +1755,14 @@ class NotificationTarget extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate && Notification::canView()) {
             $nb = 0;
             switch (get_class($item)) {
                 case Group::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForGroup($item);
                     }
                     return self::createTabEntry(
@@ -1772,7 +1772,7 @@ class NotificationTarget extends CommonDBChild
                     );
 
                 case Notification::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ['notifications_id' => $item->getID()]
@@ -1889,7 +1889,7 @@ class NotificationTarget extends CommonDBChild
 
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -1898,7 +1898,7 @@ class NotificationTarget extends CommonDBChild
         if ($item instanceof Group) {
             return self::showForGroup($item);
         } elseif ($item instanceof Notification) {
-            /** @var class-string<CommonGLPI> $itemtype */
+            /** @var class-string<CommonZENTRA> $itemtype */
             $itemtype = $item->fields['itemtype'];
 
             $target = self::getInstanceByType(

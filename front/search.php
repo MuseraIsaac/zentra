@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,15 +35,15 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 Session::checkCentralAccess();
 Html::header(__('Search'));
 
-if (!$CFG_GLPI['allow_search_global']) {
+if (!$CFG_ZENTRA['allow_search_global']) {
     throw new AccessDeniedHttpException();
 }
 if (isset($_GET["globalsearch"])) {
@@ -51,7 +51,7 @@ if (isset($_GET["globalsearch"])) {
     $no_result = [];
 
     echo "<div class='search_page search_page_global flex-row flex-wrap'>";
-    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
+    foreach ($CFG_ZENTRA["globalsearch_types"] as $itemtype) {
         if (
             ($item = getItemForItemtype($itemtype))
             && $item->canView()

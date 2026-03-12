@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,16 +36,16 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists("glpi_entities", "inquest_max_rate", false)) {
-    $migration->addField('glpi_entities', 'inquest_max_rate', "int NOT NULL DEFAULT '5'", ['after' => 'inquest_URL']);
+if (!$DB->fieldExists("zentra_entities", "inquest_max_rate", false)) {
+    $migration->addField('zentra_entities', 'inquest_max_rate', "int NOT NULL DEFAULT '5'", ['after' => 'inquest_URL']);
 }
 
-if (!$DB->fieldExists("glpi_entities", "inquest_default_rate", false)) {
-    $migration->addField('glpi_entities', 'inquest_default_rate', "int NOT NULL DEFAULT '3'", ['after' => 'inquest_max_rate']);
+if (!$DB->fieldExists("zentra_entities", "inquest_default_rate", false)) {
+    $migration->addField('zentra_entities', 'inquest_default_rate', "int NOT NULL DEFAULT '3'", ['after' => 'inquest_max_rate']);
 }
 
-if (!$DB->fieldExists("glpi_entities", "inquest_mandatory_comment", false)) {
-    $migration->addField('glpi_entities', 'inquest_mandatory_comment', "int NOT NULL DEFAULT '0'", ['after' => 'inquest_default_rate']);
+if (!$DB->fieldExists("zentra_entities", "inquest_mandatory_comment", false)) {
+    $migration->addField('zentra_entities', 'inquest_mandatory_comment', "int NOT NULL DEFAULT '0'", ['after' => 'inquest_default_rate']);
 }
 
 $fields = [
@@ -60,15 +60,15 @@ $fields = [
 ];
 $config = Config::getConfigurationValues('core');
 foreach ($fields as $field) {
-    if (!$DB->fieldExists("glpi_entities", $field, false)) {
+    if (!$DB->fieldExists("zentra_entities", $field, false)) {
         $migration->addField(
-            'glpi_entities',
+            'zentra_entities',
             $field,
             "tinyint NOT NULL DEFAULT '-2'"
         );
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_entities',
+                'zentra_entities',
                 [$field => $config[$field]],
                 ['id' => 0]
             )
@@ -83,15 +83,15 @@ $fields = [
 ];
 $config = Config::getConfigurationValues('core');
 foreach ($fields as $field) {
-    if (!$DB->fieldExists("glpi_entities", $field, false)) {
+    if (!$DB->fieldExists("zentra_entities", $field, false)) {
         $migration->addField(
-            'glpi_entities',
+            'zentra_entities',
             $field,
             "int NOT NULL DEFAULT '-2'"
         );
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_entities',
+                'zentra_entities',
                 [$field => $config[$field]],
                 ['id' => 0]
             )
@@ -101,6 +101,6 @@ foreach ($fields as $field) {
 $migration->removeConfig($fields);
 
 /** Add base url for entities to be used in notification */
-if (!$DB->fieldExists("glpi_entities", "url_base", false)) {
-    $migration->addField('glpi_entities', 'url_base', "TEXT", ['after' => 'mailing_signature']);
+if (!$DB->fieldExists("zentra_entities", "url_base", false)) {
+    $migration->addField('zentra_entities', 'url_base', "TEXT", ['after' => 'mailing_signature']);
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
-use Glpi\Console\AbstractCommand;
-use Glpi\System\Diagnostic\DatabaseKeysChecker;
+use Zentra\Console\AbstractCommand;
+use Zentra\System\Diagnostic\DatabaseKeysChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -95,7 +95,7 @@ final class CheckDatabaseKeysCommand extends AbstractCommand
         $has_misnamed_keys = false;
         $has_useless_keys  = false;
 
-        $table_iterator = $this->db->listTables('glpi\_%', ['NOT' => ['table_name' => ['LIKE', 'glpi\_plugin\_%']]]);
+        $table_iterator = $this->db->listTables('zentra\_%', ['NOT' => ['table_name' => ['LIKE', 'zentra\_plugin\_%']]]);
         foreach ($table_iterator as $table_data) {
             $table_name = $table_data['TABLE_NAME'];
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\RuleBuilder;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\RuleBuilder;
 
 class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 {
@@ -118,7 +118,7 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
         );
         $wrong_models_id = $printermodel->getID();
 
-        //new model must not exist to reproduce issue https://github.com/glpi-project/glpi/issues/18987
+        //new model must not exist to reproduce issue https://github.com/zentra-project/zentra/issues/18987
 
         $printer = $this->createItem(
             \Printer::class,

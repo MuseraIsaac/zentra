@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { FormPage } from '../../pages/FormPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
@@ -39,7 +39,7 @@ test('Tabs are refreshed on update', async ({page, profile, api}) => {
     await profile.set(Profiles.SuperAdmin);
 
     // Create an item that use the ajax controller and go to its page
-    const id = await api.createItem("Glpi\\Form\\Form", {
+    const id = await api.createItem("Zentra\\Form\\Form", {
         name: "My form",
         entities_id: getWorkerEntityId(),
         is_active: false,

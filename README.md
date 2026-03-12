@@ -1,15 +1,15 @@
-![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/main/public/pics/logos/logo-GLPI-250-black.png)
+![ZENTRA Logo](https://raw.githubusercontent.com/zentra-project/zentra/main/public/pics/logos/logo-ZENTRA-250-black.png)
 
-![GLPI CI](https://github.com/glpi-project/glpi/workflows/GLPI%20CI/badge.svg?branch=9.5%2Fbugfixes)
-[![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
-[![Twitter Follow](https://img.shields.io/twitter/follow/GLPI_PROJECT.svg?style=social&label=Follow)](https://twitter.com/GLPI_PROJECT)
+![ZENTRA CI](https://github.com/zentra-project/zentra/workflows/ZENTRA%20CI/badge.svg?branch=9.5%2Fbugfixes)
+[![Github All Releases](https://img.shields.io/github/downloads/zentra-project/zentra/total.svg)](#download)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ZENTRA_PROJECT.svg?style=social&label=Follow)](https://twitter.com/ZENTRA_PROJECT)
 
 
-## About GLPI
+## About ZENTRA
 
-GLPI stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
+ZENTRA stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
 
-Major GLPI Features:
+Major ZENTRA Features:
 
 * **Service Asset and Configuration Management (SACM)**: Manages your IT assets and configurations, tracks computers, peripherals, network printers, and their associated components. With native dynamic inventory management from version 10 onwards, you can maintain an up-to-date configuration database, ensuring accurate and timely information about your assets.
 
@@ -41,17 +41,17 @@ Major GLPI Features:
 
 * **Intervention Planning**: Offers intervention planning capabilities for scheduling and managing on-site interventions.
 
-Moreover, supports many [plugins](http://plugins.glpi-project.org) that provide additional features.
+Moreover, supports many [plugins](http://plugins.zentra-project.org) that provide additional features.
 
 ## Demonstration
 
-Check GLPI features by asking for a free personal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
+Check ZENTRA features by asking for a free personal demonstration on **[zentra-network.cloud](https://www.zentra-network.cloud)**
 
 ## License
 
-![license](https://img.shields.io/github/license/glpi-project/glpi.svg)
+![license](https://img.shields.io/github/license/zentra-project/zentra.svg)
 
-It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consult the file called [LICENSE](https://raw.githubusercontent.com/glpi-project/glpi/main/LICENSE) for more details.
+It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consult the file called [LICENSE](https://raw.githubusercontent.com/zentra-project/zentra/main/LICENSE) for more details.
 
 ## Some screenshots
 
@@ -102,60 +102,60 @@ Please, consider using browsers on editor's supported version
 ## Download
 
 See :
-* [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
+* [releases](https://github.com/zentra-project/zentra/releases) for tarball packages.
 
 
 ## Documentation
 
-* [GLPI Administrator](https://glpi-install.readthedocs.io)
+* [ZENTRA Administrator](https://zentra-install.readthedocs.io)
     * Install & Update
     * Command line tools
     * Timezones
     * Advanced configuration
-    * [Contribute to this documentation!](https://github.com/glpi-project/doc-install)
+    * [Contribute to this documentation!](https://github.com/zentra-project/doc-install)
 
-* [GLPI User](https://glpi-user-documentation.readthedocs.io)
-    * First Steps with GLPI
+* [ZENTRA User](https://zentra-user-documentation.readthedocs.io)
+    * First Steps with ZENTRA
     * Overview of all modules
     * Configuration & Administration
     * Plugins & Marketplace
-    * GLPI command-line interface
-    * [Contribute to this documentation!](https://github.com/glpi-project/doc)
+    * ZENTRA command-line interface
+    * [Contribute to this documentation!](https://github.com/zentra-project/doc)
 
-* [GLPI Developer](https://glpi-developer-documentation.readthedocs.io)
+* [ZENTRA Developer](https://zentra-developer-documentation.readthedocs.io)
     * Source Code management
     * Coding standards
     * Developer API
     * Plugins Guidelines
     * Packaging
-    * [Contribute to this documentation!](https://github.com/glpi-project/docdev)
+    * [Contribute to this documentation!](https://github.com/zentra-project/docdev)
 
-* [GLPI Agent](https://glpi-agent.readthedocs.io)
+* [ZENTRA Agent](https://zentra-agent.readthedocs.io)
     * Installation (Windows / Linux / Mac OS / Source)
     * Configuration / Settings
     * Usage / Execution mode
     * Tasks / HTTP Interface / Plugins
     * Bug reporting / Man pages
-    * [Contribute to this documentation!](https://github.com/glpi-project/doc-agent)
+    * [Contribute to this documentation!](https://github.com/zentra-project/doc-agent)
 
-* [GLPI Plugins](https://glpi-plugins.readthedocs.io)
-    * Usage and features for some GLPI plugins
-    * [Contribute to this documentation!](https://github.com/pluginsglpi/doc)
+* [ZENTRA Plugins](https://zentra-plugins.readthedocs.io)
+    * Usage and features for some ZENTRA plugins
+    * [Contribute to this documentation!](https://github.com/pluginszentra/doc)
 
 ## Additional resources
 
-* [Official website](http://glpi-project.org)
-* [Demo](https://www.glpi-network.cloud)
-* [Translations on transifex service](https://app.transifex.com/glpi/GLPI/dashboard/)
-* [Issues](https://github.com/glpi-project/glpi/issues)
-* [Suggestions](http://suggest.glpi-project.org)
-* [Forum](http://forum.glpi-project.org)
-* [Development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/)
-* [Plugin directory](http://plugins.glpi-project.org)
-* [Plugin development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/plugins/index.html)
+* [Official website](http://zentra-project.org)
+* [Demo](https://www.zentra-network.cloud)
+* [Translations on transifex service](https://app.transifex.com/zentra/ZENTRA/dashboard/)
+* [Issues](https://github.com/zentra-project/zentra/issues)
+* [Suggestions](http://suggest.zentra-project.org)
+* [Forum](http://forum.zentra-project.org)
+* [Development documentation](http://zentra-developer-documentation.readthedocs.io/en/master/)
+* [Plugin directory](http://plugins.zentra-project.org)
+* [Plugin development documentation](http://zentra-developer-documentation.readthedocs.io/en/master/plugins/index.html)
 
 
 ## Support
-GLPI is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
+ZENTRA is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
 
 To ease support and development, we need your help when encountering issues.

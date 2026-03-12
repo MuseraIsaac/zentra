@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -35,14 +35,14 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {{ inputs.hidden('users_id', session('glpiID')) }}
+    {{ inputs.hidden('users_id', session('zentraID')) }}
     {{ inputs.hidden('knowbaseitems_id', item.fields['knowbaseitems_id']) }}
 
     {% set lang_field %}
         {% if item.isNewItem %}
             {% do call('Dropdown::showLanguages', ['language', {
                 display_name: false,
-                value: session('glpilanguage'),
+                value: session('zentralanguage'),
                 used: used_languages,
             }]) %}
         {% else %}

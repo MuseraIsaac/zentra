@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * FieldUnicity Class
@@ -109,7 +109,7 @@ class FieldUnicity extends CommonDropdown
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             if ($item::class === static::class) {
@@ -119,7 +119,7 @@ class FieldUnicity extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             self::showDoubles($item);
@@ -150,7 +150,7 @@ class FieldUnicity extends CommonDropdown
      **/
     public function showItemtype($ID, $value = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //Criteria already added : only display the selected itemtype
         if ($ID > 0) {
@@ -161,7 +161,7 @@ class FieldUnicity extends CommonDropdown
         } else {
             $options = [];
             //Add criteria : display dropdown
-            foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
+            foreach ($CFG_ZENTRA['unicity_types'] as $itemtype) {
                 if ($item = getItemForItemtype($itemtype)) {
                     if ($item::canCreate()) {
                         $options[$itemtype] = $item::getTypeName(1);
@@ -177,7 +177,7 @@ class FieldUnicity extends CommonDropdown
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
                 "span_fields",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownUnicityFields.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/dropdownUnicityFields.php",
                 $params
             );
         }
@@ -198,10 +198,10 @@ class FieldUnicity extends CommonDropdown
 
         // Get the first active configuration for this itemtype
         $request = [
-            'FROM'   => 'glpi_fieldunicities',
+            'FROM'   => 'zentra_fieldunicities',
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-            ] + getEntitiesRestrictCriteria('glpi_fieldunicities', '', $entities_id, true),
+            ] + getEntitiesRestrictCriteria('zentra_fieldunicities', '', $entities_id, true),
             'ORDER'  => ['entities_id DESC'],
         ];
 
@@ -243,7 +243,7 @@ class FieldUnicity extends CommonDropdown
         }
 
         if (!isset($unicity->fields['entities_id'])) {
-            $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+            $unicity->fields['entities_id'] = $_SESSION['zentraactive_entity'];
         }
 
         $unicity_fields = explode(',', $unicity->fields['fields']);
@@ -393,7 +393,7 @@ class FieldUnicity extends CommonDropdown
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -528,7 +528,7 @@ class FieldUnicity extends CommonDropdown
 
         $entities = [$unicity->fields['entities_id']];
         if ($unicity->fields['is_recursive']) {
-            $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
+            $entities = getSonsOf('zentra_entities', $unicity->fields['entities_id']);
         }
 
         $where = [];

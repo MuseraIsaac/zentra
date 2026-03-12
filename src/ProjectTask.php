@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
-use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\PlanningEvent;
-use Glpi\Features\Teamwork;
-use Glpi\Features\TeamworkInterface;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Zentra\CalDAV\Traits\VobjectConverterTrait;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\PlanningEvent;
+use Zentra\Features\Teamwork;
+use Zentra\Features\TeamworkInterface;
+use Zentra\RichText\RichText;
 use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
@@ -238,7 +238,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Handle rich-text images
         $this->input = $this->addFiles(
@@ -314,7 +314,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             self::recalculatePercentDone($this->input['_old_projecttasks_id']);
         }
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             // Read again project to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
@@ -331,7 +331,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Add team members
         if (!empty($this->input['teammember_list'])) {
@@ -377,7 +377,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA["use_notifications"]) {
             // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
@@ -425,10 +425,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (
-            isset($_SESSION['glpigroups'], $this->team['Group'])
-            && count($_SESSION['glpigroups']) && count($this->team['Group'])
+            isset($_SESSION['zentragroups'], $this->team['Group'])
+            && count($_SESSION['zentragroups']) && count($this->team['Group'])
         ) {
-            foreach ($_SESSION['glpigroups'] as $groups_id) {
+            foreach ($_SESSION['zentragroups'] as $groups_id) {
                 foreach ($this->team['Group'] as $data) {
                     if ((int) $data['items_id'] === (int) $groups_id) {
                         return true;
@@ -457,9 +457,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function pre_deleteItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA['use_notifications']) {
             NotificationEvent::raiseEvent('delete', $this);
         }
         return true;
@@ -687,7 +687,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tasks = [];
         $iterator = $DB->request([
-            'FROM'   => 'glpi_projecttasks',
+            'FROM'   => 'zentra_projecttasks',
             'WHERE'  => [
                 'projects_id'  => $ID,
             ],
@@ -713,7 +713,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tasks = [];
         $iterator = $DB->request([
-            'FROM'   => 'glpi_projecttasks',
+            'FROM'   => 'zentra_projecttasks',
             'WHERE'  => [
                 'projecttasks_id'  => $ID,
             ],
@@ -738,18 +738,18 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'         => 'glpi_projecttasks_tickets',
+            'FROM'         => 'zentra_projecttasks_tickets',
             'INNER JOIN'   => [
-                'glpi_projecttasks'  => [
+                'zentra_projecttasks'  => [
                     'ON' => [
-                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                        'glpi_projecttasks'           => 'id',
+                        'zentra_projecttasks_tickets'   => 'projecttasks_id',
+                        'zentra_projecttasks'           => 'id',
                     ],
                 ],
             ],
             'FIELDS' =>  'tickets_id',
             'WHERE'        => [
-                'glpi_projecttasks.projects_id'   => $ID,
+                'zentra_projecttasks.projects_id'   => $ID,
             ],
         ]);
 
@@ -830,22 +830,22 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: 'zentra_tickets.actiontime',
                     alias: 'duration'
                 ),
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_projecttasks_tickets'   => [
+                'zentra_projecttasks_tickets'   => [
                     'FKEY'   => [
-                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                        'zentra_projecttasks_tickets'   => 'projecttasks_id',
                         self::getTable()              => 'id',
                     ],
                 ],
-                'glpi_tickets'                => [
+                'zentra_tickets'                => [
                     'FKEY'   => [
-                        'glpi_projecttasks_tickets'   => 'tickets_id',
-                        'glpi_tickets'                => 'id',
+                        'zentra_projecttasks_tickets'   => 'tickets_id',
+                        'zentra_tickets'                => 'id',
                     ],
                 ],
             ],
@@ -925,7 +925,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_projects',
+            'table'              => 'zentra_projects',
             'field'              => 'name',
             'name'               => Project::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -955,7 +955,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_projectstates',
+            'table'              => 'zentra_projectstates',
             'field'              => 'name',
             'name'               => _x('item', 'State'),
             'datatype'           => 'dropdown',
@@ -963,7 +963,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_projecttasktypes',
+            'table'              => 'zentra_projecttasktypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -1001,7 +1001,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id',
             'name'               => __('Creator'),
@@ -1095,7 +1095,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -1227,31 +1227,31 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $criteria = [
             'SELECT' => [
-                'glpi_projecttasks.*',
-                'glpi_projecttasktypes.name AS tname',
-                'glpi_projectstates.name AS sname',
-                'glpi_projectstates.color',
+                'zentra_projecttasks.*',
+                'zentra_projecttasktypes.name AS tname',
+                'zentra_projectstates.name AS sname',
+                'zentra_projectstates.color',
                 'father.name AS fname',
                 'father.id AS fID',
             ],
-            'FROM'   => 'glpi_projecttasks',
+            'FROM'   => 'zentra_projecttasks',
             'LEFT JOIN' => [
-                'glpi_projecttasktypes'        => [
+                'zentra_projecttasktypes'        => [
                     'ON'  => [
-                        'glpi_projecttasktypes' => 'id',
-                        'glpi_projecttasks'     => 'projecttasktypes_id',
+                        'zentra_projecttasktypes' => 'id',
+                        'zentra_projecttasks'     => 'projecttasktypes_id',
                     ],
                 ],
-                'glpi_projectstates'          => [
+                'zentra_projectstates'          => [
                     'ON'  => [
-                        'glpi_projectstates' => 'id',
-                        'glpi_projecttasks'  => 'projectstates_id',
+                        'zentra_projectstates' => 'id',
+                        'zentra_projecttasks'  => 'projectstates_id',
                     ],
                 ],
-                'glpi_projecttasks AS father' => [
+                'zentra_projecttasks AS father' => [
                     'ON'  => [
                         'father' => 'id',
-                        'glpi_projecttasks'  => 'projecttasks_id',
+                        'zentra_projecttasks'  => 'projecttasks_id',
                     ],
                 ],
             ],
@@ -1270,10 +1270,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         switch ($item::class) {
             case Project::class:
-                $criteria['WHERE']['glpi_projecttasks.projects_id'] = $ID;
+                $criteria['WHERE']['zentra_projecttasks.projects_id'] = $ID;
                 break;
             case ProjectTask::class:
-                $criteria['WHERE']['glpi_projecttasks.projecttasks_id'] = $ID;
+                $criteria['WHERE']['zentra_projecttasks.projecttasks_id'] = $ID;
                 break;
             default: // Not available type
                 return;
@@ -1305,13 +1305,13 @@ TWIG, $twig_params);
 
         if (Session::haveTranslations('ProjectTaskType', 'name')) {
             $criteria['SELECT'][] = 'namet2.value AS transname2';
-            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet2'] = [
+            $criteria['LEFT JOIN']['zentra_dropdowntranslations AS namet2'] = [
                 'ON'  => [
                     'namet2'             => 'items_id',
-                    'glpi_projecttasks'  => 'projecttasktypes_id', [
+                    'zentra_projecttasks'  => 'projecttasktypes_id', [
                         'AND' => [
                             'namet2.itemtype' => 'ProjectTaskType',
-                            'namet2.language' => $_SESSION['glpilanguage'],
+                            'namet2.language' => $_SESSION['zentralanguage'],
                             'namet2.field'    => 'name',
                         ],
                     ],
@@ -1321,13 +1321,13 @@ TWIG, $twig_params);
 
         if (Session::haveTranslations('ProjectState', 'name')) {
             $criteria['SELECT'][] = 'namet3.value AS transname3';
-            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS namet3'] = [
+            $criteria['LEFT JOIN']['zentra_dropdowntranslations AS namet3'] = [
                 'ON'  => [
                     'namet3'             => 'items_id',
-                    'glpi_projectstates' => 'id', [
+                    'zentra_projectstates' => 'id', [
                         'AND' => [
                             'namet3.itemtype' => 'ProjectState',
-                            'namet3.language' => $_SESSION['glpilanguage'],
+                            'namet3.language' => $_SESSION['zentralanguage'],
                             'namet3.field'    => 'name',
                         ],
                     ],
@@ -1409,12 +1409,12 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         $nb = 0;
         switch ($item::class) {
             case Project::class:
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = countElementsInTable(
                         static::getTable(),
                         ['projects_id' => $item->getID()]
@@ -1423,7 +1423,7 @@ TWIG, $twig_params);
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
             case self::class:
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = countElementsInTable(
                         static::getTable(),
                         ['projecttasks_id' => $item->getID()]
@@ -1434,7 +1434,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case Project::class:
@@ -1468,7 +1468,7 @@ TWIG, $twig_params);
                     'itemtypes'       => ProjectTeam::$available_types,
                     'entity_restrict' => ($task->fields['is_recursive']
                         ? getSonsOf(
-                            'glpi_entities',
+                            'zentra_entities',
                             $task->fields['entities_id']
                         )
                         : $task->fields['entities_id']),
@@ -1481,7 +1481,7 @@ TWIG, $twig_params);
                 <div class="mb-3">
                     <form method="post" action="{{ 'ProjectTaskTeam'|itemtype_form_path }}">
                         <div class="d-flex">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="projecttasks_id" value="{{ id }}">
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
@@ -1674,7 +1674,7 @@ TWIG, $twig_params);
                 $projecttasks_id = self::getActiveProjectTaskIDsForUser([Session::getLoginUserID()], false);
                 break;
             case 'Group':
-                $projecttasks_id = self::getActiveProjectTaskIDsForGroup($_SESSION['glpigroups']);
+                $projecttasks_id = self::getActiveProjectTaskIDsForGroup($_SESSION['zentragroups']);
                 break;
         }
 
@@ -1708,7 +1708,7 @@ TWIG, $twig_params);
             ];
         }
 
-        $displayed_row_count = min(count($projecttasks_id), (int) $_SESSION['glpidisplay_count_on_home']);
+        $displayed_row_count = min(count($projecttasks_id), (int) $_SESSION['zentradisplay_count_on_home']);
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',
@@ -1799,7 +1799,7 @@ TWIG, $twig_params);
      **/
     public static function populatePlanning($options = []): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $interv = [];
         $ttask  = new self();
@@ -1828,51 +1828,51 @@ TWIG, $twig_params);
         $ADDWHERE = [];
 
         if ($whogroup === "mine") {
-            if (isset($_SESSION['glpigroups'])) {
-                $whogroup = $_SESSION['glpigroups'];
+            if (isset($_SESSION['zentragroups'])) {
+                $whogroup = $_SESSION['zentragroups'];
             } elseif ($who > 0) {
                 $whogroup = array_column(Group_User::getUserGroups($who), 'id');
             }
         }
 
         if ($who > 0) {
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'User';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = $who;
+            $ADDWHERE['zentra_projecttaskteams.itemtype'] = 'User';
+            $ADDWHERE['zentra_projecttaskteams.items_id'] = $who;
         }
 
         if ($whogroup > 0) {
-            $ADDWHERE['glpi_projecttaskteams.itemtype'] = 'Group';
-            $ADDWHERE['glpi_projecttaskteams.items_id'] = $whogroup;
+            $ADDWHERE['zentra_projecttaskteams.itemtype'] = 'Group';
+            $ADDWHERE['zentra_projecttaskteams.items_id'] = $whogroup;
         }
 
         if (!count($ADDWHERE)) {
             $ADDWHERE = [
-                'glpi_projecttaskteams.itemtype' => 'User',
-                'glpi_projecttaskteams.items_id' => new QuerySubQuery([
-                    'SELECT'          => 'glpi_profiles_users.users_id',
+                'zentra_projecttaskteams.itemtype' => 'User',
+                'zentra_projecttaskteams.items_id' => new QuerySubQuery([
+                    'SELECT'          => 'zentra_profiles_users.users_id',
                     'DISTINCT'        => true,
-                    'FROM'            => 'glpi_profiles',
+                    'FROM'            => 'zentra_profiles',
                     'LEFT JOIN'       => [
-                        'glpi_profiles_users'   => [
+                        'zentra_profiles_users'   => [
                             'ON' => [
-                                'glpi_profiles_users'   => 'profiles_id',
-                                'glpi_profiles'         => 'id',
+                                'zentra_profiles_users'   => 'profiles_id',
+                                'zentra_profiles'         => 'id',
                             ],
                         ],
                     ],
                     'WHERE'           => [
-                        'glpi_profiles.interface'  => 'central',
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], true),
+                        'zentra_profiles.interface'  => 'central',
+                    ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $_SESSION['zentraactive_entity'], true),
                 ]),
             ];
         }
 
         if ($options['state_done']) {
-            $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
+            $ADDWHERE['zentra_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = [
                 'OR' => [
-                    ['glpi_projectstates.is_finished' => 0],
-                    ['glpi_projectstates.is_finished' => null],
+                    ['zentra_projectstates.is_finished' => 0],
+                    ['zentra_projectstates.is_finished' => null],
                 ],
             ];
         }
@@ -1911,20 +1911,20 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'       => $SELECT,
-            'FROM'         => 'glpi_projecttaskteams',
+            'FROM'         => 'zentra_projecttaskteams',
             'INNER JOIN'   => [
                 $ttask_table => [
                     'ON' => [
-                        'glpi_projecttaskteams' => 'projecttasks_id',
+                        'zentra_projecttaskteams' => 'projecttasks_id',
                         $ttask_table      => 'id',
                     ],
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_projectstates' => [
+                'zentra_projectstates' => [
                     'ON' => [
                         $ttask_table   => 'projectstates_id',
-                        'glpi_projectstates' => 'id',
+                        'zentra_projectstates' => 'id',
                     ],
                 ],
             ],
@@ -1952,10 +1952,10 @@ TWIG, $twig_params);
                     if (!$options['genical']) {
                         $interv[$key]["url"] = Project::getFormURLWithID($task->fields['projects_id']);
                     } else {
-                        $interv[$key]["url"] = $CFG_GLPI["url_base"]
+                        $interv[$key]["url"] = $CFG_ZENTRA["url_base"]
                                         . Project::getFormURLWithID($task->fields['projects_id'], false);
                     }
-                    $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                    $interv[$key]["ajaxurl"] = $CFG_ZENTRA["root_doc"] . "/ajax/planning.php"
                                           . "?action=edit_event_form"
                                           . "&itemtype=ProjectTask"
                                           . "&id=" . $data['id'];
@@ -2028,14 +2028,14 @@ TWIG, $twig_params);
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $users_id = "";  // show users_id project task
-        $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_private.png"; // default icon for project task
+        $img      = $CFG_ZENTRA["root_doc"] . "/pics/rdv_private.png"; // default icon for project task
 
         if ((int) $val["users_id"] !== Session::getLoginUserID()) {
             $users_id = sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
-            $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_public.png";
+            $img      = $CFG_ZENTRA["root_doc"] . "/pics/rdv_public.png";
         }
 
         $name = Html::resume_text($val['name'], 80);
@@ -2237,7 +2237,7 @@ TWIG, $twig_params);
      */
     public function getAsVCalendar(): ?VCalendar
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$this->canViewItem()) {
             return null;
@@ -2273,7 +2273,7 @@ TWIG, $twig_params);
             }
         }
 
-        $vcomp->URL = $CFG_GLPI['url_base'] . Project::getFormURLWithID($fields['projects_id'], false);
+        $vcomp->URL = $CFG_ZENTRA['url_base'] . Project::getFormURLWithID($fields['projects_id'], false);
 
         return $vcalendar;
     }

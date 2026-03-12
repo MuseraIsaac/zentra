@@ -18,7 +18,7 @@
                     "item_type": "question",
                     "value_operator": "equals",
                     "logic_operator": "and",
-                    "value": "I love GLPI"
+                    "value": "I love ZENTRA"
                 }
             ],
             "sections": [
@@ -38,7 +38,7 @@
                     "id": 1,
                     "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
                     "name": "My question used as a criteria",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -54,7 +54,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -65,7 +65,7 @@
                     "is_active": true
                 },
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\DirectAccess",
                     "config": {
                         "token": "6QBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVb",
                         "allow_unauthenticated": false
@@ -76,7 +76,7 @@
             "destinations": [
                 {
                     "id": 1,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

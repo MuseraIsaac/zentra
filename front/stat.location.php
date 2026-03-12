@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,17 +35,17 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Stat\Data\Location\StatDataClosed;
-use Glpi\Stat\Data\Location\StatDataLate;
-use Glpi\Stat\Data\Location\StatDataOpened;
-use Glpi\Stat\Data\Location\StatDataOpenSatisfaction;
-use Glpi\Stat\Data\Location\StatDataSolved;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Stat\Data\Location\StatDataClosed;
+use Zentra\Stat\Data\Location\StatDataLate;
+use Zentra\Stat\Data\Location\StatDataOpened;
+use Zentra\Stat\Data\Location\StatDataOpenSatisfaction;
+use Zentra\Stat\Data\Location\StatDataSolved;
 
 use function Safe\mktime;
 use function Safe\preg_match;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
@@ -144,7 +144,7 @@ if (!($item instanceof CommonDevice)) {
 Html::printPager(
     $_GET['start'],
     count($val),
-    $CFG_GLPI['root_doc'] . '/front/stat.location.php',
+    $CFG_ZENTRA['root_doc'] . '/front/stat.location.php',
     Toolbox::append_params(
         [
             'date1'    => $_GET['date1'],

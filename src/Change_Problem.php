@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * @since 0.84
@@ -57,24 +57,24 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         return _n('Link Problem/Change', 'Links Problem/Change', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (static::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case Change::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_changes_problems',
+                            'zentra_changes_problems',
                             ['changes_id' => $item->getID()]
                         );
                     }
                     return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case Problem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_changes_problems',
+                            'zentra_changes_problems',
                             ['problems_id' => $item->getID()]
                         );
                     }
@@ -84,7 +84,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case Change::class:
@@ -118,23 +118,23 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_changes_problems.id AS linkid',
-                'glpi_changes.*',
+                'zentra_changes_problems.id AS linkid',
+                'zentra_changes.*',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_changes_problems',
+            'FROM'            => 'zentra_changes_problems',
             'LEFT JOIN'       => [
-                'glpi_changes' => [
+                'zentra_changes' => [
                     'ON' => [
-                        'glpi_changes_problems' => 'changes_id',
-                        'glpi_changes'          => 'id',
+                        'zentra_changes_problems' => 'changes_id',
+                        'zentra_changes'          => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.problems_id' => $ID,
+                'zentra_changes_problems.problems_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_changes.name',
+            'ORDERBY'         => 'zentra_changes.name',
         ]);
 
         $changes = [];
@@ -211,23 +211,23 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_changes_problems.id AS linkid',
-                'glpi_problems.*',
+                'zentra_changes_problems.id AS linkid',
+                'zentra_problems.*',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_changes_problems',
+            'FROM'            => 'zentra_changes_problems',
             'LEFT JOIN'       => [
-                'glpi_problems' => [
+                'zentra_problems' => [
                     'ON' => [
-                        'glpi_changes_problems' => 'problems_id',
-                        'glpi_problems'         => 'id',
+                        'zentra_changes_problems' => 'problems_id',
+                        'zentra_problems'         => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.changes_id' => $ID,
+                'zentra_changes_problems.changes_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_problems.name',
+            'ORDERBY'         => 'zentra_problems.name',
         ]);
 
         $problems = [];

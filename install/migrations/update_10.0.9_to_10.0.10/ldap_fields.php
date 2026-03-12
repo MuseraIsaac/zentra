@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ use function Safe\preg_match;
  */
 
 /** Fix non encoded LDAP fields in groups */
-$groups = getAllDataFromTable('glpi_groups');
+$groups = getAllDataFromTable('zentra_groups');
 foreach ($groups as $group) {
     $updated = [];
     foreach (['ldap_group_dn', 'ldap_value'] as $ldap_field) {
@@ -51,7 +51,7 @@ foreach ($groups as $group) {
     if (count($updated) > 0) {
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_groups',
+                'zentra_groups',
                 $updated,
                 [
                     'id' => $group['id'],
@@ -65,11 +65,11 @@ foreach ($groups as $group) {
 /** Fix non encoded LDAP fields in users */
 $users = $DB->request([
     'SELECT' => [
-        'glpi_users.id',
-        'glpi_users.user_dn',
-        'glpi_users.sync_field',
+        'zentra_users.id',
+        'zentra_users.user_dn',
+        'zentra_users.sync_field',
     ],
-    'FROM'   => 'glpi_users',
+    'FROM'   => 'zentra_users',
     'WHERE'  => [
         'authtype' => 3,
         [
@@ -91,7 +91,7 @@ foreach ($users as $user) {
     if (count($updated) > 0) {
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_users',
+                'zentra_users',
                 $updated,
                 [
                     'id' => $user['id'],

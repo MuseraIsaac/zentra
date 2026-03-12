@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 /* eslint prefer-arrow-callback: 0 */
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
-/* global glpi_ajax_dialog, glpi_html_dialog */
+/* global zentra_ajax_dialog, zentra_html_dialog */
 /* global _ */
 
-var GLPIPlanning  = {
+var ZENTRAPlanning  = {
     calendar:      null,
     dom_id:        "",
     all_resources: [],
@@ -52,7 +52,7 @@ var GLPIPlanning  = {
         var default_options = {
             full_view: true,
             default_view: 'timeGridWeek',
-            height: GLPIPlanning.getHeight,
+            height: ZENTRAPlanning.getHeight,
             plugins: [
                 'dayGrid', 'interaction', 'list', 'timeGrid',
                 'resourceTimeline', 'rrule', 'bootstrap'
@@ -70,7 +70,7 @@ var GLPIPlanning  = {
         };
         options = Object.assign({}, default_options, options);
 
-        GLPIPlanning.dom_id = `planning${options.rand}`;
+        ZENTRAPlanning.dom_id = `planning${options.rand}`;
         var window_focused  = true;
         var loaded          = false;
         var disable_qtip    = false;
@@ -79,16 +79,16 @@ var GLPIPlanning  = {
         // manage visible resources
         this.all_resources = options.resources;
         this.visible_res   = Object.keys(this.all_resources).filter(function(index) {
-            return GLPIPlanning.all_resources[index].is_visible;
+            return ZENTRAPlanning.all_resources[index].is_visible;
         });
 
-        // Hide some days depending on GLPI configuration
+        // Hide some days depending on ZENTRA configuration
         var all_days = [0, 1, 2, 3, 4, 5, 6];
-        var enabled_days = CFG_GLPI.planning_work_days;
+        var enabled_days = CFG_ZENTRA.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
         var loadedLocales = Object.keys(FullCalendarLocales);
 
-        this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
+        this.calendar = new FullCalendar.Calendar(document.getElementById(ZENTRAPlanning.dom_id), {
             plugins:     options.plugins,
             height:      options.height,
             timeZone:    'UTC',
@@ -96,8 +96,8 @@ var GLPIPlanning  = {
             weekNumbers: options.full_view ? true : false,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
-            minTime:     CFG_GLPI.planning_begin,
-            maxTime:     CFG_GLPI.planning_end,
+            minTime:     CFG_ZENTRA.planning_begin,
+            maxTime:     CFG_ZENTRA.planning_end,
             schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
             editable: true, // we can drag / resize items
@@ -113,7 +113,7 @@ var GLPIPlanning  = {
             // Filter resources by whether their id is in visible_res.
                 var filteredResources = [];
                 filteredResources = options.resources.filter(function(elem, index) {
-                    return GLPIPlanning.visible_res.indexOf(index.toString()) !== -1;
+                    return ZENTRAPlanning.visible_res.indexOf(index.toString()) !== -1;
                 });
 
                 successCallback(filteredResources);
@@ -318,7 +318,7 @@ var GLPIPlanning  = {
                     // 1- clone event
                     $('.planning-context-menu .clone-event').on('click', function() {
                         $.ajax({
-                            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                            url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                             type: 'POST',
                             data: {
                                 action: 'clone_event',
@@ -331,7 +331,7 @@ var GLPIPlanning  = {
                                 }
                             },
                             success: function() {
-                                GLPIPlanning.refresh();
+                                ZENTRAPlanning.refresh();
                             }
                         });
                     });
@@ -340,7 +340,7 @@ var GLPIPlanning  = {
                         var ajaxDeleteEvent = function(instance) {
                             instance = instance || false;
                             $.ajax({
-                                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                                url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                                 type: 'POST',
                                 data: {
                                     action: 'delete_event',
@@ -352,7 +352,7 @@ var GLPIPlanning  = {
                                     }
                                 },
                                 success: function() {
-                                    GLPIPlanning.refresh();
+                                    ZENTRAPlanning.refresh();
                                 }
                             });
                         };
@@ -360,7 +360,7 @@ var GLPIPlanning  = {
                         if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
                             ajaxDeleteEvent();
                         } else {
-                            glpi_html_dialog({
+                            zentra_html_dialog({
                                 title: __("Make a choice"),
                                 body: `${__("Delete the whole serie of the recurrent event")}<br>${
                                     __("or just add an exception by deleting this instance?")}`,
@@ -386,13 +386,13 @@ var GLPIPlanning  = {
 
                 // force refetch events from ajax on view change (don't refetch on first load)
                 if (loaded) {
-                    GLPIPlanning.refresh();
+                    ZENTRAPlanning.refresh();
                 } else {
                     loaded = true;
                 }
 
                 // attach button (planning and refresh) in planning header
-                $(`#${CSS.escape(GLPIPlanning.dom_id)} .fc-toolbar .fc-center h2`)
+                $(`#${CSS.escape(ZENTRAPlanning.dom_id)} .fc-toolbar .fc-center h2`)
                     .after(
                         $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(
@@ -413,26 +413,26 @@ var GLPIPlanning  = {
                 } else {
                     // reinit datepicker
                     $('#planning_datepicker').show();
-                    GLPIPlanning.initFCDatePicker(new Date(view.currentStart));
+                    ZENTRAPlanning.initFCDatePicker(new Date(view.currentStart));
 
                     // show controls buttons
                     $('#planning .fc-left .fc-button-group').show();
                 }
 
                 // set end of day markers for timeline
-                GLPIPlanning.setEndofDays(info.view);
+                ZENTRAPlanning.setEndofDays(info.view);
 
                 $('#refresh_planning').on ('click', function() {
-                    GLPIPlanning.refresh();
+                    ZENTRAPlanning.refresh();
                 });
             },
             viewSkeletonRender: function(info) {
                 var view_type = info.view.type;
 
-                GLPIPlanning.last_view = view_type;
+                ZENTRAPlanning.last_view = view_type;
                 // inform backend we changed view (to store it in session)
                 $.ajax({
-                    url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                    url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                     type: 'POST',
                     data: {
                         action: 'view_changed',
@@ -456,7 +456,7 @@ var GLPIPlanning  = {
                 });
 
                 // set end of day markers for timeline
-                GLPIPlanning.setEndofDays(info.view);
+                ZENTRAPlanning.setEndofDays(info.view);
             },
             // EDIT EVENTS
             eventResize: function(info) {
@@ -465,25 +465,25 @@ var GLPIPlanning  = {
                 var is_recurrent = exprops.is_recurrent || false;
 
                 if (is_recurrent) {
-                    glpi_html_dialog({
+                    zentra_html_dialog({
                         title: __("Recurring event resized"),
                         body: __("The resized event is a recurring event. Do you want to change the serie or instance ?"),
                         buttons: [
                             {
                                 label: __("Serie"),
                                 click: function() {
-                                    GLPIPlanning.editEventTimes(info);
+                                    ZENTRAPlanning.editEventTimes(info);
                                 }
                             }, {
                                 label: _n("Instance", "Instances", 1),
                                 click: function() {
-                                    GLPIPlanning.editEventTimes(info, true);
+                                    ZENTRAPlanning.editEventTimes(info, true);
                                 }
                             }
                         ]
                     });
                 } else {
-                    GLPIPlanning.editEventTimes(info);
+                    ZENTRAPlanning.editEventTimes(info);
                 }
             },
             eventResizeStart: function() {
@@ -508,25 +508,25 @@ var GLPIPlanning  = {
                 var is_recurrent = exprops.is_recurrent || false;
 
                 if (is_recurrent) {
-                    glpi_html_dialog({
+                    zentra_html_dialog({
                         title: __("Recurring event dragged"),
                         body: __("The dragged event is a recurring event. Do you want to move the serie or instance?"),
                         buttons: [
                             {
                                 label: __("Serie"),
                                 click: function() {
-                                    GLPIPlanning.editEventTimes(info);
+                                    ZENTRAPlanning.editEventTimes(info);
                                 }
                             }, {
                                 label: _n("Instance", "Instances", 1),
                                 click: function() {
-                                    GLPIPlanning.editEventTimes(info, true);
+                                    ZENTRAPlanning.editEventTimes(info, true);
                                 }
                             }
                         ]
                     });
                 } else {
-                    GLPIPlanning.editEventTimes(info);
+                    ZENTRAPlanning.editEventTimes(info);
                 }
             },
             eventClick: function(info) {
@@ -536,10 +536,10 @@ var GLPIPlanning  = {
                     var start    = event.start;
                     var ajaxurl  = `${event.extendedProps.ajaxurl}&start=${start.toISOString()}`;
                     info.jsEvent.preventDefault(); // don't let the browser navigate
-                    glpi_ajax_dialog({
+                    zentra_ajax_dialog({
                         url: ajaxurl,
                         close: function() {
-                            GLPIPlanning.refresh();
+                            ZENTRAPlanning.refresh();
                         },
                         dialogclass: 'modal-lg',
                         title: __('Edit an event'),
@@ -552,7 +552,7 @@ var GLPIPlanning  = {
             selectable: true,
             select: function(info) {
                 if (!options.can_create) {
-                    GLPIPlanning.calendar.unselect();
+                    ZENTRAPlanning.calendar.unselect();
                     return false;
                 }
 
@@ -569,7 +569,7 @@ var GLPIPlanning  = {
 
                 // prevent adding events on group users
                 if (itemtype === 'Group_User') {
-                    GLPIPlanning.calendar.unselect();
+                    ZENTRAPlanning.calendar.unselect();
                     return false;
                 }
 
@@ -577,8 +577,8 @@ var GLPIPlanning  = {
                 var end = info.end;
 
                 if ($('div.modal.planning-modal').length === 0) {
-                    glpi_ajax_dialog({
-                        url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                    zentra_ajax_dialog({
+                        url: `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                         params: {
                             action: 'add_event_fromselect',
                             begin: start.toISOString(),
@@ -592,7 +592,7 @@ var GLPIPlanning  = {
                     });
                 }
 
-                GLPIPlanning.calendar.unselect();
+                ZENTRAPlanning.calendar.unselect();
             }
         });
 
@@ -621,17 +621,17 @@ var GLPIPlanning  = {
         });
 
         //window.calendar = calendar; // Required as object is not accessible by forms callback
-        GLPIPlanning.calendar.render();
+        ZENTRAPlanning.calendar.render();
 
         // IMPORTANT: This event source was moved here, after the calendar's render() call,
         // to prevent an automatic AJAX request to the events URL during FullCalendar's initialization.
         // And another one during the calendar's changeView() call.
         // By adding it manually after rendering, only one call is done.
         this.calendar.addEventSource({
-            url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
             type: 'POST',
             extraParams: function () {
-                var view_name =  GLPIPlanning.calendar.state.viewType;
+                var view_name =  ZENTRAPlanning.calendar.state.viewType;
                 return {
                     'action': 'get_events',
                     'view_name': view_name
@@ -639,7 +639,7 @@ var GLPIPlanning  = {
             },
             success: function (data) {
                 if (!options.full_view && data.length === 0) {
-                    GLPIPlanning.calendar.setOption('height', 0);
+                    ZENTRAPlanning.calendar.setOption('height', 0);
                 }
             },
             failure: function (error) {
@@ -648,7 +648,7 @@ var GLPIPlanning  = {
         });
 
         // attach the date picker to planning
-        GLPIPlanning.initFCDatePicker();
+        ZENTRAPlanning.initFCDatePicker();
 
         // force focus on the current window
         $(window).focus();
@@ -662,27 +662,27 @@ var GLPIPlanning  = {
     },
 
     refresh: function() {
-        if (typeof(GLPIPlanning.calendar.refetchResources) == 'function') {
-            GLPIPlanning.calendar.refetchResources();
+        if (typeof(ZENTRAPlanning.calendar.refetchResources) == 'function') {
+            ZENTRAPlanning.calendar.refetchResources();
         }
-        GLPIPlanning.calendar.refetchEvents();
-        GLPIPlanning.calendar.rerenderEvents();
+        ZENTRAPlanning.calendar.refetchEvents();
+        ZENTRAPlanning.calendar.rerenderEvents();
         window.displayAjaxMessageAfterRedirect();
     },
 
     // add/remove resource (like when toggling it in side bar)
     toggleResource: function(res_name, active) {
         // find the index of current resource to find it in our array of visible resources
-        var index = GLPIPlanning.all_resources.findIndex(function(current) {
+        var index = ZENTRAPlanning.all_resources.findIndex(function(current) {
             return current.id == res_name;
         });
 
         if (index !== -1) {
             // add only if not already present
-            if (active && GLPIPlanning.visible_res.indexOf(index.toString()) === -1) {
-                GLPIPlanning.visible_res.push(index.toString());
+            if (active && ZENTRAPlanning.visible_res.indexOf(index.toString()) === -1) {
+                ZENTRAPlanning.visible_res.push(index.toString());
             } else if (!active) {
-                GLPIPlanning.visible_res.splice(GLPIPlanning.visible_res.indexOf(index.toString()), 1);
+                ZENTRAPlanning.visible_res.splice(ZENTRAPlanning.visible_res.indexOf(index.toString()), 1);
             }
         }
     },
@@ -692,8 +692,8 @@ var GLPIPlanning  = {
         // to visualy separate days
         if (view.constructor.name === "ResourceTimelineView") {
             // compute the number of hour slots displayed
-            var time_beg  = CFG_GLPI.planning_begin.split(':');
-            var time_end  = CFG_GLPI.planning_end.split(':');
+            var time_beg  = CFG_ZENTRA.planning_begin.split(':');
+            var time_end  = CFG_ZENTRA.planning_end.split(':');
             var int_beg   = parseInt(time_beg[0]) * 60 + parseInt(time_beg[1]);
             var int_end   = parseInt(time_end[0]) * 60 + parseInt(time_end[1]);
             var sec_inter = int_end - int_beg;
@@ -717,7 +717,7 @@ var GLPIPlanning  = {
         $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
             e.preventDefault(); // to prevent change of url on anchor
             var url = $(this).attr('href');
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 url: url,
                 title: __('Add a calendar'),
             });
@@ -734,7 +734,7 @@ var GLPIPlanning  = {
         });
 
         $('#planning_filter .delete_planning').on( 'click', function() {
-            GLPIPlanning.deletePlanning(this);
+            ZENTRAPlanning.deletePlanning(this);
         });
 
         var sendDisplayEvent = function(current_checkbox, refresh_planning) {
@@ -751,7 +751,7 @@ var GLPIPlanning  = {
             var checked    = current_checkbox.is(':checked');
 
             return $.ajax({
-                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                 type: 'POST',
                 data: {
                     action:  'toggle_filter',
@@ -761,11 +761,11 @@ var GLPIPlanning  = {
                     display: checked
                 },
                 success: function() {
-                    GLPIPlanning.toggleResource(event_name, checked);
+                    ZENTRAPlanning.toggleResource(event_name, checked);
 
                     if (refresh_planning) {
                         // don't refresh planning if event triggered from parent checkbox
-                        GLPIPlanning.refresh();
+                        ZENTRAPlanning.refresh();
                     }
                 }
             });
@@ -791,12 +791,12 @@ var GLPIPlanning  = {
                     promises.push(sendDisplayEvent($(this), false));
                 });
 
-                GLPIPlanning.toggleResource(event_name, checked);
+                ZENTRAPlanning.toggleResource(event_name, checked);
 
                 // refresh planning once for all checkboxes (and not for each)
                 // after theirs promises done
                 $.when(...promises).then(function() {
-                    GLPIPlanning.refresh();
+                    ZENTRAPlanning.refresh();
                 });
             });
 
@@ -808,7 +808,7 @@ var GLPIPlanning  = {
                 current_li = current_li.eq(0);
             }
             $.ajax({
-                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
                 type: 'POST',
                 data: {
                     action: 'color_filter',
@@ -818,7 +818,7 @@ var GLPIPlanning  = {
                     color: $(this).val()
                 },
                 success: function() {
-                    GLPIPlanning.refresh();
+                    ZENTRAPlanning.refresh();
                 }
             });
         });
@@ -839,7 +839,7 @@ var GLPIPlanning  = {
         const deleted = $(trigger_element);
         const li = deleted.closest('ul.filters > li');
         $.ajax({
-            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            url:  `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
             type: 'POST',
             data: {
                 action: 'delete_filter',
@@ -848,7 +848,7 @@ var GLPIPlanning  = {
             },
             success: function() {
                 li.remove();
-                GLPIPlanning.refresh();
+                ZENTRAPlanning.refresh();
             }
         });
     },
@@ -918,7 +918,7 @@ var GLPIPlanning  = {
         var old_start = old_event.start || start;
 
         $.ajax({
-            url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/planning.php`,
             type: 'POST',
             data: {
                 action:        'update_event_times',
@@ -937,7 +937,7 @@ var GLPIPlanning  = {
                 if (!html) {
                     revertFunc();
                 }
-                GLPIPlanning.refresh();
+                ZENTRAPlanning.refresh();
             },
             error: function() {
                 revertFunc();
@@ -958,7 +958,7 @@ var GLPIPlanning  = {
                         selected_date[0].getDate()
                     )
                 );
-                GLPIPlanning.calendar.gotoDate(date);
+                ZENTRAPlanning.calendar.gotoDate(date);
             }
         });
     },

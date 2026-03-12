@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @var Migration $migration
  */
 // Fix default value for `autopurge_delay`
-$migration->changeField('glpi_entities', 'autopurge_delay', 'autopurge_delay', "int NOT NULL DEFAULT '-2'");
+$migration->changeField('zentra_entities', 'autopurge_delay', 'autopurge_delay', "int NOT NULL DEFAULT '-2'");
 
 // Fix root entity config value if its value is inherited (-2)
 $root_defaults = [
@@ -46,11 +46,11 @@ $root_defaults = [
     'send_domains_alert_expired_delay' => 1,
 ];
 foreach ($root_defaults as $key => $default) {
-    $current_value = $DB->request(['SELECT' => $key, 'FROM' => 'glpi_entities', 'WHERE' => ['id' => 0]])->current()[$key];
+    $current_value = $DB->request(['SELECT' => $key, 'FROM' => 'zentra_entities', 'WHERE' => ['id' => 0]])->current()[$key];
     if ($current_value === -2) {
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_entities',
+                'zentra_entities',
                 [
                     $key => $default,
                 ],

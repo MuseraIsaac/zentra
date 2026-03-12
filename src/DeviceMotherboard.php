@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ class DeviceMotherboard extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_devicemotherboardmodels',
+            'table'              => 'zentra_devicemotherboardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -144,7 +144,7 @@ class DeviceMotherboard extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_devicemotherboards',
+            'table'              => 'zentra_devicemotherboards',
             'field'              => 'designation',
             'name'               => static::getTypeName(1),
             'forcegroupby'       => true,
@@ -152,7 +152,7 @@ class DeviceMotherboard extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicemotherboards',
+                    'table'              => 'zentra_items_devicemotherboards',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -160,7 +160,7 @@ class DeviceMotherboard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1328',
-            'table'              => 'glpi_items_devicemotherboards',
+            'table'              => 'zentra_items_devicemotherboards',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -172,7 +172,7 @@ class DeviceMotherboard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1329',
-            'table'              => 'glpi_items_devicemotherboards',
+            'table'              => 'zentra_items_devicemotherboards',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

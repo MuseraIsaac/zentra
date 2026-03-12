@@ -4,7 +4,7 @@
     },
     "2": {
         "name": "ID",
-        "table": "glpi_computers_softwareversions",
+        "table": "zentra_computers_softwareversions",
         "field": "id",
         "datatype": "number",
         "nosearch": false,
@@ -18,7 +18,7 @@
     },
     "3": {
         "name": "Computer",
-        "table": "glpi_computers",
+        "table": "zentra_computers",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,
@@ -33,7 +33,7 @@
     },
     "4": {
         "name": "Version",
-        "table": "glpi_softwareversions",
+        "table": "zentra_softwareversions",
         "field": "name",
         "datatype": "dropdown",
         "nosearch": false,

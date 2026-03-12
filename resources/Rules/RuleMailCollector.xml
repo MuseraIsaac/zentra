@@ -4,19 +4,19 @@
         <entities_id>Root entity</entities_id>
         <sub_type>RuleMailCollector</sub_type>
         <ranking>1</ranking>
-        <name>GLPI notifications</name>
-        <description>Exclude emails corresponding to a GLPI notification</description>
+        <name>ZENTRA notifications</name>
+        <description>Exclude emails corresponding to a ZENTRA notification</description>
         <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
         <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_mail_collector_glpi_notifications</uuid>
+        <uuid>zentra_rule_mail_collector_zentra_notifications</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
             <criteria>message_id</criteria>
             <condition>6</condition>
-            <pattern>/GLPI(_(?&lt;uuid&gt;[a-z0-9]+))?(-(?&lt;itemtype&gt;[a-z]+))?(-(?&lt;items_id&gt;[0-9]+))?(\/(?&lt;event&gt;[a-z_]+))?(\.(?&lt;random&gt;[0-9]+\.[0-9]+))?@(?&lt;uname&gt;.+)/i</pattern>
+            <pattern>/ZENTRA(_(?&lt;uuid&gt;[a-z0-9]+))?(-(?&lt;itemtype&gt;[a-z]+))?(-(?&lt;items_id&gt;[0-9]+))?(\/(?&lt;event&gt;[a-z_]+))?(\.(?&lt;random&gt;[0-9]+\.[0-9]+))?@(?&lt;uname&gt;.+)/i</pattern>
         </rulecriteria>
         <ruleaction>
             <action_type>assign</action_type>
@@ -34,7 +34,7 @@
         <is_active>0</is_active>
         <comment></comment>
         <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_mail_collector_x_auto_response_suppress</uuid>
+        <uuid>zentra_rule_mail_collector_x_auto_response_suppress</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
@@ -58,7 +58,7 @@
         <is_active>1</is_active>
         <comment></comment>
         <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_mail_collector_auto_reply_auto_submitted</uuid>
+        <uuid>zentra_rule_mail_collector_auto_reply_auto_submitted</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
@@ -82,7 +82,7 @@
         <is_active>1</is_active>
         <comment></comment>
         <is_recursive>0</is_recursive>
-        <uuid>glpi_rule_mail_collector_root</uuid>
+        <uuid>zentra_rule_mail_collector_root</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>

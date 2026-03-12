@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Exception\TooManyResultsException;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Exception\TooManyResultsException;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -68,9 +68,9 @@ class ItemVirtualMachine extends CommonDBChild
         return false;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             throw new RuntimeException("Only CommonDBTM items are supported");
@@ -78,11 +78,11 @@ class ItemVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && in_array($item::getType(), $CFG_ZENTRA['itemvirtualmachines_types'])
             && $item::canView()
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
@@ -110,7 +110,7 @@ class ItemVirtualMachine extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -178,11 +178,11 @@ class ItemVirtualMachine extends CommonDBChild
      */
     public static function showForVirtualMachine(CommonDBTM $asset)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ID = $asset->fields['id'];
 
-        if (!in_array($asset->getType(), $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
+        if (!in_array($asset->getType(), $CFG_ZENTRA['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
         }
 
@@ -206,14 +206,14 @@ class ItemVirtualMachine extends CommonDBChild
                             'name' => $computer->getLink(),
                             'serial' => $computer->fields['serial'],
                             'comment' => $computer->fields['comment'],
-                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']),
+                            'entity' => Dropdown::getDropdownName('zentra_entities', $computer->fields['entities_id']),
                         ];
                     } else {
                         $entries[] = [
                             'name' => htmlescape($computer->fields['name']),
                             'serial' => NOT_AVAILABLE,
                             'comment' => NOT_AVAILABLE,
-                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']),
+                            'entity' => Dropdown::getDropdownName('zentra_entities', $computer->fields['entities_id']),
                         ];
                     }
                 }
@@ -540,7 +540,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $tab[] = [
             'id'                 => '161',
-            'table'              => 'glpi_virtualmachinestates',
+            'table'              => 'zentra_virtualmachinestates',
             'field'              => 'name',
             'name'               => _n('State', 'States', 1),
             'forcegroupby'       => true,
@@ -558,7 +558,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $tab[] = [
             'id'                 => '162',
-            'table'              => 'glpi_virtualmachinesystems',
+            'table'              => 'zentra_virtualmachinesystems',
             'field'              => 'name',
             'name'               => VirtualMachineSystem::getTypeName(1),
             'forcegroupby'       => true,
@@ -576,7 +576,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $tab[] = [
             'id'                 => '163',
-            'table'              => 'glpi_virtualmachinetypes',
+            'table'              => 'zentra_virtualmachinetypes',
             'field'              => 'name',
             'name'               => VirtualMachineType::getTypeName(1),
             'datatype'           => 'dropdown',

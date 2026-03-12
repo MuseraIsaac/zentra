@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 use function Safe\strtotime;
 
@@ -181,7 +181,7 @@ class Calendar extends CommonDropdown
                     $holiday->getFromDB($input['holidays_id']);
                     $entities = [$holiday->getEntityID() => $holiday->getEntityID()];
                     if ($holiday->isRecursive()) {
-                        $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
+                        $entities = getSonsOf("zentra_entities", $holiday->getEntityID());
                     }
 
                     foreach ($ids as $id) {
@@ -286,7 +286,7 @@ class Calendar extends CommonDropdown
      *
      * @return int seconds elapsed between the two dates, taking opening hours into account.
      *
-     * @FIXME Remove `$include_inactive_time` parameter in GLPI 11.0. It does not seems to be used and makes no sense.
+     * @FIXME Remove `$include_inactive_time` parameter in ZENTRA 11.0. It does not seems to be used and makes no sense.
      */
     public function getActiveTimeBetween($start, $end, $include_inactive_time = false)
     {

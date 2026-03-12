@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use Change;
 use CommonITILObject;
 use Computer;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/change.class.php */
@@ -93,7 +93,7 @@ class ChangeTest extends DbTestCase
 
     public function testAssignFromCategory()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $entity = new \Entity();
         $entityId = $entity->import([
             'name' => 'an entity configured to check change auto assignation of user ad group',
@@ -107,7 +107,7 @@ class ChangeTest extends DbTestCase
         $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to acess the new entity
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $success = \Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
@@ -605,7 +605,7 @@ class ChangeTest extends DbTestCase
 
         foreach ($profilerights as $right => $value) {
             $this->assertTrue($DB->update(
-                'glpi_profilerights',
+                'zentra_profilerights',
                 ['rights' => $value],
                 [
                     'profiles_id'  => 4,

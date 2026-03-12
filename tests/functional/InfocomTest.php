@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@ namespace tests\units;
 use Cartridge;
 use Computer;
 use Consumable;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasInfocomCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasInfocomCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Infocom;
 use PHPUnit\Framework\Attributes\DataProvider;
 use State;
@@ -50,13 +50,13 @@ class InfocomTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasInfocomCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['infocom_types'] as $itemtype) {
             if (in_array($itemtype, [Cartridge::class, Consumable::class], true)) {
                 continue;
             }
@@ -73,11 +73,11 @@ class InfocomTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasInfocomCapacity::class)]);
 
-        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['infocom_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -257,7 +257,7 @@ class InfocomTest extends DbTestCase
      */
     public function testExpireCronAlerts()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
         $root_entity = $this->getTestRootEntity();
@@ -305,7 +305,7 @@ class InfocomTest extends DbTestCase
             'warranty_duration' => 10, // 10 months
         ]);
 
-        $CFG_GLPI["use_notifications"] = true;
+        $CFG_ZENTRA["use_notifications"] = true;
         Infocom::cronInfocom();
         $alerts = array_values(getAllDataFromTable(\Alert::getTable(), [
             'WHERE' => [
@@ -325,13 +325,13 @@ class InfocomTest extends DbTestCase
      */
     public function testAutofill()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
         $entity = new \Entity();
         $status_in_use = $this->createItem(State::class, ['name' => __FUNCTION__ . '_InUse']);
         $status_decom = $this->createItem(State::class, ['name' => __FUNCTION__ . '_Decommissioned']);
-        $this->assertTrue($entity->getFromDB($_SESSION['glpiactive_entity']));
+        $this->assertTrue($entity->getFromDB($_SESSION['zentraactive_entity']));
         $entity->update([
             'id' => $entity->getID(),
             'autofill_buy_date' => Infocom::COPY_WARRANTY_DATE,
@@ -341,8 +341,8 @@ class InfocomTest extends DbTestCase
             'autofill_order_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
             'autofill_decommission_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_decom->getID(),
         ]);
-        $_SESSION['glpi_currenttime'] = '2025-07-14 9:15:20';
-        $CFG_GLPI['auto_create_infocoms'] = true;
+        $_SESSION['zentra_currenttime'] = '2025-07-14 9:15:20';
+        $CFG_ZENTRA['auto_create_infocoms'] = true;
 
         $computer = $this->createItem(Computer::class, [
             'name' => __FUNCTION__ . '_Computer',

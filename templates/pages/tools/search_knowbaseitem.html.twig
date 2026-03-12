@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@
                 $('#{{ container_id }}').html(html);
                 hideLoading();
             }, () => {
-                window.glpi_toast_error('{{ __('An error occurred while searching in the knowledge base')|e('js') }}');
+                window.zentra_toast_error('{{ __('An error occurred while searching in the knowledge base')|e('js') }}');
                 hideLoading();
             });
         }
@@ -182,7 +182,7 @@
                 $('#{{ container_id }} .search-card').hide();
                 $('#{{ container_id }} .preview-card').show();
             }, () => {
-                window.glpi_toast_error('{{ __('An error occurred while loading the knowledge base entry')|e('js') }}');
+                window.zentra_toast_error('{{ __('An error occurred while loading the knowledge base entry')|e('js') }}');
                 hideLoading();
             });
         }).on('click', 'button[name="search"]', () => {

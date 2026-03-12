@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Class to link a certificate to an item
@@ -74,7 +74,7 @@ class Certificate_Item extends CommonDBRelation
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -86,7 +86,7 @@ class Certificate_Item extends CommonDBRelation
                 && count(Certificate::getTypes(false))
             ) {
                 $nb = 0;
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = self::countForMainItem($item);
                 }
                 return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
@@ -94,7 +94,7 @@ class Certificate_Item extends CommonDBRelation
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $count = self::countForItem($item);
                     return self::createTabEntry(text: Certificate::getTypeName(Session::getPluralNumber()), nb: $count, icon: Certificate::getIcon());
                 }
@@ -105,7 +105,7 @@ class Certificate_Item extends CommonDBRelation
     }
 
     public static function displayTabContentForItem(
-        CommonGLPI $item,
+        CommonZENTRA $item,
         $tabnum = 1,
         $withtemplate = 0
     ) {
@@ -255,7 +255,7 @@ class Certificate_Item extends CommonDBRelation
                         ];
 
                         if (Session::isMultiEntitiesMode()) {
-                            $entry['entity'] = $item->isEntityAssign() ? Dropdown::getDropdownName("glpi_entities", $data['entity']) : '-';
+                            $entry['entity'] = $item->isEntityAssign() ? Dropdown::getDropdownName("zentra_entities", $data['entity']) : '-';
                         }
                         $entries[] = $entry;
                     }
@@ -368,14 +368,14 @@ class Certificate_Item extends CommonDBRelation
                 'id' => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name' => $link,
-                'type' => Dropdown::getDropdownName("glpi_certificatetypes", $data["certificatetypes_id"]),
+                'type' => Dropdown::getDropdownName("zentra_certificatetypes", $data["certificatetypes_id"]),
                 'dns_name' => $data['dns_name'],
                 'dns_suffix' => $data['dns_suffix'],
                 'date_creation' => $data['date_creation'],
-                'status' => Dropdown::getDropdownName("glpi_states", $data["states_id"]),
+                'status' => Dropdown::getDropdownName("zentra_states", $data["states_id"]),
             ];
             if (Session::isMultiEntitiesMode()) {
-                $entry['entity'] = Dropdown::getDropdownName("glpi_entities", $data['entities_id']);
+                $entry['entity'] = Dropdown::getDropdownName("zentra_entities", $data['entities_id']);
             }
 
             $expiration = htmlescape(Html::convDate($data["date_expiration"]));

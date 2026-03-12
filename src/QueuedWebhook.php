@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
@@ -136,7 +136,7 @@ class QueuedWebhook extends CommonDBChild
         global $DB;
 
         if (!isset($input['create_time']) || empty($input['create_time'])) {
-            $input['create_time'] = $_SESSION["glpi_currenttime"];
+            $input['create_time'] = $_SESSION["zentra_currenttime"];
         }
         if (!isset($input['send_time']) || empty($input['send_time'])) {
             $toadd = 0;
@@ -146,11 +146,11 @@ class QueuedWebhook extends CommonDBChild
             if ($toadd > 0) {
                 $input['send_time'] = date(
                     "Y-m-d H:i:s",
-                    strtotime($_SESSION["glpi_currenttime"])
+                    strtotime($_SESSION["zentra_currenttime"])
                     + $toadd * MINUTE_TIMESTAMP
                 );
             } else {
-                $input['send_time'] = $_SESSION["glpi_currenttime"];
+                $input['send_time'] = $_SESSION["zentra_currenttime"];
             }
         }
         $input['sent_try'] = 0;
@@ -167,7 +167,7 @@ class QueuedWebhook extends CommonDBChild
      */
     public static function sendById(int $ID): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $queued_webhook = new self();
         if (!$queued_webhook->getFromDB($ID)) {
@@ -177,7 +177,7 @@ class QueuedWebhook extends CommonDBChild
         $guzzle_options = [
             'timeout' => 5,
         ];
-        if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
+        if (in_array(Webhook::class, $CFG_ZENTRA['proxy_exclusions'])) {
             $guzzle_options['proxy_excluded'] = true;
         }
 
@@ -186,7 +186,7 @@ class QueuedWebhook extends CommonDBChild
             return false;
         }
 
-        if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
+        if (ZENTRA_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
             $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
             if ($result['status'] !== true) {
@@ -278,11 +278,11 @@ class QueuedWebhook extends CommonDBChild
         $input = [
             'id' => $ID,
             'sent_try' => $queued_webhook->fields['sent_try'] + 1,
-            'sent_time' => $_SESSION["glpi_currenttime"],
+            'sent_time' => $_SESSION["zentra_currenttime"],
         ];
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
-            if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
+            if (ZENTRA_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
                 $input['response_body'] = (string) $response->getBody();
             } else {
                 // Save to property that won't be saved in DB, but can still be available to plugins
@@ -413,7 +413,7 @@ class QueuedWebhook extends CommonDBChild
 
         $tab[] = [
             'id'                 => '22',
-            'table'              => 'glpi_webhooks',
+            'table'              => 'zentra_webhooks',
             'field'              => 'name',
             'name'               => Webhook::getTypeName(1),
             'massiveaction'      => false,
@@ -432,7 +432,7 @@ class QueuedWebhook extends CommonDBChild
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -490,10 +490,10 @@ class QueuedWebhook extends CommonDBChild
                         $("#{$btn_id}").prop('disabled', true);
                     },
                     success: () => {
-                        glpi_toast_info(__('Retried to send webhook'));
+                        zentra_toast_info(__('Retried to send webhook'));
                     },
                     error: () => {
-                        glpi_toast_error(__('Failed to send webhook'));
+                        zentra_toast_error(__('Failed to send webhook'));
                     },
                     complete: () => {
                         $("#{$btn_id}").prop('disabled', false);
@@ -677,7 +677,7 @@ JS);
     {
         parent::post_getFromDB();
 
-        if (!GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING) {
+        if (!ZENTRA_WEBHOOK_ALLOW_RESPONSE_SAVING) {
             // Block viewing response body if saving is disabled by config
             unset($this->fields['response_body']);
         }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\CacheableListInterface;
-use Glpi\Inventory\FilesToJSON;
+use Zentra\Features\CacheableListInterface;
+use Zentra\Inventory\FilesToJSON;
 use Psr\SimpleCache\InvalidArgumentException;
 
 use function Safe\file_get_contents;
@@ -45,7 +45,7 @@ use function Safe\json_decode;
  */
 class PCIVendor extends CommonDropdown implements CacheableListInterface
 {
-    public string $cache_key = 'glpi_pcivendors';
+    public string $cache_key = 'zentra_pcivendors';
 
     public static function getTypeName($nb = 0)
     {
@@ -97,10 +97,10 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $vendors = new PCIVendor();
-        if (($pciids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
+        if (($pciids = $ZENTRA_CACHE->get($vendors->cache_key)) !== null) {
             return $pciids;
         }
 
@@ -108,7 +108,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         $file_pciids = json_decode(file_get_contents($jsonfile->getJsonFilePath('pciid')), true) ?? [];
         $db_pciids = $vendors->getDbList();
         $pciids = $db_pciids + $file_pciids;
-        $GLPI_CACHE->set($vendors->cache_key, $pciids);
+        $ZENTRA_CACHE->set($vendors->cache_key, $pciids);
 
         return $pciids;
     }
@@ -148,9 +148,9 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     public function invalidateListCache(): void
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
-        $GLPI_CACHE->delete($this->cache_key);
+        $ZENTRA_CACHE->delete($this->cache_key);
     }
 
     /**

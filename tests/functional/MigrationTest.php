@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@ namespace tests\units;
 use ArrayIterator;
 use Computer;
 use CronTask;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Socket;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Progress\AbstractProgressIndicator;
+use Zentra\Socket;
+use Zentra\Tests\DbTestCase;
 use LogicException;
 use Migration;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -176,7 +176,7 @@ class MigrationTest extends DbTestCase
 
     public function testConstructor()
     {
-        new Migration(GLPI_VERSION);
+        new Migration(ZENTRA_VERSION);
         $this->expectOutputString('');
     }
 
@@ -216,9 +216,9 @@ class MigrationTest extends DbTestCase
         ]);
         $migration->executeMigration();
         $core_queries = [
-            'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            'SELECT * FROM `zentra_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
+            'INSERT INTO `zentra_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
+            'INSERT INTO `zentra_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
         ];
         $this->assertEquals($core_queries, $migration->getMockedQueries(), print_r($migration->getMockedQueries(), true));
 
@@ -231,9 +231,9 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
+            'SELECT * FROM `zentra_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
+            'INSERT INTO `zentra_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
+            'INSERT INTO `zentra_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
         ], $migration->getMockedQueries());
 
         //test with one existing value => only new key should be inserted
@@ -248,10 +248,10 @@ class MigrationTest extends DbTestCase
                 'value'     => '',
             ],
             '_mock_request' => function ($criteria) {
-                // Call using 'glpi_configs' value for first parameter
+                // Call using 'zentra_configs' value for first parameter
                 // corresponds to the call made to retrieve existing values
                 // -> returns a value for config 'one'
-                if ($criteria === ['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core', 'name' => ['one', 'two']]]) {
+                if ($criteria === ['FROM' => 'zentra_configs', 'WHERE' => ['context' => 'core', 'name' => ['one', 'two']]]) {
                     return new ArrayIterator([
                         [
                             'id'        => '42',
@@ -271,7 +271,7 @@ class MigrationTest extends DbTestCase
         ]);
         $migration->executeMigration();
         $this->assertEquals([
-            0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            0 => 'INSERT INTO `zentra_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
         ], $migration->getMockedQueries());
     }
 
@@ -284,7 +284,7 @@ class MigrationTest extends DbTestCase
         $migration->backupTables(['table1', 'table2']);
         $migration->executeMigration();
 
-        $db = "mockedglpi";
+        $db = "mockedzentra";
         $test_token = getenv('TEST_TOKEN');
         if ($test_token !== false && $test_token !== '' && $test_token > 1) {
             $db = $db . '_' . $test_token;
@@ -312,16 +312,16 @@ class MigrationTest extends DbTestCase
         $caught = null;
         // use try/catch instead of $this->expectException because we want to assert on the ran queries after the exception
         try {
-            $migration->backupTables(['glpi_existingtest']);
+            $migration->backupTables(['zentra_existingtest']);
             $migration->executeMigration();
         } catch (\Exception $e) {
             $caught = $e;
         }
         $this->assertNotNull($caught);
-        $this->assertEquals('Unable to rename table glpi_existingtest (ok) to backup_glpi_existingtest (nok)!', $caught->getMessage());
+        $this->assertEquals('Unable to rename table zentra_existingtest (ok) to backup_zentra_existingtest (nok)!', $caught->getMessage());
 
         $this->assertEquals([
-            0 => 'DROP TABLE `backup_glpi_existingtest`',
+            0 => 'DROP TABLE `backup_zentra_existingtest`',
         ], $migration->getMockedQueries());
     }
 
@@ -330,15 +330,15 @@ class MigrationTest extends DbTestCase
         $migration = $this->getMigrationMock(db_options: [
             '_mock_numrows' => 0,
             '_mock_tableExists' => function ($name) {
-                return $name === 'glpi_existingtest';
+                return $name === 'zentra_existingtest';
             },
         ]);
 
-        $migration->backupTables(['glpi_existingtest']);
+        $migration->backupTables(['zentra_existingtest']);
         $migration->executeMigration();
 
         $this->assertEquals([
-            0 => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`',
+            0 => 'RENAME TABLE `zentra_existingtest` TO `backup_zentra_existingtest`',
         ], $migration->getMockedQueries());
     }
 
@@ -704,7 +704,7 @@ class MigrationTest extends DbTestCase
         $migration->addRight('test_addright_4', READ, []);
 
         $this->assertCount(1, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_1',
                 'rights' => READ,
@@ -712,7 +712,7 @@ class MigrationTest extends DbTestCase
         ]));
 
         $this->assertCount(2, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_2',
                 'rights' => READ,
@@ -720,7 +720,7 @@ class MigrationTest extends DbTestCase
         ]));
 
         $this->assertCount(1, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_3',
                 'rights' => UPDATE,
@@ -728,7 +728,7 @@ class MigrationTest extends DbTestCase
         ]));
 
         $this->assertCount(9, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_4',
                 'rights' => READ,
@@ -736,7 +736,7 @@ class MigrationTest extends DbTestCase
         ]));
 
         //Test adding a READ right only on profiles where it has not been set yet
-        $DB->delete('glpi_profilerights', [
+        $DB->delete('zentra_profilerights', [
             'profiles_id' => [1, 2, 3, 4],
             'name' => 'test_addright_4',
         ]);
@@ -744,7 +744,7 @@ class MigrationTest extends DbTestCase
         $migration->addRight('test_addright_4', READ | UPDATE, []);
 
         $this->assertCount(4, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_4',
                 'rights' => READ | UPDATE,
@@ -765,14 +765,14 @@ class MigrationTest extends DbTestCase
 
         //Check if rights have been added
         $this->assertCount(7, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'testright1',
                 'rights' => READ,
             ],
         ]));
         $this->assertCount(2, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'testright2',
                 'rights' => READ,
@@ -784,57 +784,57 @@ class MigrationTest extends DbTestCase
     {
         $migration = $this->getMigrationMock(db_options: [
             '_mock_tableExists' => function ($table) {
-                return $table === 'glpi_oldtable';
+                return $table === 'zentra_oldtable';
             },
             '_mock_fieldExists' => function ($table, $field) {
-                return $table === 'glpi_oldtable' && $field !== 'bool_field';
+                return $table === 'zentra_oldtable' && $field !== 'bool_field';
             },
             '_mock_doQuery' => function ($query) {
                 // Make DbUtils::isIndex return false
-                return $query !== 'SHOW INDEX FROM `glpi_oldtable`';
+                return $query !== 'SHOW INDEX FROM `zentra_oldtable`';
             },
         ]);
 
         // Case 1, rename with no buffered changes
-        $migration->renameTable('glpi_oldtable', 'glpi_newtable');
+        $migration->renameTable('zentra_oldtable', 'zentra_newtable');
         $this->assertEquals([
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            "RENAME TABLE `zentra_oldtable` TO `zentra_newtable`",
         ], $migration->getMockedQueries());
 
         // Case 2, rename after changes were already applied
         $migration->clearMockedQueries();
 
-        $migration->addField('glpi_oldtable', 'bool_field', 'bool');
-        $migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
-        $migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
-        $migration->migrationOneTable('glpi_oldtable');
-        $migration->renameTable('glpi_oldtable', 'glpi_newtable');
+        $migration->addField('zentra_oldtable', 'bool_field', 'bool');
+        $migration->addKey('zentra_oldtable', 'id', 'id', 'UNIQUE');
+        $migration->addKey('zentra_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+        $migration->migrationOneTable('zentra_oldtable');
+        $migration->renameTable('zentra_oldtable', 'zentra_newtable');
 
         $this->assertEquals([
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            "SHOW INDEX FROM `zentra_oldtable`",
+            "SHOW INDEX FROM `zentra_oldtable`",
+            "ALTER TABLE `zentra_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `zentra_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `zentra_oldtable` ADD UNIQUE `id` (`id`)",
+            "RENAME TABLE `zentra_oldtable` TO `zentra_newtable`",
         ], $migration->getMockedQueries());
 
         // Case 3, apply changes after renaming
         $migration->clearMockedQueries();
 
-        $migration->addField('glpi_oldtable', 'bool_field', 'bool');
-        $migration->addKey('glpi_oldtable', 'id', 'id', 'UNIQUE');
-        $migration->addKey('glpi_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
-        $migration->renameTable('glpi_oldtable', 'glpi_newtable');
-        $migration->migrationOneTable('glpi_newtable');
+        $migration->addField('zentra_oldtable', 'bool_field', 'bool');
+        $migration->addKey('zentra_oldtable', 'id', 'id', 'UNIQUE');
+        $migration->addKey('zentra_oldtable', 'fulltext_key', 'fulltext_key', 'FULLTEXT');
+        $migration->renameTable('zentra_oldtable', 'zentra_newtable');
+        $migration->migrationOneTable('zentra_newtable');
 
         $this->assertEquals([
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
-            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
+            "SHOW INDEX FROM `zentra_oldtable`",
+            "SHOW INDEX FROM `zentra_oldtable`",
+            "RENAME TABLE `zentra_oldtable` TO `zentra_newtable`",
+            "ALTER TABLE `zentra_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `zentra_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
+            "ALTER TABLE `zentra_newtable` ADD UNIQUE `id` (`id`)",
         ], $migration->getMockedQueries());
     }
 
@@ -849,7 +849,7 @@ class MigrationTest extends DbTestCase
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Table "glpi_someoldtypes" does not exists.');
+        $this->expectExceptionMessage('Table "zentra_someoldtypes" does not exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
 
@@ -864,7 +864,7 @@ class MigrationTest extends DbTestCase
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
+        $this->expectExceptionMessage('Table "zentra_someoldtypes" cannot be renamed as table "zentra_newnames" already exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
 
@@ -876,18 +876,18 @@ class MigrationTest extends DbTestCase
     {
         $migration = $this->getMigrationMock(db_options: [
             '_mock_tableExists' => function ($table) {
-                return $table === 'glpi_someoldtypes';
+                return $table === 'zentra_someoldtypes';
             },
             '_mock_fieldExists' => true,
             '_mock_request' => new ArrayIterator([
                 [
-                    'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id',
+                    'TABLE_NAME' => 'zentra_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id',
                 ],
             ]),
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
+        $this->expectExceptionMessage('Field "someoldtypes_id" cannot be renamed in table "zentra_item_with_fkey" as "newnames_id" is field already exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
 
@@ -900,7 +900,7 @@ class MigrationTest extends DbTestCase
         $migration = $this->getMigrationMock(db_options: [
             'allow_signed_keys' => false,
             '_mock_tableExists' => function ($table) {
-                return $table === 'glpi_someoldtypes';
+                return $table === 'zentra_someoldtypes';
             },
             '_mock_fieldExists' => function ($table, $field) {
                 return str_starts_with($field, "someoldtypes_id");
@@ -912,9 +912,9 @@ class MigrationTest extends DbTestCase
                 ) {
                     // Request used for foreign key fields
                     return new ArrayIterator([
-                        ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
-                        ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
-                        ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
+                        ['TABLE_NAME' => 'zentra_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
+                        ['TABLE_NAME' => 'zentra_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
+                        ['TABLE_NAME' => 'zentra_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
                     ]);
                 }
                 if (
@@ -923,10 +923,10 @@ class MigrationTest extends DbTestCase
                 ) {
                     // Request used for itemtype fields
                     return new ArrayIterator([
-                        ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
-                        ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
-                        ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
-                        ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
+                        ['TABLE_NAME' => 'zentra_computers', 'COLUMN_NAME' => 'itemtype'],
+                        ['TABLE_NAME' => 'zentra_users',     'COLUMN_NAME' => 'itemtype'],
+                        ['TABLE_NAME' => 'zentra_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
+                        ['TABLE_NAME' => 'zentra_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
                     ]);
                 }
                 return [];
@@ -938,13 +938,13 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
-            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
-            "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
+            "RENAME TABLE `zentra_someoldtypes` TO `zentra_newnames`",
+            "UPDATE `zentra_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `zentra_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `zentra_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+            "UPDATE `zentra_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+            "ALTER TABLE `zentra_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `zentra_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
             . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
         ], $migration->getMockedQueries());
 
@@ -954,22 +954,22 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+            "UPDATE `zentra_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `zentra_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
+            "UPDATE `zentra_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
+            "UPDATE `zentra_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
         ], $migration->getMockedQueries());
 
         // Test renaming when old class and new class have the same table name
         $migration->clearMockedQueries();
-        $migration->renameItemtype('PluginFooThing', 'GlpiPlugin\\Foo\\Thing');
+        $migration->renameItemtype('PluginFooThing', 'ZentraPlugin\\Foo\\Thing');
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
+            "UPDATE `zentra_computers` SET `itemtype` = 'ZentraPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `zentra_users` SET `itemtype` = 'ZentraPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `zentra_stuffs` SET `itemtype_source` = 'ZentraPlugin\\\\Foo\\\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
+            "UPDATE `zentra_stuffs` SET `itemtype_dest` = 'ZentraPlugin\\\\Foo\\\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
         ], $migration->getMockedQueries());
     }
 
@@ -1025,15 +1025,15 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `id` IN ('12', '156', '421')",
-            "UPDATE `glpi_displaypreferences` SET `num` = '10' WHERE `itemtype` = 'Printer' AND `num` = '20'",
-            "UPDATE `glpi_displaypreferences` SET `num` = '1001' WHERE `itemtype` = 'Ticket' AND `num` = '1'",
-            "UPDATE `glpi_tickettemplatehiddenfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_tickettemplatemandatoryfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_tickettemplatepredefinedfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '2'",
+            "UPDATE `zentra_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",
+            "DELETE `zentra_displaypreferences` FROM `zentra_displaypreferences` WHERE `id` IN ('12', '156', '421')",
+            "UPDATE `zentra_displaypreferences` SET `num` = '10' WHERE `itemtype` = 'Printer' AND `num` = '20'",
+            "UPDATE `zentra_displaypreferences` SET `num` = '1001' WHERE `itemtype` = 'Ticket' AND `num` = '1'",
+            "UPDATE `zentra_tickettemplatehiddenfields` SET `num` = '1001' WHERE `num` = '1'",
+            "UPDATE `zentra_tickettemplatemandatoryfields` SET `num` = '1001' WHERE `num` = '1'",
+            "UPDATE `zentra_tickettemplatepredefinedfields` SET `num` = '1001' WHERE `num` = '1'",
+            "UPDATE `zentra_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
+            "UPDATE `zentra_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '2'",
         ], $migration->getMockedQueries());
     }
 
@@ -1089,14 +1089,14 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Computer' AND `num` = '40'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Printer' AND `num` = '20'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Ticket' AND `num` = '1'",
-            "DELETE `glpi_tickettemplatehiddenfields` FROM `glpi_tickettemplatehiddenfields` WHERE `num` = '1'",
-            "DELETE `glpi_tickettemplatemandatoryfields` FROM `glpi_tickettemplatemandatoryfields` WHERE `num` = '1'",
-            "DELETE `glpi_tickettemplatepredefinedfields` FROM `glpi_tickettemplatepredefinedfields` WHERE `num` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&search=Search&itemtype=Computer' WHERE `id` = '2'",
+            "DELETE `zentra_displaypreferences` FROM `zentra_displaypreferences` WHERE `itemtype` = 'Computer' AND `num` = '40'",
+            "DELETE `zentra_displaypreferences` FROM `zentra_displaypreferences` WHERE `itemtype` = 'Printer' AND `num` = '20'",
+            "DELETE `zentra_displaypreferences` FROM `zentra_displaypreferences` WHERE `itemtype` = 'Ticket' AND `num` = '1'",
+            "DELETE `zentra_tickettemplatehiddenfields` FROM `zentra_tickettemplatehiddenfields` WHERE `num` = '1'",
+            "DELETE `zentra_tickettemplatemandatoryfields` FROM `zentra_tickettemplatemandatoryfields` WHERE `num` = '1'",
+            "DELETE `zentra_tickettemplatepredefinedfields` FROM `zentra_tickettemplatepredefinedfields` WHERE `num` = '1'",
+            "UPDATE `zentra_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
+            "UPDATE `zentra_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&search=Search&itemtype=Computer' WHERE `id` = '2'",
         ], $migration->getMockedQueries());
     }
 
@@ -1110,7 +1110,7 @@ class MigrationTest extends DbTestCase
         $migration->replaceRight('test_replaceright_1', READ);
 
         $this->assertCount(1, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_1',
                 'rights' => READ,
@@ -1121,7 +1121,7 @@ class MigrationTest extends DbTestCase
         $migration->replaceRight('test_replaceright_2', READ, ['group' => UPDATE]);
 
         $this->assertCount(2, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_2',
                 'rights' => READ,
@@ -1135,7 +1135,7 @@ class MigrationTest extends DbTestCase
         ]);
 
         $this->assertCount(1, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_2',
                 'rights' => UPDATE,
@@ -1146,7 +1146,7 @@ class MigrationTest extends DbTestCase
         $migration->replaceRight('test_replaceright_3', READ, []);
 
         $this->assertCount(9, $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_3',
                 'rights' => READ,
@@ -1161,17 +1161,17 @@ class MigrationTest extends DbTestCase
         $profiles_id = getItemByTypeName('Profile', 'Super-Admin', true);
 
         // Adding profiles with different rights
-        $DB->insert('glpi_profilerights', [
+        $DB->insert('zentra_profilerights', [
             'name' => 'test_giveright_1',
             'profiles_id' => $profiles_id,
             'rights' => 0,
         ]);
-        $DB->insert('glpi_profilerights', [
+        $DB->insert('zentra_profilerights', [
             'name' => 'test_giveright_2',
             'profiles_id' => $profiles_id,
             'rights' => READ | UPDATE,
         ]);
-        $DB->insert('glpi_profilerights', [
+        $DB->insert('zentra_profilerights', [
             'name' => 'test_giveright_3',
             'profiles_id' => $profiles_id,
             'rights' => 0,
@@ -1182,7 +1182,7 @@ class MigrationTest extends DbTestCase
         // Adding a READ right with default required rights
         $migration->giveRight('test_giveright_1', READ);
         $rights = $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
             ],
@@ -1194,7 +1194,7 @@ class MigrationTest extends DbTestCase
         // Adding an UPDATE right with default required rights
         $migration->giveRight('test_giveright_1', UPDATE);
         $rights = $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
             ],
@@ -1207,7 +1207,7 @@ class MigrationTest extends DbTestCase
         // Should not change the rights because it's already set
         $migration->giveRight('test_giveright_1', READ);
         $rights = $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
             ],
@@ -1219,7 +1219,7 @@ class MigrationTest extends DbTestCase
         // Adding a right with specific required rights
         $migration->giveRight('test_giveright_2', CREATE, ['test_giveright_2' => READ | UPDATE]);
         $rights = $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_2',
             ],
@@ -1231,7 +1231,7 @@ class MigrationTest extends DbTestCase
         // Trying to add a right with specific required rights that are not met
         $migration->giveRight('test_giveright_3', CREATE, ['test_giveright_3' => READ | UPDATE]);
         $rights = $DB->request([
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_3',
             ],
@@ -1245,7 +1245,7 @@ class MigrationTest extends DbTestCase
     {
         global $DB;
 
-        $this->assertNotFalse($DB->insert('glpi_configs', [
+        $this->assertNotFalse($DB->insert('zentra_configs', [
             'name' => __FUNCTION__,
             'value' => 'test',
             'context' => 'test',
@@ -1256,7 +1256,7 @@ class MigrationTest extends DbTestCase
         $migration->removeConfig([__FUNCTION__]);
         // Shouldn't be deleted. Wrong context
         $this->assertCount(1, $DB->request([
-            'FROM' => 'glpi_configs',
+            'FROM' => 'zentra_configs',
             'WHERE' => [
                 'name' => __FUNCTION__,
             ],
@@ -1265,7 +1265,7 @@ class MigrationTest extends DbTestCase
         $migration->removeConfig([__FUNCTION__], 'test');
         // Should be deleted
         $this->assertCount(0, $DB->request([
-            'FROM' => 'glpi_configs',
+            'FROM' => 'zentra_configs',
             'WHERE' => [
                 'name' => __FUNCTION__,
             ],
@@ -1302,14 +1302,14 @@ class MigrationTest extends DbTestCase
             'SELECT' => [
                 'profiles_id',
             ],
-            'FROM' => 'glpi_profilerights',
+            'FROM' => 'zentra_profilerights',
             'WHERE' => [
                 'name' => 'config',
                 'rights' => READ | UPDATE,
             ],
         ]);
 
-        $DB->update('glpi_profiles', [
+        $DB->update('zentra_profiles', [
             'last_rights_update' => null,
         ], [
             'id' => $sub_query,
@@ -1323,14 +1323,14 @@ class MigrationTest extends DbTestCase
             'SELECT' => [
                 'last_rights_update',
             ],
-            'FROM' => 'glpi_profiles',
+            'FROM' => 'zentra_profiles',
             'WHERE' => [
                 'id' => $sub_query,
             ],
         ]);
 
         foreach ($last_rights_updates as $last_rights_update) {
-            $this->assertEquals($_SESSION['glpi_currenttime'], $last_rights_update['last_rights_update']);
+            $this->assertEquals($_SESSION['zentra_currenttime'], $last_rights_update['last_rights_update']);
         }
     }
 
@@ -1339,7 +1339,7 @@ class MigrationTest extends DbTestCase
         $db = new class ($options) extends \DB {
             private array $_mock_options;
             public array $_queries = [];
-            public $dbdefault = 'mockedglpi';
+            public $dbdefault = 'mockedzentra';
 
             public function __construct(array $options)
             {
@@ -1424,7 +1424,7 @@ class MigrationTest extends DbTestCase
         return $db;
     }
 
-    private function getMigrationMock($ver = GLPI_VERSION, ?AbstractProgressIndicator $progress_indicator = null, array $db_options = [])
+    private function getMigrationMock($ver = ZENTRA_VERSION, ?AbstractProgressIndicator $progress_indicator = null, array $db_options = [])
     {
         global $DB;
         $db = ($db_options['_real_db'] ?? false) ? $DB : $this->getDbMock($db_options);

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_items_remotemanagements')) {
-    $query = "CREATE TABLE `glpi_items_remotemanagements` (
+if (!$DB->tableExists('zentra_items_remotemanagements')) {
+    $query = "CREATE TABLE `zentra_items_remotemanagements` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
          `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',

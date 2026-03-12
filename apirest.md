@@ -1,4 +1,4 @@
-# GLPI REST API:  Documentation
+# ZENTRA REST API:  Documentation
 
 ## Glossary
 
@@ -11,8 +11,8 @@ Method
     See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
 
 itemtype
-:   A GLPI type, could be an asset, an ITIL or a configuration object, etc.
-    This type must be a class who inherits CommonDTBM GLPI class.
+:   A ZENTRA type, could be an asset, an ITIL or a configuration object, etc.
+    This type must be a class who inherits CommonDTBM ZENTRA class.
 
 searchOption
 :   A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
@@ -30,7 +30,7 @@ User token
     You can find user token in the settings tabs of users.
 
 Session token
-:   A string describing a valid session in glpi.
+:   A string describing a valid session in zentra.
     Except initSession endpoint who provide this token, all others require this string to be used.
 
 App(lication) token
@@ -59,7 +59,7 @@ App(lication) token
   This read-only mode allow to use this API with parallel calls.
   In write mode, sessions are locked and your client must wait the end of a call before the next one can execute.
 
-* You can filter API access by enable the following parameters in GLPI General Configuration (API tab):
+* You can filter API access by enable the following parameters in ZENTRA General Configuration (API tab):
   * IPv4 range
   * IPv6 address
   * *App-Token* parameter: if not empty, you should pass this parameter in all of your API calls
@@ -72,7 +72,7 @@ App(lication) token
 * **Description**: Request a session token to uses other API endpoints.
 * **Method**: GET
 * **Parameters**: (Headers)
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
   * a couple *login* & *password*: 2 parameters to login with user authentication.
      You should pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
      It consists in a Base64 string with login and password separated by ":"
@@ -99,7 +99,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Authorization: Basic Z2xwaTpnbHBp" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/initSession'
+'http://path/to/zentra/apirest.php/initSession'
 
 < 200 OK
 < {
@@ -110,15 +110,15 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/initSession?get_full_session=true'
+'http://path/to/zentra/apirest.php/initSession?get_full_session=true'
 
 < 200 OK
 < {
    "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62",
    "session": {
-      'glpi_plugins': ...,
-      'glpicookietest': ...,
-      'glpicsrftokens': ...,
+      'zentra_plugins': ...,
+      'zentracookietest': ...,
+      'zentracsrftokens': ...,
       ...
    }
 }
@@ -131,7 +131,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK).
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -143,7 +143,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/killSession'
+'http://path/to/zentra/apirest.php/killSession'
 
 < 200 OK
 ```
@@ -152,7 +152,7 @@ $ curl -X GET \
 
 This endpoint allows to request password recovery and password reset. This endpoint works under the following
 conditions:
-* GLPI has notifications enabled
+* ZENTRA has notifications enabled
 * the email address of the user belongs to a user account.
 
 Reset password request:
@@ -170,7 +170,7 @@ Reset password request:
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
 -d '{"email": "user@domain.com"}' \
-'http://path/to/glpi/apirest.php/lostPassword'
+'http://path/to/zentra/apirest.php/lostPassword'
 
 < 200 OK
 ```
@@ -195,7 +195,7 @@ $ curl -X PUT \
      "password_forget_token": "b0a4cfe81448299ebed57442f4f21929c80ebee5" \
      "password": "NewPassword" \
     }' \
-'http://path/to/glpi/apirest.php/lostPassword'
+'http://path/to/zentra/apirest.php/lostPassword'
 
 < 200 OK
 ```
@@ -207,7 +207,7 @@ $ curl -X PUT \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array of all profiles.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -219,7 +219,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMyProfiles'
+'http://path/to/zentra/apirest.php/getMyProfiles'
 
 < 200 OK
 < {
@@ -243,7 +243,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing current profile.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -255,7 +255,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getActiveProfile'
+'http://path/to/zentra/apirest.php/getActiveProfile'
 
 < 200 OK
 < {
@@ -273,7 +273,7 @@ $ curl -X GET \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
 * **Returns**:
@@ -289,7 +289,7 @@ $ curl -X POST \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"profiles_id": 4}' \
-'http://path/to/glpi/apirest.php/changeActiveProfile'
+'http://path/to/zentra/apirest.php/changeActiveProfile'
 
 < 200 OK
 ```
@@ -301,7 +301,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *is_recursive* (default: false): Also display sub entities of the active entity. Optionnal
 * **Returns**:
@@ -315,7 +315,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMyEntities'
+'http://path/to/zentra/apirest.php/getMyEntities'
 
 < 200 OK
 < {
@@ -336,7 +336,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array with 3 keys:
     * *active_entity*: current set entity.
@@ -351,7 +351,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getActiveEntities'
+'http://path/to/zentra/apirest.php/getActiveEntities'
 
 < 200 OK
 < {
@@ -373,7 +373,7 @@ $ curl -X GET \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
   * *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
@@ -389,7 +389,7 @@ $ curl -X POST \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"entities_id": 1, "is_recursive": true}' \
-'http://path/to/glpi/apirest.php/changeActiveEntities'
+'http://path/to/zentra/apirest.php/changeActiveEntities'
 
 < 200 OK
 ```
@@ -401,7 +401,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing the php session.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -413,29 +413,29 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getFullSession'
+'http://path/to/zentra/apirest.php/getFullSession'
 
 < 200 OK
 < {
       'session': {
-         'glpi_plugins': ...,
-         'glpicookietest': ...,
-         'glpicsrftokens': ...,
+         'zentra_plugins': ...,
+         'zentracookietest': ...,
+         'zentracsrftokens': ...,
          ...
       }
    }
 ```
 
-## Get GLPI config
+## Get ZENTRA config
 
-* **URL**: [apirest.php/getGlpiConfig/](getGlpiConfig/?debug)
-* **Description**: Return the current $CFG_GLPI.
+* **URL**: [apirest.php/getZentraConfig/](getZentraConfig/?debug)
+* **Description**: Return the current $CFG_ZENTRA.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
-  * 200 (OK) with an array representing the php global variable $CFG_GLPI.
+  * 200 (OK) with an array representing the php global variable $CFG_ZENTRA.
   * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
@@ -445,13 +445,13 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getGlpiConfig'
+'http://path/to/zentra/apirest.php/getZentraConfig'
 
 < 200 OK
 < {
-      'cfg_glpi': {
+      'cfg_zentra': {
          'languages': ...,
-         'glpitables': ...,
+         'zentratables': ...,
          'unicity_types':...,
          ...
       }
@@ -465,7 +465,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -497,7 +497,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/Computer/71?expand_dropdowns=true'
+'http://path/to/zentra/apirest.php/Computer/71?expand_dropdowns=true'
 
 < 200 OK
 < {
@@ -530,28 +530,28 @@ $ curl -X GET \
     "date_creation": null,
     "links": [{
        "rel": "Entity",
-       "href": "http://path/to/glpi/api/Entity/0"
+       "href": "http://path/to/zentra/api/Entity/0"
     }, {
        "rel": "Location",
-       "href": "http://path/to/glpi/api/Location/3"
+       "href": "http://path/to/zentra/api/Location/3"
     }, {
        "rel": "Domain",
-       "href": "http://path/to/glpi/api/Domain/18"
+       "href": "http://path/to/zentra/api/Domain/18"
     }, {
        "rel": "ComputerModel",
-       "href": "http://path/to/glpi/api/ComputerModel/11"
+       "href": "http://path/to/zentra/api/ComputerModel/11"
     }, {
        "rel": "ComputerType",
-       "href": "http://path/to/glpi/api/ComputerType/3"
+       "href": "http://path/to/zentra/api/ComputerType/3"
     }, {
        "rel": "Manufacturer",
-       "href": "http://path/to/glpi/api/Manufacturer/260"
+       "href": "http://path/to/zentra/api/Manufacturer/260"
     }, {
        "rel": "User",
-       "href": "http://path/to/glpi/api/User/27"
+       "href": "http://path/to/zentra/api/User/27"
     }, {
        "rel": "State",
-       "href": "http://path/to/glpi/api/State/1"
+       "href": "http://path/to/zentra/api/State/1"
     }]
 }
 ```
@@ -565,7 +565,7 @@ Note: To download a document see [Download a document file](#download-a-document
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
@@ -593,7 +593,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/Computer/?expand_dropdowns=true'
+'http://path/to/zentra/apirest.php/Computer/?expand_dropdowns=true'
 
 < 206 OK
 < Content-Range: 0-49/200
@@ -602,7 +602,7 @@ $ curl -X GET \
    {
       "id": 34,
       "entities_id": "Root Entity",
-      "name": "glpi",
+      "name": "zentra",
       "serial": "VMware-42 01 f4 65 27 59 a9 fb-11 bc cd b8 64 68 1f 4b",
       "otherserial": null,
       "contact": "teclib",
@@ -628,25 +628,25 @@ $ curl -X GET \
       "uuid": "4201F465-2759-A9FB-11BC-CDB864681F4B",
       "links": [{
          "rel": "Entity",
-         "href": "http://path/to/glpi/api/Entity/0"
+         "href": "http://path/to/zentra/api/Entity/0"
       }, {
          "rel": "AutoUpdateSystem",
-         "href": "http://path/to/glpi/api/AutoUpdateSystem/1"
+         "href": "http://path/to/zentra/api/AutoUpdateSystem/1"
       }, {
          "rel": "Domain",
-         "href": "http://path/to/glpi/api/Domain/12"
+         "href": "http://path/to/zentra/api/Domain/12"
       }, {
          "rel": "ComputerModel",
-         "href": "http://path/to/glpi/api/ComputerModel/1"
+         "href": "http://path/to/zentra/api/ComputerModel/1"
       }, {
          "rel": "ComputerType",
-         "href": "http://path/to/glpi/api/ComputerType/2"
+         "href": "http://path/to/zentra/api/ComputerType/2"
       }, {
          "rel": "Manufacturer",
-         "href": "http://path/to/glpi/api/Manufacturer/1"
+         "href": "http://path/to/zentra/api/Manufacturer/1"
       }, {
          "rel": "State",
-         "href": "http://path/to/glpi/api/State/1"
+         "href": "http://path/to/zentra/api/State/1"
       }]
    },
    {
@@ -673,7 +673,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * id: unique identifier of the parent itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -698,7 +698,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/User/2/Log'
+'http://path/to/zentra/apirest.php/User/2/Log'
 
 < 200 OK
 < Content-Range: 0-49/200
@@ -710,7 +710,7 @@ $ curl -X GET \
       "items_id": 2,
       "itemtype_link": "Profile",
       "linked_action": 17,
-      "user_name": "glpi (27)",
+      "user_name": "zentra (27)",
       "date_mod": "2015-10-13 10:00:59",
       "id_search_option": 0,
       "old_value": "",
@@ -721,7 +721,7 @@ $ curl -X GET \
       "items_id": 2,
       "itemtype_link": "",
       "linked_action": 0,
-      "user_name": "glpi (2)",
+      "user_name": "zentra (2)",
       "date_mod": "2015-10-13 10:01:22",
       "id_search_option": 80,
       "old_value": "Root entity (0)",
@@ -739,7 +739,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *items*: items to retrieve. Mandatory.
               Each line of this array should contains two keys:
@@ -775,14 +775,14 @@ $ curl -X GET \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"items": [{"itemtype": "User", "items_id": 2}, {"itemtype": "Entity", "items_id": 0}]}' \
-'http://path/to/glpi/apirest.php/getMultipleItems?items\[0\]\[itemtype\]\=User&items\[0\]\[items_id\]\=2&items\[1\]\[itemtype\]\=Entity&items\[1\]\[items_id\]\=0'
+'http://path/to/zentra/apirest.php/getMultipleItems?items\[0\]\[itemtype\]\=User&items\[0\]\[items_id\]\=2&items\[1\]\[itemtype\]\=Entity&items\[1\]\[items_id\]\=0'
 
 < 200 OK
 < Content-Range: 0-49/200
 < Accept-Range: 990
 < [{
    "id": 2,
-   "name": "glpi",
+   "name": "zentra",
    ...
 }, {
    "id": 0,
@@ -798,7 +798,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *raw*: return searchoption uncleaned (as provided by core)
 * **Returns**:
@@ -812,14 +812,14 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/listSearchOptions/Computer'
+'http://path/to/zentra/apirest.php/listSearchOptions/Computer'
 < 200 OK
 < {
     "common": "Characteristics",
 
     1: {
       'name': 'Name'
-      'table': 'glpi_computers'
+      'table': 'zentra_computers'
       'field': 'name'
       'linkfield': 'name'
       'datatype': 'itemlink'
@@ -827,7 +827,7 @@ $ curl -X GET \
    },
    2: {
       'name': 'ID'
-      'table': 'glpi_computers'
+      'table': 'zentra_computers'
       'field': 'id'
       'linkfield': 'id'
       'datatype': 'number'
@@ -835,7 +835,7 @@ $ curl -X GET \
    },
    3: {
       'name': 'Location'
-      'table': 'glpi_locations'
+      'table': 'zentra_locations'
       'field': 'completename'
       'linkfield': 'locations_id'
       'datatype': 'dropdown'
@@ -848,12 +848,12 @@ $ curl -X GET \
 ## Search items
 
 * **URL**: [apirest.php/search/:itemtype/](search/Computer/?debug)
-* **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype.
+* **Description**: Expose the ZENTRA searchEngine and combine criteria to retrieve a list of elements of specified itemtype.
   > Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's types.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *criteria*: array of criterion objects to filter search. Optional.
     You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
@@ -954,7 +954,7 @@ $ curl -X GET \
   * *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
                      Some columns will be always presents (1: id, 2: name, 80: Entity).
                      Optional.
-  * *rawdata* (default false): a boolean for displaying raws data of the Search engine of GLPI (like SQL request, full searchoptions, etc)
+  * *rawdata* (default false): a boolean for displaying raws data of the Search engine of ZENTRA (like SQL request, full searchoptions, etc)
   * *withindexes* (default false): a boolean to retrieve rows indexed by items id.
    By default this option is set to false, because order of JSON objects (which are identified by index) cannot be garrantued  (from <http://json.org/> : An object is an unordered set of name/value pairs).
    So, we provide arrays to guarantying sorted rows.
@@ -1000,7 +1000,7 @@ curl -g -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/search/Monitor?\
+'http://path/to/zentra/apirest.php/search/Monitor?\
 criteria\[0\]\[link\]\=AND\
 \&criteria\[0\]\[itemtype\]\=Monitor\
 \&criteria\[0\]\[field\]\=23\
@@ -1022,11 +1022,11 @@ criteria\[0\]\[link\]\=AND\
 ## Add item(s)
 
 * **URL**: apirest.php/:itemtype/
-* **Description**: Add an object (or multiple objects) into GLPI.
+* **Description**: Add an object (or multiple objects) into ZENTRA.
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *input*: an object with fields of itemtype to be inserted.
               You can add several items in one action by passing an array of objects.
@@ -1054,10 +1054,10 @@ $ curl -X POST \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"name": "My single computer", "serial": "12345"}}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 201 OK
-< Location: http://path/to/glpi/api/Computer/15
+< Location: http://path/to/zentra/api/Computer/15
 < {"id": 15}
 
 
@@ -1066,10 +1066,10 @@ $ curl -X POST \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"name": "My first computer", "serial": "12345"}, {"name": "My 2nd computer", "serial": "67890"}, {"name": "My 3rd computer", "serial": "qsd12sd"}]}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 207 OK
-< Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
+< Link: http://path/to/zentra/api/Computer/8,http://path/to/zentra/api/Computer/9
 < [ {"id":8, "message": ""}, {"id":false, "message": "You don't have permission to perform this action."}, {"id":9, "message": ""} ]
 
 ```
@@ -1079,11 +1079,11 @@ Note: To upload a document see [Upload a document file](#upload-a-document-file)
 ## Update item(s)
 
 * **URL**: apirest.php/:itemtype/:id
-* **Description**: Update an object (or multiple objects) existing in GLPI.
+* **Description**: Update an object (or multiple objects) existing in ZENTRA.
 * **Method**: PUT or PATCH
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
   * *input*: Array of objects with fields of itemtype to be updated.
@@ -1103,7 +1103,7 @@ $ curl -X PUT \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"otherserial": "xcvbn"}}' \
-'http://path/to/glpi/apirest.php/Computer/10'
+'http://path/to/zentra/apirest.php/Computer/10'
 
 < 200 OK
 [{"10":true, "message": ""}]
@@ -1114,7 +1114,7 @@ $ curl -X PUT \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"id": 11,  "otherserial": "abcde"}}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 200 OK
 [{"11":true, "message": ""}]
@@ -1125,7 +1125,7 @@ $ curl -X PUT \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"id": 16,  "otherserial": "abcde"}, {"id": 17,  "otherserial": "fghij"}]}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 207 OK
 [{"8":true, "message": ""},{"2":false, "message": "Item not found"}]
@@ -1134,11 +1134,11 @@ $ curl -X PUT \
 ## Delete item(s)
 
 * **URL**: apirest.php/:itemtype/:id
-* **Description**: Delete an object existing in GLPI.
+* **Description**: Delete an object existing in ZENTRA.
 * **Method**: DELETE
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
       OR
@@ -1164,7 +1164,7 @@ $ curl -X DELETE \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/Computer/16?force_purge=true'
+'http://path/to/zentra/apirest.php/Computer/16?force_purge=true'
 
 < 200 OK
 [{"16":true, "message": ""}]
@@ -1174,7 +1174,7 @@ $ curl -X DELETE \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"id": 11}, "force_purge": true}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 200 OK
 [{"11":true, "message": ""}]
@@ -1185,7 +1185,7 @@ $ curl -X DELETE \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"id": 16}, {"id": 17}]}' \
-'http://path/to/glpi/apirest.php/Computer/'
+'http://path/to/zentra/apirest.php/Computer/'
 
 < 207 OK
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
@@ -1198,7 +1198,7 @@ $ curl -X DELETE \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
   * *is_deleted* (default false): Show specific actions for items in the trashbin.
 * **Returns**:
@@ -1213,7 +1213,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActions/Computer'
+'http://path/to/zentra/apirest.php/getMassiveActions/Computer'
 
 < 200 OK
 [
@@ -1242,7 +1242,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
+    "key": "Zentra\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1287,7 +1287,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActions/Computer?is_deleted=1'
+'http://path/to/zentra/apirest.php/getMassiveActions/Computer?is_deleted=1'
 
 < 200 OK
 [
@@ -1317,7 +1317,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
 * **Returns**:
   * 200 (OK).
@@ -1331,7 +1331,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActions/Computer/3'
+'http://path/to/zentra/apirest.php/getMassiveActions/Computer/3'
 
 < 200 OK
 [
@@ -1360,7 +1360,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
+    "key": "Zentra\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1406,7 +1406,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActions/Computer/4'
+'http://path/to/zentra/apirest.php/getMassiveActions/Computer/4'
 
 < 200 OK
 [
@@ -1437,7 +1437,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (query string)
 * **Returns**:
   * 200 (OK).
@@ -1451,7 +1451,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/MassiveAction:add_note'
+'http://path/to/zentra/apirest.php/getMassiveActionParameters/Computer/MassiveAction:add_note'
 
 < 200 OK
 [
@@ -1465,7 +1465,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/Contract_Item:add'
+'http://path/to/zentra/apirest.php/getMassiveActionParameters/Computer/Contract_Item:add'
 
 < 200 OK
 [
@@ -1483,7 +1483,7 @@ $ curl -X GET \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Parameters**: (json payload)
   * *ids* items to execute the action on. Mandatory.
   * *specific action parameters* some actions require specific parameters to run. You can check them through the 'getMassiveActionParameters' endpoint.
@@ -1502,7 +1502,7 @@ $ curl -X POST \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"ids": [2, 3],	"input": {"amendment": "newtext"}}'
-'http://path/to/glpi/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment'
+'http://path/to/zentra/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment'
 
 < 200 OK
 {
@@ -1530,10 +1530,10 @@ $ curl -X POST \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -F 'uploadManifest={"input": {"name": "Uploaded document", "_filename" : ["file.txt"]}};type=application/json' \
 -F 'filename[0]=@file.txt' \
-'http://path/to/glpi/apirest.php/Document/'
+'http://path/to/zentra/apirest.php/Document/'
 
 < 201 OK
-< Location: http://path/to/glpi/api/Document/1
+< Location: http://path/to/zentra/api/Document/1
 < {"id": 1, "message": "Document move succeeded.", "upload_result": {...}}
 
 ```
@@ -1545,7 +1545,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
   * *Accept*: must be **application/octet-stream**. This header OR the parameter *alt* is mandatory
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
@@ -1567,7 +1567,7 @@ $ curl -X GET \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -H "Accept: application/octet-stream" \
 -d '{"input": {"id": 11}}' \
-'http://path/to/glpi/apirest.php/Document/'
+'http://path/to/zentra/apirest.php/Document/'
 
 < 200 OK
 ```
@@ -1580,7 +1580,7 @@ $ curl -X GET \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"id": 11}}' \
-'http://path/to/glpi/apirest.php/Document/&alt=media'
+'http://path/to/zentra/apirest.php/Document/&alt=media'
 
 < 200 OK
 ```
@@ -1594,7 +1594,7 @@ The body of the answer contains the raw file attached to the document.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+  * *App-Token*: authorization string provided by the ZENTRA API configuration. Optional.
 * **Returns**:
   * 200 (OK) with the raw image in the request body.
   * 204 (No content) if the request is correct but the specified user doesn't have a profile picture.
@@ -1607,7 +1607,7 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/User/2/Picture/'
+'http://path/to/zentra/apirest.php/User/2/Picture/'
 
 < 200 OK
 ```
@@ -1618,7 +1618,7 @@ The body of the answer contains the raw image.
 
 ### ERROR_ITEM_NOT_FOUND
 
-The desired resource (itemtype-id) was not found in the GLPI database.
+The desired resource (itemtype-id) was not found in the ZENTRA database.
 
 ### ERROR_BAD_ARRAY
 
@@ -1631,7 +1631,7 @@ You specified an inexistent or not not allowed resource.
 ### ERROR_RIGHT_MISSING
 
 The current logged user miss rights in his profile to do the provided action.
-Alter this profile or choose a new one for the user in GLPI main interface.
+Alter this profile or choose a new one for the user in ZENTRA main interface.
 
 ### ERROR_SESSION_TOKEN_INVALID
 
@@ -1648,7 +1648,7 @@ The current API requires an App-Token header for using its methods.
 
 ### ERROR_WRONG_APP_TOKEN_PARAMETER
 
-It seems the provided application token doesn't exists in GLPI API configuration.
+It seems the provided application token doesn't exists in ZENTRA API configuration.
 
 ### ERROR_NOT_DELETED
 
@@ -1657,7 +1657,7 @@ You must mark the item for deletion before actually deleting it
 ### ERROR_NOT_ALLOWED_IP
 
 We can't find an active client defined in configuration for your IP.
-Go to the GLPI Configuration > Setup menu and API tab to check IP access.
+Go to the ZENTRA Configuration > Setup menu and API tab to check IP access.
 
 ### ERROR_LOGIN_PARAMETERS_MISSING
 
@@ -1668,61 +1668,61 @@ One of theses parameter(s) is missing:
 
 ### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED
 
-The GLPI setup forbid the login with credentials, you must login with your user_token instead.
-See your personal preferences page or setup API access in GLPI main interface.
+The ZENTRA setup forbid the login with credentials, you must login with your user_token instead.
+See your personal preferences page or setup API access in ZENTRA main interface.
 
-### ERROR_GLPI_LOGIN_USER_TOKEN
+### ERROR_ZENTRA_LOGIN_USER_TOKEN
 
 The provided user_token seems invalid.
-Check your personal preferences page in GLPI main interface.
+Check your personal preferences page in ZENTRA main interface.
 
-### ERROR_GLPI_LOGIN
+### ERROR_ZENTRA_LOGIN
 
-We cannot login you into GLPI. This error is not relative to API but GLPI core.
-Check the user administration and the GLPI logs files (in files/_logs directory).
+We cannot login you into ZENTRA. This error is not relative to API but ZENTRA core.
+Check the user administration and the ZENTRA logs files (in files/_logs directory).
 
 ### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM
 
-You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
+You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a ZENTRA CommonDBTM resources.
 
 ### ERROR_SQL
 
 We suspect an SQL error.
-This error is not relative to API but to GLPI core.
-Check the GLPI logs files (in files/_logs directory).
+This error is not relative to API but to ZENTRA core.
+Check the ZENTRA logs files (in files/_logs directory).
 
 ### ERROR_RANGE_EXCEED_TOTAL
 
 The range parameter you provided is superior to the total count of available data.
 
-### ERROR_GLPI_ADD
+### ERROR_ZENTRA_ADD
 
-We cannot add the object to GLPI. This error is not relative to API but to GLPI core.
-Check the GLPI logs files (in files/_logs directory).
+We cannot add the object to ZENTRA. This error is not relative to API but to ZENTRA core.
+Check the ZENTRA logs files (in files/_logs directory).
 
-### ERROR_GLPI_PARTIAL_ADD
+### ERROR_ZENTRA_PARTIAL_ADD
 
 Some of the object you wanted to add triggers an error.
 Maybe a missing field or rights.
 You'll find with this error a collection of results.
 
-### ERROR_GLPI_UPDATE
+### ERROR_ZENTRA_UPDATE
 
-We cannot update the object to GLPI. This error is not relative to API but to GLPI core.
-Check the GLPI logs files (in files/_logs directory).
+We cannot update the object to ZENTRA. This error is not relative to API but to ZENTRA core.
+Check the ZENTRA logs files (in files/_logs directory).
 
-### ERROR_GLPI_PARTIAL_UPDATE
+### ERROR_ZENTRA_PARTIAL_UPDATE
 
 Some of the object you wanted to update triggers an error.
 Maybe a missing field or rights.
 You'll find with this error a collection of results.
 
-### ERROR_GLPI_DELETE
+### ERROR_ZENTRA_DELETE
 
-We cannot delete the object to GLPI. This error is not relative to API but to GLPI core.
-Check the GLPI logs files (in files/_logs directory).
+We cannot delete the object to ZENTRA. This error is not relative to API but to ZENTRA core.
+Check the ZENTRA logs files (in files/_logs directory).
 
-### ERROR_GLPI_PARTIAL_DELETE
+### ERROR_ZENTRA_PARTIAL_DELETE
 
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.
 You'll find with this error, a collection of results.
@@ -1749,13 +1749,13 @@ Check the server logs for more details or contact the support team.
 
 ## Servers configuration
 
-By default, you can use <http://path/to/glpi/apirest.php> without any additional configuration.
+By default, you can use <http://path/to/zentra/apirest.php> without any additional configuration.
 
-You'll find below some examples to configure your web server to redirect your <http://.../glpi/api/> URL to the apirest.php file.
+You'll find below some examples to configure your web server to redirect your <http://.../zentra/api/> URL to the apirest.php file.
 
 ### Apache Httpd
 
-We provide in root .htaccess of GLPI an example to enable API URL rewriting.
+We provide in root .htaccess of ZENTRA an example to enable API URL rewriting.
 
 You need to uncomment (removing #) theses lines:
 
@@ -1768,8 +1768,8 @@ You need to uncomment (removing #) theses lines:
 #</IfModule>
 ```
 
-By enabling URL rewriting, you could use API with this URL : <http://path/to/glpi/api/>.
-You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
+By enabling URL rewriting, you could use API with this URL : <http://path/to/zentra/api/>.
+You need also to enable rewrite module in apache httpd and permit ZENTRA's .htaccess to override server configuration (see AllowOverride directive).
 
 **Note for apache+fpm users:**
 
@@ -1788,8 +1788,8 @@ server {
    listen 80 default_server;
    listen [::]:80 default_server;
 
-   # change here to match your GLPI directory
-   root /var/www/html/glpi/;
+   # change here to match your ZENTRA directory
+   root /var/www/html/zentra/;
 
    index index.html index.htm index.nginx-debian.html index.php;
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
 $item = new SlaLevel();
 
@@ -50,7 +50,7 @@ if (isset($_POST["update"])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s updates a sla level'), $_SESSION["glpiname"])
+        sprintf(__('%s updates a sla level'), $_SESSION["zentraname"])
     );
 
     Html::back();
@@ -64,9 +64,9 @@ if (isset($_POST["update"])) {
             4,
             "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+            sprintf(__('%s adds a link with an item'), $_SESSION["zentraname"])
         );
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($item->getLinkURL());
         }
     }
@@ -81,7 +81,7 @@ if (isset($_POST["update"])) {
                 4,
                 "setup",
                 //TRANS: %s is the user login
-                sprintf(__('%s purges a sla level'), $_SESSION["glpiname"])
+                sprintf(__('%s purges a sla level'), $_SESSION["zentraname"])
             );
         }
         $item->redirectToList();

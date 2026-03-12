@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 final class ValidatorSubstitute extends CommonDBTM
 {
@@ -42,12 +42,12 @@ final class ValidatorSubstitute extends CommonDBTM
         return _n('Authorized substitute', 'Authorized substitutes', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0): string
     {
         if ($item instanceof Preference) {
             $user = User::getById(Session::getLoginUserID());
             if ($user instanceof User) {
-                $nb = $_SESSION['glpishow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
+                $nb = $_SESSION['zentrashow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
@@ -60,7 +60,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return 'ti ti-replace-user';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Preference) {
             $user = User::getById(Session::getLoginUserID());

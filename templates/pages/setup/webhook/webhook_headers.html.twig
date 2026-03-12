@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@
               $(``).insertAfter(template.find('input[name="header_value[]"]'));
               template.find('div.header_value').prop('id', header_value_id);
               header_name_field.val(name);
-              const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
+              const editor_options = window.ZENTRA.Monaco.getSingleLineEditorOptions();
               if (readonly) {
                   header_name_field.prop('readonly', true);
                   // Delete the remove button
@@ -89,12 +89,12 @@
               }
               // insert the template before the add button
               $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
-              window.GLPI.Monaco.createEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
+              window.ZENTRA.Monaco.createEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
           };
           $(() => {
               const known_custom = {{ item.fields['custom_headers']|default([])|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
-              add_custom_header('X-GLPI-signature', __('Filled automatically'), true);
-              add_custom_header('X-GLPI-timestamp', __('Filled automatically'), true);
+              add_custom_header('X-ZENTRA-signature', __('Filled automatically'), true);
+              add_custom_header('X-ZENTRA-timestamp', __('Filled automatically'), true);
               {% if item.fields['use_oauth'] %}
                  add_custom_header('Authorization', __('Filled automatically'), true);
               {% endif %}

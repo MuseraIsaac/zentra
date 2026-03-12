@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -45,7 +45,7 @@ try {
 } catch (Throwable $e) {
     Html::popHeader(__('Bulk modification error'));
 
-    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='"
+    echo "<div class='center'><img src='" . $CFG_ZENTRA["root_doc"] . "/pics/warning.png' alt='"
       . __s('Warning') . "'><br><br>";
     echo "<span class='b'>" . htmlescape($e->getMessage()) . "</span><br>";
     Html::displayBackLink();

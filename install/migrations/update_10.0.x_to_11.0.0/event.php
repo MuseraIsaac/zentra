@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+use Zentra\Event;
 
 /**
  * @var array $ADDTODISPLAYPREF
  * @var Migration $migration
  */
-$ADDTODISPLAYPREF['Glpi\Event'] = [155, 156, 157, 158, 159, 160];
+$ADDTODISPLAYPREF['Zentra\Event'] = [155, 156, 157, 158, 159, 160];
 
 $migration->renameItemtype('Event', Event::class);

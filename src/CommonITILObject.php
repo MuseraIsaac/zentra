@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,28 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Features\Kanban;
-use Glpi\Features\KanbanInterface;
-use Glpi\Features\Teamwork;
-use Glpi\Features\TeamworkInterface;
-use Glpi\Features\Timeline;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
-use Glpi\Plugin\Hooks;
-use Glpi\RichText\RichText;
-use Glpi\RichText\UserMention;
-use Glpi\Search\Output\HTMLSearchOutput;
-use Glpi\Search\Provider\SQLProvider;
-use Glpi\Team\Team;
-use Glpi\Urgency;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\ContentTemplates\Parameters\CommonITILObjectParameters;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Features\Kanban;
+use Zentra\Features\KanbanInterface;
+use Zentra\Features\Teamwork;
+use Zentra\Features\TeamworkInterface;
+use Zentra\Features\Timeline;
+use Zentra\Form\AnswersSet;
+use Zentra\Form\Destination\AnswersSet_FormDestinationItem;
+use Zentra\Plugin\Hooks;
+use Zentra\RichText\RichText;
+use Zentra\RichText\UserMention;
+use Zentra\Search\Output\HTMLSearchOutput;
+use Zentra\Search\Provider\SQLProvider;
+use Zentra\Team\Team;
+use Zentra\Urgency;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\getimagesize;
@@ -375,7 +375,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
-            $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
+            $entities_id = $params['entities_id'] ?? $_SESSION['zentraactive_entity'];
             $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
             // load default user from preference only at the first load of new ticket form
@@ -902,7 +902,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        $entities = $_SESSION['glpiactiveentities'] ?? [];
+        $entities = $_SESSION['zentraactiveentities'] ?? [];
         foreach ($requesters as $users_id) {
             $user_entities = Profile_User::getUserEntities($users_id, true, true);
             $entities = array_intersect($user_entities, $entities);
@@ -996,8 +996,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
+              || (isset($_SESSION["zentragroups"])
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["zentragroups"])));
     }
 
     /**
@@ -1027,14 +1027,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDALLITEM)
             || (
                 Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_GROUP)
-                && isset($_SESSION["glpigroups"])
+                && isset($_SESSION["zentragroups"])
                 && (
                     (
-                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['zentragroups'])
                         && Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY)
                     )
                     || (
-                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['glpigroups'])
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['zentragroups'])
                         && Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_OBSERVER)
                     )
                 )
@@ -1044,8 +1044,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 && (
                     $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                     || (
-                        isset($_SESSION["glpigroups"])
-                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+                        isset($_SESSION["zentragroups"])
+                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['zentragroups'])
                     )
                 )
             )
@@ -1076,14 +1076,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             || Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDALLITEM)
             || (
                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_GROUP)
-                && isset($_SESSION["glpigroups"])
+                && isset($_SESSION["zentragroups"])
                 && (
                     (
-                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['zentragroups'])
                         && Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDMY)
                     )
                     || (
-                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['glpigroups'])
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['zentragroups'])
                         && Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
                     )
                 )
@@ -1093,8 +1093,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 && (
                     $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                     || (
-                        isset($_SESSION["glpigroups"])
-                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+                        isset($_SESSION["zentragroups"])
+                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['zentragroups'])
                     )
                 )
             )
@@ -1140,7 +1140,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function needReopen(): bool
     {
         $my_id    = Session::getLoginUserID();
-        $my_groups = $_SESSION["glpigroups"] ?? [];
+        $my_groups = $_SESSION["zentragroups"] ?? [];
 
         // Compute requester groups
         $requester_groups = array_filter(
@@ -1201,8 +1201,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         return ((Session::haveRight(static::$rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+               || (isset($_SESSION["zentragroups"])
+                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["zentragroups"])))
               && static::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], static::getClosedStatusArray()));
@@ -1218,8 +1218,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         return ((Session::haveRight(static::$rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+               || (isset($_SESSION["zentragroups"])
+                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["zentragroups"])))
               && static::isAllowedStatus($this->fields['status'], self::SOLVED));
     }
 
@@ -1268,7 +1268,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    // FIXME add params typehint in GLPI 11.0
+    // FIXME add params typehint in ZENTRA 11.0
     public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
@@ -1499,7 +1499,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if ($type == CommonITILActor::ASSIGN) {
             if (
                 Session::haveRight("ticket", Ticket::OWN)
-                && $_SESSION['glpiset_default_tech']
+                && $_SESSION['zentraset_default_tech']
             ) {
                 return Session::getLoginUserID();
             }
@@ -1507,7 +1507,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if ($type == CommonITILActor::REQUESTER) {
             if (
                 Session::haveRight(static::$rightname, CREATE)
-                && $_SESSION['glpiset_default_requester']
+                && $_SESSION['zentraset_default_requester']
             ) {
                 return Session::getLoginUserID();
             }
@@ -1727,16 +1727,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $iterator = $DB->request([
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                "glpi_items_{$class_l_pl}" => [
+                "zentra_items_{$class_l_pl}" => [
                     'ON' => [
-                        "glpi_items_{$class_l_pl}" => "{$class_l_pl}_id",
+                        "zentra_items_{$class_l_pl}" => "{$class_l_pl}_id",
                         $this->getTable()    => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.items_id' => $items_id,
-                'glpi_items_tickets.itemtype' => $itemtype,
+                'zentra_items_tickets.items_id' => $items_id,
+                'zentra_items_tickets.itemtype' => $itemtype,
                 'OR'                          => [
                     [
                         'NOT' => [
@@ -2049,7 +2049,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ])
                 ) {
                     // Force date_mod of tracking
-                    $input["date_mod"]     = $_SESSION["glpi_currenttime"];
+                    $input["date_mod"]     = $_SESSION["zentra_currenttime"];
                     $input['_doc_added'][] = $doc->fields["name"];
                 }
             }
@@ -2072,7 +2072,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key in ZENTRA 11.0.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -2143,7 +2143,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_observer'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key in ZENTRA 11.0.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -2213,7 +2213,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_assign'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key in ZENTRA 11.0.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -2500,7 +2500,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $this->updates[]              = "solvedate";
                 $this->oldvalues['solvedate'] = $this->fields["solvedate"];
-                $this->fields["solvedate"]    = $_SESSION["glpi_currenttime"];
+                $this->fields["solvedate"]    = $_SESSION["zentra_currenttime"];
                 // If invalid date : set open date
                 if ($this->fields["solvedate"] < $this->fields["date"]) {
                     $this->fields["solvedate"] = $this->fields["date"];
@@ -2514,7 +2514,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $this->updates[]              = "closedate";
                 $this->oldvalues['closedate'] = $this->fields["closedate"];
-                $this->fields["closedate"]    = $_SESSION["glpi_currenttime"];
+                $this->fields["closedate"]    = $_SESSION["zentra_currenttime"];
                 // If invalid date : set open date
                 if ($this->fields["closedate"] < $this->fields["date"]) {
                     $this->fields["closedate"] = $this->fields["date"];
@@ -2658,10 +2658,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $delay_time = $calendar->getActiveTimeBetween(
                     $this->fields['begin_waiting_date'],
-                    $_SESSION["glpi_currenttime"]
+                    $_SESSION["zentra_currenttime"]
                 );
             } else { // Not calendar defined
-                $delay_time = strtotime($_SESSION["glpi_currenttime"])
+                $delay_time = strtotime($_SESSION["zentra_currenttime"])
                            - strtotime($this->fields['begin_waiting_date']);
             }
 
@@ -2672,7 +2672,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $sla->setTicketCalendar($calendars_id);
                     $delay_time_sla  = $sla->getActiveTimeBetween(
                         $this->fields['begin_waiting_date'],
-                        $_SESSION["glpi_currenttime"]
+                        $_SESSION["zentra_currenttime"]
                     );
                     $this->updates[] = "sla_waiting_duration";
                     $this->fields["sla_waiting_duration"] += $delay_time_sla;
@@ -2722,7 +2722,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $ola->setTicketCalendar($calendars_id);
                     $delay_time_ola  = $ola->getActiveTimeBetween(
                         $this->fields['begin_waiting_date'],
-                        $_SESSION["glpi_currenttime"]
+                        $_SESSION["zentra_currenttime"]
                     );
                     $this->updates[]                      = "ola_waiting_duration";
                     $this->fields["ola_waiting_duration"] += $delay_time_ola;
@@ -2782,7 +2782,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
               || in_array($this->fields["status"], static::getSolvedStatusArray()))
         ) {
             $this->updates[]                    = "begin_waiting_date";
-            $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
+            $this->fields["begin_waiting_date"] = $_SESSION["zentra_currenttime"];
 
             // Specific for tickets
             if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
@@ -2884,7 +2884,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function prepareInputForAdd($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $input = $this->handleInputDeprecations($input);
 
@@ -2911,13 +2911,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if (
             !isset($input["urgency"])
-            || !($CFG_GLPI['urgency_mask'] & (1 << $input["urgency"]))
+            || !($CFG_ZENTRA['urgency_mask'] & (1 << $input["urgency"]))
         ) {
             $input["urgency"] = Urgency::MEDIUM->value;
         }
         if (
             !isset($input["impact"])
-            || !($CFG_GLPI['impact_mask'] & (1 << $input["impact"]))
+            || !($CFG_ZENTRA['impact_mask'] & (1 << $input["impact"]))
         ) {
             $input["impact"] = 3;
         }
@@ -3176,7 +3176,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (!isset($input["date"]) || empty($input["date"]) || $input["date"] == 'NULL') {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = $_SESSION["zentra_currenttime"];
         }
 
         if (in_array($input["status"], static::getSolvedStatusArray())) {
@@ -3314,9 +3314,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function computePriority($urgency, $impact)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         // Failback to trivial
-        return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact] ?? (int) round(($urgency + $impact) / 2);
+        return $CFG_ZENTRA[static::MATRIX_FIELD][$urgency][$impact] ?? (int) round(($urgency + $impact) / 2);
     }
 
 
@@ -3336,7 +3336,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownPriority(array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'name'      => 'priority',
@@ -3381,57 +3381,57 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if ($p['enable_filtering']) {
             $urgencies = [];
-            if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
+            if (isset($CFG_ZENTRA[static::URGENCY_MASK_FIELD])) {
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 5)
+                    || $CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 5)
                 ) {
                     $urgencies[] = 5;
                 }
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 4)
+                    || $CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 4)
                 ) {
                     $urgencies[] = 4;
                 }
                 $urgencies[] = 3;
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 2)
+                    || $CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 2)
                 ) {
                     $urgencies[] = 2;
                 }
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 1)
+                    || $CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 1)
                 ) {
                     $urgencies[] = 1;
                 }
             }
             $impacts = [];
-            if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
+            if (isset($CFG_ZENTRA[static::IMPACT_MASK_FIELD])) {
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 5)
+                    || $CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 5)
                 ) {
                     $impacts[] = 5;
                 }
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 4)
+                    || $CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 4)
                 ) {
                     $impacts[] = 4;
                 }
                 $impacts[] = 3;
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 2)
+                    || $CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 2)
                 ) {
                     $impacts[] = 2;
                 }
                 if (
                     ($p['showtype'] == 'search')
-                    || $CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 1)
+                    || $CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 1)
                 ) {
                     $impacts[] = 1;
                 }
@@ -3440,8 +3440,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $active_priorities = [];
             foreach ($urgencies as $urgency) {
                 foreach ($impacts as $impact) {
-                    if (isset($CFG_GLPI["_matrix_{$urgency}_{$impact}"])) {
-                        $active_priorities[] = $CFG_GLPI["_matrix_{$urgency}_{$impact}"];
+                    if (isset($CFG_ZENTRA["_matrix_{$urgency}_{$impact}"])) {
+                        $active_priorities[] = $CFG_ZENTRA["_matrix_{$urgency}_{$impact}"];
                     }
                 }
             }
@@ -3530,7 +3530,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownUrgency(array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (self::class === static::class) {
             // Needed because this method depends on static variables that will
@@ -3562,17 +3562,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $values[-1] = static::getUrgencyName(-1);
         }
 
-        if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
+        if (isset($CFG_ZENTRA[static::URGENCY_MASK_FIELD])) {
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 5))
+                || ($CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 5))
             ) {
                 $values[5]  = static::getUrgencyName(5);
             }
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 4))
+                || ($CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 4))
             ) {
                 $values[4]  = static::getUrgencyName(4);
             }
@@ -3581,14 +3581,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 2))
+                || ($CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 2))
             ) {
                 $values[2]  = static::getUrgencyName(2);
             }
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1 << 1))
+                || ($CFG_ZENTRA[static::URGENCY_MASK_FIELD] & (1 << 1))
             ) {
                 $values[1]  = static::getUrgencyName(1);
             }
@@ -3660,7 +3660,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownImpact(array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'name'     => 'impact',
@@ -3685,17 +3685,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $values[-1] = static::getImpactName(-1);
         }
 
-        if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
+        if (isset($CFG_ZENTRA[static::IMPACT_MASK_FIELD])) {
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 5))
+                || ($CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 5))
             ) {
                 $values[5]  = static::getImpactName(5);
             }
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 4))
+                || ($CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 4))
             ) {
                 $values[4]  = static::getImpactName(4);
             }
@@ -3704,14 +3704,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 2))
+                || ($CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 2))
             ) {
                 $values[2]  = static::getImpactName(2);
             }
 
             if (
                 ($p['showtype'] == 'search')
-                || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1 << 1))
+                || ($CFG_ZENTRA[static::IMPACT_MASK_FIELD] & (1 << 1))
             ) {
                 $values[1]  = static::getImpactName(1);
             }
@@ -3889,8 +3889,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
 
         if (
-            isset($_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new])
-            && !$_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new]
+            isset($_SESSION['zentraactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new])
+            && !$_SESSION['zentraactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new]
         ) {
             return false;
         }
@@ -3898,7 +3898,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (
             array_key_exists(
                 static::STATUS_MATRIX_FIELD,
-                $_SESSION['glpiactiveprofile'] ?? []
+                $_SESSION['zentraactiveprofile'] ?? []
             )
             && static::isStatusExists($new)
         ) { // maybe not set for post-only
@@ -4202,7 +4202,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         switch ($ma->getAction()) {
             case 'add_task':
@@ -4237,7 +4237,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_actortype$rand",
                     "show_massiveaction_field",
-                    $CFG_GLPI["root_doc"]
+                    $CFG_ZENTRA["root_doc"]
                                              . "/ajax/dropdownMassiveActionAddActor.php",
                     $paramsmassaction
                 );
@@ -4329,7 +4329,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     if ($item->getFromDB($id)) {
                         $input = $ma->getInput();
                         unset($input['itemtype']);
-                        unset($input['_glpi_csrf_token']);
+                        unset($input['_zentra_csrf_token']);
                         $input[$item->getForeignKeyField()] = $id;
                         if (count($ids) > 1) {
                             // Avoid the "The user xxx is busy at the selected timeframe"
@@ -4517,7 +4517,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $newtab = [
             'id'                 => '7',
-            'table'              => 'glpi_itilcategories',
+            'table'              => 'zentra_itilcategories',
             'field'              => 'completename',
             'name'               => _n('Category', 'Categories', 1),
             'datatype'           => 'dropdown',
@@ -4533,7 +4533,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -4552,7 +4552,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $newtab = [
             'id'                 => '64',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_lastupdater',
             'name'               => __('Last edit by'),
@@ -4577,7 +4577,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // For ITIL template
         $tab[] = [
             'id'                 => '142',
-            'table'              => 'glpi_documents',
+            'table'              => 'zentra_documents',
             'field'              => 'name',
             'name'               => Document::getTypeName(Session::getPluralNumber()),
             'forcegroupby'       => true,
@@ -4589,7 +4589,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'joinparams'         => [
                 'jointype'           => 'items_id',
                 'beforejoin'         => [
-                    'table'              => 'glpi_documents_items',
+                    'table'              => 'zentra_documents_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],
@@ -4694,7 +4694,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_solutiontypes',
+            'table'              => 'zentra_solutiontypes',
             'field'              => 'name',
             'name'               => SolutionType::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -4847,7 +4847,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $newtab = [
             'id'                 => '4', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'right'              => 'all',
@@ -4876,7 +4876,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '500',
-            'table'              => 'glpi_usercategories',
+            'table'              => 'zentra_usercategories',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => _n('Requester category', 'Requester categories', 1),
@@ -4884,7 +4884,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_users',
+                    'table'              => 'zentra_users',
                     'joinparams'         => [
                         'beforejoin'         => [
                             'table'              => getTableForItemType($this->userlinkclass),
@@ -4900,7 +4900,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $newtab = [
             'id'                 => '71',  // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'datatype'           => 'dropdown',
             'name'               => _n('Requester group', 'Requester groups', 1),
@@ -4925,14 +4925,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ) {
             $newtab['condition'] = array_merge(
                 $newtab['condition'],
-                ['id' => $_SESSION['glpigroups']]
+                ['id' => $_SESSION['zentragroups']]
             );
         }
         $tab[] = $newtab;
 
         $newtab = [
             'id'                 => '22',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'right'              => 'all',
@@ -4955,7 +4955,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '66', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'right'              => 'all',
@@ -4976,7 +4976,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '501',
-            'table'              => 'glpi_usercategories',
+            'table'              => 'zentra_usercategories',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => _n('Observer category', 'Observer categories', 1),
@@ -4984,7 +4984,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_users',
+                    'table'              => 'zentra_users',
                     'joinparams'         => [
                         'beforejoin'         => [
                             'table'              => getTableForItemType($this->userlinkclass),
@@ -5000,7 +5000,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '65', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'datatype'           => 'dropdown',
             'name'               => _n('Observer group', 'Observer groups', 1),
@@ -5026,7 +5026,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '5', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'right'              => 'own_ticket',
@@ -5047,7 +5047,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '6', // Also in Supplier_Ticket::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_suppliers',
+            'table'              => 'zentra_suppliers',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => __('Assigned to a supplier'),
@@ -5067,7 +5067,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '502',
-            'table'              => 'glpi_usercategories',
+            'table'              => 'zentra_usercategories',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => _n('Technician category', 'Technician categories', 1),
@@ -5075,7 +5075,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_users',
+                    'table'              => 'zentra_users',
                     'joinparams'         => [
                         'beforejoin'         => [
                             'table'              => getTableForItemType($this->userlinkclass),
@@ -5091,7 +5091,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tab[] = [
             'id'                 => '8', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'datatype'           => 'dropdown',
             'name'               => __('Technician group'),
@@ -5328,7 +5328,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $withsupplier = false,
         $inobject = true
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $types = ['user'  => User::getTypeName(1)];
 
@@ -5400,7 +5400,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         Ajax::updateItemOnSelectEvent(
             "dropdown__itil_" . $typename . "[_type]$rand",
             "showitilactor" . $typename . "_$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownItilActors.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownItilActors.php",
             $params
         );
         echo "<span id='showitilactor" . htmlescape($typename) . "_$rand' class='actor-dropdown'>&nbsp;</span>";
@@ -5459,7 +5459,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if ($this->getFromDB($ID)) {
             // Force date mod and lastupdater
-            $update = ['date_mod' => $_SESSION['glpi_currenttime']];
+            $update = ['date_mod' => $_SESSION['zentra_currenttime']];
 
             // set last updater if interactive user
             if (!Session::isCron()) {
@@ -5520,7 +5520,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function getAllTypesForHelpdesk()
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         /// TODO ticket_types -> itil_types
 
@@ -5537,12 +5537,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
         asort($ptypes);
         //Types of the core (after the plugin for robustness)
-        foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["ticket_types"] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                 if (
                     !isPluginItemType($itemtype) // No plugin here
-                    && isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-                    && in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                    && isset($_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
+                    && in_array($itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
                 ) {
                     $types[$itemtype] = $item->getTypeName(1);
                 }
@@ -5553,8 +5553,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // Drop not available plugins
         foreach (array_keys($ptypes) as $itemtype) {
             if (
-                !isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-                || !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                !isset($_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
+                || !in_array($itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
             ) {
                 unset($ptypes[$itemtype]);
             }
@@ -5575,7 +5575,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public static function isPossibleToAssignType($itemtype)
     {
 
-        if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+        if (in_array($itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])) {
             return true;
         }
         return false;
@@ -5778,10 +5778,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT'          => [
-                'glpi_users.id AS users_id',
-                'glpi_users.name AS name',
-                'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname',
+                'zentra_users.id AS users_id',
+                'zentra_users.name AS name',
+                'zentra_users.realname AS realname',
+                'zentra_users.firstname AS firstname',
             ],
             'DISTINCT' => true,
             'FROM'            => $ctable,
@@ -5798,10 +5798,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
             ],
             'INNER JOIN'      => [
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ],
             ],
@@ -5855,18 +5855,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT'          => [
-                'glpi_users.id AS user_id',
-                'glpi_users.name AS name',
-                'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname',
+                'zentra_users.id AS user_id',
+                'zentra_users.name AS name',
+                'zentra_users.realname AS realname',
+                'zentra_users.firstname AS firstname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'LEFT JOIN'       => [
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         $ctable        => 'users_id_recipient',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ],
             ],
@@ -5923,8 +5923,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT' => [
-                'glpi_groups.id',
-                'glpi_groups.completename',
+                'zentra_groups.id',
+                'zentra_groups.completename',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -5941,10 +5941,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
             ],
             'INNER JOIN'      => [
-                'glpi_groups'   => [
+                'zentra_groups'   => [
                     'ON' => [
                         $linktable     => 'groups_id',
-                        'glpi_groups'   => 'id',
+                        'zentra_groups'   => 'id',
                     ],
                 ],
             ],
@@ -5952,7 +5952,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                'glpi_groups.completename',
+                'zentra_groups.completename',
             ],
         ];
 
@@ -5993,16 +5993,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $linktable = $this->userlinkclass::getTable();
 
         if ($title) {
-            $table = "glpi_usertitles";
+            $table = "zentra_usertitles";
             $field = "usertitles_id";
         } else {
-            $table = "glpi_usercategories";
+            $table = "zentra_usercategories";
             $field = "usercategories_id";
         }
 
         $ctable = $this->getTable();
         $criteria = [
-            'SELECT'          => "glpi_users.$field",
+            'SELECT'          => "zentra_users.$field",
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'INNER JOIN'      => [
@@ -6012,17 +6012,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $ctable     => 'id',
                     ],
                 ],
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ],
             ],
             'LEFT JOIN'       => [
                 $table         => [
                     'ON' => [
-                        'glpi_users'   => $field,
+                        'zentra_users'   => $field,
                         $table         => 'id',
                     ],
                 ],
@@ -6031,7 +6031,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                "glpi_users.$field",
+                "zentra_users.$field",
             ],
         ];
 
@@ -6227,7 +6227,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['requesttypes_id'],
-                'link' => htmlescape(Dropdown::getDropdownName('glpi_requesttypes', $line['requesttypes_id'])),
+                'link' => htmlescape(Dropdown::getDropdownName('zentra_requesttypes', $line['requesttypes_id'])),
             ];
         }
         return $tab;
@@ -6280,7 +6280,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['solutiontypes_id'],
-                'link' => htmlescape(Dropdown::getDropdownName('glpi_solutiontypes', $line['solutiontypes_id'])),
+                'link' => htmlescape(Dropdown::getDropdownName('zentra_solutiontypes', $line['solutiontypes_id'])),
             ];
         }
         return $tab;
@@ -6303,10 +6303,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT'          => [
-                'glpi_users.id AS users_id',
-                'glpi_users.name AS name',
-                'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname',
+                'zentra_users.id AS users_id',
+                'zentra_users.name AS name',
+                'zentra_users.realname AS realname',
+                'zentra_users.firstname AS firstname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6321,10 +6321,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         ],
                     ],
                 ],
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ],
             ],
@@ -6376,10 +6376,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT'          => [
-                'glpi_users.id AS users_id',
-                'glpi_users.name AS name',
-                'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname',
+                'zentra_users.id AS users_id',
+                'zentra_users.name AS name',
+                'zentra_users.realname AS realname',
+                'zentra_users.firstname AS firstname',
             ],
             'DISTINCT' => true,
             'FROM'            => $ctable,
@@ -6390,35 +6390,35 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $ctable     => 'id',
                     ],
                 ],
-                'glpi_users'   => [
+                'zentra_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ],
-                'glpi_profiles_users'   => [
+                'zentra_profiles_users'   => [
                     'ON' => [
-                        'glpi_users'            => 'id',
-                        'glpi_profiles_users'   => 'users_id',
+                        'zentra_users'            => 'id',
+                        'zentra_profiles_users'   => 'users_id',
                     ],
                 ],
-                'glpi_profiles'         => [
+                'zentra_profiles'         => [
                     'ON' => [
-                        'glpi_profiles'         => 'id',
-                        'glpi_profiles_users'   => 'profiles_id',
+                        'zentra_profiles'         => 'id',
+                        'zentra_profiles_users'   => 'profiles_id',
                     ],
                 ],
-                'glpi_profilerights'    => [
+                'zentra_profilerights'    => [
                     'ON' => [
-                        'glpi_profiles'      => 'id',
-                        'glpi_profilerights' => 'profiles_id',
+                        'zentra_profiles'      => 'id',
+                        'zentra_profilerights' => 'profiles_id',
                     ],
                 ],
             ],
             'WHERE'           => [
                 "$ctable.is_deleted"          => 0,
-                'glpi_profilerights.name'     => 'ticket',
-                'glpi_profilerights.rights'   => ['&', Ticket::OWN],
+                'zentra_profilerights.name'     => 'ticket',
+                'zentra_profilerights.rights'   => ['&', Ticket::OWN],
                 "$linktable.users_id"         => ['<>', 0],
                 ['NOT'                        => ["$linktable.users_id" => null]],
             ] + getEntitiesRestrictCriteria($ctable),
@@ -6467,8 +6467,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT'          => [
-                'glpi_suppliers.id AS suppliers_id_assign',
-                'glpi_suppliers.name AS name',
+                'zentra_suppliers.id AS suppliers_id_assign',
+                'zentra_suppliers.name AS name',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6483,10 +6483,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         ],
                     ],
                 ],
-                'glpi_suppliers'  => [
+                'zentra_suppliers'  => [
                     'ON' => [
                         $linktable        => 'suppliers_id',
-                        'glpi_suppliers'  => 'id',
+                        'zentra_suppliers'  => 'id',
                     ],
                 ],
             ],
@@ -6535,8 +6535,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ctable = $this->getTable();
         $criteria = [
             'SELECT' => [
-                'glpi_groups.id',
-                'glpi_groups.completename',
+                'zentra_groups.id',
+                'zentra_groups.completename',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6551,10 +6551,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         ],
                     ],
                 ],
-                'glpi_groups'   => [
+                'zentra_groups'   => [
                     'ON' => [
                         $linktable     => 'groups_id',
-                        'glpi_groups'   => 'id',
+                        'zentra_groups'   => 'id',
                     ],
                 ],
             ],
@@ -6562,7 +6562,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                'glpi_groups.completename',
+                'zentra_groups.completename',
             ],
         ];
 
@@ -6639,7 +6639,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $output = new HTMLSearchOutput();
         if ($item->getFromDB($id)) {
             $item_num = 1;
-            $bgcolor  = htmlescape($_SESSION["glpipriority_" . $item->fields["priority"]]);
+            $bgcolor  = htmlescape($_SESSION["zentrapriority_" . $item->fields["priority"]]);
             echo $output::showNewLine($p['row_num'] % 2 === 1, $item->isDeleted());
 
             $check_col = '';
@@ -6721,8 +6721,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             echo $output::showItem($fifth_col, $item_num, $p['row_num'], $align . " width=90");
 
             // sixth column
-            if (count($_SESSION["glpiactiveentities"]) > 1) {
-                $sixth_col = htmlescape(Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']));
+            if (count($_SESSION["zentraactiveentities"]) > 1) {
+                $sixth_col = htmlescape(Dropdown::getDropdownName('zentra_entities', $item->fields['entities_id']));
                 echo $output::showItem(
                     $sixth_col,
                     $item_num,
@@ -6760,7 +6760,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
-                $eighth_col .= htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                $eighth_col .= htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                 $eighth_col .= "<br>";
             }
 
@@ -6801,13 +6801,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ) {
                     $ninth_col .= htmlescape($anon_name);
                 } else {
-                    $ninth_col .= htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                    $ninth_col .= htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                 }
                 $ninth_col .= "<br>";
             }
 
             foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
-                $ninth_col .= htmlescape(Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]));
+                $ninth_col .= htmlescape(Dropdown::getDropdownName("zentra_suppliers", $d["suppliers_id"]));
                 $ninth_col .= "<br>";
             }
             echo $output::showItem($ninth_col, $item_num, $p['row_num'], $align);
@@ -6850,7 +6850,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Seventh column
                 echo $output::showItem(
                     "<span class='b'>"
-                        . htmlescape(Dropdown::getDropdownName('glpi_itilcategories', $item->fields["itilcategories_id"]))
+                        . htmlescape(Dropdown::getDropdownName('zentra_itilcategories', $item->fields["itilcategories_id"]))
                         . "</span>",
                     $item_num,
                     $p['row_num'],
@@ -6969,8 +6969,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $items[_n('Date', 'Dates', 1)]               = "date";
         $items[__('Last update')]        = "date_mod";
 
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $items[Entity::getTypeName(Session::getPluralNumber())] = "glpi_entities.completename";
+        if (count($_SESSION["zentraactiveentities"]) > 1) {
+            $items[Entity::getTypeName(Session::getPluralNumber())] = "zentra_entities.completename";
         }
 
         $items[__('Priority')]           = "priority";
@@ -6981,8 +6981,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             if (static::class == Ticket::class) {
                 $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
             }
-            $items[_n('Category', 'Categories', 1)]           = "glpi_itilcategories.completename";
-            $items[__('Planification')]      = "glpi_tickettasks.begin";
+            $items[_n('Category', 'Categories', 1)]           = "zentra_itilcategories.completename";
+            $items[__('Planification')]      = "zentra_tickettasks.begin";
         } else {
             $items[__('Take into account')] = "takeintoaccount_delay_stat";
             $items[__('Resolution')]        = "solve_delay_stat";
@@ -7016,7 +7016,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'date'    => _n('Date', 'Dates', 1),
             'date_mod' => __('Last update'),
         ];
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count($_SESSION["zentraactiveentities"]) > 1) {
             $columns['entity'] = Entity::getTypeName(1);
         }
         $columns['priority'] = __('Priority');
@@ -7146,10 +7146,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             };
             $entry['date_mod'] = $item->fields["date_mod"];
 
-            if (count($_SESSION["glpiactiveentities"]) > 1) {
+            if (count($_SESSION["zentraactiveentities"]) > 1) {
                 if (!isset($entity_cache[$item->fields['entities_id']])) {
                     $entity_cache[$item->fields['entities_id']] = Dropdown::getDropdownName(
-                        table: 'glpi_entities',
+                        table: 'zentra_entities',
                         id: $item->fields['entities_id'],
                         default: ''
                     );
@@ -7158,7 +7158,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             $priority_name = static::getPriorityName($item->fields["priority"]);
-            $priority_color = $_SESSION["glpipriority_" . $item->fields["priority"]];
+            $priority_color = $_SESSION["zentrapriority_" . $item->fields["priority"]];
             $entry['priority'] = [
                 'content' => $priority_name,
                 'color' => $priority_color,
@@ -7185,7 +7185,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
                 if (!isset($group_cache[$d['groups_id']])) {
-                    $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
+                    $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'zentra_groups', id: $d['groups_id'], default: '');
                 }
                 $entry['requester'] .= htmlescape($group_cache[$d['groups_id']]) . '<br>';
             }
@@ -7218,14 +7218,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $entry['assigned'] .= htmlescape($anon_name) . '<br>';
                 } else {
                     if (!isset($group_cache[$d['groups_id']])) {
-                        $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
+                        $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'zentra_groups', id: $d['groups_id'], default: '');
                     }
                     $entry['assigned'] .= htmlescape($group_cache[$d['groups_id']]) . '<br>';
                 }
             }
             foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
                 if (!isset($supplier_cache[$d['suppliers_id']])) {
-                    $supplier_cache[$d['suppliers_id']] = Dropdown::getDropdownName(table: 'glpi_suppliers', id: $d['suppliers_id'], default: '');
+                    $supplier_cache[$d['suppliers_id']] = Dropdown::getDropdownName(table: 'zentra_suppliers', id: $d['suppliers_id'], default: '');
                 }
                 $entry['assigned'] .= htmlescape($supplier_cache[$d['suppliers_id']]) . '<br>';
             }
@@ -7251,7 +7251,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if (!isset($category_cache[$item->fields['itilcategories_id']])) {
                     $category_cache[$item->fields['itilcategories_id']] = Dropdown::getDropdownName(
-                        table: 'glpi_itilcategories',
+                        table: 'zentra_itilcategories',
                         id: $item->fields['itilcategories_id'],
                         default: ''
                     );
@@ -7579,7 +7579,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'with_documents'     => true,
             'with_logs'          => true,
             'with_validations'   => true,
-            'sort_by_date_desc'  => $_SESSION['glpitimeline_order'] == CommonITILObject::TIMELINE_ORDER_REVERSE,
+            'sort_by_date_desc'  => $_SESSION['zentratimeline_order'] == CommonITILObject::TIMELINE_ORDER_REVERSE,
 
             // params used by notifications process (as session cannot be used there)
             'check_view_rights'  => true,
@@ -7897,7 +7897,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'item' => $item,
                     '_is_image' => false,
                 ];
-                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $docpath = ZENTRA_DOC_DIR . "/" . $item['filepath'];
                 $is_image = Document::isImage($docpath);
                 if ($is_image) {
                     $doc_entry['_is_image'] = true;
@@ -8065,10 +8065,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $users_table = $this->getTable() . '_users';
         switch ($this::class) {
             case Ticket::class:
-                $groups_table = 'glpi_groups_tickets';
+                $groups_table = 'zentra_groups_tickets';
                 break;
             case Problem::class:
-                $groups_table = 'glpi_groups_problems';
+                $groups_table = 'zentra_groups_problems';
                 break;
             default:
                 $groups_table = $this->getTable() . '_groups';
@@ -8158,7 +8158,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // Set number of followups
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_itilfollowups',
+            'FROM'   => 'zentra_itilfollowups',
             'WHERE'  => [
                 'itemtype'  => $this->getType(),
                 'items_id'  => $this->fields['id'],
@@ -8179,7 +8179,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         global $DB;
 
-        $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
+        $table = 'zentra_' . strtolower($this->getType()) . 'tasks';
 
         $RESTRICT = [];
         if ($with_private !== true && $this instanceof Ticket) {
@@ -8338,13 +8338,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $field = str_replace(['_incident', '_demand'], ['', ''], $field);
             // load default profile one if not already loaded
             if (
-                isset($_SESSION['glpiactiveprofile'][$field])
-                && $_SESSION['glpiactiveprofile'][$field]
+                isset($_SESSION['zentraactiveprofile'][$field])
+                && $_SESSION['zentraactiveprofile'][$field]
             ) {
                 // with type and categ
                 if (
                     $tt->getFromDBWithData(
-                        $_SESSION['glpiactiveprofile'][$field],
+                        $_SESSION['zentraactiveprofile'][$field],
                         true
                     )
                 ) {
@@ -8410,7 +8410,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return ITILTemplate|null
      *
      * @since 11.0.2
-     * @TODO Make this method private in GLPI 12.
+     * @TODO Make this method private in ZENTRA 12.
      */
     public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
@@ -8510,22 +8510,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public static function getCommonCriteria()
     {
         $fk = self::getForeignKeyField();
-        $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
-        $itable = str_replace('glpi_', 'glpi_items_', static::getTable());
+        $gtable = str_replace('zentra_', 'zentra_groups_', static::getTable());
+        $itable = str_replace('zentra_', 'zentra_items_', static::getTable());
         if (static::class == Change::class) {
-            $gtable = 'glpi_changes_groups';
-            $itable = 'glpi_changes_items';
+            $gtable = 'zentra_changes_groups';
+            $itable = 'zentra_changes_items';
         }
         $utable = static::getTable() . '_users';
         $stable = static::getTable() . '_suppliers';
         if (static::class == Ticket::class) {
-            $stable = 'glpi_suppliers_tickets';
+            $stable = 'zentra_suppliers_tickets';
         }
         $table = static::getTable();
         $criteria = [
             'SELECT'          => [
                 "$table.*",
-                'glpi_itilcategories.completename AS catname',
+                'zentra_itilcategories.completename AS catname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $table,
@@ -8548,10 +8548,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $stable  => $fk,
                     ],
                 ],
-                'glpi_itilcategories'      => [
+                'zentra_itilcategories'      => [
                     'ON' => [
                         $table                  => 'itilcategories_id',
-                        'glpi_itilcategories'   => 'id',
+                        'zentra_itilcategories'   => 'id',
                     ],
                 ],
                 $itable  => [
@@ -8563,17 +8563,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ],
             'ORDERBY'            => "$table.date_mod DESC",
         ];
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $criteria['LEFT JOIN']['glpi_entities'] = [
+        if (count($_SESSION["zentraactiveentities"]) > 1) {
+            $criteria['LEFT JOIN']['zentra_entities'] = [
                 'ON' => [
-                    'glpi_entities'   => 'id',
+                    'zentra_entities'   => 'id',
                     $table            => 'entities_id',
                 ],
             ];
             $criteria['SELECT'] = array_merge(
                 $criteria['SELECT'],
                 [
-                    'glpi_entities.completename AS entityname',
+                    'zentra_entities.completename AS entityname',
                     "$table.entities_id AS entityID",
                 ]
             );
@@ -8773,8 +8773,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'users_id_tech' => $user_id,
                     ];
                 }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
-                    $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
+                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["zentragroups"])) {
+                    $private_task_crit['groups_id_tech'] = $_SESSION["zentragroups"];
                 }
                 if (!empty($private_task_crit)) {
                     $tasks_crit[] = ['OR' => $private_task_crit];
@@ -8790,8 +8790,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
             if (count($arr_values) > 0) {
                 $or_crits[] = [
-                    'glpi_documents_items.itemtype' => $task_class::getType(),
-                    'glpi_documents_items.items_id' => $arr_values,
+                    'zentra_documents_items.itemtype' => $task_class::getType(),
+                    'zentra_documents_items.items_id' => $arr_values,
                 ];
             }
         }
@@ -8827,11 +8827,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         switch (static::class) {
             case Change::class:
-                return 'glpi_changes_items';
+                return 'zentra_changes_items';
             case Problem::class:
-                return 'glpi_items_problems';
+                return 'zentra_items_problems';
             case Ticket::class:
-                return 'glpi_items_tickets';
+                return 'zentra_items_tickets';
             default:
                 throw new RuntimeException('Unknown ITIL type ' . static::class);
         }
@@ -9006,9 +9006,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function handleNewItemNotifications(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA['use_notifications']) {
             $this->getFromDB($this->fields['id']); // Reload item to get actual status
 
             NotificationEvent::raiseEvent('new', $this);
@@ -9332,7 +9332,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             "tracking",
                             sprintf(
                                 __('%1$s updates the item %2$s'),
-                                $_SESSION["glpiname"],
+                                $_SESSION["zentraname"],
                                 $this->fields['id']
                             )
                         );
@@ -9736,14 +9736,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     protected function setTechAndGroupFromHardware($input, $item)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($item != null) {
             // Auto assign tech from item
             $has_user_assigned  = $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN);
             if (
                 !$has_user_assigned
-                && in_array($item::class, $CFG_GLPI['assignable_types'], true)
+                && in_array($item::class, $CFG_ZENTRA['assignable_types'], true)
                 && $item->fields['users_id_tech'] > 0
             ) {
                 $input['_users_id_assign'] = $item->fields['users_id_tech'];
@@ -9753,7 +9753,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $has_group_assigned = $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN);
             if (
                 !$has_group_assigned
-                && in_array($item::class, $CFG_GLPI['assignable_types'], true)
+                && in_array($item::class, $CFG_ZENTRA['assignable_types'], true)
                 && $item->fields['groups_id_tech'] > 0
             ) {
                 $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
@@ -9773,7 +9773,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     protected function assign(array $input)
     {
-        // FIXME Deprecate this method in GLPI 11.0.
+        // FIXME Deprecate this method in ZENTRA 11.0.
         if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
             return $input;
         }
@@ -10300,7 +10300,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 'AND' => [
                                     $trans_table . '.itemtype' => ITILCategory::getType(),
                                     $trans_table . '.field' => 'name',
-                                    $trans_table . '.language' => $_SESSION['glpilanguage'],
+                                    $trans_table . '.language' => $_SESSION['zentralanguage'],
                                 ],
                             ],
                         ],
@@ -10358,7 +10358,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID'],
+                    'value'        => $_SESSION['zentraID'],
                 ],
             ],
             'team_itemtypes'  => static::getTeamItemtypes(),
@@ -10908,10 +10908,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             $table          => 'id',
                         ],
                     ],
-                    'glpi_entities'            => [
+                    'zentra_entities'            => [
                         'ON' => [
                             $table          => 'entities_id',
-                            'glpi_entities' => 'id',
+                            'zentra_entities' => 'id',
                         ],
                     ],
                 ],
@@ -10929,7 +10929,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ),
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "glpi_entities.max_closedate$config_suffix",
+                            date: "zentra_entities.max_closedate$config_suffix",
                             interval: $duration,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()
@@ -10947,7 +10947,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     if (
                         $inquest->add([
                             $fk             => $itil_item['id'],
-                            'date_begin'    => $_SESSION["glpi_currenttime"],
+                            'date_begin'    => $_SESSION["zentra_currenttime"],
                             'entities_id'   => $itil_item['entities_id'],
                             'type'          => $type,
                         ])
@@ -10978,7 +10978,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $task->addVolume($nb);
                 $task->log(sprintf(
                     __('%1$s: %2$s'),
-                    Dropdown::getDropdownName('glpi_entities', $entity_id),
+                    Dropdown::getDropdownName('zentra_entities', $entity_id),
                     $nb
                 ));
             }
@@ -11080,7 +11080,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $satisfaction->add(
                 [
                     $fkey           => $this->fields['id'],
-                    'date_begin'    => $_SESSION["glpi_currenttime"],
+                    'date_begin'    => $_SESSION["zentra_currenttime"],
                     'entities_id'   => $this->fields['entities_id'],
                     'type'          => $type,
                     'max_closedate' => $max_closedate,
@@ -11291,7 +11291,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($usertypes as $k => $t) {
             //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 11.0.
+                // FIXME Deprecate these keys in ZENTRA 11.0.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])

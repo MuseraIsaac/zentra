@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 use Safe\Exceptions\PcreException;
 
 use function Safe\preg_match;
@@ -114,7 +114,7 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => $_SESSION['zentra_currenttime'],
             ]);
         }
     }
@@ -127,7 +127,7 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => $_SESSION['zentra_currenttime'],
             ]);
         }
     }
@@ -345,7 +345,7 @@ class RuleCriteria extends CommonDBChild
         $pattern   = $criterion->fields['pattern'];
         $criteria  = $criterion->fields['criteria'];
         //If pattern is wildcard, don't check the rule and return true
-        //or if the condition is "already present in GLPI" : will be processed later
+        //or if the condition is "already present in ZENTRA" : will be processed later
         if (
             ($pattern == Rule::RULE_WILDCARD)
             || ($condition == Rule::PATTERN_FIND)

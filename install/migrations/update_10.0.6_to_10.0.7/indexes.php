@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,19 +37,19 @@
  */
 // Add index on level on all TreeDropdown tables
 $tables = [
-    'glpi_businesscriticities',
-    'glpi_documentcategories',
-    'glpi_entities',
-    'glpi_groups',
-    'glpi_ipnetworks',
-    'glpi_itilcategories',
-    'glpi_knowbaseitemcategories',
-    'glpi_locations',
-    'glpi_softwarecategories',
-    'glpi_softwarelicenses',
-    'glpi_softwarelicensetypes',
-    'glpi_states',
-    'glpi_taskcategories',
+    'zentra_businesscriticities',
+    'zentra_documentcategories',
+    'zentra_entities',
+    'zentra_groups',
+    'zentra_ipnetworks',
+    'zentra_itilcategories',
+    'zentra_knowbaseitemcategories',
+    'zentra_locations',
+    'zentra_softwarecategories',
+    'zentra_softwarelicenses',
+    'zentra_softwarelicensetypes',
+    'zentra_states',
+    'zentra_taskcategories',
 ];
 
 foreach ($tables as $table) {

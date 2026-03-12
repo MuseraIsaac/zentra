@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use Auth;
 use Computer;
 use DbUtils;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Preference;
 use Session;
 use User;
@@ -65,7 +65,7 @@ class ValidatorSubstituteTest extends DbTestCase
         $validatorSubstitute = new \ValidatorSubstitute();
         $validatorSubstitute->add([
             'users_id' => Session::getLoginUserId(),
-            'users_id_substitute' => User::getIdByName('glpi'),
+            'users_id_substitute' => User::getIdByName('zentra'),
         ]);
 
         yield [
@@ -73,14 +73,14 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => "Authorized substitutes 1",
         ];
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
 
         yield [
             'item' => new Preference(),
             'expected' => "Authorized substitutes",
         ];
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $validatorSubstitute = new \ValidatorSubstitute();
         $validatorSubstitute->add([
             'users_id' => Session::getLoginUserId(),
@@ -92,7 +92,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => "Authorized substitutes 2",
         ];
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
 
         yield [
             'item' => new Preference(),
@@ -121,7 +121,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => false,
         ];
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         yield [
             'input' => [
                 'users_id' => 1,
@@ -131,7 +131,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => true,
         ];
@@ -158,7 +158,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => false,
         ];
 
-        $_SESSION['glpiID'] = 2;
+        $_SESSION['zentraID'] = 2;
         yield [
             'input' => [
                 'users_id' => 1,
@@ -168,7 +168,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => true,
         ];
@@ -194,7 +194,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => false,
         ];
 
-        $_SESSION['glpiID'] = 2;
+        $_SESSION['zentraID'] = 2;
         yield [
             'input' => [
                 'users_id' => 1,
@@ -204,7 +204,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => true,
         ];
@@ -230,7 +230,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => false,
         ];
 
-        $_SESSION['glpiID'] = 2;
+        $_SESSION['zentraID'] = 2;
         yield [
             'input' => [
                 'users_id' => 1,
@@ -240,7 +240,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => true,
         ];
@@ -266,7 +266,7 @@ class ValidatorSubstituteTest extends DbTestCase
             'expected' => false,
         ];
 
-        $_SESSION['glpiID'] = 2;
+        $_SESSION['zentraID'] = 2;
         yield [
             'input' => [
                 'users_id' => 1,
@@ -276,7 +276,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => true,
         ];
@@ -299,7 +299,7 @@ class ValidatorSubstituteTest extends DbTestCase
         $this->login('normal', 'normal');
         yield 'not allowed to edit' => [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => [
                 'return' => false,
@@ -446,7 +446,7 @@ class ValidatorSubstituteTest extends DbTestCase
         $this->login('normal', 'normal');
         yield 'not allowed to edit' => [
             'input' => [
-                'users_id' => User::getIdByName('glpi'),
+                'users_id' => User::getIdByName('zentra'),
             ],
             'expected' => [
                 'return' => false,
@@ -469,13 +469,13 @@ class ValidatorSubstituteTest extends DbTestCase
         yield [
             'input' => [
                 'users_id' => User::getIdByName('normal'),
-                'substitutes' => [User::getIdByName('glpi')],
+                'substitutes' => [User::getIdByName('zentra')],
             ],
             'expected' => [
                 'return' => true,
                 'rows' => [
                     [
-                        'users_id_substitute' => User::getIdByName('glpi'),
+                        'users_id_substitute' => User::getIdByName('zentra'),
                     ],
                 ],
             ],

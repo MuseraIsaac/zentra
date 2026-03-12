@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,19 +35,19 @@
 
 require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\System\Requirement\DbConfiguration;
-use Glpi\System\Requirement\DbEngine;
-use Glpi\System\Requirement\DbTimezones;
-use Glpi\System\RequirementsManager;
-use Glpi\Toolbox\Filesystem;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\System\Requirement\DbConfiguration;
+use Zentra\System\Requirement\DbEngine;
+use Zentra\System\Requirement\DbTimezones;
+use Zentra\System\RequirementsManager;
+use Zentra\Toolbox\Filesystem;
 
 use function Safe\file_get_contents;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
-if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
-    $_SESSION["glpilanguage"] = $_POST["language"];
+if (isset($_POST["language"]) && isset($CFG_ZENTRA["languages"][$_POST["language"]])) {
+    $_SESSION["zentralanguage"] = $_POST["language"];
     Session::loadLanguage(with_plugins: false);
 }
 
@@ -63,8 +63,8 @@ function header_html(string $etape): void
     header("Content-Type: text/html; charset=UTF-8");
 
     TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
-        'lang'  => $_SESSION['glpilanguage'],
-        'title' => __('GLPI setup'),
+        'lang'  => $_SESSION['zentralanguage'],
+        'title' => __('ZENTRA setup'),
         'css_files' => [
             ['path' => 'lib/tabler.css'],
             ['path' => 'lib/base.css'],
@@ -72,7 +72,7 @@ function header_html(string $etape): void
         ],
         'js_files' => [
             ['path' => 'lib/base.js'],
-            ['path' => 'js/glpi_dialog.js'],
+            ['path' => 'js/zentra_dialog.js'],
 
             // required for the language dropdown
             ['path' => 'lib/fuzzy.js'],
@@ -105,15 +105,15 @@ function footer_html(): void
  */
 function choose_language(): void
 {
-    global $CFG_GLPI;
+    global $CFG_ZENTRA;
 
     // fix missing param for js drodpown
-    $CFG_GLPI['ajax_limit_count'] = 15;
+    $CFG_ZENTRA['ajax_limit_count'] = 15;
 
     TemplateRenderer::getInstance()->display('install/choose_language.html.twig', [
         'languages_dropdown'  => Dropdown::showLanguages('language', [
             'display' => false,
-            'value'   => $_SESSION['glpilanguage'],
+            'value'   => $_SESSION['zentralanguage'],
             'width'   => '100%',
         ]),
     ]);
@@ -123,7 +123,7 @@ function choose_language(): void
 function acceptLicense(): void
 {
     TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
-        'copying' => file_get_contents(GLPI_ROOT . "/LICENSE"),
+        'copying' => file_get_contents(ZENTRA_ROOT . "/LICENSE"),
     ]);
 }
 
@@ -139,10 +139,10 @@ function step0(): void
 function step1(string $update): void
 {
     $config_files_to_update = [
-        GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
+        ZENTRA_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
     ];
-    if ($update !== 'yes' || !(new GLPIKey())->keyExists()) {
-        $config_files_to_update[] = GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'glpicrypt.key';
+    if ($update !== 'yes' || !(new ZENTRAKey())->keyExists()) {
+        $config_files_to_update[] = ZENTRA_CONFIG_DIR . DIRECTORY_SEPARATOR . 'zentracrypt.key';
     }
     $config_write_denied = !Filesystem::canWriteFiles($config_files_to_update);
     $requiremements      = (new RequirementsManager())->getCoreRequirementList();
@@ -241,7 +241,7 @@ function step3(string $host, string $user, string $password, string $update): vo
  */
 function step4(string $databasename, string $newdatabasename): void
 {
-    global $CFG_GLPI;
+    global $CFG_ZENTRA;
 
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -277,8 +277,8 @@ function step4(string $databasename, string $newdatabasename): void
     };
 
     //create security key
-    $glpikey = new GLPIKey();
-    if (!$glpikey->generate(update_db: false)) {
+    $zentrakey = new ZENTRAKey();
+    if (!$zentrakey->generate(update_db: false)) {
         echo "<p><strong>" . __s('Security key cannot be generated!') . "</strong></p>";
         $prev_form($host, $user, $password);
         return;
@@ -346,20 +346,20 @@ function step4(string $databasename, string $newdatabasename): void
     if ($success) {
         echo "<p>" . __s('Initializing database tables and default data...') . "</p>";
 
-        echo '<div id="glpi_install_messages_container"></div>';
+        echo '<div id="zentra_install_messages_container"></div>';
 
         echo '<div class="text-center">';
-        echo '<div id="glpi_install_back" class="d-none">';
+        echo '<div id="zentra_install_back" class="d-none">';
         $prev_form($host, $user, $password, disabled: true);
         echo '</div>';
-        echo '<div id="glpi_install_success" class="d-none">';
+        echo '<div id="zentra_install_success" class="d-none">';
         $next_form(disabled: true);
         echo '</div>';
         echo '</div>';
 
         echo <<<HTML
             <script defer type="module">
-                import { init_database } from '/js/modules/GlpiInstall.js';
+                import { init_database } from '/js/modules/ZentraInstall.js';
                 init_database();
             </script>
         HTML;
@@ -376,7 +376,7 @@ function step6(): void
 {
     global $DB;
 
-    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    include_once(ZENTRA_CONFIG_DIR . "/config_db.php");
     $DB = new DB();
 
     $_SESSION['telemetry_from_install'] = true;
@@ -390,8 +390,8 @@ function step6(): void
 function step7(): void
 {
     TemplateRenderer::getInstance()->display('install/step7.html.twig', [
-        'glpinetwork'     => GLPINetwork::showInstallMessage(),
-        'glpinetwork_url' => GLPI_NETWORK_SERVICES,
+        'zentranetwork'     => ZENTRANetwork::showInstallMessage(),
+        'zentranetwork_url' => ZENTRA_NETWORK_SERVICES,
     ]);
 }
 
@@ -400,14 +400,14 @@ function step7(): void
  */
 function step8(): void
 {
-    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    include_once(ZENTRA_CONFIG_DIR . "/config_db.php");
     /** @var DB&DBmysql $DB */
     $DB = new DB();
 
     if (isset($_POST['send_stats'])) {
         //user has accepted to send telemetry infos; activate cronjob
         $DB->update(
-            'glpi_crontasks',
+            'zentra_crontasks',
             ['state' => 1],
             ['name' => 'telemetry']
         );
@@ -419,7 +419,7 @@ function step8(): void
         : 'http://localhost';
 
     $DB->update(
-        'glpi_configs',
+        'zentra_configs',
         ['value' => $url_base],
         [
             'context'   => 'core',
@@ -471,24 +471,24 @@ function update1(string $dbname): void
     } else {
         $from_install = true;
         $_SESSION['can_process_update'] = true;
-        include_once(GLPI_ROOT . "/install/update.php");
+        include_once(ZENTRA_ROOT . "/install/update.php");
     }
 }
 
 function checkConfigFile(): void
 {
-    global $CFG_GLPI;
+    global $CFG_ZENTRA;
 
-    if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+    if (!file_exists(ZENTRA_CONFIG_DIR . "/config_db.php")) {
         return;
     }
 
-    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    include_once(ZENTRA_CONFIG_DIR . "/config_db.php");
     if (!class_exists('DB', false)) {
         return; // config file exists, but does not contains the `DB` config class
     }
 
-    Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
+    Html::redirect($CFG_ZENTRA['root_doc'] . "/index.php");
 }
 
 
@@ -498,14 +498,14 @@ function checkConfigFile(): void
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     $_SESSION = [];
 
-    $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
+    $_SESSION["zentralanguage"] = Session::getPreferredLanguage();
 
     checkConfigFile();
 
     // Add a flag that will be used to validate that installation can be processed.
     // This flag is put here just after checking that DB config file does not exist yet.
     // It is mandatory to validate that installation endpoints are not used outside installation process
-    // to alter the GLPI database or configuration.
+    // to alter the ZENTRA database or configuration.
     $_SESSION['can_process_install'] = true;
 
     header_html(__("Select your language"));
@@ -533,7 +533,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
             checkConfigFile();
             //TRANS %s is step number
             header_html(sprintf(__('Step %d'), 0));
-            $_SESSION["Test_session_GLPI"] = 1;
+            $_SESSION["Test_session_ZENTRA"] = 1;
             step1($_POST["update"]);
             break;
 

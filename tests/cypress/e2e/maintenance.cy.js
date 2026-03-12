@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ describe('Maintenance', () => {
     after(() => {
         cy.exec('php ../bin/console maintenance:disable');
     });
-    it('GLPI is not accessible during maintenance', () => {
+    it('ZENTRA is not accessible during maintenance', () => {
         cy.visit('/');
         cy.findByText("Temporarily down for maintenance").should('be.visible');
     });

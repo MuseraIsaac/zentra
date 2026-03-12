@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@
     <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
     <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
     <div class="row mx-n3 mx-xxl-auto">
         <div class="col-12 col-xl-7 col-xxl-8">
@@ -232,7 +232,7 @@
                 {{ fields.dropdownField(
                     'User',
                     'users_id_tech',
-                    subitem.fields['users_id_tech']|default(session('glpiID')),
+                    subitem.fields['users_id_tech']|default(session('zentraID')),
                     task_user_lbl,
                     {
                         'full_width': true,
@@ -264,8 +264,8 @@
                 <script type="text/javascript">
                     function showPlanUpdate{{ rand }}(e) {
                         $('#plan{{ rand }}').hide();
-                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state')|json_encode|raw }});
-                        $('#viewplan{{ rand }}').load(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
+                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('zentraplanned_task_state')|json_encode|raw }});
+                        $('#viewplan{{ rand }}').load(`${CFG_ZENTRA.root_doc}/ajax/planning.php`, {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
                             entity: {{ item.fields.entities_id|json_encode|raw }},
@@ -349,7 +349,7 @@
         {% endset %}
     {% endif %}
 
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
     {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
     <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
         {% if subitem.fields['id'] <= 0 %}
@@ -384,7 +384,7 @@
     </div>
 
     {% if add_html_form %}
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
         </form>
     {% endif %}
 </div>

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField('states_id') and item is usingtrait('Glpi\\Features\\State') %}
+                  {% if item.isField('states_id') and item is usingtrait('Zentra\\Features\\State') %}
                      {{ fields.dropdownField(
                         'State',
                         'states_id',
@@ -207,7 +207,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField('groups_id') or item is usingtrait('Glpi\\Features\\AssignableItem') %}
+                  {% if item.isField('groups_id') or item is usingtrait('Zentra\\Features\\AssignableItem') %}
                      {{ fields.dropdownField(
                         'Group',
                         'groups_id',
@@ -216,7 +216,7 @@
                         field_options|merge({
                            'entity': item.fields['entities_id'],
                            'condition': {'is_itemgroup': 1},
-                           'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                           'multiple': item is usingtrait('Zentra\\Features\\AssignableItem') ? true : false
                         })
                      ) }}
                   {% endif %}

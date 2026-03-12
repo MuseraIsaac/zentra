@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * Update from 9.1 to 9.2
@@ -54,12 +54,12 @@ function update91xto920()
     $migration->setVersion('9.2');
 
     // add business criticity
-    $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
-    $migration->migrationOneTable('glpi_infocoms');
-    $migration->addKey("glpi_infocoms", "businesscriticities_id");
+    $migration->addField("zentra_infocoms", "businesscriticities_id", "integer");
+    $migration->migrationOneTable('zentra_infocoms');
+    $migration->addKey("zentra_infocoms", "businesscriticities_id");
 
-    if (!$DB->tableExists("glpi_businesscriticities")) {
-        $query = "CREATE TABLE `glpi_businesscriticities` (
+    if (!$DB->tableExists("zentra_businesscriticities")) {
+        $query = "CREATE TABLE `zentra_businesscriticities` (
         `id` int NOT NULL AUTO_INCREMENT,
         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `entities_id` int NOT NULL DEFAULT '0',
@@ -82,23 +82,23 @@ function update91xto920()
     }
 
     // Issue #1250 - Add decimal to monitor size
-    $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2) NOT NULL DEFAULT "0"');
+    $migration->changeField('zentra_monitors', 'size', 'size', 'DECIMAL(5,2) NOT NULL DEFAULT "0"');
 
     //Make software license type a tree dropdown
-    $migration->addField("glpi_softwarelicensetypes", "softwarelicensetypes_id", "integer");
-    $migration->addField("glpi_softwarelicensetypes", "level", "integer");
-    $migration->addField("glpi_softwarelicensetypes", "ancestors_cache", "longtext");
-    $migration->addField("glpi_softwarelicensetypes", "sons_cache", "longtext");
-    $migration->addField("glpi_softwarelicensetypes", "entities_id", "integer");
-    $migration->addField("glpi_softwarelicensetypes", "is_recursive", "bool");
-    $tree = $migration->addField("glpi_softwarelicensetypes", "completename", "text");
-    $migration->migrationOneTable('glpi_softwarelicensetypes');
-    $migration->addKey("glpi_softwarelicensetypes", "softwarelicensetypes_id");
+    $migration->addField("zentra_softwarelicensetypes", "softwarelicensetypes_id", "integer");
+    $migration->addField("zentra_softwarelicensetypes", "level", "integer");
+    $migration->addField("zentra_softwarelicensetypes", "ancestors_cache", "longtext");
+    $migration->addField("zentra_softwarelicensetypes", "sons_cache", "longtext");
+    $migration->addField("zentra_softwarelicensetypes", "entities_id", "integer");
+    $migration->addField("zentra_softwarelicensetypes", "is_recursive", "bool");
+    $tree = $migration->addField("zentra_softwarelicensetypes", "completename", "text");
+    $migration->migrationOneTable('zentra_softwarelicensetypes');
+    $migration->addKey("zentra_softwarelicensetypes", "softwarelicensetypes_id");
 
     //First time the dropdown is changed from CommonDropdown to CommonTreeDropdown
     if ($tree) {
         $DB->update(
-            "glpi_softwarelicensetypes",
+            "zentra_softwarelicensetypes",
             [
                 'completename' =>  new QueryExpression(DBmysql::quoteName("name")),
                 'is_recursive' => "1",
@@ -109,7 +109,7 @@ function update91xto920()
 
     // give READ right on components to profiles having UPDATE right
     $DB->update(
-        "glpi_profilerights",
+        "zentra_profilerights",
         [
             'rights' => new QueryExpression($DB->quoteName("rights") . " | " . READ),
         ],
@@ -120,8 +120,8 @@ function update91xto920()
     );
 
     $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
-    if (!$DB->tableExists('glpi_knowbaseitems_items')) {
-        $query = "CREATE TABLE `glpi_knowbaseitems_items` (
+    if (!$DB->tableExists('zentra_knowbaseitems_items')) {
+        $query = "CREATE TABLE `zentra_knowbaseitems_items` (
                  `id` int NOT NULL AUTO_INCREMENT,
                  `knowbaseitems_id` int NOT NULL,
                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -138,8 +138,8 @@ function update91xto920()
     }
 
     $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item revisions'));
-    if (!$DB->tableExists('glpi_knowbaseitems_revisions')) {
-        $query = "CREATE TABLE `glpi_knowbaseitems_revisions` (
+    if (!$DB->tableExists('zentra_knowbaseitems_revisions')) {
+        $query = "CREATE TABLE `zentra_knowbaseitems_revisions` (
                  `id` int NOT NULL AUTO_INCREMENT,
                  `knowbaseitems_id` int NOT NULL,
                  `revision` int NOT NULL,
@@ -155,37 +155,37 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    $migration->addField("glpi_knowbaseitemtranslations", "users_id", "integer");
-    $migration->migrationOneTable("glpi_knowbaseitemtranslations");
-    $migration->addKey("glpi_knowbaseitemtranslations", "users_id");
+    $migration->addField("zentra_knowbaseitemtranslations", "users_id", "integer");
+    $migration->migrationOneTable("zentra_knowbaseitemtranslations");
+    $migration->addKey("zentra_knowbaseitemtranslations", "users_id");
 
     //set kb translations users...
     $knowitems_iterator = $DB->request([
-        'SELECT' => ['glpi_knowbaseitems.id', 'glpi_knowbaseitems.users_id'],
-        'FROM' => 'glpi_knowbaseitems',
+        'SELECT' => ['zentra_knowbaseitems.id', 'zentra_knowbaseitems.users_id'],
+        'FROM' => 'zentra_knowbaseitems',
         'INNER JOIN' => [
-            "glpi_knowbaseitemtranslations" => [
+            "zentra_knowbaseitemtranslations" => [
                 'FKEY' => [
-                    'glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'            => 'id',
+                    'zentra_knowbaseitemtranslations' => 'knowbaseitems_id',
+                    'zentra_knowbaseitems'            => 'id',
                 ],
             ],
         ],
     ]);
     foreach ($knowitems_iterator as $knowitems) {
         $DB->update(
-            "glpi_knowbaseitemtranslations",
+            "zentra_knowbaseitemtranslations",
             ['users_id' => $knowitems['users_id']],
             ['knowbaseitems_id' => $knowitems['id']]
         );
     }
 
-    $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATETIME");
-    $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATETIME");
+    $migration->addField("zentra_knowbaseitemtranslations", "date_mod", "DATETIME");
+    $migration->addField("zentra_knowbaseitemtranslations", "date_creation", "DATETIME");
 
     $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item comments'));
-    if (!$DB->tableExists('glpi_knowbaseitems_comments')) {
-        $query = "CREATE TABLE `glpi_knowbaseitems_comments` (
+    if (!$DB->tableExists('zentra_knowbaseitems_comments')) {
+        $query = "CREATE TABLE `zentra_knowbaseitems_comments` (
                  `id` int NOT NULL AUTO_INCREMENT,
                  `knowbaseitems_id` int NOT NULL,
                  `users_id` int NOT NULL DEFAULT '0',
@@ -200,7 +200,7 @@ function update91xto920()
     }
 
     $DB->update(
-        "glpi_profilerights",
+        "zentra_profilerights",
         [
             'rights' => new QueryExpression(
                 DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(KnowbaseItem::COMMENTS)
@@ -210,35 +210,35 @@ function update91xto920()
     );
 
     // add kb category to task categories
-    $migration->addField("glpi_taskcategories", "knowbaseitemcategories_id", "integer");
-    $migration->migrationOneTable("glpi_taskcategories");
-    $migration->addKey("glpi_taskcategories", "knowbaseitemcategories_id");
+    $migration->addField("zentra_taskcategories", "knowbaseitemcategories_id", "integer");
+    $migration->migrationOneTable("zentra_taskcategories");
+    $migration->addKey("zentra_taskcategories", "knowbaseitemcategories_id");
 
-    // #1476 - Add users_id on glpi_documents_items
-    $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
-    $migration->migrationOneTable("glpi_documents_items");
-    $migration->addKey("glpi_documents_items", "users_id");
+    // #1476 - Add users_id on zentra_documents_items
+    $migration->addField("zentra_documents_items", "users_id", "integer", ['null' => true]);
+    $migration->migrationOneTable("zentra_documents_items");
+    $migration->addKey("zentra_documents_items", "users_id");
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_documents_items',
+            'zentra_documents_items',
             [
-                'glpi_documents_items.users_id' => new QueryExpression(DBmysql::quoteName('glpi_documents.users_id')),
+                'zentra_documents_items.users_id' => new QueryExpression(DBmysql::quoteName('zentra_documents.users_id')),
             ],
             [
-                'glpi_documents_items.documents_id' => new QueryExpression(DBmysql::quoteName('glpi_documents.id')),
+                'zentra_documents_items.documents_id' => new QueryExpression(DBmysql::quoteName('zentra_documents.id')),
             ],
             [
                 'LEFT JOIN' => [
-                    'glpi_documents' => [
+                    'zentra_documents' => [
                         'ON' => [
-                            'glpi_documents_items' => 'documents_id',
-                            'glpi_documents' => 'id',
+                            'zentra_documents_items' => 'documents_id',
+                            'zentra_documents' => 'id',
                         ],
                     ],
                 ],
             ]
         ),
-        "9.2 update set users_id on glpi_documents_items"
+        "9.2 update set users_id on zentra_documents_items"
     );
 
     //add product number
@@ -260,18 +260,18 @@ function update91xto920()
     }
 
     // add fields on every item_device tables
-    $tables = ['glpi_items_devicecases',
-        'glpi_items_devicecontrols',
-        'glpi_items_devicedrives',
-        'glpi_items_devicegraphiccards',
-        'glpi_items_deviceharddrives',
-        'glpi_items_devicememories',
-        'glpi_items_devicemotherboards',
-        'glpi_items_devicenetworkcards',
-        'glpi_items_devicepcis',
-        'glpi_items_devicepowersupplies',
-        'glpi_items_deviceprocessors',
-        'glpi_items_devicesoundcards',
+    $tables = ['zentra_items_devicecases',
+        'zentra_items_devicecontrols',
+        'zentra_items_devicedrives',
+        'zentra_items_devicegraphiccards',
+        'zentra_items_deviceharddrives',
+        'zentra_items_devicememories',
+        'zentra_items_devicemotherboards',
+        'zentra_items_devicenetworkcards',
+        'zentra_items_devicepcis',
+        'zentra_items_devicepowersupplies',
+        'zentra_items_deviceprocessors',
+        'zentra_items_devicesoundcards',
     ];
 
     //add serial, location and state on each devices items
@@ -286,22 +286,22 @@ function update91xto920()
     }
 
     // Create tables :
-    $tables = ['glpi_devicecasemodels',
-        'glpi_devicecontrolmodels',
-        'glpi_devicedrivemodels',
-        'glpi_devicegraphiccardmodels',
-        'glpi_deviceharddrivemodels',
-        'glpi_devicememorymodels',
-        'glpi_devicemotherboardmodels',
-        'glpi_devicenetworkcardmodels',
-        'glpi_devicepcimodels',
-        'glpi_devicepowersupplymodels',
-        'glpi_deviceprocessormodels',
-        'glpi_devicesoundcardmodels',
-        'glpi_devicegenericmodels',
-        'glpi_devicebatterymodels',
-        'glpi_devicefirmwaremodels',
-        'glpi_devicesensormodels',
+    $tables = ['zentra_devicecasemodels',
+        'zentra_devicecontrolmodels',
+        'zentra_devicedrivemodels',
+        'zentra_devicegraphiccardmodels',
+        'zentra_deviceharddrivemodels',
+        'zentra_devicememorymodels',
+        'zentra_devicemotherboardmodels',
+        'zentra_devicenetworkcardmodels',
+        'zentra_devicepcimodels',
+        'zentra_devicepowersupplymodels',
+        'zentra_deviceprocessormodels',
+        'zentra_devicesoundcardmodels',
+        'zentra_devicegenericmodels',
+        'zentra_devicebatterymodels',
+        'zentra_devicefirmwaremodels',
+        'zentra_devicesensormodels',
     ];
 
     foreach ($tables as $table) {
@@ -319,19 +319,19 @@ function update91xto920()
         }
     }
 
-    // Add a field in glpi_device* tables :
-    $tables = ['glpi_devicecases'         => 'devicecasemodels_id',
-        'glpi_devicecontrols'      => 'devicecontrolmodels_id',
-        'glpi_devicedrives'        => 'devicedrivemodels_id',
-        'glpi_devicegraphiccards'  => 'devicegraphiccardmodels_id',
-        'glpi_deviceharddrives'    => 'deviceharddrivemodels_id',
-        'glpi_devicememories'      => 'devicememorymodels_id',
-        'glpi_devicemotherboards'  => 'devicemotherboardmodels_id',
-        'glpi_devicenetworkcards'  => 'devicenetworkcardmodels_id',
-        'glpi_devicepcis'          => 'devicepcimodels_id',
-        'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
-        'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
-        'glpi_devicesoundcards'    => 'devicesoundcardmodels_id',
+    // Add a field in zentra_device* tables :
+    $tables = ['zentra_devicecases'         => 'devicecasemodels_id',
+        'zentra_devicecontrols'      => 'devicecontrolmodels_id',
+        'zentra_devicedrives'        => 'devicedrivemodels_id',
+        'zentra_devicegraphiccards'  => 'devicegraphiccardmodels_id',
+        'zentra_deviceharddrives'    => 'deviceharddrivemodels_id',
+        'zentra_devicememories'      => 'devicememorymodels_id',
+        'zentra_devicemotherboards'  => 'devicemotherboardmodels_id',
+        'zentra_devicenetworkcards'  => 'devicenetworkcardmodels_id',
+        'zentra_devicepcis'          => 'devicepcimodels_id',
+        'zentra_devicepowersupplies' => 'devicepowersupplymodels_id',
+        'zentra_deviceprocessors'    => 'deviceprocessormodels_id',
+        'zentra_devicesoundcards'    => 'devicesoundcardmodels_id',
     ];
 
     foreach ($tables as $table => $field) {
@@ -340,8 +340,8 @@ function update91xto920()
         $migration->addKey($table, $field);
     }
 
-    if (!$DB->tableExists('glpi_devicegenerics')) {
-        $query = "CREATE TABLE `glpi_devicegenerics` (
+    if (!$DB->tableExists('zentra_devicegenerics')) {
+        $query = "CREATE TABLE `zentra_devicegenerics` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `devicegenerictypes_id` int NOT NULL DEFAULT '0',
@@ -369,8 +369,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_devicegenerics')) {
-        $query = "CREATE TABLE `glpi_items_devicegenerics` (
+    if (!$DB->tableExists('zentra_items_devicegenerics')) {
+        $query = "CREATE TABLE `zentra_items_devicegenerics` (
                    `id` INT NOT NULL AUTO_INCREMENT,
                    `items_id` INT NOT NULL DEFAULT '0',
                    `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
@@ -397,8 +397,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicegenerictypes')) {
-        $query = "CREATE TABLE `glpi_devicegenerictypes` (
+    if (!$DB->tableExists('zentra_devicegenerictypes')) {
+        $query = "CREATE TABLE `zentra_devicegenerictypes` (
                   `id` INT NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
@@ -408,8 +408,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicebatteries')) {
-        $query = "CREATE TABLE `glpi_devicebatteries` (
+    if (!$DB->tableExists('zentra_devicebatteries')) {
+        $query = "CREATE TABLE `zentra_devicebatteries` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -435,8 +435,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_devicebatteries')) {
-        $query = "CREATE TABLE `glpi_items_devicebatteries` (
+    if (!$DB->tableExists('zentra_items_devicebatteries')) {
+        $query = "CREATE TABLE `zentra_items_devicebatteries` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -464,8 +464,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicebatterytypes')) {
-        $query = "CREATE TABLE `glpi_devicebatterytypes` (
+    if (!$DB->tableExists('zentra_devicebatterytypes')) {
+        $query = "CREATE TABLE `zentra_devicebatterytypes` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -479,8 +479,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicefirmwares')) {
-        $query = "CREATE TABLE `glpi_devicefirmwares` (
+    if (!$DB->tableExists('zentra_devicefirmwares')) {
+        $query = "CREATE TABLE `zentra_devicefirmwares` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -505,8 +505,8 @@ function update91xto920()
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQuery($query);
     }
-    if (!$DB->tableExists('glpi_items_devicefirmwares')) {
-        $query = "CREATE TABLE `glpi_items_devicefirmwares` (
+    if (!$DB->tableExists('zentra_items_devicefirmwares')) {
+        $query = "CREATE TABLE `zentra_items_devicefirmwares` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -532,8 +532,8 @@ function update91xto920()
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQuery($query);
     }
-    if (!$DB->tableExists('glpi_devicefirmwaretypes')) {
-        $query = "CREATE TABLE `glpi_devicefirmwaretypes` (
+    if (!$DB->tableExists('zentra_devicefirmwaretypes')) {
+        $query = "CREATE TABLE `zentra_devicefirmwaretypes` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -546,7 +546,7 @@ function update91xto920()
                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQuery($query);
 
-        $DB->insert("glpi_devicefirmwaretypes", [
+        $DB->insert("zentra_devicefirmwaretypes", [
             'id'              => "1",
             'name'            => "BIOS",
             'comment'         => null,
@@ -554,7 +554,7 @@ function update91xto920()
             'date_creation'   => null,
         ]);
 
-        $DB->insert("glpi_devicefirmwaretypes", [
+        $DB->insert("zentra_devicefirmwaretypes", [
             'id'              => "2",
             'name'            => "UEFI",
             'comment'         => null,
@@ -562,7 +562,7 @@ function update91xto920()
             'date_creation'   => null,
         ]);
 
-        $DB->insert("glpi_devicefirmwaretypes", [
+        $DB->insert("zentra_devicefirmwaretypes", [
             'id'              => "3",
             'name'            => "Firmware",
             'comment'         => null,
@@ -572,8 +572,8 @@ function update91xto920()
     }
 
     //Device sensors
-    if (!$DB->tableExists('glpi_devicesensors')) {
-        $query = "CREATE TABLE `glpi_devicesensors` (
+    if (!$DB->tableExists('zentra_devicesensors')) {
+        $query = "CREATE TABLE `zentra_devicesensors` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `devicesensortypes_id` int NOT NULL DEFAULT '0',
@@ -600,8 +600,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_devicesensors')) {
-        $query = "CREATE TABLE `glpi_items_devicesensors` (
+    if (!$DB->tableExists('zentra_items_devicesensors')) {
+        $query = "CREATE TABLE `zentra_items_devicesensors` (
                    `id` INT NOT NULL AUTO_INCREMENT,
                    `items_id` INT NOT NULL DEFAULT '0',
                    `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
@@ -630,8 +630,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicesensortypes')) {
-        $query = "CREATE TABLE `glpi_devicesensortypes` (
+    if (!$DB->tableExists('zentra_devicesensortypes')) {
+        $query = "CREATE TABLE `zentra_devicesensortypes` (
                   `id` INT NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
@@ -643,13 +643,13 @@ function update91xto920()
     }
 
     //Father/son for Software licenses
-    $migration->addField("glpi_softwarelicenses", "softwarelicenses_id", "integer", ['after' => 'softwares_id']);
-    $new = $migration->addField("glpi_softwarelicenses", "completename", "text", ['after' => 'softwarelicenses_id']);
-    $migration->addField("glpi_softwarelicenses", "level", "integer", ['after' => 'completename']);
-    $migration->migrationOneTable("glpi_softwarelicenses");
+    $migration->addField("zentra_softwarelicenses", "softwarelicenses_id", "integer", ['after' => 'softwares_id']);
+    $new = $migration->addField("zentra_softwarelicenses", "completename", "text", ['after' => 'softwarelicenses_id']);
+    $migration->addField("zentra_softwarelicenses", "level", "integer", ['after' => 'completename']);
+    $migration->migrationOneTable("zentra_softwarelicenses");
     if ($new) {
         $DB->update(
-            "glpi_softwarelicenses",
+            "zentra_softwarelicenses",
             [
                 'completename' => new QueryExpression(DBmysql::quoteName("name")),
             ],
@@ -658,27 +658,27 @@ function update91xto920()
     }
 
     // add template key to itiltasks
-    $migration->addField("glpi_tickettasks", "tasktemplates_id", "integer");
-    $migration->migrationOneTable('glpi_tickettasks');
-    $migration->addKey("glpi_tickettasks", "tasktemplates_id");
+    $migration->addField("zentra_tickettasks", "tasktemplates_id", "integer");
+    $migration->migrationOneTable('zentra_tickettasks');
+    $migration->addKey("zentra_tickettasks", "tasktemplates_id");
 
-    $migration->addField("glpi_problemtasks", "tasktemplates_id", "integer");
-    $migration->migrationOneTable('glpi_problemtasks');
-    $migration->addKey("glpi_problemtasks", "tasktemplates_id");
+    $migration->addField("zentra_problemtasks", "tasktemplates_id", "integer");
+    $migration->migrationOneTable('zentra_problemtasks');
+    $migration->addKey("zentra_problemtasks", "tasktemplates_id");
 
-    $migration->addField("glpi_changetasks", "tasktemplates_id", "integer");
-    $migration->migrationOneTable('glpi_changetasks');
-    $migration->addKey("glpi_changetasks", "tasktemplates_id");
+    $migration->addField("zentra_changetasks", "tasktemplates_id", "integer");
+    $migration->migrationOneTable('zentra_changetasks');
+    $migration->addKey("zentra_changetasks", "tasktemplates_id");
 
     // add missing fields to tasktemplate
-    $migration->addField("glpi_tasktemplates", "state", "integer");
-    $migration->addField("glpi_tasktemplates", "is_private", "bool");
-    $migration->addField("glpi_tasktemplates", "users_id_tech", "integer");
-    $migration->addField("glpi_tasktemplates", "groups_id_tech", "integer");
-    $migration->migrationOneTable('glpi_tasktemplates');
-    $migration->addKey("glpi_tickettasks", "is_private");
-    $migration->addKey("glpi_tickettasks", "users_id_tech");
-    $migration->addKey("glpi_tickettasks", "groups_id_tech");
+    $migration->addField("zentra_tasktemplates", "state", "integer");
+    $migration->addField("zentra_tasktemplates", "is_private", "bool");
+    $migration->addField("zentra_tasktemplates", "users_id_tech", "integer");
+    $migration->addField("zentra_tasktemplates", "groups_id_tech", "integer");
+    $migration->migrationOneTable('zentra_tasktemplates');
+    $migration->addKey("zentra_tickettasks", "is_private");
+    $migration->addKey("zentra_tickettasks", "users_id_tech");
+    $migration->addKey("zentra_tickettasks", "groups_id_tech");
 
     // #1735 - Add new notifications
     $new_notifications  = [
@@ -705,9 +705,9 @@ function update91xto920()
         ],
     ];
 
-    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
+    if ($DB->fieldExists("zentra_notifications", "mode", false)) {
         $notificationtemplates_id = $DB->request([
-            'FROM' => 'glpi_notificationtemplates',
+            'FROM' => 'zentra_notificationtemplates',
             'WHERE' => [
                 'name'     => 'Tickets',
                 'itemtype' => 'Ticket',
@@ -717,7 +717,7 @@ function update91xto920()
         if ($notificationtemplates_id > 0) {
             foreach ($new_notifications as $event => $notif_options) {
                 $DB->insert(
-                    'glpi_notifications',
+                    'zentra_notifications',
                     [
                         'name'                     => $notif_options['label'],
                         'itemtype'                 => 'Ticket',
@@ -735,7 +735,7 @@ function update91xto920()
                 $notifications_id = $DB->insertId();
 
                 $DB->insert(
-                    'glpi_notificationtargets',
+                    'zentra_notificationtargets',
                     [
                         'items_id'         => $notif_options['targets_id'],
                         'type'             => 1,
@@ -746,12 +746,12 @@ function update91xto920()
         }
     }
 
-    $migration->addField('glpi_states', 'is_visible_certificate', 'bool', ['value' => 1]);
-    $migration->addKey('glpi_states', 'is_visible_certificate');
+    $migration->addField('zentra_states', 'is_visible_certificate', 'bool', ['value' => 1]);
+    $migration->addKey('zentra_states', 'is_visible_certificate');
 
     /** ************ New SLM structure ************ */
-    if (!$DB->tableExists('glpi_olas')) {
-        $query = "CREATE TABLE `glpi_olas` (
+    if (!$DB->tableExists('zentra_olas')) {
+        $query = "CREATE TABLE `zentra_olas` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `entities_id` int NOT NULL DEFAULT '0',
@@ -775,8 +775,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_olalevelactions')) {
-        $query = "CREATE TABLE `glpi_olalevelactions` (
+    if (!$DB->tableExists('zentra_olalevelactions')) {
+        $query = "CREATE TABLE `zentra_olalevelactions` (
                `id` int NOT NULL AUTO_INCREMENT,
                `olalevels_id` int NOT NULL DEFAULT '0',
                `action_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -788,8 +788,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_olalevelcriterias')) {
-        $query = "CREATE TABLE `glpi_olalevelcriterias` (
+    if (!$DB->tableExists('zentra_olalevelcriterias')) {
+        $query = "CREATE TABLE `zentra_olalevelcriterias` (
                `id` int NOT NULL AUTO_INCREMENT,
                `olalevels_id` int NOT NULL DEFAULT '0',
                `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -802,8 +802,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_olalevels')) {
-        $query = "CREATE TABLE `glpi_olalevels` (
+    if (!$DB->tableExists('zentra_olalevels')) {
+        $query = "CREATE TABLE `zentra_olalevels` (
                `id` int NOT NULL AUTO_INCREMENT,
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `olas_id` int NOT NULL DEFAULT '0',
@@ -821,8 +821,8 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_olalevels_tickets')) {
-        $query = "CREATE TABLE `glpi_olalevels_tickets` (
+    if (!$DB->tableExists('zentra_olalevels_tickets')) {
+        $query = "CREATE TABLE `zentra_olalevels_tickets` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `tickets_id` int NOT NULL DEFAULT '0',
                   `olalevels_id` int NOT NULL DEFAULT '0',
@@ -834,7 +834,7 @@ function update91xto920()
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQuery($query);
 
-        $DB->updateOrInsert("glpi_crontasks", [
+        $DB->updateOrInsert("zentra_crontasks", [
             'frequency'       => "604800",
             'param'           => null,
             'state'           => "1",
@@ -852,144 +852,144 @@ function update91xto920()
         ]);
     }
 
-    if (!$DB->tableExists('glpi_slms')) {
-        // Changing the structure of the table 'glpi_slas'
-        $migration->renameTable('glpi_slas', 'glpi_slms');
-        $migration->migrationOneTable('glpi_slas');
+    if (!$DB->tableExists('zentra_slms')) {
+        // Changing the structure of the table 'zentra_slas'
+        $migration->renameTable('zentra_slas', 'zentra_slms');
+        $migration->migrationOneTable('zentra_slas');
     }
 
-    // Changing the structure of the table 'glpi_slts'
-    if ($DB->tableExists('glpi_slts')) {
-        $migration->renameTable('glpi_slts', 'glpi_slas');
-        $migration->migrationOneTable('glpi_slts');
-        $migration->changeField('glpi_slas', 'slas_id', 'slms_id', 'integer');
-        $migration->dropKey('glpi_slas', 'slas_id');
-        $migration->addKey('glpi_slas', 'slms_id');
+    // Changing the structure of the table 'zentra_slts'
+    if ($DB->tableExists('zentra_slts')) {
+        $migration->renameTable('zentra_slts', 'zentra_slas');
+        $migration->migrationOneTable('zentra_slts');
+        $migration->changeField('zentra_slas', 'slas_id', 'slms_id', 'integer');
+        $migration->dropKey('zentra_slas', 'slas_id');
+        $migration->addKey('zentra_slas', 'slms_id');
     }
 
     // Slalevels changes
-    if ($DB->fieldExists("glpi_slalevels", "slts_id")) {
-        $migration->changeField('glpi_slalevels', 'slts_id', 'slas_id', 'integer');
-        $migration->migrationOneTable('glpi_slalevels');
-        $migration->dropKey('glpi_slalevels', 'slts_id');
-        $migration->addKey('glpi_slalevels', 'slas_id');
+    if ($DB->fieldExists("zentra_slalevels", "slts_id")) {
+        $migration->changeField('zentra_slalevels', 'slts_id', 'slas_id', 'integer');
+        $migration->migrationOneTable('zentra_slalevels');
+        $migration->dropKey('zentra_slalevels', 'slts_id');
+        $migration->addKey('zentra_slalevels', 'slas_id');
     }
 
     // Ticket changes
-    if (!$DB->fieldExists("glpi_tickets", "ola_waiting_duration", false)) {
+    if (!$DB->fieldExists("zentra_tickets", "ola_waiting_duration", false)) {
         $migration->addField(
-            "glpi_tickets",
+            "zentra_tickets",
             "ola_waiting_duration",
             "integer",
             ['after' => 'sla_waiting_duration']
         );
-        $migration->migrationOneTable('glpi_tickets');
+        $migration->migrationOneTable('zentra_tickets');
     }
 
-    if (!$DB->fieldExists("glpi_tickets", "olas_tto_id", false)) {
-        $migration->addField("glpi_tickets", "olas_tto_id", "integer", ['after' => 'ola_waiting_duration']);
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'olas_tto_id');
+    if (!$DB->fieldExists("zentra_tickets", "olas_tto_id", false)) {
+        $migration->addField("zentra_tickets", "olas_tto_id", "integer", ['after' => 'ola_waiting_duration']);
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'olas_tto_id');
     }
 
-    if (!$DB->fieldExists("glpi_tickets", "olas_ttr_id", false)) {
-        $migration->addField("glpi_tickets", "olas_ttr_id", "integer", ['after' => 'olas_tto_id']);
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'olas_ttr_id');
+    if (!$DB->fieldExists("zentra_tickets", "olas_ttr_id", false)) {
+        $migration->addField("zentra_tickets", "olas_ttr_id", "integer", ['after' => 'olas_tto_id']);
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'olas_ttr_id');
     }
 
-    if (!$DB->fieldExists("glpi_tickets", "ttr_olalevels_id", false)) {
-        $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", ['after' => 'olas_ttr_id']);
-        $migration->migrationOneTable('glpi_tickets');
+    if (!$DB->fieldExists("zentra_tickets", "ttr_olalevels_id", false)) {
+        $migration->addField("zentra_tickets", "ttr_olalevels_id", "integer", ['after' => 'olas_ttr_id']);
+        $migration->migrationOneTable('zentra_tickets');
     }
 
-    if (!$DB->fieldExists("glpi_tickets", "internal_time_to_resolve", false)) {
+    if (!$DB->fieldExists("zentra_tickets", "internal_time_to_resolve", false)) {
         $migration->addField(
-            "glpi_tickets",
+            "zentra_tickets",
             "internal_time_to_resolve",
             "datetime",
             ['after' => 'ttr_olalevels_id']
         );
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'internal_time_to_resolve');
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'internal_time_to_resolve');
     }
 
-    if (!$DB->fieldExists("glpi_tickets", "internal_time_to_own", false)) {
+    if (!$DB->fieldExists("zentra_tickets", "internal_time_to_own", false)) {
         $migration->addField(
-            "glpi_tickets",
+            "zentra_tickets",
             "internal_time_to_own",
             "datetime",
             ['after' => 'internal_time_to_resolve']
         );
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'internal_time_to_own');
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'internal_time_to_own');
     }
 
-    if ($DB->fieldExists("glpi_tickets", "slts_tto_id")) {
-        $migration->changeField("glpi_tickets", "slts_tto_id", "slas_tto_id", "integer");
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'slas_tto_id');
-        $migration->dropKey('glpi_tickets', 'slts_tto_id');
+    if ($DB->fieldExists("zentra_tickets", "slts_tto_id")) {
+        $migration->changeField("zentra_tickets", "slts_tto_id", "slas_tto_id", "integer");
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'slas_tto_id');
+        $migration->dropKey('zentra_tickets', 'slts_tto_id');
     }
 
-    if ($DB->fieldExists("glpi_tickets", "slts_ttr_id")) {
-        $migration->changeField("glpi_tickets", "slts_ttr_id", "slas_ttr_id", "integer");
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->addKey('glpi_tickets', 'slas_ttr_id');
-        $migration->dropKey('glpi_tickets', 'slts_ttr_id');
+    if ($DB->fieldExists("zentra_tickets", "slts_ttr_id")) {
+        $migration->changeField("zentra_tickets", "slts_ttr_id", "slas_ttr_id", "integer");
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->addKey('zentra_tickets', 'slas_ttr_id');
+        $migration->dropKey('zentra_tickets', 'slts_ttr_id');
     }
-    if ($DB->fieldExists("glpi_tickets", "due_date")) {
-        $migration->changeField('glpi_tickets', 'due_date', 'time_to_resolve', 'datetime');
-        $migration->migrationOneTable('glpi_tickets');
-        $migration->dropKey('glpi_tickets', 'due_date');
-        $migration->addKey('glpi_tickets', 'time_to_resolve');
+    if ($DB->fieldExists("zentra_tickets", "due_date")) {
+        $migration->changeField('zentra_tickets', 'due_date', 'time_to_resolve', 'datetime');
+        $migration->migrationOneTable('zentra_tickets');
+        $migration->dropKey('zentra_tickets', 'due_date');
+        $migration->addKey('zentra_tickets', 'time_to_resolve');
     }
 
     //Change changes
-    if ($DB->fieldExists("glpi_changes", "due_date")) {
-        $migration->changeField('glpi_changes', 'due_date', 'time_to_resolve', 'datetime');
-        $migration->migrationOneTable('glpi_changes');
-        $migration->dropKey('glpi_changes', 'due_date');
-        $migration->addKey('glpi_changes', 'time_to_resolve');
+    if ($DB->fieldExists("zentra_changes", "due_date")) {
+        $migration->changeField('zentra_changes', 'due_date', 'time_to_resolve', 'datetime');
+        $migration->migrationOneTable('zentra_changes');
+        $migration->dropKey('zentra_changes', 'due_date');
+        $migration->addKey('zentra_changes', 'time_to_resolve');
     }
 
     //Problem changes
-    if ($DB->fieldExists("glpi_problems", "due_date")) {
-        $migration->changeField('glpi_problems', 'due_date', 'time_to_resolve', 'datetime');
-        $migration->migrationOneTable('glpi_problems');
-        $migration->dropKey('glpi_problems', 'due_date');
-        $migration->addKey('glpi_problems', 'time_to_resolve');
+    if ($DB->fieldExists("zentra_problems", "due_date")) {
+        $migration->changeField('zentra_problems', 'due_date', 'time_to_resolve', 'datetime');
+        $migration->migrationOneTable('zentra_problems');
+        $migration->dropKey('zentra_problems', 'due_date');
+        $migration->addKey('zentra_problems', 'time_to_resolve');
     }
 
     // ProfileRights changes
     $DB->update(
-        "glpi_profilerights",
+        "zentra_profilerights",
         ['name' => "slm"],
         ['name' => "sla"]
     );
 
     //Sla rules criterias migration
     $DB->update(
-        "glpi_rulecriterias",
+        "zentra_rulecriterias",
         ['criteria' => "slas_ttr_id"],
         ['criteria' => "slts_ttr_id"]
     );
 
     $DB->update(
-        "glpi_rulecriterias",
+        "zentra_rulecriterias",
         ['criteria' => "slas_tto_id"],
         ['criteria' => "slts_tto_id"]
     );
 
     // Sla rules actions migration
     $DB->update(
-        "glpi_ruleactions",
+        "zentra_ruleactions",
         ['field' => "slas_ttr_id"],
         ['field' => "slts_ttr_id"]
     );
 
     $DB->update(
-        "glpi_ruleactions",
+        "zentra_ruleactions",
         ['field' => "slas_tto_id"],
         ['field' => "slts_tto_id"]
     );
@@ -1000,30 +1000,30 @@ function update91xto920()
         'login_remember_default'   => 1,
     ]);
 
-    if ($DB->tableExists('glpi_bookmarks')) {
-        $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
+    if ($DB->tableExists('zentra_bookmarks')) {
+        $migration->renameTable("zentra_bookmarks", "zentra_savedsearches");
 
-        $migration->addField("glpi_savedsearches", "last_execution_time", "int NULL DEFAULT NULL");
+        $migration->addField("zentra_savedsearches", "last_execution_time", "int NULL DEFAULT NULL");
         $migration->addField(
-            "glpi_savedsearches",
+            "zentra_savedsearches",
             "do_count",
             "tinyint NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants'"
         );
         $migration->addField(
-            "glpi_savedsearches",
+            "zentra_savedsearches",
             "last_execution_date",
             "DATETIME NULL DEFAULT NULL"
         );
-        $migration->addField("glpi_savedsearches", "counter", "int NOT NULL DEFAULT '0'");
-        $migration->migrationOneTable("glpi_savedsearches");
-        $migration->addKey("glpi_savedsearches", 'last_execution_time');
-        $migration->addKey("glpi_savedsearches", 'do_count');
-        $migration->addKey("glpi_savedsearches", 'last_execution_date');
+        $migration->addField("zentra_savedsearches", "counter", "int NOT NULL DEFAULT '0'");
+        $migration->migrationOneTable("zentra_savedsearches");
+        $migration->addKey("zentra_savedsearches", 'last_execution_time');
+        $migration->addKey("zentra_savedsearches", 'do_count');
+        $migration->addKey("zentra_savedsearches", 'last_execution_date');
     }
     //ensure do_count is set to AUTO
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_savedsearches",
+            "zentra_savedsearches",
             ['do_count' => SavedSearch::COUNT_AUTO],
             [new QueryExpression('true')]
         ),
@@ -1032,7 +1032,7 @@ function update91xto920()
 
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_savedsearches",
+            "zentra_savedsearches",
             ['entities_id' => 0],
             ['entities_id' => -1]
         ),
@@ -1041,7 +1041,7 @@ function update91xto920()
 
     if (
         !countElementsInTable(
-            'glpi_rules',
+            'zentra_rules',
             ['sub_type' => 'RuleSoftwareCategory',
                 'uuid'     => '500717c8-2bd6e957-53a12b5fd38869.86003425',
             ]
@@ -1074,34 +1074,34 @@ function update91xto920()
         );
     }
 
-    if ($DB->tableExists('glpi_queuedmails')) {
-        $migration->renameTable("glpi_queuedmails", "glpi_queuednotifications");
+    if ($DB->tableExists('zentra_queuedmails')) {
+        $migration->renameTable("zentra_queuedmails", "zentra_queuednotifications");
     }
 
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_crontasks",
+            "zentra_crontasks",
             ['itemtype' => "QueuedNotification"],
             ['itemtype' => "QueuedMail"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_crontasks",
+            "zentra_crontasks",
             ['name' => "queuednotification"],
             ['name' => "queuedmail"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_crontasks",
+            "zentra_crontasks",
             ['name' => "queuednotificationclean"],
             ['name' => "queuedmailclean"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_profilerights",
+            "zentra_profilerights",
             ['name' => "queuednotification"],
             ['name' => "queuedmail"]
         )
@@ -1115,13 +1115,13 @@ function update91xto920()
             'notifications_ajax'       => 0,
             'notifications_ajax_check_interval' => '5',
             'notifications_ajax_sound' => null,
-            'notifications_ajax_icon_url'       => '/pics/glpi.png',
+            'notifications_ajax_icon_url'       => '/pics/zentra.png',
         ]);
         $migration->removeConfig(['use_mailing']);
     }
 
-    if (!$DB->tableExists('glpi_notifications_notificationtemplates')) {
-        $query = "CREATE TABLE `glpi_notifications_notificationtemplates` (
+    if (!$DB->tableExists('zentra_notifications_notificationtemplates')) {
+        $query = "CREATE TABLE `zentra_notifications_notificationtemplates` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `notifications_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
@@ -1135,31 +1135,31 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
+    if ($DB->fieldExists("zentra_notifications", "mode", false)) {
         // TODO can be done when DB::updateOrInsert() supports SELECT
-        $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
+        $query = "REPLACE INTO `zentra_notifications_notificationtemplates`
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
-                       FROM `glpi_notifications`";
+                       FROM `zentra_notifications`";
         $DB->doQuery($query);
 
         //migrate any existing mode before removing the field
-        $migration->dropField('glpi_notifications', 'mode');
-        $migration->dropField('glpi_notifications', 'notificationtemplates_id');
+        $migration->dropField('zentra_notifications', 'mode');
+        $migration->dropField('zentra_notifications', 'notificationtemplates_id');
 
-        $migration->migrationOneTable("glpi_notifications");
+        $migration->migrationOneTable("zentra_notifications");
     }
 
     $migration->addField(
-        'glpi_queuednotifications',
+        'zentra_queuednotifications',
         'mode',
         'varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT \'See Notification_NotificationTemplate::MODE_* constants\''
     );
-    $migration->migrationOneTable("glpi_queuednotifications");
-    $migration->addKey('glpi_queuednotifications', 'mode');
+    $migration->migrationOneTable("zentra_queuednotifications");
+    $migration->addKey('zentra_queuednotifications', 'mode');
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_queuednotifications",
+            "zentra_queuednotifications",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
             [true]
         ),
@@ -1168,7 +1168,7 @@ function update91xto920()
 
     $migration->addPostQuery(
         $DB->buildUpdate(
-            "glpi_notifications_notificationtemplates",
+            "zentra_notifications_notificationtemplates",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
             ['mode' => "mail"]
         ),
@@ -1177,18 +1177,18 @@ function update91xto920()
 
     // Migration Bookmark -> SavedSearch_Alert
     //TRANS: %s is the table or item to migrate
-    if ($DB->tableExists('glpi_bookmarks_users')) {
-        $migration->renameTable("glpi_bookmarks_users", "glpi_savedsearches_users");
+    if ($DB->tableExists('zentra_bookmarks_users')) {
+        $migration->renameTable("zentra_bookmarks_users", "zentra_savedsearches_users");
         $migration->changeField(
-            'glpi_savedsearches_users',
+            'zentra_savedsearches_users',
             'bookmarks_id',
             'savedsearches_id',
             'int NOT NULL DEFAULT "0"'
         );
     }
 
-    if (!$DB->tableExists('glpi_savedsearches_alerts')) {
-        $query = "CREATE TABLE `glpi_savedsearches_alerts` (
+    if (!$DB->tableExists('zentra_savedsearches_alerts')) {
+        $query = "CREATE TABLE `zentra_savedsearches_alerts` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `savedsearches_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1207,13 +1207,13 @@ function update91xto920()
         $DB->doQuery($query);
     }
 
-    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
+    $migration->displayMessage(sprintf(__('Data migration - %s'), 'zentra_displaypreferences'));
 
     $ADDTODISPLAYPREF['SavedSearch'] = [8, 9, 3, 10, 11];
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
-            $DB->updateOrInsert("glpi_displaypreferences", [
+            $DB->updateOrInsert("zentra_displaypreferences", [
                 'rank'      => $rank++,
             ], [
                 'users_id'  => "0",
@@ -1223,27 +1223,27 @@ function update91xto920()
         }
     }
 
-    if (countElementsInTable('glpi_logs') < 2000000) {
+    if (countElementsInTable('zentra_logs') < 2000000) {
         //add index only if this sounds... possible.
-        $migration->addKey("glpi_logs", "id_search_option");
+        $migration->addKey("zentra_logs", "id_search_option");
     } else {
         //Just display a Warning to the user.
         $migration->addWarningMessage("An index must be added in the 'id_search_option' field "
-         . "of the 'glpi_logs table'; but your glpi_logs table is "
+         . "of the 'zentra_logs table'; but your zentra_logs table is "
          . "too huge. You'll have to add it on your database "
          . "with the following query:\n"
-         . "'ALTER TABLE glpi_logs ADD INDEX id_search_option(id_search_option);'");
+         . "'ALTER TABLE zentra_logs ADD INDEX id_search_option(id_search_option);'");
     }
 
     // count cron task
     if (
         !countElementsInTable(
-            'glpi_crontasks',
+            'zentra_crontasks',
             ['itemtype' => 'SavedSearch', 'name' => 'countAll']
         )
     ) {
         $DB->insert(
-            "glpi_crontasks",
+            "zentra_crontasks",
             [
                 'itemtype'        => "SavedSearch",
                 'name'            => "countAll",
@@ -1265,12 +1265,12 @@ function update91xto920()
     // alerts cron task
     if (
         !countElementsInTable(
-            'glpi_crontasks',
+            'zentra_crontasks',
             ['itemtype' => 'SavedSearch_Alert', 'name' => 'savedsearchesalerts']
         )
     ) {
         $DB->insert(
-            "glpi_crontasks",
+            "zentra_crontasks",
             [
                 'itemtype'        => "SavedSearch_Alert",
                 'name'            => "savedsearchesalerts",
@@ -1291,12 +1291,12 @@ function update91xto920()
 
     if (
         !countElementsInTable(
-            'glpi_notifications',
+            'zentra_notifications',
             ['itemtype' => 'SavedSearch_Alert']
         )
     ) {
         $DB->insert(
-            "glpi_notifications",
+            "zentra_notifications",
             [
                 'id'              => null,
                 'name'            => "Saved searches",
@@ -1313,7 +1313,7 @@ function update91xto920()
         $notid = $DB->insertId();
 
         $DB->insert(
-            "glpi_notificationtemplates",
+            "zentra_notificationtemplates",
             [
                 'name'            => "Saved searches alerts",
                 'itemtype'        => "SavedSearch_Alert",
@@ -1327,8 +1327,8 @@ function update91xto920()
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $nottid,
         ];
-        if (countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
-            $DB->updateOrInsert("glpi_notifications_notificationtemplates", [
+        if (countElementsInTable('zentra_notifications_notificationtemplates', $where)) {
+            $DB->updateOrInsert("zentra_notifications_notificationtemplates", [
                 'id'                       => null,
             ], [
                 'notifications_id'         => $notid,
@@ -1338,7 +1338,7 @@ function update91xto920()
         }
 
         $DB->insert(
-            "glpi_notificationtargets",
+            "zentra_notificationtargets",
             [
                 'id'               => null,
                 'items_id'         => "19",
@@ -1347,7 +1347,7 @@ function update91xto920()
             ]
         );
 
-        $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+        $query = "INSERT INTO `zentra_notificationtemplatetranslations`
                        (`notificationtemplates_id`, `language`,`subject`,
                               `content_text`,
                               `content_html`)
@@ -1376,16 +1376,16 @@ Regards,',
     }
 
     // Create a dedicated token for api
-    if (!$DB->fieldExists('glpi_users', 'api_token')) {
-        $migration->addField('glpi_users', 'api_token', 'string', ['after' => 'personal_token_date']);
-        $migration->addField('glpi_users', 'api_token_date', 'datetime', ['after' => 'api_token']);
+    if (!$DB->fieldExists('zentra_users', 'api_token')) {
+        $migration->addField('zentra_users', 'api_token', 'string', ['after' => 'personal_token_date']);
+        $migration->addField('zentra_users', 'api_token_date', 'datetime', ['after' => 'api_token']);
         $migration->addWarningMessage(
             "Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token."
         );
     }
 
-    if (!$DB->tableExists('glpi_items_operatingsystems')) {
-        $query = "CREATE TABLE `glpi_items_operatingsystems` (
+    if (!$DB->tableExists('zentra_items_operatingsystems')) {
+        $query = "CREATE TABLE `zentra_items_operatingsystems` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1414,8 +1414,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_operatingsystemkernels')) {
-        $query = "CREATE TABLE `glpi_operatingsystemkernels` (
+    if (!$DB->tableExists('zentra_operatingsystemkernels')) {
+        $query = "CREATE TABLE `zentra_operatingsystemkernels` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -1427,8 +1427,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_operatingsystemkernelversions')) {
-        $query = "CREATE TABLE `glpi_operatingsystemkernelversions` (
+    if (!$DB->tableExists('zentra_operatingsystemkernelversions')) {
+        $query = "CREATE TABLE `zentra_operatingsystemkernelversions` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `operatingsystemkernels_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1442,8 +1442,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_operatingsystemeditions')) {
-        $query = "CREATE TABLE `glpi_operatingsystemeditions` (
+    if (!$DB->tableExists('zentra_operatingsystemeditions')) {
+        $query = "CREATE TABLE `zentra_operatingsystemeditions` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -1455,17 +1455,17 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if ($DB->fieldExists('glpi_computers', 'operatingsystems_id')) {
+    if ($DB->fieldExists('zentra_computers', 'operatingsystems_id')) {
         //migrate data from computers table, and drop old fields
         // TODO can be done when DB::updateOrInsert() supports SELECT
-        $query = "REPLACE INTO `glpi_items_operatingsystems`
+        $query = "REPLACE INTO `zentra_items_operatingsystems`
                        (`itemtype`, `items_id`, `operatingsystems_id`, `operatingsystemversions_id`,
                         `operatingsystemservicepacks_id`, `operatingsystemarchitectures_id`,
                         `license_number`, `license_id`)
                        SELECT 'Computer', `id`, `operatingsystems_id`, `operatingsystemversions_id`,
                               `operatingsystemservicepacks_id`, `operatingsystemarchitectures_id`,
                               `os_license_number`, `os_licenseid`
-                FROM `glpi_computers`
+                FROM `zentra_computers`
                 WHERE `operatingsystems_id` != 0
                       OR `operatingsystemservicepacks_id` != 0
                       OR `operatingsystemarchitectures_id` != 0
@@ -1479,7 +1479,7 @@ Regards,',
         $mapping = [];
         foreach (
             $DB->request(['SELECT' => ['id', 'os_kernel_version'],
-                'FROM'   => 'glpi_computers',
+                'FROM'   => 'zentra_computers',
                 'NOT'   => ['os_kernel_version' => null],
             ]) as $data
         ) {
@@ -1494,7 +1494,7 @@ Regards,',
         foreach ($mapping as $map) {
             foreach ($map as $computers_id => $kver_id) {
                 $DB->update(
-                    "glpi_items_operatingsystems",
+                    "zentra_items_operatingsystems",
                     ['operatingsystemkernelversions_id' => $kver_id],
                     [
                         'itemtype' => "Computer",
@@ -1504,52 +1504,52 @@ Regards,',
             }
         }
 
-        $migration->dropKey('glpi_computers', 'operatingsystems_id');
-        $migration->dropField('glpi_computers', 'operatingsystems_id');
-        $migration->dropKey('glpi_computers', 'operatingsystemservicepacks_id');
-        $migration->dropField('glpi_computers', 'operatingsystemservicepacks_id');
-        $migration->dropKey('glpi_computers', 'operatingsystemversions_id');
-        $migration->dropField('glpi_computers', 'operatingsystemversions_id');
-        $migration->dropKey('glpi_computers', 'operatingsystemarchitectures_id');
-        $migration->dropField('glpi_computers', 'operatingsystemarchitectures_id');
-        $migration->dropField('glpi_computers', 'os_license_number');
-        $migration->dropField('glpi_computers', 'os_licenseid');
-        $migration->dropField('glpi_computers', 'os_kernel_version');
+        $migration->dropKey('zentra_computers', 'operatingsystems_id');
+        $migration->dropField('zentra_computers', 'operatingsystems_id');
+        $migration->dropKey('zentra_computers', 'operatingsystemservicepacks_id');
+        $migration->dropField('zentra_computers', 'operatingsystemservicepacks_id');
+        $migration->dropKey('zentra_computers', 'operatingsystemversions_id');
+        $migration->dropField('zentra_computers', 'operatingsystemversions_id');
+        $migration->dropKey('zentra_computers', 'operatingsystemarchitectures_id');
+        $migration->dropField('zentra_computers', 'operatingsystemarchitectures_id');
+        $migration->dropField('zentra_computers', 'os_license_number');
+        $migration->dropField('zentra_computers', 'os_licenseid');
+        $migration->dropField('zentra_computers', 'os_kernel_version');
     }
 
-    if (!$DB->fieldExists('glpi_items_operatingsystems', 'is_deleted')) {
+    if (!$DB->fieldExists('zentra_items_operatingsystems', 'is_deleted')) {
         $migration->addField(
-            'glpi_items_operatingsystems',
+            'zentra_items_operatingsystems',
             'is_deleted',
             "tinyint NOT NULL DEFAULT '0'"
         );
-        $migration->addKey('glpi_items_operatingsystems', 'is_deleted');
+        $migration->addKey('zentra_items_operatingsystems', 'is_deleted');
     }
 
-    if (!$DB->fieldExists('glpi_items_operatingsystems', 'is_dynamic')) {
+    if (!$DB->fieldExists('zentra_items_operatingsystems', 'is_dynamic')) {
         $migration->addField(
-            'glpi_items_operatingsystems',
+            'zentra_items_operatingsystems',
             'is_dynamic',
             "tinyint NOT NULL DEFAULT '0'"
         );
-        $migration->addKey('glpi_items_operatingsystems', 'is_dynamic');
+        $migration->addKey('zentra_items_operatingsystems', 'is_dynamic');
     }
 
-    if (!$DB->fieldExists('glpi_items_operatingsystems', 'entities_id')) {
+    if (!$DB->fieldExists('zentra_items_operatingsystems', 'entities_id')) {
         $migration->addField(
-            'glpi_items_operatingsystems',
+            'zentra_items_operatingsystems',
             'entities_id',
             "int NOT NULL DEFAULT '0'"
         );
-        $migration->addKey('glpi_items_operatingsystems', 'entities_id');
+        $migration->addKey('zentra_items_operatingsystems', 'entities_id');
     }
 
     //add db version
     $migration->addConfig(['dbversion' => '9.1.3']);
 
     // Add certificates management
-    if (!$DB->tableExists('glpi_certificates')) {
-        $query = "CREATE TABLE `glpi_certificates` (
+    if (!$DB->tableExists('zentra_certificates')) {
+        $query = "CREATE TABLE `zentra_certificates` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
         `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1560,13 +1560,13 @@ Regards,',
         `is_deleted` tinyint NOT NULL DEFAULT '0',
         `is_template` tinyint NOT NULL DEFAULT '0',
         `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `certificatetypes_id`  INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+        `certificatetypes_id`  INT NOT NULL DEFAULT '0' COMMENT 'RELATION to zentra_certificatetypes (id)',
         `dns_name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
         `dns_suffix` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
-        `users_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
-        `groups_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
-        `locations_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
-        `manufacturers_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+        `users_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to zentra_users (id)',
+        `groups_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to zentra_groups (id)',
+        `locations_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to zentra_locations (id)',
+        `manufacturers_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to zentra_manufacturers (id)',
         `users_id` int NOT NULL DEFAULT '0',
         `groups_id` int NOT NULL DEFAULT '0',
         `is_autosign` TINYINT NOT NULL DEFAULT '0',
@@ -1596,8 +1596,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_certificates_items')) {
-        $query = "CREATE TABLE `glpi_certificates_items` (
+    if (!$DB->tableExists('zentra_certificates_items')) {
+        $query = "CREATE TABLE `zentra_certificates_items` (
            `id` INT NOT NULL AUTO_INCREMENT,
            `certificates_id` INT NOT NULL DEFAULT '0',
            `items_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
@@ -1614,8 +1614,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_certificatetypes')) {
-        $query = "CREATE TABLE `glpi_certificatetypes` (
+    if (!$DB->tableExists('zentra_certificatetypes')) {
+        $query = "CREATE TABLE `zentra_certificatetypes` (
            `id` INT NOT NULL AUTO_INCREMENT,
            `entities_id` INT NOT NULL DEFAULT '0',
            `is_recursive` TINYINT NOT NULL DEFAULT '0',
@@ -1633,10 +1633,10 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (countElementsInTable("glpi_profilerights", ['name' => 'certificate']) == 0) {
+    if (countElementsInTable("zentra_profilerights", ['name' => 'certificate']) == 0) {
         //new right for certificate
         //give full rights to profiles having config right
-        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        $prights = $DB->request(['FROM' => 'zentra_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
             if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
@@ -1645,7 +1645,7 @@ Regards,',
             }
 
             $DB->insert(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
@@ -1658,7 +1658,7 @@ Regards,',
 
     // add alert for certificates
     $migration->addField(
-        "glpi_entities",
+        "zentra_entities",
         'use_certificates_alert',
         "integer",
         ['value' => -2,
@@ -1666,7 +1666,7 @@ Regards,',
         ]
     );
     $migration->addField(
-        "glpi_entities",
+        "zentra_entities",
         'send_certificates_alert_before_delay',
         "integer",
         ['value'     => -2,
@@ -1683,9 +1683,9 @@ Regards,',
             'mode' => 1, // CronTask::MODE_INTERNAL
         ]
     );
-    if (!countElementsInTable('glpi_notifications', ['itemtype' => 'Certificate'])) {
+    if (!countElementsInTable('zentra_notifications', ['itemtype' => 'Certificate'])) {
         $DB->insert(
-            "glpi_notifications",
+            "zentra_notifications",
             [
                 'id'              => null,
                 'name'            => "Certificates",
@@ -1702,7 +1702,7 @@ Regards,',
         $notid = $DB->insertId();
 
         $DB->insert(
-            "glpi_notificationtemplates",
+            "zentra_notificationtemplates",
             [
                 'name'      => "Certificates",
                 'itemtype'  => "Certificate",
@@ -1716,8 +1716,8 @@ Regards,',
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $nottid,
         ];
-        if (!countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
-            $DB->updateOrInsert("glpi_notifications_notificationtemplates", [
+        if (!countElementsInTable('zentra_notifications_notificationtemplates', $where)) {
+            $DB->updateOrInsert("zentra_notifications_notificationtemplates", [
                 'id'                       => null,
             ], [
                 'notifications_id'         => $notid,
@@ -1726,7 +1726,7 @@ Regards,',
             ]);
         }
 
-        $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+        $query = "INSERT INTO `zentra_notificationtemplatetranslations`
                   (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
                 VALUES ($notid, '', '##certificate.action##  ##certificate.entity##',
                         '##lang.certificate.entity## : ##certificate.entity##
@@ -1750,7 +1750,7 @@ Regards,',
         $DB->doQuery($query);
 
         $DB->insert(
-            "glpi_notificationtargets",
+            "zentra_notificationtargets",
             [
                 'id'                 => null,
                 'notifications_id'   => $notid,
@@ -1759,7 +1759,7 @@ Regards,',
             ]
         );
         $DB->insert(
-            "glpi_notificationtargets",
+            "zentra_notificationtargets",
             [
                 'id'                 => null,
                 'notifications_id'   => $notid,
@@ -1770,10 +1770,10 @@ Regards,',
     }
 
     /************** Simcard component **************/
-    $migration->addField("glpi_states", "is_visible_line", "bool", ["after" => "is_visible_softwarelicense"]);
+    $migration->addField("zentra_states", "is_visible_line", "bool", ["after" => "is_visible_softwarelicense"]);
 
-    if (!$DB->tableExists('glpi_lineoperators')) {
-        $query = "CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
+    if (!$DB->tableExists('zentra_lineoperators')) {
+        $query = "CREATE TABLE IF NOT EXISTS `zentra_lineoperators` (
                    `id` int NOT NULL AUTO_INCREMENT,
                    `name` varchar(255) NOT NULL DEFAULT '',
                    `comment` text COLLATE utf8_unicode_ci,
@@ -1794,8 +1794,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_linetypes')) {
-        $query = "CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
+    if (!$DB->tableExists('zentra_linetypes')) {
+        $query = "CREATE TABLE IF NOT EXISTS `zentra_linetypes` (
          `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
          `comment` text COLLATE utf8_unicode_ci,
@@ -1809,8 +1809,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_lines')) {
-        $query = "CREATE TABLE `glpi_lines` (
+    if (!$DB->tableExists('zentra_lines')) {
+        $query = "CREATE TABLE `zentra_lines` (
             `id`                   INT NOT NULL auto_increment,
             `name`                 VARCHAR(255) NOT NULL DEFAULT '',
             `entities_id`          INT NOT NULL DEFAULT 0,
@@ -1836,8 +1836,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_devicesimcardtypes')) {
-        $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
+    if (!$DB->tableExists('zentra_devicesimcardtypes')) {
+        $query = "CREATE TABLE IF NOT EXISTS `zentra_devicesimcardtypes` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) NOT NULL DEFAULT '',
                   `comment` text COLLATE utf8_unicode_ci,
@@ -1851,8 +1851,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Full SIM'])) {
-        $DB->insert("glpi_devicesimcardtypes", [
+    if (!countElementsInTable('zentra_devicesimcardtypes', ['name' => 'Full SIM'])) {
+        $DB->insert("zentra_devicesimcardtypes", [
             'id'              => null,
             'name'            => "Full SIM",
             'comment'         => null,
@@ -1860,8 +1860,8 @@ Regards,',
             'date_creation'   => null,
         ]);
     }
-    if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Mini SIM'])) {
-        $DB->insert("glpi_devicesimcardtypes", [
+    if (!countElementsInTable('zentra_devicesimcardtypes', ['name' => 'Mini SIM'])) {
+        $DB->insert("zentra_devicesimcardtypes", [
             'id'              => null,
             'name'            => "Mini SIM",
             'comment'         => null,
@@ -1869,8 +1869,8 @@ Regards,',
             'date_creation'   => null,
         ]);
     }
-    if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Micro SIM'])) {
-        $DB->insert("glpi_devicesimcardtypes", [
+    if (!countElementsInTable('zentra_devicesimcardtypes', ['name' => 'Micro SIM'])) {
+        $DB->insert("zentra_devicesimcardtypes", [
             'id'              => null,
             'name'            => "Micro SIM",
             'comment'         => null,
@@ -1878,8 +1878,8 @@ Regards,',
             'date_creation'   => null,
         ]);
     }
-    if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Nano SIM'])) {
-        $DB->insert("glpi_devicesimcardtypes", [
+    if (!countElementsInTable('zentra_devicesimcardtypes', ['name' => 'Nano SIM'])) {
+        $DB->insert("zentra_devicesimcardtypes", [
             'id'              => null,
             'name'            => "Nano SIM",
             'comment'         => null,
@@ -1888,8 +1888,8 @@ Regards,',
         ]);
     }
 
-    if (!$DB->tableExists('glpi_devicesimcards')) {
-        $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
+    if (!$DB->tableExists('zentra_devicesimcards')) {
+        $query = "CREATE TABLE IF NOT EXISTS `zentra_devicesimcards` (
                `id` int NOT NULL AUTO_INCREMENT,
                `designation` varchar(255) DEFAULT NULL,
                `comment` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
@@ -1913,8 +1913,8 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (!$DB->tableExists('glpi_items_devicesimcards')) {
-        $query = "CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
+    if (!$DB->tableExists('zentra_items_devicesimcards')) {
+        $query = "CREATE TABLE IF NOT EXISTS `zentra_items_devicesimcards` (
                   `id` int NOT NULL AUTO_INCREMENT,
                   `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -1946,10 +1946,10 @@ Regards,',
         $DB->doQuery($query);
     }
 
-    if (countElementsInTable("glpi_profilerights", ['name' => 'line']) == 0) {
+    if (countElementsInTable("zentra_profilerights", ['name' => 'line']) == 0) {
         //new right for line
         //give full rights to profiles having config right
-        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        $prights = $DB->request(['FROM' => 'zentra_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
             if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE | READNOTE | UPDATENOTE;
@@ -1957,7 +1957,7 @@ Regards,',
                 $rightValue = 0;
             }
             $DB->insert(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
@@ -1968,10 +1968,10 @@ Regards,',
         }
     }
 
-    if (countElementsInTable("glpi_profilerights", ['name' => 'lineoperator']) == 0) {
+    if (countElementsInTable("zentra_profilerights", ['name' => 'lineoperator']) == 0) {
         //new right for lineoperator
         //give full rights to profiles having config right
-        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        $prights = $DB->request(['FROM' => 'zentra_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
             if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE;
@@ -1979,7 +1979,7 @@ Regards,',
                 $rightValue = 0;
             }
             $DB->insert(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
@@ -1990,10 +1990,10 @@ Regards,',
         }
     }
 
-    if (countElementsInTable("glpi_profilerights", ['name' => 'devicesimcard_pinpuk']) == 0) {
+    if (countElementsInTable("zentra_profilerights", ['name' => 'devicesimcard_pinpuk']) == 0) {
         //new right for simcard pin and puk
         //give full rights to profiles having config right
-        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        $prights = $DB->request(['FROM' => 'zentra_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
             if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = READ | UPDATE;
@@ -2001,7 +2001,7 @@ Regards,',
                 $rightValue = 0;
             }
             $DB->insert(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
@@ -2013,10 +2013,10 @@ Regards,',
     }
 
     //Firmware for phones
-    if ($DB->fieldExists('glpi_phones', 'firmware')) {
+    if ($DB->fieldExists('zentra_phones', 'firmware')) {
         $iterator = $DB->request([
             'SELECT' => ['id', 'firmware'],
-            'FROM'   => 'glpi_phones',
+            'FROM'   => 'zentra_phones',
             'NOT'    => ['firmware' => null],
         ]);
 
@@ -2024,14 +2024,14 @@ Regards,',
         foreach ($iterator as $row) {
             if (!isset($firmwares[$row['firmware']])) {
                 $firmware_result = $DB->request([
-                    'FROM' => 'glpi_devicefirmwares',
+                    'FROM' => 'zentra_devicefirmwares',
                     'WHERE' => ['designation' => $row['firmware']],
                 ]);
                 if ($firmware_result->count() === 1) {
                     $firmwares[$row['firmware']] = $firmware_result->current()['id'];
                 } else {
                     $DB->insert(
-                        'glpi_devicefirmwares',
+                        'zentra_devicefirmwares',
                         [
                             'designation'              => $row['firmware'],
                             'devicefirmwaretypes_id'   => '3', //type "firmware"
@@ -2043,7 +2043,7 @@ Regards,',
 
             //add link
             $DB->insert(
-                'glpi_items_devicefirmwares',
+                'zentra_items_devicefirmwares',
                 [
                     'itemtype'           => 'Phone',
                     'items_id'           => $row['id'],
@@ -2052,16 +2052,16 @@ Regards,',
             );
         }
 
-        $migration->dropField('glpi_phones', 'firmware');
+        $migration->dropField('zentra_phones', 'firmware');
     }
 
     //Firmware for network equipements
-    if ($DB->tableExists('glpi_networkequipmentfirmwares')) {
+    if ($DB->tableExists('zentra_networkequipmentfirmwares')) {
         $mapping = [];
-        $iterator = $DB->request(['FROM' => 'glpi_networkequipmentfirmwares']);
+        $iterator = $DB->request(['FROM' => 'zentra_networkequipmentfirmwares']);
         foreach ($iterator as $row) {
             $DB->insert(
-                'glpi_devicefirmwares',
+                'zentra_devicefirmwares',
                 [
                     'designation'              => $row['name'],
                     'comment'                  => $row['comment'],
@@ -2073,11 +2073,11 @@ Regards,',
             $mapping[$row['id']] = $DB->insertId();
         }
 
-        $iterator = $DB->request(['FROM' => 'glpi_networkequipments']);
+        $iterator = $DB->request(['FROM' => 'zentra_networkequipments']);
         foreach ($iterator as $row) {
             if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
                 $DB->insert(
-                    'glpi_items_devicefirmwares',
+                    'zentra_items_devicefirmwares',
                     [
                         'itemtype'           => 'NetworkEquipment',
                         'items_id'           => $row['id'],
@@ -2087,28 +2087,28 @@ Regards,',
             }
         }
 
-        $migration->dropKey('glpi_networkequipments', 'networkequipmentfirmwares_id');
-        $migration->dropField('glpi_networkequipments', 'networkequipmentfirmwares_id');
-        $migration->dropTable('glpi_networkequipmentfirmwares');
+        $migration->dropKey('zentra_networkequipments', 'networkequipmentfirmwares_id');
+        $migration->dropField('zentra_networkequipments', 'networkequipmentfirmwares_id');
+        $migration->dropTable('zentra_networkequipmentfirmwares');
     }
 
     // add projecttemplate
-    if (!$DB->fieldExists('glpi_projects', 'projecttemplates_id')) {
-        $migration->addField("glpi_projects", "projecttemplates_id", "integer");
-        $migration->addField("glpi_projects", "is_template", "bool");
-        $migration->addField("glpi_projects", "template_name", "string");
-        $migration->addKey("glpi_projects", "projecttemplates_id");
+    if (!$DB->fieldExists('zentra_projects', 'projecttemplates_id')) {
+        $migration->addField("zentra_projects", "projecttemplates_id", "integer");
+        $migration->addField("zentra_projects", "is_template", "bool");
+        $migration->addField("zentra_projects", "template_name", "string");
+        $migration->addKey("zentra_projects", "projecttemplates_id");
     }
 
-    if (!$DB->fieldExists('glpi_projecttasks', 'projecttasktemplates_id')) {
-        $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
-        $migration->addField("glpi_projecttasks", "is_template", "bool");
-        $migration->addField("glpi_projecttasks", "template_name", "string");
-        $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
+    if (!$DB->fieldExists('zentra_projecttasks', 'projecttasktemplates_id')) {
+        $migration->addField("zentra_projecttasks", "projecttasktemplates_id", "integer");
+        $migration->addField("zentra_projecttasks", "is_template", "bool");
+        $migration->addField("zentra_projecttasks", "template_name", "string");
+        $migration->addKey("zentra_projecttasks", "projecttasktemplates_id");
     }
 
-    if (!$DB->tableExists('glpi_projecttasktemplates')) {
-        $query = "CREATE TABLE `glpi_projecttasktemplates` (
+    if (!$DB->tableExists('zentra_projecttasktemplates')) {
+        $query = "CREATE TABLE `zentra_projecttasktemplates` (
                        `id` int NOT NULL AUTO_INCREMENT,
                        `entities_id` int NOT NULL DEFAULT '0',
                        `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -2153,34 +2153,34 @@ Regards,',
     }
 
     //add editor in followupps
-    if (!$DB->fieldExists('glpi_ticketfollowups', 'users_id_editor')) {
-        $migration->addField("glpi_ticketfollowups", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
-        $migration->addKey("glpi_ticketfollowups", "users_id_editor");
+    if (!$DB->fieldExists('zentra_ticketfollowups', 'users_id_editor')) {
+        $migration->addField("zentra_ticketfollowups", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+        $migration->addKey("zentra_ticketfollowups", "users_id_editor");
     }
 
     //add editor in *tasks
-    if (!$DB->fieldExists('glpi_tickettasks', 'users_id_editor')) {
-        $migration->addField("glpi_tickettasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
-        $migration->addKey("glpi_tickettasks", "users_id_editor");
+    if (!$DB->fieldExists('zentra_tickettasks', 'users_id_editor')) {
+        $migration->addField("zentra_tickettasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+        $migration->addKey("zentra_tickettasks", "users_id_editor");
     }
-    if (!$DB->fieldExists('glpi_changetasks', 'users_id_editor')) {
-        $migration->addField("glpi_changetasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
-        $migration->addKey("glpi_changetasks", "users_id_editor");
+    if (!$DB->fieldExists('zentra_changetasks', 'users_id_editor')) {
+        $migration->addField("zentra_changetasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+        $migration->addKey("zentra_changetasks", "users_id_editor");
     }
-    if (!$DB->fieldExists('glpi_problemtasks', 'users_id_editor')) {
-        $migration->addField("glpi_problemtasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
-        $migration->addKey("glpi_problemtasks", "users_id_editor");
+    if (!$DB->fieldExists('zentra_problemtasks', 'users_id_editor')) {
+        $migration->addField("zentra_problemtasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+        $migration->addKey("zentra_problemtasks", "users_id_editor");
     }
 
     //Add a sync_field in LDAP configuration
-    if (!$DB->fieldExists('glpi_authldaps', 'sync_field')) {
-        $migration->addField("glpi_authldaps", "sync_field", "string", ['after' => 'login_field', 'null' => true]);
-        $migration->addKey('glpi_authldaps', 'sync_field');
+    if (!$DB->fieldExists('zentra_authldaps', 'sync_field')) {
+        $migration->addField("zentra_authldaps", "sync_field", "string", ['after' => 'login_field', 'null' => true]);
+        $migration->addKey('zentra_authldaps', 'sync_field');
     }
     //Add a sync_field for users
-    if (!$DB->fieldExists('glpi_users', 'sync_field')) {
-        $migration->addField("glpi_users", "sync_field", "string", ['null' => true]);
-        $migration->addKey('glpi_users', 'sync_field');
+    if (!$DB->fieldExists('zentra_users', 'sync_field')) {
+        $migration->addField("zentra_users", "sync_field", "string", ['null' => true]);
+        $migration->addKey('zentra_users', 'sync_field');
     }
 
     $migration->addConfig([
@@ -2205,67 +2205,67 @@ Regards,',
         'registration_uuid'  => Toolbox::getRandomString(40),
     ]);
 
-    if (isIndex('glpi_authldaps', 'use_tls')) {
-        $query = "ALTER TABLE `glpi_authldaps` DROP INDEX `use_tls`";
+    if (isIndex('zentra_authldaps', 'use_tls')) {
+        $query = "ALTER TABLE `zentra_authldaps` DROP INDEX `use_tls`";
         $DB->doQuery($query);
     }
 
     //Fix some field order from old migrations
-    $migration->migrationOneTable('glpi_states');
-    $DB->doQuery("ALTER TABLE `glpi_budgets` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->doQuery("ALTER TABLE `glpi_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->doQuery("ALTER TABLE `glpi_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->doQuery("ALTER TABLE `glpi_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-    $DB->doQuery("ALTER TABLE `glpi_knowbaseitemcategories` CHANGE `sons_cache` `sons_cache` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `level`");
-    $DB->doQuery("ALTER TABLE `glpi_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
-    $DB->doQuery("ALTER TABLE `glpi_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_mail_default`");
-    $DB->doQuery("ALTER TABLE `glpi_requesttypes` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `is_ticketfollowup`");
-    $DB->doQuery("ALTER TABLE `glpi_requesttypes` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `comment`");
-    $DB->doQuery("ALTER TABLE `glpi_requesttypes` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->doQuery("ALTER TABLE `glpi_groups` CHANGE `is_task` `is_task` TINYINT NOT NULL DEFAULT '1' AFTER `is_assign`");
-    $DB->doQuery("ALTER TABLE `glpi_states` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `is_visible_certificate`");
-    $DB->doQuery("ALTER TABLE `glpi_states` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-    $DB->doQuery("ALTER TABLE `glpi_taskcategories` CHANGE `is_active` `is_active` TINYINT NOT NULL DEFAULT '1' AFTER `sons_cache`");
-    $DB->doQuery("ALTER TABLE `glpi_users` CHANGE `palette` `palette` CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`");
-    $DB->doQuery("ALTER TABLE `glpi_users` CHANGE `set_default_requester` `set_default_requester` TINYINT NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
-    $DB->doQuery("ALTER TABLE `glpi_users` CHANGE `plannings` `plannings` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `highcontrast_css`");
+    $migration->migrationOneTable('zentra_states');
+    $DB->doQuery("ALTER TABLE `zentra_budgets` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+    $DB->doQuery("ALTER TABLE `zentra_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+    $DB->doQuery("ALTER TABLE `zentra_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+    $DB->doQuery("ALTER TABLE `zentra_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+    $DB->doQuery("ALTER TABLE `zentra_knowbaseitemcategories` CHANGE `sons_cache` `sons_cache` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `level`");
+    $DB->doQuery("ALTER TABLE `zentra_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
+    $DB->doQuery("ALTER TABLE `zentra_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_mail_default`");
+    $DB->doQuery("ALTER TABLE `zentra_requesttypes` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `is_ticketfollowup`");
+    $DB->doQuery("ALTER TABLE `zentra_requesttypes` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `comment`");
+    $DB->doQuery("ALTER TABLE `zentra_requesttypes` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+    $DB->doQuery("ALTER TABLE `zentra_groups` CHANGE `is_task` `is_task` TINYINT NOT NULL DEFAULT '1' AFTER `is_assign`");
+    $DB->doQuery("ALTER TABLE `zentra_states` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `is_visible_certificate`");
+    $DB->doQuery("ALTER TABLE `zentra_states` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+    $DB->doQuery("ALTER TABLE `zentra_taskcategories` CHANGE `is_active` `is_active` TINYINT NOT NULL DEFAULT '1' AFTER `sons_cache`");
+    $DB->doQuery("ALTER TABLE `zentra_users` CHANGE `palette` `palette` CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`");
+    $DB->doQuery("ALTER TABLE `zentra_users` CHANGE `set_default_requester` `set_default_requester` TINYINT NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
+    $DB->doQuery("ALTER TABLE `zentra_users` CHANGE `plannings` `plannings` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `highcontrast_css`");
 
     //Fix bad default values
-    $DB->doQuery("ALTER TABLE `glpi_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT NOT NULL DEFAULT '1'");
-    $DB->doQuery("ALTER TABLE `glpi_states` CHANGE `is_visible_line` `is_visible_line` TINYINT NOT NULL DEFAULT '1'");
+    $DB->doQuery("ALTER TABLE `zentra_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT NOT NULL DEFAULT '1'");
+    $DB->doQuery("ALTER TABLE `zentra_states` CHANGE `is_visible_line` `is_visible_line` TINYINT NOT NULL DEFAULT '1'");
 
     //Fields added in 0905_91 script but not in empty sql...
-    if (!$DB->fieldExists('glpi_changetasks', 'date_creation', false)) {
-        $migration->addField('glpi_changetasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_changetasks', 'date_creation');
+    if (!$DB->fieldExists('zentra_changetasks', 'date_creation', false)) {
+        $migration->addField('zentra_changetasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_changetasks', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_networkportfiberchannels', 'date_mod', false)) {
-        $migration->addField('glpi_networkportfiberchannels', 'date_mod', 'datetime', ['after' => 'speed']);
-        $migration->addKey('glpi_networkportfiberchannels', 'date_mod');
+    if (!$DB->fieldExists('zentra_networkportfiberchannels', 'date_mod', false)) {
+        $migration->addField('zentra_networkportfiberchannels', 'date_mod', 'datetime', ['after' => 'speed']);
+        $migration->addKey('zentra_networkportfiberchannels', 'date_mod');
     }
-    if (!$DB->fieldExists('glpi_networkportfiberchannels', 'date_creation', false)) {
-        $migration->addField('glpi_networkportfiberchannels', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_networkportfiberchannels', 'date_creation');
+    if (!$DB->fieldExists('zentra_networkportfiberchannels', 'date_creation', false)) {
+        $migration->addField('zentra_networkportfiberchannels', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_networkportfiberchannels', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_problemtasks', 'date_creation', false)) {
-        $migration->addField('glpi_problemtasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_problemtasks', 'date_creation');
+    if (!$DB->fieldExists('zentra_problemtasks', 'date_creation', false)) {
+        $migration->addField('zentra_problemtasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_problemtasks', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_slms', 'date_creation', false)) {
-        $migration->addField('glpi_slms', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_slms', 'date_creation');
+    if (!$DB->fieldExists('zentra_slms', 'date_creation', false)) {
+        $migration->addField('zentra_slms', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_slms', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_ticketfollowups', 'date_creation', false)) {
-        $migration->addField('glpi_ticketfollowups', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_ticketfollowups', 'date_creation');
+    if (!$DB->fieldExists('zentra_ticketfollowups', 'date_creation', false)) {
+        $migration->addField('zentra_ticketfollowups', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_ticketfollowups', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_tickettasks', 'date_creation', false)) {
-        $migration->addField('glpi_tickettasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
-        $migration->addKey('glpi_tickettasks', 'date_creation');
+    if (!$DB->fieldExists('zentra_tickettasks', 'date_creation', false)) {
+        $migration->addField('zentra_tickettasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+        $migration->addKey('zentra_tickettasks', 'date_creation');
     }
-    if (!$DB->fieldExists('glpi_softwarelicenses', 'contact_num', false)) {
+    if (!$DB->fieldExists('zentra_softwarelicenses', 'contact_num', false)) {
         $migration->addField(
-            "glpi_softwarelicenses",
+            "zentra_softwarelicenses",
             "contact_num",
             "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL",
             ['after' => 'contact']
@@ -2273,18 +2273,18 @@ Regards,',
     }
 
     //Fix comments...
-    $DB->doQuery("ALTER TABLE `glpi_savedsearches` CHANGE `type` `type` INT NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
+    $DB->doQuery("ALTER TABLE `zentra_savedsearches` CHANGE `type` `type` INT NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
 
     //Fix unicity...
     $tables = [
-        'glpi_slalevels_tickets'   => ['tickets_id', 'slalevels_id'],
-        'glpi_businesscriticities' => ['businesscriticities_id', 'name'],
-        'glpi_documentcategories'  => ['documentcategories_id', 'name'],
-        'glpi_olalevels_tickets'   => ['tickets_id', 'olalevels_id'],
-        'glpi_states'              => ['states_id', 'name'],
-        'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
-        'glpi_tickettemplatehiddenfields'      => ['tickettemplates_id', 'num'],
-        'glpi_tickettemplatemandatoryfields'   => ['tickettemplates_id', 'num'],
+        'zentra_slalevels_tickets'   => ['tickets_id', 'slalevels_id'],
+        'zentra_businesscriticities' => ['businesscriticities_id', 'name'],
+        'zentra_documentcategories'  => ['documentcategories_id', 'name'],
+        'zentra_olalevels_tickets'   => ['tickets_id', 'olalevels_id'],
+        'zentra_states'              => ['states_id', 'name'],
+        'zentra_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
+        'zentra_tickettemplatehiddenfields'      => ['tickettemplates_id', 'num'],
+        'zentra_tickettemplatemandatoryfields'   => ['tickettemplates_id', 'num'],
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
@@ -2311,76 +2311,76 @@ Regards,',
     }
 
     // unique index added in a previous 9.2-dev
-    $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity');
+    $migration->dropKey('zentra_tickettemplatepredefinedfields', 'unicity');
     $migration->addKey(
-        'glpi_tickettemplatepredefinedfields',
+        'zentra_tickettemplatepredefinedfields',
         ['tickettemplates_id', 'num'],
         'tickettemplates_id_id_num'
     );
 
     //removed field
-    if ($DB->fieldExists('glpi_slms', 'resolution_time')) {
-        $migration->dropField('glpi_slms', 'resolution_time');
+    if ($DB->fieldExists('zentra_slms', 'resolution_time')) {
+        $migration->dropField('zentra_slms', 'resolution_time');
     }
 
     //wrong type
-    $DB->doQuery("ALTER TABLE `glpi_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT NULL DEFAULT NULL");
+    $DB->doQuery("ALTER TABLE `zentra_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT NULL DEFAULT NULL");
 
     //missing index
-    $migration->addKey('glpi_networknames', 'is_deleted');
-    $migration->addKey('glpi_networknames', 'is_dynamic');
-    $migration->addKey('glpi_projects', 'is_template');
-    $migration->addKey('glpi_projecttasks', 'is_template');
-    $migration->dropKey('glpi_savedsearches_users', 'bookmarks_id');
-    $migration->addKey('glpi_savedsearches_users', 'savedsearches_id');
+    $migration->addKey('zentra_networknames', 'is_deleted');
+    $migration->addKey('zentra_networknames', 'is_dynamic');
+    $migration->addKey('zentra_projects', 'is_template');
+    $migration->addKey('zentra_projecttasks', 'is_template');
+    $migration->dropKey('zentra_savedsearches_users', 'bookmarks_id');
+    $migration->addKey('zentra_savedsearches_users', 'savedsearches_id');
     //this one was not on the correct field
-    $migration->dropKey('glpi_softwarelicenses', 'is_deleted');
-    $migration->migrationOneTable('glpi_softwarelicenses');
-    $migration->addKey('glpi_softwarelicenses', 'is_deleted');
-    $migration->addKey('glpi_states', 'is_visible_line');
-    $migration->addKey('glpi_tasktemplates', 'is_private');
-    $migration->addKey('glpi_tasktemplates', 'users_id_tech');
-    $migration->addKey('glpi_tasktemplates', 'groups_id_tech');
+    $migration->dropKey('zentra_softwarelicenses', 'is_deleted');
+    $migration->migrationOneTable('zentra_softwarelicenses');
+    $migration->addKey('zentra_softwarelicenses', 'is_deleted');
+    $migration->addKey('zentra_states', 'is_visible_line');
+    $migration->addKey('zentra_tasktemplates', 'is_private');
+    $migration->addKey('zentra_tasktemplates', 'users_id_tech');
+    $migration->addKey('zentra_tasktemplates', 'groups_id_tech');
 
     //add timeline_position in ticketfollowups
     //add timeline_position in tickettasks
     //add timeline_position in documents_items
     //add timeline_position in ticketvalidations
-    $timeline_tables = ['glpi_ticketfollowups', 'glpi_tickettasks', 'glpi_documents_items', 'glpi_ticketvalidations'];
+    $timeline_tables = ['zentra_ticketfollowups', 'zentra_tickettasks', 'zentra_documents_items', 'zentra_ticketvalidations'];
     foreach ($timeline_tables as $tl_table) {
         //add timeline_position in $tl_table
         if (!$DB->fieldExists($tl_table, 'timeline_position')) {
             $migration->addField($tl_table, "timeline_position", "tinyint NOT NULL DEFAULT '0'");
             $where = [
                 "$tl_table.tickets_id"  => new QueryExpression(
-                    DBmysql::quoteName("glpi_tickets_users.tickets_id")
+                    DBmysql::quoteName("zentra_tickets_users.tickets_id")
                 ),
                 "$tl_table.users_id"    => new QueryExpression(
-                    DBmysql::quoteName("glpi_tickets_users.users_id")
+                    DBmysql::quoteName("zentra_tickets_users.users_id")
                 ),
             ];
             if (!$DB->fieldExists($tl_table, 'tickets_id')) {
                 $where = [
                     "$tl_table.itemtype"    => "Ticket",
                     "$tl_table.items_id"    => new QueryExpression(
-                        DBmysql::quoteName("glpi_tickets_users.tickets_id")
+                        DBmysql::quoteName("zentra_tickets_users.tickets_id")
                     ),
                     "$tl_table.users_id"    => new QueryExpression(
-                        DBmysql::quoteName("glpi_tickets_users.users_id")
+                        DBmysql::quoteName("zentra_tickets_users.users_id")
                     ),
                 ];
             }
 
             $update = new QueryExpression(
-                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_tickets_users")
+                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("zentra_tickets_users")
             );
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $update,
                     [
                         "$tl_table.timeline_position" => new QueryExpression("IF("
-                     . DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND "
-                     . DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"),
+                     . DBmysql::quoteName("zentra_tickets_users.type") . " NOT IN (1,3) AND "
+                     . DBmysql::quoteName("zentra_tickets_users.type") . " IN (2), 4, 1)"),
                     ],
                     $where
                 )
@@ -2388,41 +2388,41 @@ Regards,',
 
             $where = [
                 "$tl_table.tickets_id"           => new QueryExpression(
-                    DBmysql::quoteName("glpi_groups_tickets.tickets_id")
+                    DBmysql::quoteName("zentra_groups_tickets.tickets_id")
                 ),
-                "glpi_groups_users.groups_id"    => new QueryExpression(
-                    DBmysql::quoteName("glpi_groups_tickets.groups_id")
+                "zentra_groups_users.groups_id"    => new QueryExpression(
+                    DBmysql::quoteName("zentra_groups_tickets.groups_id")
                 ),
                 "$tl_table.users_id"             => new QueryExpression(
-                    DBmysql::quoteName("glpi_groups_users.users_id")
+                    DBmysql::quoteName("zentra_groups_users.users_id")
                 ),
             ];
             if (!$DB->fieldExists($tl_table, 'tickets_id')) {
                 $where = [
                     "$tl_table.itemtype"             => "Ticket",
                     "$tl_table.items_id"             => new QueryExpression(
-                        DBmysql::quoteName("glpi_groups_tickets.tickets_id")
+                        DBmysql::quoteName("zentra_groups_tickets.tickets_id")
                     ),
-                    "glpi_groups_users.groups_id"    => new QueryExpression(
-                        DBmysql::quoteName("glpi_groups_tickets.groups_id")
+                    "zentra_groups_users.groups_id"    => new QueryExpression(
+                        DBmysql::quoteName("zentra_groups_tickets.groups_id")
                     ),
                     "$tl_table.users_id"             => new QueryExpression(
-                        DBmysql::quoteName("glpi_groups_users.users_id")
+                        DBmysql::quoteName("zentra_groups_users.users_id")
                     ),
                 ];
             }
 
             $update = new QueryExpression(
-                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets")
-                . ", " . DBmysql::quoteName("glpi_groups_users")
+                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("zentra_groups_tickets")
+                . ", " . DBmysql::quoteName("zentra_groups_users")
             );
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $update,
                     [
                         "$tl_table.timeline_position" => new QueryExpression("IF("
-                     . DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND "
-                     . DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"),
+                     . DBmysql::quoteName("zentra_groups_tickets.type") . " NOT IN (1,3) AND "
+                     . DBmysql::quoteName("zentra_groups_tickets.type") . " IN (2), 4, 1)"),
                     ],
                     $where
                 )

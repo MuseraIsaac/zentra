@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, getAjaxCsrfToken */
+/* global zentra_toast_error, getAjaxCsrfToken */
 
-export class GlpiFormConditionEngine
+export class ZentraFormConditionEngine
 {
     #form_id;
 
@@ -50,7 +50,7 @@ export class GlpiFormConditionEngine
             });
         } catch (e) {
             console.error(e);
-            glpi_toast_error(
+            zentra_toast_error(
                 __("An unexpected error occurred")
             );
         }
@@ -65,10 +65,10 @@ export class GlpiFormConditionEngine
         // Map questions that can be used as condition critera by others items.
         const questions_criteria_ids = [];
         const questions_criteria = container.querySelectorAll(
-            '[data-glpi-form-renderer-criteria][data-glpi-form-renderer-question]'
+            '[data-zentra-form-renderer-criteria][data-zentra-form-renderer-question]'
         );
         questions_criteria.forEach((node) => {
-            questions_criteria_ids.push(node.dataset.glpiFormRendererId);
+            questions_criteria_ids.push(node.dataset.zentraFormRendererId);
         });
 
         // Iterate on the container data
@@ -157,13 +157,13 @@ export class GlpiFormConditionEngine
         }
 
         // Send request
-        const url = `${CFG_GLPI.root_doc}/Form/Condition/Engine`;
+        const url = `${CFG_ZENTRA.root_doc}/Form/Condition/Engine`;
         const response = await fetch(url, {
             method: 'POST',
             body: form_data,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                'X-Zentra-Csrf-Token': getAjaxCsrfToken(),
             }
         });
 

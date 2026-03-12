@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryParam;
-use Glpi\Event;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryParam;
+use Zentra\Event;
 
 /**
  * Group_User Class
@@ -64,7 +64,7 @@ class Group_User extends CommonDBRelation
     public static function isUserInGroup($users_id, $groups_id): bool
     {
         return countElementsInTable(
-            'glpi_groups_users',
+            'zentra_groups_users',
             [
                 'users_id' => $users_id,
                 'groups_id' => $groups_id,
@@ -86,12 +86,12 @@ class Group_User extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_groups.*',
-                'glpi_groups_users.id AS IDD',
-                'glpi_groups_users.id AS linkid',
-                'glpi_groups_users.is_dynamic AS is_dynamic',
-                'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate',
+                'zentra_groups.*',
+                'zentra_groups_users.id AS IDD',
+                'zentra_groups_users.id AS linkid',
+                'zentra_groups_users.is_dynamic AS is_dynamic',
+                'zentra_groups_users.is_manager AS is_manager',
+                'zentra_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -103,9 +103,9 @@ class Group_User extends CommonDBRelation
                 ],
             ],
             'WHERE'        => [
-                'glpi_groups_users.users_id' => $users_id,
+                'zentra_groups_users.users_id' => $users_id,
             ] + $condition,
-            'ORDER'        => 'glpi_groups.name',
+            'ORDER'        => 'zentra_groups.name',
         ]);
 
         return array_values(iterator_to_array($iterator));
@@ -127,12 +127,12 @@ class Group_User extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_users.*',
-                'glpi_groups_users.id AS IDD',
-                'glpi_groups_users.id AS linkid',
-                'glpi_groups_users.is_dynamic AS is_dynamic',
-                'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate',
+                'zentra_users.*',
+                'zentra_groups_users.id AS IDD',
+                'zentra_groups_users.id AS linkid',
+                'zentra_groups_users.is_dynamic AS is_dynamic',
+                'zentra_groups_users.is_manager AS is_manager',
+                'zentra_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -144,9 +144,9 @@ class Group_User extends CommonDBRelation
                 ],
             ],
             'WHERE'        => [
-                'glpi_groups_users.groups_id' => $groups_id,
+                'zentra_groups_users.groups_id' => $groups_id,
             ] + $condition,
-            'ORDER'        => 'glpi_users.name',
+            'ORDER'        => 'zentra_users.name',
         ]);
 
         return array_values(iterator_to_array($iterator));
@@ -291,21 +291,21 @@ class Group_User extends CommonDBRelation
 
         // Entity restriction for this group, according to user allowed entities
         if ($group->fields['is_recursive']) {
-            $entityrestrict = getSonsOf('glpi_entities', $group->fields['entities_id']);
+            $entityrestrict = getSonsOf('zentra_entities', $group->fields['entities_id']);
 
             // active entity could be a child of object entity
             if (
-                ($_SESSION['glpiactive_entity'] != $group->fields['entities_id'])
-                && in_array($_SESSION['glpiactive_entity'], $entityrestrict)
+                ($_SESSION['zentraactive_entity'] != $group->fields['entities_id'])
+                && in_array($_SESSION['zentraactive_entity'], $entityrestrict)
             ) {
-                $entityrestrict = getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+                $entityrestrict = getSonsOf('zentra_entities', $_SESSION['zentraactive_entity']);
             }
         } else {
             $entityrestrict = $group->fields['entities_id'];
         }
 
         if ($tree) {
-            $restrict = getSonsOf('glpi_groups', $group->getID());
+            $restrict = getSonsOf('zentra_groups', $group->getID());
         } else {
             $restrict = $group->getID();
         }
@@ -316,13 +316,13 @@ class Group_User extends CommonDBRelation
         $pu_table = Profile_User::getTable();
         $query = [
             'SELECT' => [
-                'glpi_users.id',
-                'glpi_users.is_active',
-                'glpi_groups_users.id AS linkid',
-                'glpi_groups_users.groups_id',
-                'glpi_groups_users.is_dynamic AS is_dynamic',
-                'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate',
+                'zentra_users.id',
+                'zentra_users.is_active',
+                'zentra_groups_users.id AS linkid',
+                'zentra_groups_users.groups_id',
+                'zentra_groups_users.is_dynamic AS is_dynamic',
+                'zentra_groups_users.is_manager AS is_manager',
+                'zentra_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'DISTINCT'  => true,
             'FROM'      => $group_users_table,
@@ -464,7 +464,7 @@ class Group_User extends CommonDBRelation
         $entries = [];
         $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '"></i>';
         $no_icon  = '<span class="visually-hidden" aria-label="' . __s('No') . '"></span>';
-        for ($i = $start, $j = 0; ($i < $number) && ($j < $_SESSION['glpilist_limit']); $i++, $j++) {
+        for ($i = $start, $j = 0; ($i < $number) && ($j < $_SESSION['zentralist_limit']); $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
             $group_link = '';
@@ -486,7 +486,7 @@ class Group_User extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'use_pager' => true,
             'nosort' => true,
@@ -602,7 +602,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'massiveaction'      => false,
@@ -611,7 +611,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'massiveaction'      => false,
@@ -655,7 +655,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '150',
-            'table'              => 'glpi_groups_users',
+            'table'              => 'zentra_groups_users',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of users'),
             'forcegroupby'       => true,
@@ -686,14 +686,14 @@ class Group_User extends CommonDBRelation
         $obj->deleteByCriteria($crit);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case User::class:
                     if (Group::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -702,7 +702,7 @@ class Group_User extends CommonDBRelation
 
                 case Group::class:
                     if (User::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -713,7 +713,7 @@ class Group_User extends CommonDBRelation
         return '';
     }
 
-    public static function countForItem(CommonGLPI $item)
+    public static function countForItem(CommonZENTRA $item)
     {
         if ($item instanceof Group) {
             $members = [];
@@ -739,7 +739,7 @@ class Group_User extends CommonDBRelation
         return 0;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case User::class:
@@ -814,7 +814,7 @@ class Group_User extends CommonDBRelation
 
             // if current user logged, append also to its session
             if ($users_id === Session::getLoginUserID()) {
-                $_SESSION['glpi_plannings'] = $plannings;
+                $_SESSION['zentra_plannings'] = $plannings;
             }
 
             // save the planning completed to db
@@ -841,7 +841,7 @@ class Group_User extends CommonDBRelation
                 "groups",
                 4,
                 "setup",
-                sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"])
+                sprintf(__('%s deletes users from a group'), $_SESSION["zentraname"])
             );
         }
 
@@ -889,7 +889,7 @@ class Group_User extends CommonDBRelation
 
             // if current user logged, append also to its session
             if ($users_id === Session::getLoginUserID()) {
-                $_SESSION['glpi_plannings'] = $plannings;
+                $_SESSION['zentra_plannings'] = $plannings;
             }
 
             // save the planning completed to db

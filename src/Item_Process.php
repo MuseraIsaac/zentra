@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Process Class
@@ -52,7 +52,7 @@ class Item_Process extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             throw new RuntimeException("Only CommonDBTM items are supported");
@@ -70,7 +70,7 @@ class Item_Process extends CommonDBChild
                 return '';
             }
 
-            if (!$_SESSION['glpishow_count_on_tabs']) {
+            if (!$_SESSION['zentrashow_count_on_tabs']) {
                 $nb = 0;
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -79,7 +79,7 @@ class Item_Process extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -130,7 +130,7 @@ class Item_Process extends CommonDBChild
                 'items_id' => $items_id,
                 'itemtype' => $itemtype,
             ] + $sql_filters,
-            'LIMIT' => $_SESSION['glpilist_limit'],
+            'LIMIT' => $_SESSION['zentralist_limit'],
             'START' => $start,
             'ORDER' => "$sort $order",
         ]);

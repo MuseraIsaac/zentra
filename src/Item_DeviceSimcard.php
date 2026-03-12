@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
 
 /**
  * Relation between item and devices
@@ -134,7 +134,7 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
                 'id'         => 22,
                 'joinparams'         => [
                     'beforejoin'         => [
-                        'table'              => 'glpi_groups_items',
+                        'table'              => 'zentra_groups_items',
                         'joinparams'         => [
                             'jointype'           => 'itemtype_item',
                             'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -161,7 +161,7 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
                 'id'         => 24,
                 'joinparams' => [
                     'beforejoin'         => [
-                        'table'              => 'glpi_groups_items',
+                        'table'              => 'zentra_groups_items',
                         'joinparams'         => [
                             'jointype'           => 'itemtype_item',
                             'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],

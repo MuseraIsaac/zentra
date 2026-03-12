@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,10 @@
  */
 
 import { expect, Locator, Page } from "@playwright/test";
-import { GlpiPage } from "./GlpiPage";
+import { ZentraPage } from "./ZentraPage";
 import { randomUUID } from "crypto";
 
-export class AssetDefinitionPage extends GlpiPage
+export class AssetDefinitionPage extends ZentraPage
 {
     public readonly system_name_input: Locator;
     public readonly active_dropdown: Locator;

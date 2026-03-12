@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace test\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 class KnowbaseTest extends DbTestCase
 {
@@ -270,14 +270,14 @@ class KnowbaseTest extends DbTestCase
         $tree_with_no_public_faq = \KnowbaseItem::getTreeCategoryList($itemtype, []);
 
         // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user
-        global $CFG_GLPI;
-        $use_public_faq_bck = $CFG_GLPI['use_public_faq'];
-        $CFG_GLPI['use_public_faq'] = 1;
+        global $CFG_ZENTRA;
+        $use_public_faq_bck = $CFG_ZENTRA['use_public_faq'];
+        $CFG_ZENTRA['use_public_faq'] = 1;
         $tree_with_public_faq = \KnowbaseItem::getTreeCategoryList($itemtype, []);
 
         // Put back globals
         $_SESSION = $session_bck;
-        $CFG_GLPI['use_public_faq'] = $use_public_faq_bck;
+        $CFG_ZENTRA['use_public_faq'] = $use_public_faq_bck;
 
         $expected = [
             [

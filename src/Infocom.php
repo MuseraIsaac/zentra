@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Exception\Http\NotFoundHttpException;
 use Safe\DateTime;
 
 use function Safe\mktime;
@@ -77,7 +77,7 @@ class Infocom extends CommonDBChild
      **/
     public static function canApplyOn($item)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // All devices are subjects to infocom !
         if (is_a($item, 'Item_Devices', true)) {
@@ -85,11 +85,11 @@ class Infocom extends CommonDBChild
         }
 
         // We also allow direct items to check
-        if ($item instanceof CommonGLPI) {
+        if ($item instanceof CommonZENTRA) {
             $item = $item->getType();
         }
 
-        if (in_array($item, $CFG_GLPI['infocom_types'])) {
+        if (in_array($item, $CFG_ZENTRA['infocom_types'])) {
             return true;
         }
 
@@ -106,10 +106,10 @@ class Infocom extends CommonDBChild
      **/
     public static function getItemtypesThatCanHave()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $types = array_merge(
-            $CFG_GLPI['infocom_types'],
+            $CFG_ZENTRA['infocom_types'],
             Item_Devices::getDeviceTypes()
         );
         return array_unique($types);
@@ -126,10 +126,10 @@ class Infocom extends CommonDBChild
     public function post_getEmpty()
     {
 
-        if (isset($_SESSION['glpiactive_entity'])) {
+        if (isset($_SESSION['zentraactive_entity'])) {
             $this->fields["alert"] = Entity::getUsedConfig(
                 "use_infocoms_alert",
-                $_SESSION['glpiactive_entity'],
+                $_SESSION['zentraactive_entity'],
                 "default_infocom_alert",
                 0
             );
@@ -143,7 +143,7 @@ class Infocom extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         // Can exists on template
@@ -155,15 +155,15 @@ class Infocom extends CommonDBChild
             switch ($item->getType()) {
                 case 'Supplier':
                     /** @var Supplier $item */
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
                     return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_infocoms',
+                            'zentra_infocoms',
                             ['itemtype' => $item->getType(),
                                 'items_id' => $item->getID(),
                             ]
@@ -175,7 +175,7 @@ class Infocom extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -202,11 +202,11 @@ class Infocom extends CommonDBChild
     {
 
         return countElementsInTable(
-            'glpi_infocoms',
+            'zentra_infocoms',
             [
                 'suppliers_id' => $item->getField('id'),
                 'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
-            ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
+            ] + getEntitiesRestrictCriteria('zentra_infocoms', '', $_SESSION['zentraactiveentities'])
         );
     }
 
@@ -296,30 +296,30 @@ class Infocom extends CommonDBChild
 
         $criteria = [
             'SELECT'       => [
-                'glpi_infocoms.*',
+                'zentra_infocoms.*',
                 "$itemtable.name AS itemname",
                 "$itemtable.ticket_tco",
-                'glpi_entities.completename AS entityname',
-                'glpi_entities.id AS entID',
+                'zentra_entities.completename AS entityname',
+                'zentra_entities.id AS entID',
 
             ],
-            'FROM'         => 'glpi_infocoms',
+            'FROM'         => 'zentra_infocoms',
             'INNER JOIN'   => [
                 $itemtable  => [
                     'ON'  => [
-                        'glpi_infocoms'   => 'items_id',
+                        'zentra_infocoms'   => 'items_id',
                         $itemtable        => 'id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype'   => $itemtype,
+                                'zentra_infocoms.itemtype'   => $itemtype,
                             ],
                         ],
                     ],
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_entities'   => [
+                'zentra_entities'   => [
                     'ON'  => [
-                        'glpi_entities'   => 'id',
+                        'zentra_entities'   => 'id',
                         $itemtable        => 'entities_id',
                     ],
                 ],
@@ -333,8 +333,8 @@ class Infocom extends CommonDBChild
         if (!empty($begin)) {
             $criteria['WHERE'][] = [
                 'OR'  => [
-                    'glpi_infocoms.buy_date'   => ['>=', $begin],
-                    'glpi_infocoms.use_date'   => ['>=', $begin],
+                    'zentra_infocoms.buy_date'   => ['>=', $begin],
+                    'zentra_infocoms.use_date'   => ['>=', $begin],
                 ],
             ];
         }
@@ -342,8 +342,8 @@ class Infocom extends CommonDBChild
         if (!empty($end)) {
             $criteria['WHERE'][] = [
                 'OR'  => [
-                    'glpi_infocoms.buy_date'   => ['<=', $end],
-                    'glpi_infocoms.use_date'   => ['<=', $end],
+                    'zentra_infocoms.buy_date'   => ['<=', $end],
+                    'zentra_infocoms.use_date'   => ['<=', $end],
                 ],
             ];
         }
@@ -367,15 +367,15 @@ class Infocom extends CommonDBChild
         }
 
         $criteria = [
-            'SELECT'       => 'glpi_infocoms.*',
-            'FROM'         => 'glpi_infocoms',
+            'SELECT'       => 'zentra_infocoms.*',
+            'FROM'         => 'zentra_infocoms',
             'INNER JOIN'   => [
                 $itemtable  => [
                     'ON'  => [
                         $itemtable        => 'id',
-                        'glpi_infocoms'   => 'items_id', [
+                        'zentra_infocoms'   => 'items_id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype' => $itemtype,
+                                'zentra_infocoms.itemtype' => $itemtype,
                             ],
                         ],
                     ],
@@ -386,13 +386,13 @@ class Infocom extends CommonDBChild
 
         switch ($itemtype) {
             case 'SoftwareLicense':
-                $criteria['INNER JOIN']['glpi_softwares'] = [
+                $criteria['INNER JOIN']['zentra_softwares'] = [
                     'ON'  => [
-                        'glpi_softwarelicenses' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
+                        'zentra_softwarelicenses' => 'softwares_id',
+                        'zentra_softwares'        => 'id',
                     ],
                 ];
-                $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
+                $criteria['WHERE'][] =  getEntitiesRestrictCriteria("zentra_softwarelicenses");
                 break;
             default:
                 if (is_a($itemtype, CommonDBChild::class, true)) {
@@ -411,16 +411,16 @@ class Infocom extends CommonDBChild
         if (!empty($begin)) {
             $criteria['WHERE'][] = [
                 'OR'  => [
-                    'glpi_infocoms.buy_date'   => ['>=', $begin],
-                    'glpi_infocoms.use_date'   => ['>=', $begin],
+                    'zentra_infocoms.buy_date'   => ['>=', $begin],
+                    'zentra_infocoms.use_date'   => ['>=', $begin],
                 ],
             ];
         }
         if (!empty($end)) {
             $criteria['WHERE'][] = [
                 'OR'  => [
-                    'glpi_infocoms.buy_date'   => ['<=', $end],
-                    'glpi_infocoms.use_date'   => ['<=', $end],
+                    'zentra_infocoms.buy_date'   => ['<=', $end],
+                    'zentra_infocoms.use_date'   => ['<=', $end],
                 ],
             ];
         }
@@ -451,7 +451,7 @@ class Infocom extends CommonDBChild
      **/
     public static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $itemtype = get_class($item);
         $changes  = $item->fields;
 
@@ -474,14 +474,14 @@ class Infocom extends CommonDBChild
                 && ($values[1] == $changes['states_id'])
             ) {
                 $add_or_update    = true;
-                $tmp[$date_field] = $_SESSION["glpi_currenttime"];
+                $tmp[$date_field] = $_SESSION["zentra_currenttime"];
             }
         }
 
         //One date or more has changed
         if ($add_or_update) {
             if (!$infocom->getFromDBforDevice($itemtype, $changes['id'])) {
-                if ($CFG_GLPI["auto_create_infocoms"]) {
+                if ($CFG_ZENTRA["auto_create_infocoms"]) {
                     $infocom->add($tmp);
                 }
             } else {
@@ -650,9 +650,9 @@ class Infocom extends CommonDBChild
      **/
     public static function cronInfocom($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
         $cron_status    = 0;
@@ -666,13 +666,13 @@ class Infocom extends CommonDBChild
                 'SELECT'    => "$table.*",
                 'FROM'      => $table,
                 'LEFT JOIN'  => [
-                    'glpi_alerts'  => [
+                    'zentra_alerts'  => [
                         'ON' => [
-                            'glpi_alerts'  => 'items_id',
+                            'zentra_alerts'  => 'items_id',
                             $table         => 'id', [
                                 'AND' => [
-                                    'glpi_alerts.itemtype'  => self::getType(),
-                                    'glpi_alerts.type'      => Alert::END,
+                                    'zentra_alerts.itemtype'  => self::getType(),
+                                    'zentra_alerts.type'      => Alert::END,
                                 ],
                             ],
                         ],
@@ -680,20 +680,20 @@ class Infocom extends CommonDBChild
                 ],
                 'WHERE'     => [
                     new QueryExpression(
-                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . 2 ** Alert::END . ') > 0'
+                        '(' . $DB->quoteName('zentra_infocoms.alert') . ' & ' . 2 ** Alert::END . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
                     new QueryExpression(QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_infocoms.warranty_date',
-                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
+                            date: 'zentra_infocoms.warranty_date',
+                            interval: new QueryExpression($DB::quoteName('zentra_infocoms.warranty_duration')),
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curdate()
                     ) . ' <= ' . $DB::quoteValue($before)),
-                    'glpi_alerts.date'         => null,
+                    'zentra_alerts.date'         => null,
                 ],
             ]);
 
@@ -732,7 +732,7 @@ class Infocom extends CommonDBChild
         foreach ($items_infos as $entity => $items) {
             // We will ignore items that have been deleted but aren't expired, in case they are restored before the warranty expires
             $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
-            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
+            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['zentra_currenttime']);
             if (
                 NotificationEvent::raiseEvent("alert", new self(), [
                     'entities_id' => $entity,
@@ -744,7 +744,7 @@ class Infocom extends CommonDBChild
                 if ($task) {
                     $task->log(sprintf(
                         __('%1$s: %2$s') . "\n",
-                        Dropdown::getDropdownName("glpi_entities", $entity),
+                        Dropdown::getDropdownName("zentra_entities", $entity),
                         implode("\n", $messages)
                     ));
                     $task->addVolume(1);
@@ -752,7 +752,7 @@ class Infocom extends CommonDBChild
                     Session::addMessageAfterRedirect(
                         sprintf(
                             __s('%1$s: %2$s'),
-                            htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)),
+                            htmlescape(Dropdown::getDropdownName("zentra_entities", $entity)),
                             implode('<br>', array_map('htmlescape', $messages))
                         )
                     );
@@ -769,7 +769,7 @@ class Infocom extends CommonDBChild
                     unset($alert->fields['id']);
                 }
             } else {
-                $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+                $entityname = Dropdown::getDropdownName('zentra_entities', $entity);
                 //TRANS: %s is entity name
                 $msg = sprintf(__('%1$s: %2$s'), $entityname, __('send infocom alert failed'));
                 if ($task) {
@@ -994,7 +994,7 @@ class Infocom extends CommonDBChild
      **/
     public static function showDisplayLink($itemtype, $device_id, bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (
             !Session::haveRight(self::$rightname, READ)
@@ -1005,7 +1005,7 @@ class Infocom extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_infocoms',
+            'FROM'   => 'zentra_infocoms',
             'WHERE'  => [
                 'itemtype'  => $itemtype,
                 'items_id'  => $device_id,
@@ -1024,7 +1024,7 @@ class Infocom extends CommonDBChild
         $out = '';
         if ($item->canView()) {
             $out .= "<span class='infocom_link' style='cursor:pointer' data-itemtype='" . htmlescape($itemtype) . "' data-items_id='" . htmlescape($device_id) . "'>
-               <img src=\"" . htmlescape($CFG_GLPI["root_doc"] . "/pics/dollar$add.png") . "\" alt=\"$text\" title=\"$text\">
+               <img src=\"" . htmlescape($CFG_ZENTRA["root_doc"] . "/pics/dollar$add.png") . "\" alt=\"$text\" title=\"$text\">
                </span>";
             $form_url = Infocom::getFormURL();
             $html = <<<HTML
@@ -1428,7 +1428,7 @@ HTML;
         switch ($itemtype) {
             case 'CartridgeItem':
                 // Return the infocom linked to the license, not the template linked to the software
-                $beforejoin        = ['table'      => 'glpi_cartridges',
+                $beforejoin        = ['table'      => 'zentra_cartridges',
                     'joinparams' => ['jointype' => 'child'],
                 ];
                 $specific_itemtype = 'Cartridge';
@@ -1436,7 +1436,7 @@ HTML;
 
             case 'ConsumableItem':
                 // Return the infocom linked to the license, not the template linked to the software
-                $beforejoin        = ['table'      => 'glpi_consumables',
+                $beforejoin        = ['table'      => 'zentra_consumables',
                     'joinparams' => ['jointype' => 'child'],
                 ];
                 $specific_itemtype = 'Consumable';
@@ -1451,7 +1451,7 @@ HTML;
             $complexjoinparams['beforejoin'][] = $beforejoin;
             $joinparams['beforejoin']          = $beforejoin;
         }
-        $complexjoinparams['beforejoin'][] = ['table'      => 'glpi_infocoms',
+        $complexjoinparams['beforejoin'][] = ['table'      => 'zentra_infocoms',
             'joinparams' => $joinparams,
         ];
 
@@ -1464,7 +1464,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '25',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'immo_number',
             'name'               => __('Immobilization number'),
             'forcegroupby'       => true,
@@ -1474,7 +1474,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '26',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'order_number',
             'name'               => __('Order number'),
             'forcegroupby'       => true,
@@ -1484,7 +1484,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '27',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'delivery_number',
             'name'               => __('Delivery form'),
             'forcegroupby'       => true,
@@ -1494,7 +1494,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '28',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'bill',
             'name'               => __('Invoice number'),
             'forcegroupby'       => true,
@@ -1504,7 +1504,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '37',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'buy_date',
             'name'               => __('Date of purchase'),
             'datatype'           => 'date',
@@ -1514,7 +1514,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '38',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'use_date',
             'name'               => __('Startup date'),
             'datatype'           => 'date',
@@ -1524,7 +1524,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '142',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'delivery_date',
             'name'               => __('Delivery date'),
             'datatype'           => 'date',
@@ -1534,7 +1534,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '124',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'order_date',
             'name'               => __('Order date'),
             'datatype'           => 'date',
@@ -1544,7 +1544,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '123',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'warranty_date',
             'name'               => __('Start date of warranty'),
             'datatype'           => 'date',
@@ -1554,7 +1554,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '125',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'inventory_date',
             'name'               => __('Date of last physical inventory'),
             'datatype'           => 'date',
@@ -1564,7 +1564,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '50',
-            'table'              => 'glpi_budgets',
+            'table'              => 'zentra_budgets',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => Budget::getTypeName(1),
@@ -1574,7 +1574,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '51',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'warranty_duration',
             'name'               => __('Warranty duration'),
             'forcegroupby'       => true,
@@ -1589,7 +1589,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '52',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'warranty_info',
             'name'               => __('Warranty information'),
             'forcegroupby'       => true,
@@ -1599,7 +1599,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '120',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'end_warranty',
             'name'               => __('Warranty expiration date'),
             'datatype'           => 'date_delay',
@@ -1617,7 +1617,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '53',
-            'table'              => 'glpi_suppliers',
+            'table'              => 'zentra_suppliers',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => Supplier::getTypeName(1),
@@ -1627,7 +1627,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '54',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
             'datatype'           => 'decimal',
@@ -1637,7 +1637,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '55',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'warranty_value',
             'name'               => __('Warranty extension value'),
             'datatype'           => 'decimal',
@@ -1647,7 +1647,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '56',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'sink_time',
             'name'               => __('Amortization duration'),
             'forcegroupby'       => true,
@@ -1659,7 +1659,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '57',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'sink_type',
             'name'               => __('Amortization type'),
             'forcegroupby'       => true,
@@ -1671,7 +1671,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '58',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'sink_coeff',
             'name'               => __('Amortization coefficient'),
             'forcegroupby'       => true,
@@ -1681,7 +1681,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '59',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'alert',
             'name'               => __('Email alarms'),
             'forcegroupby'       => true,
@@ -1691,7 +1691,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '122',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'comment',
             'name'               => __('Comments on financial and administrative information'),
             'datatype'           => 'text',
@@ -1701,7 +1701,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '173',
-            'table'              => 'glpi_businesscriticities',
+            'table'              => 'zentra_businesscriticities',
             'field'              => 'completename',
             'name'               => _n('Business criticity', 'Business criticities', 1),
             'datatype'           => 'dropdown',
@@ -1711,7 +1711,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '159',
-            'table'              => 'glpi_infocoms',
+            'table'              => 'zentra_infocoms',
             'field'              => 'decommission_date',
             'name'               => __('Decommission date'),
             'datatype'           => 'date',
@@ -1835,7 +1835,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_suppliers',
+            'table'              => 'zentra_suppliers',
             'field'              => 'name',
             'name'               => Supplier::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -1918,7 +1918,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => 'glpi_budgets',
+            'table'              => 'zentra_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
             'datatype'           => 'itemlink',
@@ -1953,7 +1953,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -1970,7 +1970,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '173',
-            'table'              => 'glpi_businesscriticities',
+            'table'              => 'zentra_businesscriticities',
             'field'              => 'completename',
             'name'               => _n('Business criticity', 'Business criticities', 1),
             'datatype'           => 'dropdown',
@@ -2013,14 +2013,14 @@ HTML;
         $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
 
         if ($auto_renew && $periodicity > 0) {
-            while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
+            while ($timestamp < strtotime($_SESSION['zentra_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
                 $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$periodicity month");
             }
         }
 
-        if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
+        if ($color && ($timestamp < strtotime($_SESSION['zentra_currenttime']))) {
             return "<span class='red'>" . htmlescape(Html::convDate(date("Y-m-d", $timestamp))) . "</span>";
         }
         return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
@@ -2130,7 +2130,7 @@ HTML;
         $types_iterator = $DB->request([
             'SELECT'          => 'itemtype',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_infocoms',
+            'FROM'            => 'zentra_infocoms',
             'WHERE'           => [
                 'NOT'          => ['itemtype' => self::getExcludedTypes()],
             ] + $where,

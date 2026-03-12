@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,21 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Api\HL\Router;
-use Glpi\Application\Environment;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
-use Glpi\Config\ProxyExclusion;
-use Glpi\Config\ProxyExclusions;
-use Glpi\Dashboard\Grid;
-use Glpi\Event;
-use Glpi\Helpdesk\HelpdeskTranslation;
-use Glpi\Mail\SMTP\OauthConfig;
-use Glpi\Plugin\Hooks;
-use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
-use Glpi\System\RequirementsManager;
-use Glpi\Toolbox\ArrayNormalizer;
-use Glpi\UI\ThemeManager;
+use Zentra\Api\HL\Router;
+use Zentra\Application\Environment;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Cache\CacheManager;
+use Zentra\Config\ProxyExclusion;
+use Zentra\Config\ProxyExclusions;
+use Zentra\Dashboard\Grid;
+use Zentra\Event;
+use Zentra\Helpdesk\HelpdeskTranslation;
+use Zentra\Mail\SMTP\OauthConfig;
+use Zentra\Plugin\Hooks;
+use Zentra\System\Diagnostic\SourceCodeIntegrityChecker;
+use Zentra\System\RequirementsManager;
+use Zentra\Toolbox\ArrayNormalizer;
+use Zentra\UI\ThemeManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\chdir;
@@ -79,7 +79,7 @@ class Config extends CommonDBTM
     public const TIMELINE_RELATIVE_DATE = 0;
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
-    // From CommonGLPI
+    // From CommonZENTRA
     protected $displaylist         = false;
 
     // From CommonDBTM
@@ -95,7 +95,7 @@ class Config extends CommonDBTM
         'smtp_oauth_client_secret',
         'smtp_oauth_options',
         'smtp_oauth_refresh_token',
-        'glpinetwork_registration_key',
+        'zentranetwork_registration_key',
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
 
@@ -103,7 +103,7 @@ class Config extends CommonDBTM
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
-     * Indicates whether the GLPI configuration has been loaded.
+     * Indicates whether the ZENTRA configuration has been loaded.
      * @var bool
      */
     private static $loaded = false;
@@ -146,7 +146,7 @@ class Config extends CommonDBTM
         if (
             isset($this->fields['context'])
             && (
-                in_array($this->fields['context'], ['core', 'inventory'], true) // GLPI config contexts
+                in_array($this->fields['context'], ['core', 'inventory'], true) // ZENTRA config contexts
                 || Plugin::isPluginActive($this->fields['context'])
             )
         ) {
@@ -162,7 +162,7 @@ class Config extends CommonDBTM
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(DisplayPreference::class, $ong, $options);
-        $this->addStandardTab(GLPINetwork::class, $ong, $options);
+        $this->addStandardTab(ZENTRANetwork::class, $ong, $options);
         $this->addStandardTab(HelpdeskTranslation::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -171,7 +171,7 @@ class Config extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Unset _no_history to not save it as a configuration value
         unset($input['_no_history']);
@@ -185,7 +185,7 @@ class Config extends CommonDBTM
         if (!empty($input['config_context'])) {
             $config_context = $input['config_context'];
             unset($input['id']);
-            unset($input['_glpi_csrf_token']);
+            unset($input['_zentra_csrf_token']);
             unset($input['_update']);
             unset($input['config_context']);
             if (
@@ -307,13 +307,13 @@ class Config extends CommonDBTM
 
         // Beware : with new management system, we must update each value
         unset($input['id']);
-        unset($input['_glpi_csrf_token']);
+        unset($input['_zentra_csrf_token']);
         unset($input['_update']);
 
         // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
-            $_SESSION['glpiskipMaintenance'] = 1;
-            $url = htmlescape($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
+            $_SESSION['zentraskipMaintenance'] = 1;
+            $url = htmlescape($CFG_ZENTRA['root_doc'] . "/index.php?skipMaintenance=1");
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('Maintenance mode activated. Backdoor using: %s'),
@@ -325,12 +325,12 @@ class Config extends CommonDBTM
         }
 
         // Automatically trim whitespaces around registration key.
-        if (array_key_exists('glpinetwork_registration_key', $input) && !empty($input['glpinetwork_registration_key'])) {
-            $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
+        if (array_key_exists('zentranetwork_registration_key', $input) && !empty($input['zentranetwork_registration_key'])) {
+            $input['zentranetwork_registration_key'] = trim($input['zentranetwork_registration_key']);
         }
 
         // Prevent invalid profile to be set as the lock profile.
-        // User updating the config from GLPI's UI should not be able to send
+        // User updating the config from ZENTRA's UI should not be able to send
         // invalid values but API or manual HTTP requests might be invalid.
         if (isset($input['lock_lockprofile_id'])) {
             $profile = Profile::getById($input['lock_lockprofile_id']);
@@ -346,7 +346,7 @@ class Config extends CommonDBTM
         }
 
         // Check the validity of `pdffont`
-        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(GLPIPDF::getFontList()), true)) {
+        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(ZENTRAPDF::getFontList()), true)) {
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('The following field has an incorrect value: "%s".'),
@@ -358,13 +358,13 @@ class Config extends CommonDBTM
             unset($input['pdffont']);
         }
 
-        $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_GLPI['2fa_enforced'];
-        $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_GLPI['2fa_grace_days'];
+        $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_ZENTRA['2fa_enforced'];
+        $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_ZENTRA['2fa_grace_days'];
         if ($tfa_grace_days_changed || $tfa_enforced_changed) {
-            $enforced = $input['2fa_enforced'] ?? $CFG_GLPI['2fa_enforced'];
-            $grace_period = $input['2fa_grace_days'] ?? $CFG_GLPI['2fa_grace_days'];
+            $enforced = $input['2fa_enforced'] ?? $CFG_ZENTRA['2fa_enforced'];
+            $grace_period = $input['2fa_grace_days'] ?? $CFG_ZENTRA['2fa_grace_days'];
             if ($enforced && $grace_period > 0) {
-                $input['2fa_grace_date_start'] = $_SESSION['glpi_currenttime'];
+                $input['2fa_grace_date_start'] = $_SESSION['zentra_currenttime'];
             } else {
                 $input['2fa_grace_date_start'] = null;
             }
@@ -395,7 +395,7 @@ class Config extends CommonDBTM
      */
     private function handleSmtpInput(array $input): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (array_key_exists('smtp_mode', $input) && in_array($input['smtp_mode'], [MAIL_SMTPSSL, MAIL_SMTPTLS], true)) {
             $input['smtp_mode'] = MAIL_SMTP;
@@ -420,9 +420,9 @@ class Config extends CommonDBTM
                 }
             }
 
-            $has_oauth_settings_changed = (array_key_exists('smtp_oauth_provider', $input) && $input['smtp_oauth_provider'] !== $CFG_GLPI['smtp_oauth_provider'])
-                || (array_key_exists('smtp_oauth_client_id', $input) && $input['smtp_oauth_client_id'] !== $CFG_GLPI['smtp_oauth_client_id'])
-                || (array_key_exists('smtp_oauth_options', $input) && $input['smtp_oauth_options'] !== $CFG_GLPI['smtp_oauth_options']);
+            $has_oauth_settings_changed = (array_key_exists('smtp_oauth_provider', $input) && $input['smtp_oauth_provider'] !== $CFG_ZENTRA['smtp_oauth_provider'])
+                || (array_key_exists('smtp_oauth_client_id', $input) && $input['smtp_oauth_client_id'] !== $CFG_ZENTRA['smtp_oauth_client_id'])
+                || (array_key_exists('smtp_oauth_options', $input) && $input['smtp_oauth_options'] !== $CFG_ZENTRA['smtp_oauth_options']);
 
             if ($has_oauth_settings_changed) {
                 // clean credentials, they will have to be replaced by new ones
@@ -433,7 +433,7 @@ class Config extends CommonDBTM
             // remember whether the SMTP Oauth flow has to be triggered
             $_SESSION['redirect_to_smtp_oauth'] = (bool) ($input['_force_redirect_to_smtp_oauth'] ?? false) === true
                 || $has_oauth_settings_changed
-                || (string) $CFG_GLPI['smtp_oauth_refresh_token'] === '';
+                || (string) $CFG_ZENTRA['smtp_oauth_refresh_token'] === '';
 
             // ensure value is not saved in DB
             unset($input['_force_redirect_to_smtp_oauth']);
@@ -477,7 +477,7 @@ class Config extends CommonDBTM
      **/
     public function showFormDisplay()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return;
@@ -485,7 +485,7 @@ class Config extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('pages/setup/general/general_setup.html.twig', [
             'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
+            'config'  => $CFG_ZENTRA,
         ]);
     }
 
@@ -497,7 +497,7 @@ class Config extends CommonDBTM
      **/
     public function showFormInventory()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return;
@@ -510,7 +510,7 @@ class Config extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/assets_setup.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'item_devices_types' => $item_devices_types,
             'canedit' => $canedit,
         ]);
@@ -547,7 +547,7 @@ class Config extends CommonDBTM
      **/
     public function showFormDBSlave()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!static::canUpdate()) {
             return;
@@ -570,7 +570,7 @@ class Config extends CommonDBTM
         $replication_status = DBConnection::getReplicationStatus();
 
         TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
-            'config'             => $CFG_GLPI,
+            'config'             => $CFG_ZENTRA,
             'canedit'            => static::canUpdate(),
             'source_dbhost'      => $DB->dbhost,
             'replica_config'     => $replica_config,
@@ -587,7 +587,7 @@ class Config extends CommonDBTM
      **/
     public function showFormAPI()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return;
@@ -604,7 +604,7 @@ class Config extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('pages/setup/general/api_setup.html.twig', [
             'config_object' => new Config(),
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'canedit' => static::canUpdate(),
             'getting_started_doc_url' => $getting_started_doc,
             'endpoint_doc_url' => $endpoint_doc,
@@ -612,7 +612,7 @@ class Config extends CommonDBTM
             'legacy_doc_url' => $legacy_version['endpoint'] . '/',
             'legacy_api_url' => $legacy_version['endpoint'],
         ]);
-        if ($CFG_GLPI['enable_api']) {
+        if ($CFG_ZENTRA['enable_api']) {
             TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
         }
     }
@@ -625,7 +625,7 @@ class Config extends CommonDBTM
      **/
     public function showFormHelpdesk()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return;
@@ -635,7 +635,7 @@ class Config extends CommonDBTM
             if ($impact === 3) {
                 $isimpact[3] = 1;
             } else {
-                $isimpact[$impact] = (($CFG_GLPI['impact_mask'] & (1 << $impact)) > 0);
+                $isimpact[$impact] = (($CFG_ZENTRA['impact_mask'] & (1 << $impact)) > 0);
             }
         }
 
@@ -644,12 +644,12 @@ class Config extends CommonDBTM
             if ($urgency === 3) {
                 $isurgency[3] = 1;
             } else {
-                $isurgency[$urgency] = (($CFG_GLPI['urgency_mask'] & (1 << $urgency)) > 0);
+                $isurgency[$urgency] = (($CFG_ZENTRA['urgency_mask'] & (1 << $urgency)) > 0);
             }
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/assistance_setup.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'is_impact' => $isimpact,
             'is_urgency' => $isurgency,
             'canedit' => static::canUpdate(),
@@ -660,13 +660,13 @@ class Config extends CommonDBTM
     /**
      * Print the config form for default user prefs
      *
-     * @param array $data data (CFG_GLPI for global config / glpi_users fields for user prefs)
+     * @param array $data data (CFG_ZENTRA for global config / zentra_users fields for user prefs)
      *
      * @return void
      */
     public function showFormUserPrefs($data = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $userpref  = false;
         $url       = Toolbox::getItemTypeFormURL(self::class);
@@ -676,7 +676,7 @@ class Config extends CommonDBTM
         if (array_key_exists('last_login', $data)) {
             $userpref = true;
             if ($data["id"] === Session::getLoginUserID()) {
-                $url  = $CFG_GLPI['root_doc'] . "/front/preference.php";
+                $url  = $CFG_ZENTRA['root_doc'] . "/front/preference.php";
             } else {
                 $url  = User::getFormURL();
             }
@@ -715,9 +715,9 @@ class Config extends CommonDBTM
      */
     public static function arePasswordSecurityChecksEnabled(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        return $CFG_GLPI["use_password_security"];
+        return $CFG_ZENTRA["use_password_security"];
     }
 
     /**
@@ -782,19 +782,19 @@ class Config extends CommonDBTM
      */
     public static function showSystemInfoTable()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $oldlang = $_SESSION['glpilanguage'];
+        $oldlang = $_SESSION['zentralanguage'];
         // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
         Session::loadLanguage('en_GB');
 
         // No need to translate, this part always display in english (for copy/paste to forum)
 
         // Try to compute a better version for .git
-        $ver = GLPI_VERSION;
-        if (is_dir(GLPI_ROOT . "/.git")) {
+        $ver = ZENTRA_VERSION;
+        if (is_dir(ZENTRA_ROOT . "/.git")) {
             $dir = getcwd();
-            chdir(GLPI_ROOT);
+            chdir(ZENTRA_ROOT);
             $returnCode = 1;
             $output = [];
             $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
@@ -810,7 +810,7 @@ class Config extends CommonDBTM
 
         $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
         $requirements = [];
-        /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+        /* @var \Zentra\System\Requirement\RequirementInterface $requirement */
         foreach ($core_requirements as $k => $requirement) {
             if ($requirement->isOutOfContext()) {
                 continue; // skip requirement if not relevant
@@ -826,15 +826,15 @@ class Config extends CommonDBTM
         }
 
         $system_info_objs = [];
-        foreach ($CFG_GLPI["systeminformations_types"] as $type) {
+        foreach ($CFG_ZENTRA["systeminformations_types"] as $type) {
             $system_info_objs[] = getItemForItemtype($type);
         }
 
         Session::loadLanguage($oldlang);
 
         $files = array_merge(
-            glob(GLPI_LOCAL_I18N_DIR . "/**/*.php"),
-            glob(GLPI_LOCAL_I18N_DIR . "/**/*.mo")
+            glob(ZENTRA_LOCAL_I18N_DIR . "/**/*.php"),
+            glob(ZENTRA_LOCAL_I18N_DIR . "/**/*.mo")
         );
         sort($files);
 
@@ -871,23 +871,23 @@ class Config extends CommonDBTM
      **/
     public function showSystemInformations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!static::canUpdate()) {
             return;
         }
 
         /** @var ProxyExclusions $proxy_exclusions */
-        $proxy_exclusions = $CFG_GLPI['possible_proxy_exclusions'];
+        $proxy_exclusions = $CFG_ZENTRA['possible_proxy_exclusions'];
         $proxy_exclusions->addExclusions([
             new ProxyExclusion(
                 Agent::class,
                 Agent::getTypeName()
             ),
             new ProxyExclusion(
-                GLPINetwork::class,
-                GLPINetwork::getTypeName(),
-                __('GLPI network related calls (marketplace, versions check, telemetry, ...')
+                ZENTRANetwork::class,
+                ZENTRANetwork::getTypeName(),
+                __('ZENTRA network related calls (marketplace, versions check, telemetry, ...')
             ),
             new ProxyExclusion(
                 RSSFeed::class,
@@ -907,7 +907,7 @@ class Config extends CommonDBTM
             ),
         ]);
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'canedit' => static::canUpdate(),
             'possible_proxy_exclusions' => $proxy_exclusions,
         ]);
@@ -936,16 +936,16 @@ class Config extends CommonDBTM
 
 
     /**
-     * Get language in GLPI associated with the value coming from LDAP/SSO
+     * Get language in ZENTRA associated with the value coming from LDAP/SSO
      * Value can be, for example : English, en_EN, en-EN or en
      *
      * @param string $lang the value coming from LDAP/SSO
      *
-     * @return string locale's php page in GLPI or '' is no language associated with the value
+     * @return string locale's php page in ZENTRA or '' is no language associated with the value
      **/
     public static function getLanguage($lang)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Alternative language code: en-EN --> en_EN
         $altLang = str_replace("-", "_", $lang);
@@ -953,7 +953,7 @@ class Config extends CommonDBTM
         // Search in order : ID or extjs dico or tinymce dico / native lang / english name
         //                   / extjs dico / tinymce dico
         // ID  or extjs dico or tinymce dico
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
+        foreach ($CFG_ZENTRA["languages"] as $ID => $language) {
             if (
                 (strcasecmp($lang, $ID) == 0)
                 || (strcasecmp($altLang, $ID) == 0)
@@ -965,14 +965,14 @@ class Config extends CommonDBTM
         }
 
         // native lang
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
+        foreach ($CFG_ZENTRA["languages"] as $ID => $language) {
             if (strcasecmp($lang, $language[0]) == 0) {
                 return $ID;
             }
         }
 
         // english lang name
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
+        foreach ($CFG_ZENTRA["languages"] as $ID => $language) {
             if (strcasecmp($lang, $language[4]) == 0) {
                 return $ID;
             }
@@ -997,7 +997,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -1038,8 +1038,8 @@ class Config extends CommonDBTM
                 }
                 return $tabs;
 
-            case 'GLPINetwork':
-                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::getType(), GLPINetwork::getIcon());
+            case 'ZENTRANetwork':
+                return self::createTabEntry(ZENTRANetwork::getTypeName(), 0, $item::getType(), ZENTRANetwork::getIcon());
 
             case Impact::getType():
                 return self::createTabEntry(Impact::getTypeName());
@@ -1048,9 +1048,9 @@ class Config extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($item instanceof Preference) {
             $config = new self();
@@ -1070,7 +1070,7 @@ class Config extends CommonDBTM
                     break;
 
                 case 2:
-                    $item->showFormUserPrefs($CFG_GLPI);
+                    $item->showFormUserPrefs($CFG_ZENTRA);
                     break;
 
                 case 3:
@@ -1129,7 +1129,7 @@ class Config extends CommonDBTM
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $error = 0;
         $result = self::checkDbEngine($version);
@@ -1147,7 +1147,7 @@ class Config extends CommonDBTM
         if (isCommandLine()) {
             echo $message . "\n";
         } else {
-            $img = "<img src='" . htmlescape($CFG_GLPI['root_doc']) . "/pics/";
+            $img = "<img src='" . htmlescape($CFG_ZENTRA['root_doc']) . "/pics/";
             $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlescape($message) . "' title='" . htmlescape($message) . "'/>";
 
             if ($fordebug) {
@@ -1322,7 +1322,7 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param string $context context to get values (default for glpi is core)
+     * @param string $context context to get values (default for zentra is core)
      * @param array  $names   config names to get
      *
      * @return array of config values
@@ -1354,7 +1354,7 @@ class Config extends CommonDBTM
     /**
      * Get config value
      *
-     * @param $context  string   context to get values (default for glpi is core)
+     * @param $context  string   context to get values (default for zentra is core)
      * @param $name     string   config name
      *
      * @return mixed
@@ -1367,7 +1367,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Load legacy configuration into $CFG_GLPI global variable.
+     * Load legacy configuration into $CFG_ZENTRA global variable.
      *
      * @return bool True for success, false if an error occurred
      *
@@ -1375,25 +1375,25 @@ class Config extends CommonDBTM
      */
     public static function loadLegacyConfiguration()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Compute URLs base path.
         $root_doc = '';
         if (isset($_SERVER['REQUEST_URI'])) {
-            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
+            // $_SERVER['REQUEST_URI'] is set, meaning that ZENTRA is accessed from web server.
             $root_doc = Request::createFromGlobals()->getBasePath();
         }
-        $CFG_GLPI['root_doc'] = $root_doc;
-        $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+        $CFG_ZENTRA['root_doc'] = $root_doc;
+        $CFG_ZENTRA['typedoc_icon_dir'] = $root_doc . '/pics/icones';
 
         if (
             !DBConnection::isDbAvailable()
-            || !$DB->tableExists('glpi_configs')
+            || !$DB->tableExists('zentra_configs')
         ) {
             return false;
         }
 
-        $iterator = $DB->request(['FROM' => 'glpi_configs']);
+        $iterator = $DB->request(['FROM' => 'zentra_configs']);
 
         if ($iterator->count() === 0) {
             return false;
@@ -1408,58 +1408,58 @@ class Config extends CommonDBTM
             $values[$row['name']] = $row['value'];
         }
 
-        $CFG_GLPI = array_merge($CFG_GLPI, $values);
+        $CFG_ZENTRA = array_merge($CFG_ZENTRA, $values);
 
-        if (isset($CFG_GLPI['priority_matrix'])) {
-            $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
+        if (isset($CFG_ZENTRA['priority_matrix'])) {
+            $CFG_ZENTRA['priority_matrix'] = importArrayFromDB($CFG_ZENTRA['priority_matrix']);
         }
 
-        if (isset($CFG_GLPI['devices_in_menu'])) {
-            $CFG_GLPI['devices_in_menu'] = importArrayFromDB($CFG_GLPI['devices_in_menu']);
+        if (isset($CFG_ZENTRA['devices_in_menu'])) {
+            $CFG_ZENTRA['devices_in_menu'] = importArrayFromDB($CFG_ZENTRA['devices_in_menu']);
         }
 
-        if (isset($CFG_GLPI['lock_item_list'])) {
-            $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+        if (isset($CFG_ZENTRA['lock_item_list'])) {
+            $CFG_ZENTRA['lock_item_list'] = importArrayFromDB($CFG_ZENTRA['lock_item_list']);
         }
 
-        if (isset($CFG_GLPI['proxy_exclusions'])) {
-            $CFG_GLPI['proxy_exclusions'] = importArrayFromDB($CFG_GLPI['proxy_exclusions']);
+        if (isset($CFG_ZENTRA['proxy_exclusions'])) {
+            $CFG_ZENTRA['proxy_exclusions'] = importArrayFromDB($CFG_ZENTRA['proxy_exclusions']);
         } else {
-            $CFG_GLPI['proxy_exclusions'] = [];
+            $CFG_ZENTRA['proxy_exclusions'] = [];
         }
 
         if (
-            isset($CFG_GLPI['lock_lockprofile_id'])
-            && $CFG_GLPI['lock_use_lock_item']
-            && $CFG_GLPI['lock_lockprofile_id'] > 0
-            && !isset($CFG_GLPI['lock_lockprofile'])
+            isset($CFG_ZENTRA['lock_lockprofile_id'])
+            && $CFG_ZENTRA['lock_use_lock_item']
+            && $CFG_ZENTRA['lock_lockprofile_id'] > 0
+            && !isset($CFG_ZENTRA['lock_lockprofile'])
         ) {
             $prof = new Profile();
-            $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
+            $prof->getFromDB($CFG_ZENTRA['lock_lockprofile_id']);
             $prof->cleanProfile();
-            $CFG_GLPI['lock_lockprofile'] = $prof->fields;
+            $CFG_ZENTRA['lock_lockprofile'] = $prof->fields;
         }
 
-        if (isset($CFG_GLPI['planning_work_days'])) {
-            $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
+        if (isset($CFG_ZENTRA['planning_work_days'])) {
+            $CFG_ZENTRA['planning_work_days'] = importArrayFromDB($CFG_ZENTRA['planning_work_days']);
         }
 
-        if (isset($CFG_GLPI[Impact::CONF_ENABLED])) {
-            $CFG_GLPI[Impact::CONF_ENABLED] = importArrayFromDB($CFG_GLPI[Impact::CONF_ENABLED]);
+        if (isset($CFG_ZENTRA[Impact::CONF_ENABLED])) {
+            $CFG_ZENTRA[Impact::CONF_ENABLED] = importArrayFromDB($CFG_ZENTRA[Impact::CONF_ENABLED]);
         }
 
         if (!isset($_SERVER['REQUEST_URI'])) {
-            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably access from CLI.
-            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
+            // $_SERVER['REQUEST_URI'] is not set, meaning that ZENTRA is probably access from CLI.
+            // In this case, `$CFG_ZENTRA['root_doc']` has to be extracted from `$CFG_ZENTRA['url_base']`,
             // and it can only be done once configuration is loaded.
 
-            // `$CFG_GLPI['root_doc']` is not supposed to be used in a CLI context,
+            // `$CFG_ZENTRA['root_doc']` is not supposed to be used in a CLI context,
             // but it is likely to be used indirectly by cron tasks.
 
-            if (isset($CFG_GLPI['url_base'])) {
-                $root_doc = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '';
-                $CFG_GLPI['root_doc'] = $root_doc;
-                $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+            if (isset($CFG_ZENTRA['url_base'])) {
+                $root_doc = parse_url($CFG_ZENTRA['url_base'], PHP_URL_PATH) ?: '';
+                $CFG_ZENTRA['root_doc'] = $root_doc;
+                $CFG_ZENTRA['typedoc_icon_dir'] = $root_doc . '/pics/icones';
             }
         }
 
@@ -1482,7 +1482,7 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param string $context context to get values (default for glpi is core)
+     * @param string $context context to get values (default for zentra is core)
      * @param array  $values  config names to set
      *
      * @return void
@@ -1490,13 +1490,13 @@ class Config extends CommonDBTM
     public static function setConfigurationValues($context, array $values = [])
     {
 
-        $glpikey = new GLPIKey();
+        $zentrakey = new ZENTRAKey();
 
         $config = new self();
         foreach ($values as $name => $value) {
-            // Encrypt config values according to list declared to GLPIKey service
-            if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
-                $value = $glpikey->encrypt($value);
+            // Encrypt config values according to list declared to ZENTRAKey service
+            if (!empty($value) && $zentrakey->isConfigSecured($context, $name)) {
+                $value = $zentrakey->encrypt($value);
             }
 
             if (
@@ -1525,9 +1525,9 @@ class Config extends CommonDBTM
         }
 
         //reload config for logged user
-        if ($_SESSION['glpiID'] ?? false) {
+        if ($_SESSION['zentraID'] ?? false) {
             $user = new User();
-            if ($user->getFromDB($_SESSION['glpiID'])) {
+            if ($user->getFromDB($_SESSION['zentraID'])) {
                 $user->loadPreferencesInSession();
             }
         }
@@ -1538,7 +1538,7 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param string $context context to get values (default for glpi is core)
+     * @param string $context context to get values (default for zentra is core)
      * @param array  $values  config names to delete
      *
      * @return void
@@ -1620,13 +1620,13 @@ class Config extends CommonDBTM
      */
     public function showFormLogs()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!static::canUpdate()) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'canedit' => static::canUpdate(),
         ]);
     }
@@ -1681,7 +1681,7 @@ class Config extends CommonDBTM
      */
     public function showFormSecurity()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Config::canUpdate()) {
             return false;
@@ -1689,7 +1689,7 @@ class Config extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('pages/setup/general/security_setup.html.twig', [
             'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
+            'config'  => $CFG_ZENTRA,
         ]);
     }
 
@@ -1702,13 +1702,13 @@ class Config extends CommonDBTM
      */
     public function showFormManagement()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!self::canView()) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/management_setup.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
             'canedit' => static::canUpdate(),
         ]);
     }
@@ -1745,7 +1745,7 @@ class Config extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
         // Check if password expiration mechanism has been activated
         if (
             $this->fields['name'] == 'password_expiration_delay'
@@ -1755,8 +1755,8 @@ class Config extends CommonDBTM
             // As passwords will now expire, consider that "now" is the reference date of expiration delay
             $DB->update(
                 User::getTable(),
-                ['password_last_update' => $_SESSION['glpi_currenttime']],
-                ['authtype' => Auth::DB_GLPI]
+                ['password_last_update' => $_SESSION['zentra_currenttime']],
+                ['authtype' => Auth::DB_ZENTRA]
             );
 
             // Activate passwordexpiration automated task
@@ -1769,7 +1769,7 @@ class Config extends CommonDBTM
 
         // If the `devices_in_menu` option changed, we should regenerate the menu
         if ($this->fields['name'] === 'devices_in_menu') {
-            $CFG_GLPI['devices_in_menu'] = json_decode($this->fields['value']) ?? [];
+            $CFG_ZENTRA['devices_in_menu'] = json_decode($this->fields['value']) ?? [];
             Html::generateMenuSession(true);
         }
 
@@ -1781,7 +1781,7 @@ class Config extends CommonDBTM
                 return;
             }
 
-            // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
+            // Ensure post update actions and hook that are using `$CFG_ZENTRA` will use the new value
             $array_fields = [
                 'priority_matrix',
                 'devices_in_menu',
@@ -1791,9 +1791,9 @@ class Config extends CommonDBTM
                 'proxy_exclusions',
             ];
             if (in_array($this->fields['name'], $array_fields, true)) {
-                $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);
+                $CFG_ZENTRA[$this->fields['name']] = importArrayFromDB($newvalue);
             } else {
-                $CFG_GLPI[$this->fields['name']] = $newvalue;
+                $CFG_ZENTRA[$this->fields['name']] = $newvalue;
             }
 
             // avoid inserting truncated json in logs
@@ -1830,8 +1830,8 @@ class Config extends CommonDBTM
      */
     private function logConfigChange(string $context, string $name, string $newvalue, string $oldvalue): void
     {
-        $glpi_key = new GLPIKey();
-        if ($glpi_key->isConfigSecured($context, $name)) {
+        $zentra_key = new ZENTRAKey();
+        if ($zentra_key->isConfigSecured($context, $name)) {
             $newvalue = $oldvalue = '********';
         }
         $oldvalue = $name . ($context !== 'core' ? ' (' . $context . ') ' : ' ') . $oldvalue;
@@ -1849,19 +1849,19 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
+     * Get the ZENTRA Config without unsafe keys like passwords and emails (true on $safer)
      *
      * @param bool $safer do we need to clean more (avoid emails disclosure)
-     * @return array of $CFG_GLPI without unsafe keys
+     * @return array of $CFG_ZENTRA without unsafe keys
      *
      * @since 9.5
      */
     public static function getSafeConfig($safer = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $excludedKeys = array_flip(self::$undisclosedFields);
-        $safe_config  = array_diff_key($CFG_GLPI, $excludedKeys);
+        $safe_config  = array_diff_key($CFG_ZENTRA, $excludedKeys);
 
         if ($safer) {
             $excludedKeys = array_flip(self::$saferUndisclosedFields);
@@ -1870,7 +1870,7 @@ class Config extends CommonDBTM
 
         // override with session values
         foreach ($safe_config as $key => &$value) {
-            $value = $_SESSION['glpi' . $key] ?? $value;
+            $value = $_SESSION['zentra' . $key] ?? $value;
         }
 
         return $safe_config;
@@ -1916,7 +1916,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid sender email from the GLPI configuration
+     * Try to find a valid sender email from the ZENTRA configuration
      *
      * @param int|null $entities_id  Entity configuration to be used, default to
      *                               global configuration
@@ -1966,7 +1966,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid "from" email from the GLPI configuration
+     * Try to find a valid "from" email from the ZENTRA configuration
      *
      * @param int|null $entities_id  Entity configuration to be used, default to
      *                               global configuration
@@ -1979,7 +1979,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid "admin_email" email from the GLPI configuration
+     * Try to find a valid "admin_email" email from the ZENTRA configuration
      *
      * @param int|null $entities_id  Entity configuration to be used, default to
      *                               global configuration
@@ -1992,7 +1992,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid noreply email from the GLPI configuration
+     * Try to find a valid noreply email from the ZENTRA configuration
      *
      * @param int|null $entities_id  Entity configuration to be used, default to
      *                               global configuration
@@ -2005,7 +2005,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid replyto email from the GLPI configuration
+     * Try to find a valid replyto email from the ZENTRA configuration
      *
      * @param int|null $entities_id  Entity configuration to be used, default to
      *                               global configuration
@@ -2018,7 +2018,7 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Try to find a valid email from the GLPI configuration
+     * Try to find a valid email from the ZENTRA configuration
      *
      * @param string   $config_name  Configuration name
      * @param int|null $entities_id  Entity configuration to be used, default to
@@ -2028,7 +2028,7 @@ class Config extends CommonDBTM
      */
     private static function getEmailSenderFromEntityOrConfig(string $config_name, ?int $entities_id = null): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $email_config_name = $config_name;
         $name_config_name  = $config_name . '_name';
@@ -2060,8 +2060,8 @@ class Config extends CommonDBTM
         }
 
         // Fallback to global configuration
-        $global_sender_email = $CFG_GLPI[$email_config_name] ?? "";
-        $global_sender_name  = $CFG_GLPI[$name_config_name]  ?? "";
+        $global_sender_email = $CFG_ZENTRA[$email_config_name] ?? "";
+        $global_sender_name  = $CFG_ZENTRA[$name_config_name]  ?? "";
 
         if (NotificationMailing::isUserAddressValid($global_sender_email)) {
             return [
@@ -2096,7 +2096,7 @@ class Config extends CommonDBTM
     /**
      * Gets the ID of a random record from the config table with the specified context.
      *
-     * Used as a hacky workaround when we require a valid glpi_configs record for rights checks.
+     * Used as a hacky workaround when we require a valid zentra_configs record for rights checks.
      * We cannot rely on something being in ID 1 for the core context for example, because some clustering solutions may change how autoincrement works.
      * @return ?int
      * @internal
@@ -2119,15 +2119,15 @@ class Config extends CommonDBTM
 
     public static function allowUnauthenticatedUploads(): bool
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var array $CFG_ZENTRA */
+        global $CFG_ZENTRA;
 
-        return (bool) ($CFG_GLPI['allow_unauthenticated_uploads'] ?? false);
+        return (bool) ($CFG_ZENTRA['allow_unauthenticated_uploads'] ?? false);
     }
 
     public static function isHlApiEnabled(): bool
     {
-        global $CFG_GLPI;
-        return (bool) ($CFG_GLPI['enable_hlapi'] ?? 0);
+        global $CFG_ZENTRA;
+        return (bool) ($CFG_ZENTRA['enable_hlapi'] ?? 0);
     }
 }

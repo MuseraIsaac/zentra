@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\Parameters\ChangeParameters;
-use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
-use Glpi\DBAL\QueryExpression;
-use Glpi\RichText\RichText;
-use Glpi\Search\DefaultSearchRequestInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\ContentTemplates\Parameters\ChangeParameters;
+use Zentra\ContentTemplates\Parameters\CommonITILObjectParameters;
+use Zentra\DBAL\QueryExpression;
+use Zentra\RichText\RichText;
+use Zentra\Search\DefaultSearchRequestInterface;
 
 /**
  * Change Class
@@ -91,10 +91,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
               && (Session::haveRight(self::$rightname, UPDATE)
                   || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                          || (isset($_SESSION["glpigroups"])
+                          || (isset($_SESSION["zentragroups"])
                               && $this->haveAGroup(
                                   CommonITILActor::ASSIGN,
-                                  $_SESSION["glpigroups"]
+                                  $_SESSION["zentragroups"]
                               ))))));
     }
 
@@ -116,17 +116,17 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
               || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
+                      || (isset($_SESSION["zentragroups"])
+                          && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["zentragroups"])
                               || $this->haveAGroup(
                                   CommonITILActor::OBSERVER,
-                                  $_SESSION["glpigroups"]
+                                  $_SESSION["zentragroups"]
                               )))
                       || ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                          || (isset($_SESSION["glpigroups"])
+                          || (isset($_SESSION["zentragroups"])
                               && $this->haveAGroup(
                                   CommonITILActor::ASSIGN,
-                                  $_SESSION["glpigroups"]
+                                  $_SESSION["zentragroups"]
                               ))))));
     }
 
@@ -203,9 +203,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     #[Override]
     public function pre_deleteItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+        if (!isset($this->input['_disablenotif']) && $CFG_ZENTRA['use_notifications']) {
             NotificationEvent::raiseEvent('delete', $this);
         }
         return true;
@@ -226,7 +226,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -248,14 +248,14 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
                 case User::class:
                     $nb = 0;
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            ['glpi_changes', 'glpi_changes_users'],
+                            ['zentra_changes', 'zentra_changes_users'],
                             [
-                                'glpi_changes_users.changes_id'  => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
-                                'glpi_changes_users.users_id'    => $item->getID(),
-                                'glpi_changes_users.type'        => CommonITILActor::REQUESTER,
-                                'glpi_changes.is_deleted'        => 0,
+                                'zentra_changes_users.changes_id'  => new QueryExpression(DBmysql::quoteName('zentra_changes.id')),
+                                'zentra_changes_users.users_id'    => $item->getID(),
+                                'zentra_changes_users.type'        => CommonITILActor::REQUESTER,
+                                'zentra_changes.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
@@ -263,14 +263,14 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
                 case Group::class:
                     $nb = 0;
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            ['glpi_changes', 'glpi_changes_groups'],
+                            ['zentra_changes', 'zentra_changes_groups'],
                             [
-                                'glpi_changes_groups.changes_id' => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
-                                'glpi_changes_groups.groups_id'  => $item->getID(),
-                                'glpi_changes_groups.type'       => CommonITILActor::REQUESTER,
-                                'glpi_changes.is_deleted'        => 0,
+                                'zentra_changes_groups.changes_id' => new QueryExpression(DBmysql::quoteName('zentra_changes.id')),
+                                'zentra_changes_groups.groups_id'  => $item->getID(),
+                                'zentra_changes_groups.type'       => CommonITILActor::REQUESTER,
+                                'zentra_changes.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
@@ -281,7 +281,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -359,7 +359,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     #[Override]
     public function post_updateItem($history = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         parent::post_updateItem($history);
 
@@ -373,7 +373,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             $donotif = false;
         }
 
-        if ($donotif && $CFG_GLPI["use_notifications"]) {
+        if ($donotif && $CFG_ZENTRA["use_notifications"]) {
             $mailtype = "update";
             if (
                 isset($this->input["status"]) && $this->input["status"]
@@ -507,7 +507,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab[] = [
             'id'                 => '68',
-            'table'              => 'glpi_changes_items',
+            'table'              => 'zentra_changes_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of items'),
             'forcegroupby'       => true,
@@ -521,7 +521,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_changes_items',
+            'table'              => 'zentra_changes_items',
             'field'              => 'items_id',
             'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
             'datatype'           => 'specific',
@@ -537,7 +537,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => 'glpi_changes_items',
+            'table'              => 'zentra_changes_items',
             'field'              => 'itemtype',
             'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
             'datatype'           => 'itemtypename',
@@ -629,7 +629,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab[] = [
             'id'                 => '164',
-            'table'              => 'glpi_changes_tickets',
+            'table'              => 'zentra_changes_tickets',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of tickets'),
             'forcegroupby'       => true,
@@ -648,7 +648,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab[] = [
             'id'                 => '165',
-            'table'              => 'glpi_changes_problems',
+            'table'              => 'zentra_changes_problems',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of problems'),
             'forcegroupby'       => true,
@@ -669,11 +669,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $tab = [];
 
-        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+        if (in_array($itemtype, $CFG_ZENTRA["ticket_types"])) {
             $tab[] = [
                 'id'            => 141,
                 'table'         => self::getTable(),
@@ -703,7 +703,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if ($itemtype == Ticket::class) {
             $tab[] = [
                 'id'                 => '210',
-                'table'              => 'glpi_changes_tickets',
+                'table'              => 'zentra_changes_tickets',
                 'field'              => 'id',
                 'name'               => _x('quantity', 'Number of changes'),
                 'forcegroupby'       => true,
@@ -719,7 +719,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if ($itemtype == Problem::class) {
             $tab[] = [
                 'id'                 => '211',
-                'table'              => 'glpi_changes_problems',
+                'table'              => 'zentra_changes_problems',
                 'field'              => 'id',
                 'name'               => _x('quantity', 'Number of changes'),
                 'forcegroupby'       => true,
@@ -870,13 +870,13 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         switch (true) {
             case $item instanceof User:
-                $restrict['glpi_changes_users.users_id'] = $item->getID();
-                $restrict['glpi_changes_users.type'] = CommonITILActor::REQUESTER;
+                $restrict['zentra_changes_users.users_id'] = $item->getID();
+                $restrict['zentra_changes_users.type'] = CommonITILActor::REQUESTER;
                 break;
 
             case $item instanceof Supplier:
-                $restrict['glpi_changes_suppliers.suppliers_id'] = $item->getID();
-                $restrict['glpi_changes_suppliers.type'] = CommonITILActor::ASSIGN;
+                $restrict['zentra_changes_suppliers.suppliers_id'] = $item->getID();
+                $restrict['zentra_changes_suppliers.type'] = CommonITILActor::ASSIGN;
                 break;
 
             case $item instanceof Group:
@@ -885,26 +885,26 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 } else {
                     $tree = 0;
                 }
-                $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_changes_groups.type'] = CommonITILActor::REQUESTER;
+                $restrict['zentra_changes_groups.groups_id'] = ($tree ? getSonsOf('zentra_groups', $item->getID()) : $item->getID());
+                $restrict['zentra_changes_groups.type'] = CommonITILActor::REQUESTER;
                 break;
 
             default:
-                $restrict['glpi_changes_items.items_id'] = $item->getID();
-                $restrict['glpi_changes_items.itemtype'] = $item->getType();
+                $restrict['zentra_changes_items.items_id'] = $item->getID();
+                $restrict['zentra_changes_items.itemtype'] = $item->getType();
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [
-                        'glpi_changes.users_id_recipient'   => Session::getLoginUserID(),
+                        'zentra_changes.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_changes_users.changes_id'  => 'glpi_changes.id',
-                                'glpi_changes_users.users_id'    => Session::getLoginUserID(),
+                                'zentra_changes_users.changes_id'  => 'zentra_changes.id',
+                                'zentra_changes_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],
                     ];
-                    if (count($_SESSION['glpigroups'])) {
-                        $or['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
+                    if (count($_SESSION['zentragroups'])) {
+                        $or['zentra_changes_groups.groups_id'] = $_SESSION['zentragroups'];
                     }
                     $restrict[] = ['OR' => $or];
                 }
@@ -922,7 +922,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             $users_id_requester = 0;
         }
 
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
+        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['zentraactive_entity'], '', 1);
         return [
             '_users_id_requester'        => $users_id_requester,
             '_users_id_requester_notif'  => [
@@ -951,7 +951,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             'urgency'                    => 3,
             'impact'                     => 3,
             'content'                    => '',
-            'entities_id'                => $_SESSION['glpiactive_entity'],
+            'entities_id'                => $_SESSION['zentraactive_entity'],
             'name'                       => '',
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
@@ -991,16 +991,16 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             ],
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                'glpi_changes_items' => [
+                'zentra_changes_items' => [
                     'ON' => [
-                        'glpi_changes_items' => 'changes_id',
+                        'zentra_changes_items' => 'changes_id',
                         $this->getTable()    => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_changes_items.itemtype' => $itemtype,
-                'glpi_changes_items.items_id'    => $items_id,
+                'zentra_changes_items.itemtype' => $itemtype,
+                'zentra_changes_items.items_id'    => $items_id,
                 $this->getTable() . '.is_deleted' => 0,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
@@ -1053,7 +1053,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public static function showCentralList($start, $status = "process", $showgroupchanges = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!static::canView()) {
             return;
@@ -1064,26 +1064,26 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             'is_deleted' => 0,
         ];
         $search_users_id = [
-            'glpi_changes_users.users_id'   => Session::getLoginUserID(),
-            'glpi_changes_users.type'       => CommonITILActor::REQUESTER,
+            'zentra_changes_users.users_id'   => Session::getLoginUserID(),
+            'zentra_changes_users.type'       => CommonITILActor::REQUESTER,
         ];
         $search_assign = [
-            'glpi_changes_users.users_id'   => Session::getLoginUserID(),
-            'glpi_changes_users.type'       => CommonITILActor::ASSIGN,
+            'zentra_changes_users.users_id'   => Session::getLoginUserID(),
+            'zentra_changes_users.type'       => CommonITILActor::ASSIGN,
         ];
 
         if ($showgroupchanges) {
             $search_users_id  = [0];
             $search_assign = [0];
 
-            if (count($_SESSION['glpigroups'])) {
+            if (count($_SESSION['zentragroups'])) {
                 $search_users_id = [
-                    'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
-                    'glpi_changes_groups.type'      => CommonITILActor::REQUESTER,
+                    'zentra_changes_groups.groups_id' => $_SESSION['zentragroups'],
+                    'zentra_changes_groups.type'      => CommonITILActor::REQUESTER,
                 ];
                 $search_assign = [
-                    'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
-                    'glpi_changes_groups.type'      => CommonITILActor::ASSIGN,
+                    'zentra_changes_groups.groups_id' => $_SESSION['zentragroups'],
+                    'zentra_changes_groups.type'      => CommonITILActor::ASSIGN,
                 ];
             }
         }
@@ -1107,10 +1107,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             case "tovalidate": // changes waiting for validation
                 $JOINS['LEFT JOIN'] = [
-                    'glpi_changevalidations' => [
+                    'zentra_changevalidations' => [
                         'ON' => [
-                            'glpi_changevalidations'   => 'changes_id',
-                            'glpi_changes'             => 'id',
+                            'zentra_changevalidations'   => 'changes_id',
+                            'zentra_changes'             => 'id',
                         ],
                     ],
                 ];
@@ -1118,10 +1118,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                     $WHERE,
                     [
                         ChangeValidation::getTargetCriteriaForUser(Session::getLoginUserID()),
-                        'glpi_changevalidations.status'  => CommonITILValidation::WAITING,
-                        'glpi_changes.global_validation' => CommonITILValidation::WAITING,
+                        'zentra_changevalidations.status'  => CommonITILValidation::WAITING,
+                        'zentra_changes.global_validation' => CommonITILValidation::WAITING,
                         'NOT'                            => [
-                            'glpi_changevalidations.status'   => [self::SOLVED, self::CLOSED],
+                            'zentra_changevalidations.status'   => [self::SOLVED, self::CLOSED],
                         ],
                     ]
                 );
@@ -1139,24 +1139,24 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $criteria = [
-            'SELECT'          => ['glpi_changes.id'],
+            'SELECT'          => ['zentra_changes.id'],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_changes',
+            'FROM'            => 'zentra_changes',
             'LEFT JOIN'       => [
-                'glpi_changes_users'   => [
+                'zentra_changes_users'   => [
                     'ON' => [
-                        'glpi_changes_users'   => 'changes_id',
-                        'glpi_changes'         => 'id',
+                        'zentra_changes_users'   => 'changes_id',
+                        'zentra_changes'         => 'id',
                     ],
                 ],
-                'glpi_changes_groups'  => [
+                'zentra_changes_groups'  => [
                     'ON' => [
-                        'glpi_changes_groups'  => 'changes_id',
-                        'glpi_changes'         => 'id',
+                        'zentra_changes_groups'  => 'changes_id',
+                        'zentra_changes'         => 'id',
                     ],
                 ],
             ],
-            'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
+            'WHERE'           => $WHERE + getEntitiesRestrictCriteria('zentra_changes'),
             'ORDERBY'         => 'date_mod DESC',
         ];
 
@@ -1167,7 +1167,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         $iterator = $DB->request($criteria);
 
         $total_row_count = count($iterator);
-        $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
+        $displayed_row_count = min((int) $_SESSION['zentradisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
             $options  = [
@@ -1348,7 +1348,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                     ];
 
                     if ($change->getFromDBwithData($data['id'])) {
-                        $bgcolor = htmlescape($_SESSION["glpipriority_" . $change->fields["priority"]]);
+                        $bgcolor = htmlescape($_SESSION["zentrapriority_" . $change->fields["priority"]]);
                         $name = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
                         $row['values'][] = [
                             'class' => 'badge_block',
@@ -1378,7 +1378,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
                                 $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
-                                    . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                                    . htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
@@ -1432,7 +1432,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // show a tab with count of jobs in the central and give link
         if (!static::canView()) {
@@ -1458,41 +1458,41 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         if ($foruser) {
             $criteria['LEFT JOIN'] = [
-                'glpi_changes_users' => [
+                'zentra_changes_users' => [
                     'ON' => [
-                        'glpi_changes_users'   => 'changes_id',
+                        'zentra_changes_users'   => 'changes_id',
                         $table                  => 'id', [
                             'AND' => [
-                                'glpi_changes_users.type' => CommonITILActor::REQUESTER,
+                                'zentra_changes_users.type' => CommonITILActor::REQUESTER,
                             ],
                         ],
                     ],
                 ],
             ];
-            $WHERE = ['glpi_changes_users.users_id' => Session::getLoginUserID()];
+            $WHERE = ['zentra_changes_users.users_id' => Session::getLoginUserID()];
 
             if (
-                isset($_SESSION["glpigroups"])
-                && count($_SESSION["glpigroups"])
+                isset($_SESSION["zentragroups"])
+                && count($_SESSION["zentragroups"])
             ) {
-                $criteria['LEFT JOIN']['glpi_changes_groups'] = [
+                $criteria['LEFT JOIN']['zentra_changes_groups'] = [
                     'ON' => [
-                        'glpi_changes_groups'  => 'changes_id',
+                        'zentra_changes_groups'  => 'changes_id',
                         $table                  => 'id', [
                             'AND' => [
-                                'glpi_changes_groups.type' => CommonITILActor::REQUESTER,
+                                'zentra_changes_groups.type' => CommonITILActor::REQUESTER,
                             ],
                         ],
                     ],
                 ];
-                $WHERE['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
+                $WHERE['zentra_changes_groups.groups_id'] = $_SESSION['zentragroups'];
             }
             $criteria['WHERE'][] = ['OR' => $WHERE];
         }
 
         $deleted_criteria = $criteria;
-        $criteria['WHERE']['glpi_changes.is_deleted'] = 0;
-        $deleted_criteria['WHERE']['glpi_changes.is_deleted'] = 1;
+        $criteria['WHERE']['zentra_changes.is_deleted'] = 0;
+        $deleted_criteria['WHERE']['zentra_changes.is_deleted'] = 1;
         $iterator = $DB->request($criteria);
         $deleted_iterator = $DB->request($deleted_criteria);
 
@@ -1519,7 +1519,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         $twig_params = [
             'title'     => [
-                'link'   => $CFG_GLPI["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
+                'link'   => $CFG_ZENTRA["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
                 'text'   => self::getTypeName(Session::getPluralNumber()),
                 'icon'   => self::getIcon(),
             ],
@@ -1529,7 +1529,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         foreach ($status as $key => $val) {
             $options['criteria'][0]['value'] = $key;
             $twig_params['items'][] = [
-                'link'   => $CFG_GLPI["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
+                'link'   => $CFG_ZENTRA["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
                 'text'   => self::getStatus($key),
                 'icon'   => self::getStatusClass($key),
                 'count'  => $val,
@@ -1539,7 +1539,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         $options['criteria'][0]['value'] = 'all';
         $options['is_deleted']  = 1;
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
             'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted,
@@ -1569,7 +1569,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         $change   = new self();
         $rand      = mt_rand();
         if ($change->getFromDBwithData($ID)) {
-            $bgcolor = htmlescape($_SESSION["glpipriority_" . $change->fields["priority"]]);
+            $bgcolor = htmlescape($_SESSION["zentrapriority_" . $change->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -1613,7 +1613,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 && count($change->groups[CommonITILActor::REQUESTER])
             ) {
                 foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
+                    echo htmlescape(Dropdown::getDropdownName("zentra_groups", $d["groups_id"]));
                     echo "<br>";
                 }
             }

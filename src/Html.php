@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,27 +34,27 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
-use Glpi\Application\Environment;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Console\Application;
-use Glpi\Dashboard\Grid;
-use Glpi\Debug\Profile as DebugProfile;
-use Glpi\Debug\Profiler;
-use Glpi\Error\ErrorHandler;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Exception\RedirectException;
-use Glpi\Form\Form;
-use Glpi\Form\ServiceCatalog\ServiceCatalog;
-use Glpi\Inventory\Inventory;
-use Glpi\Plugin\Hooks;
-use Glpi\System\Log\LogViewer;
-use Glpi\Toolbox\FrontEnd;
-use Glpi\Toolbox\URL;
-use Glpi\UI\ThemeManager;
+use Zentra\Application\Environment;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinition;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\Console\Application;
+use Zentra\Dashboard\Grid;
+use Zentra\Debug\Profile as DebugProfile;
+use Zentra\Debug\Profiler;
+use Zentra\Error\ErrorHandler;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Exception\RedirectException;
+use Zentra\Form\Form;
+use Zentra\Form\ServiceCatalog\ServiceCatalog;
+use Zentra\Inventory\Inventory;
+use Zentra\Plugin\Hooks;
+use Zentra\System\Log\LogViewer;
+use Zentra\Toolbox\FrontEnd;
+use Zentra\Toolbox\URL;
+use Zentra\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
@@ -78,7 +78,7 @@ use function Safe\strtotime;
 class Html
 {
     /**
-     * Memory required to compile the main GLPI scss file (`css/glpi.scss`).
+     * Memory required to compile the main ZENTRA scss file (`css/zentra.scss`).
      * It currently requires 120 MB, but may increase a bit when the dependencies are updated.
      */
     public const MAIN_SCSS_COMPILATION_REQUIRED_MEMORY = 192 * 1024 * 1024;
@@ -146,11 +146,11 @@ class Html
             return null;
         }
 
-        if (!isset($_SESSION["glpidate_format"])) {
-            $_SESSION["glpidate_format"] = 0;
+        if (!isset($_SESSION["zentradate_format"])) {
+            $_SESSION["zentradate_format"] = 0;
         }
         if ($format === null) {
-            $format = (int) $_SESSION["glpidate_format"];
+            $format = (int) $_SESSION["zentradate_format"];
         }
 
         try {
@@ -274,7 +274,7 @@ class Html
      **/
     public static function formatNumber($number, $edit = false, $forcedecimal = -1)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Php 5.3 : number_format() expects parameter 1 to be double,
         if ($number === '') {
@@ -284,7 +284,7 @@ class Html
         }
 
         $number  = (float) $number;
-        $decimal = $CFG_GLPI["decimal_number"];
+        $decimal = $CFG_ZENTRA["decimal_number"];
         if ($forcedecimal >= 0) {
             $decimal = $forcedecimal;
         }
@@ -295,7 +295,7 @@ class Html
         }
 
         // Display : clean display
-        return match ((int) $_SESSION['glpinumber_format']) {
+        return match ((int) $_SESSION['zentranumber_format']) {
             0 => number_format($number, $decimal, '.', ' '),
             2 => number_format($number, $decimal, ',', ' '),
             3 => number_format($number, $decimal, '.', ''),
@@ -591,7 +591,7 @@ class Html
     /**
      * Return an URL for getting back to previous page.
      * Remove `forcetab` parameter if exists to prevent bad tab display.
-     * If the referer does not match a valid URL, return value will be the GLPI index page.
+     * If the referer does not match a valid URL, return value will be the ZENTRA index page.
      *
      * @since 9.2.2
      * @since 11.0.0 The `$url_in` parameter has been removed.
@@ -600,12 +600,12 @@ class Html
      */
     public static function getBackUrl()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $referer_url  = self::getRefererUrl();
 
         if ($referer_url === null) {
-            return $CFG_GLPI['url_base'];
+            return $CFG_ZENTRA['url_base'];
         }
 
         $referer_query = parse_url($referer_url, PHP_URL_QUERY);
@@ -835,7 +835,7 @@ class Html
 
         echo $out;
         if (!$params['create']) {
-            self::glpi_flush();
+            self::zentra_flush();
         }
     }
 
@@ -887,7 +887,7 @@ class Html
         );
 
         self::progressBar('doaction_progress', ['message' => $msg]);
-        self::glpi_flush();
+        self::zentra_flush();
     }
 
 
@@ -924,7 +924,7 @@ class Html
         }
 
         self::progressBar('doaction_progress', $options);
-        self::glpi_flush();
+        self::zentra_flush();
     }
 
 
@@ -980,7 +980,7 @@ HTML;
             echo $output;
         } else {
             echo Toolbox::str_pad($output, 4096);
-            self::glpi_flush();
+            self::zentra_flush();
         }
     }
 
@@ -1035,7 +1035,7 @@ TWIG,
         bool $allow_insecured_iframe = false,
         bool $display = true
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
@@ -1054,10 +1054,10 @@ TWIG,
         self::header_nocache();
 
         $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
+        $lang = $_SESSION['zentralanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$lang][3],
+            'lang'               => $CFG_ZENTRA["languages"][$lang][3],
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
@@ -1070,7 +1070,7 @@ TWIG,
 
         Html::requireJs('tinymce');
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
+        if (isset($CFG_ZENTRA['notifications_ajax']) && $CFG_ZENTRA['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
         }
 
@@ -1078,7 +1078,7 @@ TWIG,
         Html::requireJs('leaflet');
 
         $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr.css'];
-        // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
+        // Include dark theme as base (may be cleaner look than light; colors overriden by ZENTRA's stylesheet)
         $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr/themes/dark.css'];
         Html::requireJs('flatpickr');
 
@@ -1086,7 +1086,7 @@ TWIG,
         Html::requireJs('photoswipe');
 
         $is_monaco_added = false;
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+        if ($_SESSION['zentra_use_mode'] === Session::DEBUG_MODE) {
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
             $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             $is_monaco_added = true;
@@ -1097,15 +1097,15 @@ TWIG,
         //on demand JS.
         if ($sector != 'none' || $item != 'none' || $option != '') {
             $jslibs = [];
-            if (isset($CFG_GLPI['javascript'][$sector])) {
-                if (isset($CFG_GLPI['javascript'][$sector][$item])) {
-                    if (isset($CFG_GLPI['javascript'][$sector][$item][$option])) {
-                        $jslibs = $CFG_GLPI['javascript'][$sector][$item][$option];
+            if (isset($CFG_ZENTRA['javascript'][$sector])) {
+                if (isset($CFG_ZENTRA['javascript'][$sector][$item])) {
+                    if (isset($CFG_ZENTRA['javascript'][$sector][$item][$option])) {
+                        $jslibs = $CFG_ZENTRA['javascript'][$sector][$item][$option];
                     } else {
-                        $jslibs = $CFG_GLPI['javascript'][$sector][$item];
+                        $jslibs = $CFG_ZENTRA['javascript'][$sector][$item];
                     }
                 } else {
-                    $jslibs = $CFG_GLPI['javascript'][$sector];
+                    $jslibs = $CFG_ZENTRA['javascript'][$sector];
                 }
             }
 
@@ -1199,18 +1199,18 @@ TWIG,
         // load fuzzy search everywhere
         Html::requireJs('fuzzy');
 
-        // load glpi dailog everywhere
-        Html::requireJs('glpi_dialog');
+        // load zentra dailog everywhere
+        Html::requireJs('zentra_dialog');
 
         // load log filters everywhere
         Html::requireJs('log_filters');
 
-        if ($_SESSION['glpiisrtl'] ?? false) {
+        if ($_SESSION['zentraisrtl'] ?? false) {
             $tpl_vars['css_files'][] = ['path' => 'lib/tabler.rtl.css'];
         } else {
             $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         }
-        $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
+        $tpl_vars['css_files'][] = ['path' => 'css/zentra.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
 
         foreach (ThemeManager::getInstance()->getCustomThemesPaths() as $theme_path) {
@@ -1228,8 +1228,8 @@ TWIG,
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $tpl_vars['glpi_request_id'] = DebugProfile::getCurrent()->getID();
+        if ($_SESSION['zentra_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['zentra_request_id'] = DebugProfile::getCurrent()->getID();
         }
 
         if ($display) {
@@ -1249,7 +1249,7 @@ TWIG,
      **/
     public static function getMenuInfos()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
         $default_asset_dashboard = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('assets');
@@ -1266,7 +1266,7 @@ TWIG,
                         'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable',
                     ],
                     AssetDefinitionManager::getInstance()->getCustomObjectClassNames(),
-                    $CFG_GLPI['devices_in_menu']
+                    $CFG_ZENTRA['devices_in_menu']
                 ),
                 'icon'    => 'ti ti-package',
             ],
@@ -1348,11 +1348,11 @@ TWIG,
     }
 
     /**
-     * Generate menu array in $_SESSION['glpimenu'] and return the array
+     * Generate menu array in $_SESSION['zentramenu'] and return the array
      *
      * @since  9.2
      *
-     * @param  bool $force do we need to force regeneration of $_SESSION['glpimenu']
+     * @param  bool $force do we need to force regeneration of $_SESSION['zentramenu']
      * @return array the menu array
      */
     public static function generateMenuSession($force = false)
@@ -1363,9 +1363,9 @@ TWIG,
         if (
             $force
             || Environment::get()->shouldExpectResourcesToChange()
-            || !isset($_SESSION['glpimenu'])
-            || !is_array($_SESSION['glpimenu'])
-            || (count($_SESSION['glpimenu']) == 0)
+            || !isset($_SESSION['zentramenu'])
+            || !is_array($_SESSION['zentramenu'])
+            || (count($_SESSION['zentramenu']) == 0)
         ) {
             $menu = self::getMenuInfos();
 
@@ -1453,9 +1453,9 @@ TWIG,
                 }
             }
 
-            $_SESSION['glpimenu'] = $menu;
+            $_SESSION['zentramenu'] = $menu;
         } else {
-            $menu = $_SESSION['glpimenu'];
+            $menu = $_SESSION['zentramenu'];
         }
 
         return $menu;
@@ -1623,7 +1623,7 @@ TWIG,
         /**
          * @var bool $HEADER_LOADED
          */
-        global $CFG_GLPI, $HEADER_LOADED, $DB;
+        global $CFG_ZENTRA, $HEADER_LOADED, $DB;
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1687,7 +1687,7 @@ TWIG,
         /**
          * @var bool $FOOTER_LOADED
          */
-        global $CFG_GLPI, $FOOTER_LOADED;
+        global $CFG_ZENTRA, $FOOTER_LOADED;
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1701,15 +1701,15 @@ TWIG,
         }
         $FOOTER_LOADED = true;
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_ZENTRA['notifications_ajax']) && $CFG_ZENTRA['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
-                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
-                'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
+                'interval'  => ($CFG_ZENTRA['notifications_ajax_check_interval'] ?: 5) * 1000,
+                'sound'     => $CFG_ZENTRA['notifications_ajax_sound'] ?: false,
+                'icon'      => ($CFG_ZENTRA["notifications_ajax_icon_url"] ? $CFG_ZENTRA['root_doc'] . $CFG_ZENTRA['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
             $js = "$(function() {
-            notifications_ajax = new GLPINotificationsAjax(" . json_encode($options) . ");
+            notifications_ajax = new ZENTRANotificationsAjax(" . json_encode($options) . ");
             notifications_ajax.start();
          });";
             echo Html::scriptBlock($js);
@@ -1721,7 +1721,7 @@ TWIG,
         ];
 
         // On demand scripts
-        foreach ($_SESSION['glpi_js_toload'] ?? [] as $scripts) {
+        foreach ($_SESSION['zentra_js_toload'] ?? [] as $scripts) {
             if (!is_array($scripts)) {
                 $scripts = [$scripts];
             }
@@ -1729,16 +1729,16 @@ TWIG,
                 $tpl_vars['js_files'][] = ['path' => $script];
             }
         }
-        $_SESSION['glpi_js_toload'] = [];
+        $_SESSION['zentra_js_toload'] = [];
 
         // Locales for js libraries
-        if (isset($_SESSION['glpilanguage'])) {
+        if (isset($_SESSION['zentralanguage'])) {
             // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
+                $CFG_ZENTRA["languages"][$_SESSION['zentralanguage']][2]
             );
-            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
+            if (file_exists(ZENTRA_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
             }
         }
@@ -1750,7 +1750,7 @@ TWIG,
         self::displayMessageAfterRedirect();
         Profiler::getInstance()->stopAll();
         if (
-            $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            $_SESSION['zentra_use_mode'] === Session::DEBUG_MODE
             && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
         ) {
             $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
@@ -1795,7 +1795,7 @@ TWIG,
 
         // force layout to horizontal if not connected
         if (!Session::getLoginUserID()) {
-            $_SESSION['glpipage_layout'] = "horizontal";
+            $_SESSION['zentrapage_layout'] = "horizontal";
         }
 
         // construct menu from passed links
@@ -1839,7 +1839,7 @@ TWIG,
         /**
          * @var bool $HEADER_LOADED
          */
-        global $CFG_GLPI, $HEADER_LOADED;
+        global $CFG_ZENTRA, $HEADER_LOADED;
 
         // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
@@ -1877,13 +1877,13 @@ TWIG,
      */
     private static function getPageHeaderTplVars(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $found_new_version = null;
-        if (!empty($CFG_GLPI['found_new_version'] ?? null)) {
-            $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-            $found_new_version = version_compare($current_version, $CFG_GLPI['found_new_version'], '<')
-            ? $CFG_GLPI['found_new_version']
+        if (!empty($CFG_ZENTRA['found_new_version'] ?? null)) {
+            $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', ZENTRA_VERSION);
+            $found_new_version = version_compare($current_version, $CFG_ZENTRA['found_new_version'], '<')
+            ? $CFG_ZENTRA['found_new_version']
             : null;
         }
 
@@ -1906,12 +1906,12 @@ TWIG,
         $help_url_key = Session::getCurrentInterface() === 'central'
             ? 'central_doc_url'
             : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key])
-            ? $CFG_GLPI[$help_url_key]
-            : 'https://glpi-project.org/documentation';
+        $help_url = !empty($CFG_ZENTRA[$help_url_key])
+            ? $CFG_ZENTRA[$help_url_key]
+            : 'https://zentra-project.org/documentation';
 
         return [
-            'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
+            'is_debug_active'       => $_SESSION['zentra_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
             'found_new_version'   => $found_new_version,
             'user'                  => $user instanceof User ? $user : null,
@@ -2013,7 +2013,7 @@ TWIG,
      * Print a nice HTML head for iframed windows
      * This header remove any security for iframe (NO SAMEORIGIN, etc)
      * And should be used ONLY for iframing windows in other applications.
-     * It should NOT be used for GLPI internal iframing.
+     * It should NOT be used for ZENTRA internal iframing.
      *
      * @since 10.0.7
      *
@@ -2073,10 +2073,10 @@ TWIG,
      *
      * @return void
      */
-    public static function glpi_flush()
+    public static function zentra_flush()
     {
         trigger_error(
-            '`Html::glpi_glush()` no longer has any effect.',
+            '`Html::zentra_glush()` no longer has any effect.',
             E_USER_WARNING
         );
     }
@@ -2166,7 +2166,7 @@ TWIG,
 
             // Only the given massive tag !
             if (!empty($params['tag_for_massive'])) {
-                $criterion .= '[data-glpicore-cb-massive-tags~="' . $params['tag_for_massive'] . '"]';
+                $criterion .= '[data-zentracore-cb-massive-tags~="' . $params['tag_for_massive'] . '"]';
             }
 
             // Only enabled checkbox
@@ -2199,7 +2199,7 @@ TWIG,
      **/
     public static function getCheckbox(array $options)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params                    = [];
         $params['title']           = '';
@@ -2244,7 +2244,7 @@ TWIG,
         }
 
         if (!empty($params['massive_tags'])) {
-            $params['specific_tags']['data-glpicore-cb-massive-tags'] = $params['massive_tags'];
+            $params['specific_tags']['data-zentracore-cb-massive-tags'] = $params['massive_tags'];
         }
 
         if (!empty($params['specific_tags'])) {
@@ -2306,9 +2306,9 @@ TWIG,
     public static function getMassiveActionCheckBox($itemtype, $id, array $options = [])
     {
 
-        $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
-        if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
-            $options['specific_tags']['data-glpicore-ma-tags'] = 'common';
+        $options['checked']       = (isset($_SESSION['zentramassiveactionselected'][$itemtype][$id]));
+        if (!isset($options['specific_tags']['data-zentracore-ma-tags'])) {
+            $options['specific_tags']['data-zentracore-ma-tags'] = 'common';
         }
 
         if (empty($options['name'])) {
@@ -2368,7 +2368,7 @@ TWIG,
      **/
     public static function getOpenMassiveActionsForm($name = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (empty($name)) {
             $name = 'massaction_' . mt_rand();
@@ -2377,7 +2377,7 @@ TWIG,
         $name = htmlescape($name);
 
         return  "<form name='$name' id='$name' method='post'
-               action='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/massiveaction.php'
+               action='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/front/massiveaction.php'
                enctype='multipart/form-data'>";
     }
 
@@ -2388,7 +2388,7 @@ TWIG,
      * @since 0.84 (before Search::displayMassiveActions)
      * @since 0.85 only 1 parameter (in 0.84 $itemtype required)
      *
-     * @todo replace 'hidden' by data-glpicore-ma-tags ?
+     * @todo replace 'hidden' by data-zentracore-ma-tags ?
      *
      * @param array $options  Array of parameters
      * must contains :
@@ -2419,7 +2419,7 @@ TWIG,
      **/
     public static function showMassiveActions($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
 
@@ -2450,7 +2450,7 @@ TWIG,
             }
         }
 
-        $url = $CFG_GLPI['root_doc'] . "/ajax/massiveaction.php";
+        $url = $CFG_ZENTRA['root_doc'] . "/ajax/massiveaction.php";
         if ($p['container']) {
             $p['extraparams']['container'] = $p['container'];
         }
@@ -2496,7 +2496,7 @@ TWIG,
                             <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
                             . __s('Selection too large, massive action disabled.')
                         . "</span>";
-                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                if ($_SESSION['zentra_use_mode'] === Session::DEBUG_MODE) {
                     $out .= Html::showToolTip(
                         __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
                         ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
@@ -2514,7 +2514,7 @@ TWIG,
                     if (!empty($p['container'])) {
                         $js_modal_fields .= '#' . jsescape($p['container']) . ' ';
                     }
-                    $js_modal_fields .= "[data-glpicore-ma-tags~=" . jsescape($p['tag_to_send']) . "]').each(function( index ) {
+                    $js_modal_fields .= "[data-zentracore-ma-tags~=" . jsescape($p['tag_to_send']) . "]').each(function( index ) {
                   fields[$(this).attr('name')] = $(this).val();
                   if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {
                      fields[$(this).attr('name')] = 0;
@@ -2558,7 +2558,7 @@ TWIG,
                 || (isset($p['forcecreate']) && $p['forcecreate'])
             ) {
                 // Clean selection
-                $_SESSION['glpimassiveactionselected'] = [];
+                $_SESSION['zentramassiveactionselected'] = [];
             }
         }
 
@@ -2600,7 +2600,7 @@ TWIG,
      **/
     public static function showDateField($name, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'value'        => '',
@@ -2675,7 +2675,7 @@ HTML;
 
         $value = json_encode($p['value']);
 
-        $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale = Locale::parseLocale($_SESSION['zentralanguage']);
         $locale_language = jsescape($locale['language']);
         $locale_region   = jsescape($locale['region']);
         $js = <<<JS
@@ -2778,7 +2778,7 @@ JS;
      **/
     public static function showDateTimeField($name, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'value'      => '',
@@ -2803,7 +2803,7 @@ JS;
         }
 
         if ($p['timestep'] < 0) {
-            $p['timestep'] = $CFG_GLPI['time_step'];
+            $p['timestep'] = $CFG_ZENTRA['time_step'];
         }
 
         $date_value = '';
@@ -2860,7 +2860,7 @@ HTML;
         $max_attr = !empty($p['maxdate']) ? sprintf("maxDate: '%s',", jsescape($p['maxdate'])) : "";
         $timestep = (int) $p['timestep'];
 
-        $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale = Locale::parseLocale($_SESSION['zentralanguage']);
         $locale_language = jsescape($locale['language']);
         $locale_region   = jsescape($locale['region']);
         $js = <<<JS
@@ -2916,7 +2916,7 @@ JS;
      **/
     public static function showGenericDateTimeSearch($element, $value = '', $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'with_time'   => false,
@@ -2984,14 +2984,14 @@ JS;
         $output    .= Ajax::updateItemOnSelectEvent(
             $field_id,
             $contentid,
-            $CFG_GLPI["root_doc"] . "/ajax/genericdate.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/genericdate.php",
             $params,
             false
         );
         $params['value']  = $value;
         $output    .= Ajax::updateItem(
             $contentid,
-            $CFG_GLPI["root_doc"] . "/ajax/genericdate.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/genericdate.php",
             $params,
             '',
             false
@@ -3142,7 +3142,7 @@ JS;
     {
 
         if (empty($specifictime)) {
-            $specifictime = strtotime($_SESSION["glpi_currenttime"]);
+            $specifictime = strtotime($_SESSION["zentra_currenttime"]);
         }
 
         $format_use = "Y-m-d H:i:s";
@@ -3347,7 +3347,7 @@ JS;
      */
     public static function showToolTip($content, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $param = [
             'applyto'       => '',
@@ -3438,7 +3438,7 @@ JS;
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: '" . jsescape($CFG_GLPI['root_doc'] . $param['url']) . "',
+                    url: '" . jsescape($CFG_ZENTRA['root_doc'] . $param['url']) . "',
                     type: 'GET',
                     data: {},
                 },
@@ -3511,21 +3511,21 @@ JS;
         bool $init_on_demand = false,
         array $plugins_to_remove = [],
     ) {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $language = $_SESSION['glpilanguage'];
-        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
-            $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
+        $language = $_SESSION['zentralanguage'];
+        if (!file_exists(ZENTRA_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
+            $language = $CFG_ZENTRA["languages"][$_SESSION['zentralanguage']][2];
+            if (!file_exists(ZENTRA_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
+        $language_url = $CFG_ZENTRA['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
 
-        // Apply all GLPI styles to editor content
+        // Apply all ZENTRA styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
-            'css/glpi.scss',
+            'css/zentra.scss',
             'css/core_palettes.scss',
         ];
         if ($theme->isCustomTheme()) {
@@ -3533,21 +3533,21 @@ JS;
         }
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tinymce/skins/ui/oxide/content.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
-        $tabler_path = ($_SESSION['glpiisrtl'] ?? false) ? 'lib/tabler.rtl.css' : 'lib/tabler.css';
+        $tabler_path = ($_SESSION['zentraisrtl'] ?? false) ? 'lib/tabler.rtl.css' : 'lib/tabler.css';
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css($tabler_path, ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
         $content_css = str_replace('&amp;', '&', $content_css);
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/tinymce_empty_skin', ['force_no_version' => true], false));
 
-        $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
+        $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(ZENTRA_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
 
         $invalid_elements = 'applet,canvas,embed,form,object';
         if (!$enable_images) {
             $invalid_elements .= ',img';
         }
-        if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+        if (!ZENTRA_ALLOW_IFRAME_IN_RICH_TEXT) {
             $invalid_elements .= ',iframe';
         }
 
@@ -3565,7 +3565,7 @@ JS;
         ];
         if ($enable_images) {
             $plugins[] = 'image';
-            $plugins[] = 'glpi_upload_doc';
+            $plugins[] = 'zentra_upload_doc';
         }
         if ($DB->use_utf8mb4) {
             $plugins[] = 'emoticons';
@@ -3617,7 +3617,7 @@ JS;
         $js = <<<JS
             $(function() {
                 const html_el = $('html');
-                var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
+                var richtext_layout = "{$_SESSION['zentrarichtext_layout']}";
 
                 // Store config in global var so the editor can be reinitialized from the client side if needed
                 tinymce_editor_configs['{$id}'] = Object.assign({
@@ -3632,7 +3632,7 @@ JS;
                     plugins: {$pluginsjs},
 
                     // Appearance
-                    skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
+                    skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core ZENTRA styles.
                     body_class: '{$body_class}',
                     content_css: '{$content_css}',
                     content_style: '{$content_style}',
@@ -3686,8 +3686,8 @@ JS;
                     init_instance_callback: (editor) => {
                         const page_root_el = $(document.documentElement);
                         const root_el = $(editor.dom.doc.documentElement);
-                        // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
-                        const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                        // Copy data-zentra-theme and data-zentra-theme-dark from page html element to editor root element
+                        const to_copy = ['data-zentra-theme', 'data-zentra-theme-dark'];
                         for (const attr of to_copy) {
                             if (page_root_el.attr(attr) !== undefined) {
                                 root_el.attr(attr, page_root_el.attr(attr));
@@ -3804,7 +3804,7 @@ JS;
 
                 if ({$init_on_demand}) {
                     const textarea = $('#{$id}');
-                    const div = $(`<div role="textbox" tabindex="0" class="text-muted text-break" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted text-break" data-zentra-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
                 }
             });
@@ -3837,7 +3837,7 @@ JS;
          $(
             function() {
                var editor_id = $('{$selector}').attr('id');
-               var user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
+               var user_templates_autocomplete = new ZENTRA.RichText.ContentTemplatesParameters(
                   tinymce.get(editor_id),
                   {$values}
                );
@@ -3860,10 +3860,10 @@ JAVASCRIPT
         string $preset_target,
         ?string $link_id = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
-        $link =  $CFG_GLPI['root_doc'] . $url;
+        $link =  $CFG_ZENTRA['root_doc'] . $url;
 
         echo sprintf(
             '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help"></i></a>',
@@ -3920,11 +3920,11 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 11.1, they are not used.
+     * @TODO Deprecate $additional_info, $display and $additional_params params in ZENTRA 11.1, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
-        $list_limit = $_SESSION['glpilist_limit'];
+        $list_limit = $_SESSION['zentralist_limit'];
         // Forward is the next step forward
         $forward = $start + $list_limit;
 
@@ -4085,7 +4085,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info param in GLPI 11.1, it is not used.
+     * @TODO Deprecate $additional_info param in ZENTRA 11.1, it is not used.
      * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
      */
     public static function printPager(
@@ -4097,11 +4097,11 @@ JAVASCRIPT
         $item_type_output_param = 0,
         $additional_info = ''
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $start      = (int) $start;
         $numrows    = (int) $numrows;
-        $list_limit = (int) $_SESSION['glpilist_limit'];
+        $list_limit = (int) $_SESSION['zentralist_limit'];
 
         // Forward is the next step forward
         $forward = $start + $list_limit;
@@ -4166,12 +4166,12 @@ JAVASCRIPT
 
         if (
             !empty($item_type_output)
-            && isset($_SESSION["glpiactiveprofile"])
+            && isset($_SESSION["zentraactiveprofile"])
             && (Session::getCurrentInterface() == "central")
             && $numrows > 0
         ) {
             echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
-            echo "<form method='GET' action='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/report.dynamic.php'>";
+            echo "<form method='GET' action='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/front/report.dynamic.php'>";
             echo Html::hidden('item_type', ['value' => $item_type_output]);
 
             if (is_array($item_type_output_param)) {
@@ -4249,7 +4249,7 @@ JAVASCRIPT
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
+            $out .= Dropdown::showListLimit("reloadTab(\"zentralist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
         }
         $out .= Html::closeForm(false);
 
@@ -4314,8 +4314,8 @@ JAVASCRIPT
         $confirm = ''
     ) {
 
-        $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
-        $fields['_glpi_simple_form'] = 1;
+        $fields['_zentra_csrf_token'] = Session::getNewCSRFToken();
+        $fields['_zentra_simple_form'] = 1;
         $button                      = $btname;
         if (!is_array($btname)) {
             $button          = [];
@@ -4405,7 +4405,7 @@ JAVASCRIPT
      **/
     public static function closeForm($display = true)
     {
-        $out = Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+        $out = Html::hidden('_zentra_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
         $out .= "</form>";
         if ($display) {
@@ -4499,12 +4499,12 @@ JAVASCRIPT
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO In ZENTRA 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *       `templateResult`, `templateSelection`.
      */
     public static function jsAdaptDropdown($id, $params = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $width = '';
         if (!empty($params["width"])) {
@@ -4514,7 +4514,7 @@ JAVASCRIPT
 
         $dropdown_css_class  = $params["dropdownCssClass"] ?? '';
         $placeholder         = $params["placeholder"] ?? '';
-        $ajax_limit_count    = (int) $CFG_GLPI['ajax_limit_count'];
+        $ajax_limit_count    = (int) $CFG_ZENTRA['ajax_limit_count'];
         $templateresult      = $params["templateResult"] ?? "templateResult";
         $templateselection   = $params["templateSelection"] ?? "templateSelection";
 
@@ -4564,12 +4564,12 @@ JS;
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO In ZENTRA 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *        `on_change`, `templateResult`, `templateSelection`.
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $default_options = [
             'init'                => true,
@@ -4644,8 +4644,8 @@ JS;
             $options[$tag] = $val;
         }
 
-        $ajax_limit_count = (int) $CFG_GLPI['ajax_limit_count'];
-        $dropdown_max     = (int) $CFG_GLPI['dropdown_max'];
+        $ajax_limit_count = (int) $CFG_ZENTRA['ajax_limit_count'];
+        $dropdown_max     = (int) $CFG_ZENTRA['dropdown_max'];
 
         $output = '';
 
@@ -4814,7 +4814,7 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
+     * @TODO Deprecate this method in ZENTRA 11.1, it is not used anymore in ZENTRA itself.
      **/
     public static function link($text, $url, $options = [])
     {
@@ -5157,9 +5157,9 @@ HTML;
      * Returns one or many script tags depending on the number of scripts given.
      *
      * @since 0.85
-     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
+     * @since 9.2 Path is now relative to ZENTRA_ROOT. Add $minify parameter.
      *
-     * @param string  $url     File to include (relative to GLPI_ROOT)
+     * @param string  $url     File to include (relative to ZENTRA_ROOT)
      * @param array   $options Array of HTML attributes
      * @param bool $minify  Try to load minified file (defaults to true)
      *
@@ -5167,7 +5167,7 @@ HTML;
      **/
     public static function script($url, $options = [], $minify = true)
     {
-        $version = GLPI_VERSION;
+        $version = ZENTRA_VERSION;
         if (isset($options['version'])) {
             $version = $options['version'];
             unset($options['version']);
@@ -5197,9 +5197,9 @@ HTML;
      * Creates a link element for CSS stylesheets.
      *
      * @since 0.85
-     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
+     * @since 9.2 Path is now relative to ZENTRA_ROOT. Add $minify parameter.
      *
-     * @param string  $url     File to include (relative to GLPI_ROOT)
+     * @param string  $url     File to include (relative to ZENTRA_ROOT)
      * @param array   $options Array of HTML attributes
      * @param bool $minify  Try to load minified file (defaults to true)
      *
@@ -5220,7 +5220,7 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string  $url      File to include (relative to GLPI_ROOT)
+     * @param string  $url      File to include (relative to ZENTRA_ROOT)
      * @param array   $options  Array of HTML attributes
      *
      * @return string CSS link tag
@@ -5233,14 +5233,14 @@ HTML;
 
         if (
             file_exists($prod_file)
-            && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+            && $_SESSION['zentra_use_mode'] != Session::DEBUG_MODE
         ) {
-            $url = self::getPrefixedUrl(str_replace(GLPI_ROOT . '/public', '', $prod_file));
+            $url = self::getPrefixedUrl(str_replace(ZENTRA_ROOT . '/public', '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if ($_SESSION['zentra_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
@@ -5253,7 +5253,7 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string $url      File to include (raltive to GLPI_ROOT)
+     * @param string $url      File to include (raltive to ZENTRA_ROOT)
      * @param array  $options  Array of HTML attributes
      *
      * @return string CSS link tag
@@ -5265,7 +5265,7 @@ HTML;
         }
 
         if (!isset($options['force_no_version']) || !$options['force_no_version']) {
-            $version = GLPI_VERSION;
+            $version = ZENTRA_VERSION;
             if (isset($options['version'])) {
                 $version = $options['version'];
                 unset($options['version']);
@@ -5314,7 +5314,7 @@ HTML;
      **/
     public static function file($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $randupload = $options['rand'] ?? mt_rand();
 
@@ -5370,7 +5370,7 @@ HTML;
             'editor_id'     => $p['editor_id'],
         ]);
 
-        $max_file_size  = ((int) $CFG_GLPI['document_max_size']) * 1024 * 1024;
+        $max_file_size  = ((int) $CFG_ZENTRA['document_max_size']) * 1024 * 1024;
         $max_chunk_size = round(Toolbox::getPhpUploadSizeLimit() * 0.9); // keep some place for extra data
 
         $required = "";
@@ -5390,7 +5390,7 @@ HTML;
                       class='form-control'
                       $required
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
-                      data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
+                      data-url='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
@@ -5535,7 +5535,7 @@ JS;
      */
     private static function uploadedFiles($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //default options
         $p['filecontainer']     = 'fileupload_info';
@@ -5555,19 +5555,19 @@ JS;
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo(ZENTRA_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
-                if (!is_readable(GLPI_ROOT . $extensionIcon)) {
+                if (!is_readable(ZENTRA_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
                 }
-                $extensionIcon = $CFG_GLPI['root_doc'] . $extensionIcon;
+                $extensionIcon = $CFG_ZENTRA['root_doc'] . $extensionIcon;
 
                 // Rebuild the minimal data to show the already uploaded files
                 $upload = [
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize(ZENTRA_TMP_DIR . '/' . $upload),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
@@ -5787,7 +5787,7 @@ JS);
          }
          caption = caption || '" . jsescape(_sn('Information', 'Information', 1)) . "';
 
-         glpi_alert({
+         zentra_alert({
             title: caption,
             message: message,
          });
@@ -5822,7 +5822,7 @@ JS);
          message = message.replace('\\n', '<br>');
          caption = caption || '';
 
-         glpi_confirm({
+         zentra_confirm({
             title: caption,
             message: message,
             confirm_callback: function() {
@@ -5874,7 +5874,7 @@ JS);
      */
     public static function jsAlertCallback($msg, $title, $okCallback = null)
     {
-        return "glpi_alert({
+        return "zentra_alert({
          title: '" . jsescape($title) . "',
          message: '" . jsescape($msg) . "',
          ok_callback: function() {
@@ -5899,23 +5899,23 @@ JS);
      */
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $document = new Document();
         if (!$document->getFromDB($document_id)) {
             return '';
         }
 
-        $base_path = $CFG_GLPI['root_doc'];
+        $base_path = $CFG_ZENTRA['root_doc'];
         if (isCommandLine()) {
-            $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+            $base_path = parse_url($CFG_ZENTRA['url_base'], PHP_URL_PATH);
         }
 
         // Add only image files : try to detect mime type
         $ok   = false;
         $mime = '';
         if (isset($document->fields['filepath'])) {
-            $fullpath = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
+            $fullpath = ZENTRA_DOC_DIR . "/" . $document->fields['filepath'];
             $mime = Toolbox::getMime($fullpath);
             $ok   = Toolbox::getMime($fullpath, 'image');
         }
@@ -5948,18 +5948,18 @@ JS);
     /**
      * Get copyright message in HTML (used in footers)
      * @since 9.1
-     * @param bool $withVersion include GLPI version ?
+     * @param bool $withVersion include ZENTRA version ?
      * @return string HTML copyright
      */
     public static function getCopyrightMessage($withVersion = true)
     {
-        #$message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
-        $message .= "GLPI ";
-        // if required, add GLPI version (eg not for login page)
+        #$message = "<a href=\"https://zentra-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+        $message .= "ZENTRA ";
+        // if required, add ZENTRA version (eg not for login page)
         if ($withVersion) {
-            $message .= htmlescape(GLPI_VERSION) . " ";
+            $message .= htmlescape(ZENTRA_VERSION) . " ";
         }
-        $message .= "Copyright (C) " . htmlescape(GLPI_YEAR) . 
+        $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR) . 
          . "</a>";
         return $message;
     }
@@ -5973,101 +5973,101 @@ JS);
      */
     public static function requireJs($name)
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
-        if (isset($_SESSION['glpi_js_toload'][$name])) {
+        if (isset($_SESSION['zentra_js_toload'][$name])) {
             //already in stack
             return;
         }
         switch ($name) {
-            case 'glpi_dialog':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
+            case 'zentra_dialog':
+                $_SESSION['zentra_js_toload'][$name][] = 'js/zentra_dialog.js';
                 break;
             case 'clipboard':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/clipboard.js';
                 break;
             case 'tinymce':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/tinymce.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/RichText/FormTags.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/RichText/UserMention.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
             case 'planning':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/planning.js';
                 break;
             case 'flatpickr':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
-                if (isset($_SESSION['glpilanguage'])) {
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/flatpickr.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
+                if (isset($_SESSION['zentralanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
-                    . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
-                    if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                        $_SESSION['glpi_js_toload'][$name][] = $filename;
+                    . strtolower($CFG_ZENTRA["languages"][$_SESSION['zentralanguage']][3]) . ".js";
+                    if (file_exists(ZENTRA_ROOT . '/public/' . $filename)) {
+                        $_SESSION['zentra_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
             case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
-                if (isset($_SESSION['glpilanguage'])) {
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/fullcalendar.js';
+                if (isset($_SESSION['zentralanguage'])) {
                     foreach ([2, 3] as $loc) {
                         $filename = "lib/fullcalendar/core/locales/"
-                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                            $_SESSION['glpi_js_toload'][$name][] = $filename;
+                         . strtolower($CFG_ZENTRA["languages"][$_SESSION['zentralanguage']][$loc]) . ".js";
+                        if (file_exists(ZENTRA_ROOT . '/public/' . $filename)) {
+                            $_SESSION['zentra_js_toload'][$name][] = $filename;
                             break;
                         }
                     }
                 }
                 break;
             case 'rateit':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/jquery.rateit.js';
                 break;
             case 'fileupload':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/jquery-file-upload.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/fileupload.js';
                 break;
             case 'charts':
-                $_SESSION['glpi_js_toload']['charts'][] = 'lib/echarts.js';
+                $_SESSION['zentra_js_toload']['charts'][] = 'lib/echarts.js';
                 break;
             case 'notifications_ajax':
-                $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
+                $_SESSION['zentra_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
                 break;
             case 'fuzzy':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/fuzzy.js';
                 break;
             case 'marketplace':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/marketplace.js';
                 break;
             case 'gridstack':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/gridstack.js';
                 break;
             case 'masonry':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/masonry.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/masonry.js';
                 break;
             case 'sortable':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/sortable.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/sortable.js';
                 break;
             case 'rack':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/rack.js';
                 break;
             case 'leaflet':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/leaflet.js';
                 break;
             case 'log_filters':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/log_filters.js';
                 break;
             case 'photoswipe':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/photoswipe.js';
                 break;
             case 'reservations':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/reservations.js';
                 break;
             case 'cable':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'js/cable.js';
                 break;
             case 'altcha':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
+                $_SESSION['zentra_js_toload'][$name][] = 'lib/altcha.js';
                 break;
             default:
                 $found = false;
@@ -6078,7 +6078,7 @@ JS);
                         $jslibs = [$jslibs];
                     }
                     foreach ($jslibs as $jslib) {
-                        $_SESSION['glpi_js_toload'][$name][] = $jslib;
+                        $_SESSION['zentra_js_toload'][$name][] = $jslib;
                     }
                 }
                 if (!$found) {
@@ -6095,11 +6095,11 @@ JS);
      */
     private static function loadJavascript()
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         //load on demand scripts
-        if (isset($_SESSION['glpi_js_toload'])) {
-            foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
+        if (isset($_SESSION['zentra_js_toload'])) {
+            foreach ($_SESSION['zentra_js_toload'] as $key => $script) {
                 if (is_array($script)) {
                     foreach ($script as $s) {
                         echo Html::script($s);
@@ -6107,16 +6107,16 @@ JS);
                 } else {
                     echo Html::script($script);
                 }
-                unset($_SESSION['glpi_js_toload'][$key]);
+                unset($_SESSION['zentra_js_toload'][$key]);
             }
         }
 
         //locales for js libraries
-        if (isset($_SESSION['glpilanguage'])) {
+        if (isset($_SESSION['zentralanguage'])) {
             // select2
             $filename = "lib/select2/js/i18n/"
-                     . $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
-            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
+                     . $CFG_ZENTRA["languages"][$_SESSION['zentralanguage']][2] . ".js";
+            if (file_exists(ZENTRA_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
         }
@@ -6125,15 +6125,15 @@ JS);
         self::redefineAlert();
         self::redefineConfirm();
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_ZENTRA['notifications_ajax']) && $CFG_ZENTRA['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
-                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
-                'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
+                'interval'  => ($CFG_ZENTRA['notifications_ajax_check_interval'] ?: 5) * 1000,
+                'sound'     => $CFG_ZENTRA['notifications_ajax_sound'] ?: false,
+                'icon'      => ($CFG_ZENTRA["notifications_ajax_icon_url"] ? $CFG_ZENTRA['root_doc'] . $CFG_ZENTRA['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
             $js = "$(function() {
-            notifications_ajax = new GLPINotificationsAjax(" . json_encode($options) . ");
+            notifications_ajax = new ZENTRANotificationsAjax(" . json_encode($options) . ");
             notifications_ajax.start();
          });";
             echo Html::scriptBlock($js);
@@ -6176,7 +6176,7 @@ JS);
             }
         }
 
-        if (file_exists(GLPI_ROOT . "/js/analytics.js")) {
+        if (file_exists(ZENTRA_ROOT . "/js/analytics.js")) {
             echo Html::script("js/analytics.js");
         }
     }
@@ -6184,37 +6184,37 @@ JS);
 
     /**
      * transfer some var of php to javascript
-     * (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+     * (warning, don't expose all keys of $CFG_ZENTRA, some shouldn't be available client side)
      *
-     * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
+     * @param bool $full if false, don't expose all variables from CFG_ZENTRA (only url_base & root_doc)
      *
      * @since 9.5
      * @return string
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // prevent leak of data for non logged sessions
         $full = $full && (Session::getLoginUserID(true) !== false);
 
-        $cfg_glpi = "var CFG_GLPI  = {
-            'url_base': '" . jsescape((isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')) . "',
-            'root_doc': '" . jsescape($CFG_GLPI["root_doc"]) . "',
+        $cfg_zentra = "var CFG_ZENTRA  = {
+            'url_base': '" . jsescape((isset($CFG_ZENTRA['url_base']) ? $CFG_ZENTRA["url_base"] : '')) . "',
+            'root_doc': '" . jsescape($CFG_ZENTRA["root_doc"]) . "',
         };";
 
         if ($full) {
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
+            $cfg_zentra = "var CFG_ZENTRA  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
         }
 
         $plugins_path = [];
         foreach (Plugin::getPlugins() as $key) {
             $plugins_path[$key] = "/plugins/{$key}";
         }
-        $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
+        $plugins_path = 'var ZENTRA_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
         return self::scriptBlock("
-            $cfg_glpi
+            $cfg_zentra
             $plugins_path
         ");
     }
@@ -6230,12 +6230,12 @@ JS);
      */
     private static function getMiniFile($file_path)
     {
-        $debug = (isset($_SESSION['glpi_use_mode'])
-         && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
+        $debug = (isset($_SESSION['zentra_use_mode'])
+         && $_SESSION['zentra_use_mode'] == Session::DEBUG_MODE);
 
         $file_minpath = str_replace(['.css', '.js'], ['.min.css', '.min.js'], $file_path);
-        if (file_exists(GLPI_ROOT . '/' . $file_minpath)) {
-            if (!$debug || !file_exists(GLPI_ROOT . '/' . $file_path)) {
+        if (file_exists(ZENTRA_ROOT . '/' . $file_minpath)) {
+            if (!$debug || !file_exists(ZENTRA_ROOT . '/' . $file_path)) {
                 return $file_minpath;
             }
         }
@@ -6254,8 +6254,8 @@ JS);
      */
     final public static function getPrefixedUrl(string $url): string
     {
-        global $CFG_GLPI;
-        $prefix = $CFG_GLPI['root_doc'];
+        global $CFG_ZENTRA;
+        $prefix = $CFG_ZENTRA['root_doc'];
 
         // Prevent double `/` between prefix and path.
         $prefix = rtrim($prefix, '/');
@@ -6277,7 +6277,7 @@ JS);
     public static function manageRefreshPage($timer = false, $callback = null)
     {
         if (!$timer) {
-            $timer = $_SESSION['glpirefresh_views'] ?? 0;
+            $timer = $_SESSION['zentrarefresh_views'] ?? 0;
         }
         $timer = (int) $timer;
 
@@ -6310,7 +6310,7 @@ JS);
         $fuzzy_entries = [];
 
         // retrieve menu
-        foreach ($_SESSION['glpimenu'] as $firstlvl) {
+        foreach ($_SESSION['zentramenu'] as $firstlvl) {
             if (isset($firstlvl['default'])) {
                 if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
@@ -6414,7 +6414,7 @@ JS);
      * Compile SCSS styleshet
      *
      * @param array $args Arguments. May contain:
-     *                      - v: version to append (will default to GLPI_VERSION)
+     *                      - v: version to append (will default to ZENTRA_VERSION)
      *                      - debug: if present, will not use Crunched formatter
      *                      - file: filerepresentation  to load
      *                      - reload: force reload and recache
@@ -6424,14 +6424,14 @@ JS);
      */
     public static function compileScss($args)
     {
-        global $CFG_GLPI, $GLPI_CACHE;
+        global $CFG_ZENTRA, $ZENTRA_CACHE;
 
         if (empty($args['file'])) {
             throw new InvalidArgumentException('"file" argument is required.');
         }
 
         $ckey = 'css_';
-        $ckey .= $args['v'] ?? GLPI_VERSION;
+        $ckey .= $args['v'] ?? ZENTRA_VERSION;
 
         $scss = new Compiler();
         if (isset($args['debug'])) {
@@ -6439,8 +6439,8 @@ JS);
             $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
             $scss->setSourceMapOptions(
                 [
-                    'sourceMapBasepath' => GLPI_ROOT . '/',
-                    'sourceRoot'        => $CFG_GLPI['root_doc'] . '/',
+                    'sourceMapBasepath' => ZENTRA_ROOT . '/',
+                    'sourceRoot'        => $CFG_ZENTRA['root_doc'] . '/',
                 ]
             );
         }
@@ -6482,12 +6482,12 @@ JS);
                 return '';
             }
         } else {
-            $path = GLPI_ROOT . '/' . $file;
+            $path = ZENTRA_ROOT . '/' . $file;
 
             // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
             $pathargs = explode('/', $file);
             $pathargs[] = '_' . array_pop($pathargs);
-            $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
+            $pathalt = ZENTRA_ROOT . '/' . implode('/', $pathargs);
 
             if (!file_exists($path) && !file_exists($pathalt)) {
                 trigger_error('Requested file ' . $path . ' does not exists.', E_USER_WARNING);
@@ -6497,14 +6497,14 @@ JS);
                 $path = $pathalt;
             }
 
-            // Prevent import of a file from ouside GLPI dir
+            // Prevent import of a file from ouside ZENTRA dir
             $path = realpath($path);
             if (
-                !str_starts_with($path, realpath(GLPI_ROOT))
-                && !str_starts_with($path, realpath(GLPI_PLUGIN_DOC_DIR)) // Allow files generated by plugins
-                && !str_starts_with($path, realpath(GLPI_THEMES_DIR)) // Allow files in THEMES dir
+                !str_starts_with($path, realpath(ZENTRA_ROOT))
+                && !str_starts_with($path, realpath(ZENTRA_PLUGIN_DOC_DIR)) // Allow files generated by plugins
+                && !str_starts_with($path, realpath(ZENTRA_THEMES_DIR)) // Allow files in THEMES dir
             ) {
-                trigger_error('Requested file ' . $path . ' is outside GLPI file tree.', E_USER_WARNING);
+                trigger_error('Requested file ' . $path . ' is outside ZENTRA file tree.', E_USER_WARNING);
                 return '';
             }
         }
@@ -6517,7 +6517,7 @@ JS);
         $file_hash = self::getScssFileHash($path);
 
         //check if files has changed
-        if (!isset($args['nocache']) && $file_hash != $GLPI_CACHE->get($fckey)) {
+        if (!isset($args['nocache']) && $file_hash != $ZENTRA_CACHE->get($fckey)) {
             //file has changed
             $args['reload'] = true;
         }
@@ -6539,8 +6539,8 @@ JS);
 
                 $possible_filenames  = [];
                 foreach ($possible_extensions as $extension) {
-                    $possible_filenames[] = sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
-                    $possible_filenames[] = sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/%s.%s', ZENTRA_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/_%s.%s', ZENTRA_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
                 }
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {
@@ -6553,7 +6553,7 @@ JS);
         );
 
         if (!isset($args['reload']) && !isset($args['nocache'])) {
-            $css = $GLPI_CACHE->get($ckey);
+            $css = $ZENTRA_CACHE->get($ckey);
             if ($css !== null) {
                 return $css;
             }
@@ -6565,8 +6565,8 @@ JS);
             $result = $scss->compileString($import, dirname($path));
             $css = $result->getCss();
             if (!isset($args['nocache'])) {
-                $GLPI_CACHE->set($ckey, $css);
-                $GLPI_CACHE->set($fckey, $file_hash);
+                $ZENTRA_CACHE->set($ckey, $css);
+                $ZENTRA_CACHE->set($fckey, $file_hash);
             }
         } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
@@ -6631,8 +6631,8 @@ CSS;
 
             if ($is_from_lib) {
                 // Search file in libs
-                $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/' . $import_filename;
-                $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/_' . $import_filename;
+                $potential_paths[] = ZENTRA_ROOT . '/css/lib/' . $import_dirname . '/' . $import_filename;
+                $potential_paths[] = ZENTRA_ROOT . '/css/lib/' . $import_dirname . '/_' . $import_filename;
             } else {
                 // Search using path relative to current file
                 $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/' . $import_filename;
@@ -6660,7 +6660,7 @@ CSS;
      *
      * @TODO Handle SCSS compiled directory in plugins.
      */
-    public static function getScssCompilePath($file, string $root_dir = GLPI_ROOT)
+    public static function getScssCompilePath($file, string $root_dir = ZENTRA_ROOT)
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
@@ -6676,7 +6676,7 @@ CSS;
      *
      * @return string
      */
-    public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
+    public static function getScssCompileDir(string $root_dir = ZENTRA_ROOT)
     {
         return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
     }
@@ -6700,9 +6700,9 @@ CSS;
         $ts_date = new DateTime();
         $ts_date->setTimestamp($ts);
 
-        $diff = strtotime($_SESSION['glpi_currenttime']) - $ts;
+        $diff = strtotime($_SESSION['zentra_currenttime']) - $ts;
         $date = new DateTime(date('Y-m-d', $ts));
-        $today = new DateTime(date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])));
+        $today = new DateTime(date('Y-m-d', strtotime($_SESSION['zentra_currenttime'])));
         if ($diff == 0) {
             return __('Now');
         } elseif ($diff > 0) {
@@ -6761,7 +6761,7 @@ CSS;
             }
         }
 
-        return IntlDateFormatter::formatObject($ts_date, 'MMMM y', $_SESSION['glpilanguage'] ?? 'en_GB');
+        return IntlDateFormatter::formatObject($ts_date, 'MMMM y', $_SESSION['zentralanguage'] ?? 'en_GB');
     }
 
     /**

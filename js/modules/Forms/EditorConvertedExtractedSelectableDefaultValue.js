@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,14 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
-import { GlpiFormEditorConvertedExtractedDefaultValue, DATATYPE } from "/js/modules/Forms/EditorConvertedExtractedDefaultValue.js";
+import { ZentraFormEditorConvertedExtractedDefaultValue, DATATYPE } from "/js/modules/Forms/EditorConvertedExtractedDefaultValue.js";
 
 /**
  * Represents a converted extracted default value for selectable fields (dropdowns, checkboxes, etc.)
  *
- * @extends GlpiFormEditorConvertedExtractedDefaultValue
+ * @extends ZentraFormEditorConvertedExtractedDefaultValue
  */
-export class GlpiFormEditorConvertedExtractedSelectableDefaultValue extends GlpiFormEditorConvertedExtractedDefaultValue {
+export class ZentraFormEditorConvertedExtractedSelectableDefaultValue extends ZentraFormEditorConvertedExtractedDefaultValue {
     /**
      * The selectable options with their values and states
      * @type {Object<string, {value: string, checked: boolean, uuid: string, order: number}>}

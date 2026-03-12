@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,22 +64,22 @@ class OlaLevel_Ticket extends CommonDBTM
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
             'LEFT JOIN'   => [
-                'glpi_olalevels'  => [
+                'zentra_olalevels'  => [
                     'FKEY'   => [
                         static::getTable()   => 'olalevels_id',
-                        'glpi_olalevels'     => 'id',
+                        'zentra_olalevels'     => 'id',
                     ],
                 ],
-                'glpi_olas'       => [
+                'zentra_olas'       => [
                     'FKEY'   => [
-                        'glpi_olalevels'     => 'olas_id',
-                        'glpi_olas'          => 'id',
+                        'zentra_olalevels'     => 'olas_id',
+                        'zentra_olas'          => 'id',
                     ],
                 ],
             ],
             'WHERE'        => [
                 static::getTable() . '.tickets_id'  => $ID,
-                'glpi_olas.type'                    => $olaType,
+                'zentra_olas.type'                    => $olaType,
             ],
             'LIMIT'        => 1,
         ]);
@@ -105,25 +105,25 @@ class OlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_olalevels_tickets.id',
-            'FROM'      => 'glpi_olalevels_tickets',
+            'SELECT'    => 'zentra_olalevels_tickets.id',
+            'FROM'      => 'zentra_olalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_olalevels'  => [
+                'zentra_olalevels'  => [
                     'ON' => [
-                        'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id',
+                        'zentra_olalevels_tickets'   => 'olalevels_id',
+                        'zentra_olalevels'           => 'id',
                     ],
                 ],
-                'glpi_olas'       => [
+                'zentra_olas'       => [
                     'ON' => [
-                        'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id',
+                        'zentra_olalevels'  => 'olas_id',
+                        'zentra_olas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType,
+                'zentra_olalevels_tickets.tickets_id' => $tickets_id,
+                'zentra_olas.type'                    => $olaType,
             ],
         ]);
 
@@ -166,26 +166,26 @@ class OlaLevel_Ticket extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_olalevels_tickets.*',
-                'glpi_olas.type AS type',
+                'zentra_olalevels_tickets.*',
+                'zentra_olas.type AS type',
             ],
-            'FROM'      => 'glpi_olalevels_tickets',
+            'FROM'      => 'zentra_olalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_olalevels'  => [
+                'zentra_olalevels'  => [
                     'ON' => [
-                        'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id',
+                        'zentra_olalevels_tickets'   => 'olalevels_id',
+                        'zentra_olalevels'           => 'id',
                     ],
                 ],
-                'glpi_olas'       => [
+                'zentra_olas'       => [
                     'ON' => [
-                        'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id',
+                        'zentra_olalevels'  => 'olas_id',
+                        'zentra_olas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', $now],
+                'zentra_olalevels_tickets.date' => ['<', $now],
             ],
         ]);
 
@@ -321,26 +321,26 @@ class OlaLevel_Ticket extends CommonDBTM
 
         $now = Session::getCurrentTime();
         $criteria = [
-            'SELECT'    => 'glpi_olalevels_tickets.*',
-            'FROM'      => 'glpi_olalevels_tickets',
+            'SELECT'    => 'zentra_olalevels_tickets.*',
+            'FROM'      => 'zentra_olalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_olalevels'  => [
+                'zentra_olalevels'  => [
                     'ON' => [
-                        'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id',
+                        'zentra_olalevels_tickets'   => 'olalevels_id',
+                        'zentra_olalevels'           => 'id',
                     ],
                 ],
-                'glpi_olas'       => [
+                'zentra_olas'       => [
                     'ON' => [
-                        'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id',
+                        'zentra_olalevels'  => 'olas_id',
+                        'zentra_olas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date'       => ['<', $now],
-                'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType,
+                'zentra_olalevels_tickets.date'       => ['<', $now],
+                'zentra_olalevels_tickets.tickets_id' => $tickets_id,
+                'zentra_olas.type'                    => $olaType,
             ],
         ];
 

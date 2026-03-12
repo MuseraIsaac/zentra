@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,16 +65,16 @@ function update931to932()
     /** /Clean rack/enclosure items corrupted relations */
 
     // limit state visibility for enclosures and pdus
-    $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
+    $migration->addField('zentra_states', 'is_visible_enclosure', 'bool', [
         'value' => 1,
         'after' => 'is_visible_rack',
     ]);
-    $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
+    $migration->addField('zentra_states', 'is_visible_pdu', 'bool', [
         'value' => 1,
         'after' => 'is_visible_enclosure',
     ]);
-    $migration->addKey('glpi_states', 'is_visible_enclosure');
-    $migration->addKey('glpi_states', 'is_visible_pdu');
+    $migration->addKey('zentra_states', 'is_visible_enclosure');
+    $migration->addKey('zentra_states', 'is_visible_pdu');
 
     // ************ Keep it at the end **************
     $migration->executeMigration();

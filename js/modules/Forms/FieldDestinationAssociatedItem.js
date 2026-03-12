@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* global tinymce, getUUID, setupAjaxDropdown, setupAdaptDropdown */
 
-export class GlpiFormFieldDestinationAssociatedItem {
+export class ZentraFormFieldDestinationAssociatedItem {
     /**
      * Name of the itemtype field
      * @type {string}
@@ -73,28 +73,28 @@ export class GlpiFormFieldDestinationAssociatedItem {
     ) {
         this.#itemtype_name = itemtype_name;
         this.#items_id_name = items_id_name;
-        this.#associated_items_container = specific_values_extra_field.find('[data-glpi-associated-items-specific-values-extra-field-container]');
-        this.#specific_values_template = specific_values_extra_field.find('[data-glpi-associated-items-specific-values-extra-field-template]');
+        this.#associated_items_container = specific_values_extra_field.find('[data-zentra-associated-items-specific-values-extra-field-container]');
+        this.#specific_values_template = specific_values_extra_field.find('[data-zentra-associated-items-specific-values-extra-field-template]');
 
         this.#associated_items_container.on('change', `select[name="${CSS.escape(this.#items_id_name)}"]`, () => this.#handleChanges());
 
-        this.#associated_items_container.find('[data-glpi-remove-associated-item-button]')
+        this.#associated_items_container.find('[data-zentra-remove-associated-item-button]')
             .each((index, button) => this.#registerOnRemoveAssociatedItem($(button)));
 
         this.#associated_items_container
-            .find('[data-glpi-associated-items-specific-values-extra-field-item]')
+            .find('[data-zentra-associated-items-specific-values-extra-field-item]')
             .each((index, field) => this.#initDropdowns($(field)));
     }
 
     #handleChanges() {
-        const empty_fields = this.#associated_items_container.find(`[data-glpi-associated-items-specific-values-extra-field-item]`)
+        const empty_fields = this.#associated_items_container.find(`[data-zentra-associated-items-specific-values-extra-field-item]`)
             .filter((index, field) => ($(field).find(`select[name="${CSS.escape(this.#items_id_name)}"]`).val() ?? "0") === "0");
 
         // Always keep one empty field
         if (empty_fields.length > 1) {
             // Remove fields that are not filled, except the first one
             empty_fields.filter((index) => index !== 0)
-                .closest('[data-glpi-associated-items-specific-values-extra-field-item]')
+                .closest('[data-zentra-associated-items-specific-values-extra-field-item]')
                 .remove();
         } else if (empty_fields.length === 0) {
             this.#addAssociatedItemField();
@@ -107,22 +107,22 @@ export class GlpiFormFieldDestinationAssociatedItem {
         this.#associated_items_container.append(template_content);
 
         // Get the last item added
-        const template = this.#associated_items_container.find('[data-glpi-associated-items-specific-values-extra-field-item]').last();
+        const template = this.#associated_items_container.find('[data-zentra-associated-items-specific-values-extra-field-item]').last();
 
         // Initialize dropdowns and register events
         this.#initDropdowns(template);
-        this.#registerOnRemoveAssociatedItem(template.find('[data-glpi-remove-associated-item-button]'));
+        this.#registerOnRemoveAssociatedItem(template.find('[data-zentra-remove-associated-item-button]'));
     }
 
     #registerOnRemoveAssociatedItem(button) {
         button.on('click', () => {
             if (
-                (button.closest('[data-glpi-associated-items-specific-values-extra-field-item]')
+                (button.closest('[data-zentra-associated-items-specific-values-extra-field-item]')
                     .find(`select[name="${this.#items_id_name}"]`).val() ?? "0") !== "0"
                     || this.#associated_items_container.find(`select[name="${CSS.escape(this.#items_id_name)}"]`)
                         .filter((index, field) => $(field).val() === "0").length > 1
             ) {
-                button.closest('[data-glpi-associated-items-specific-values-extra-field-item]').remove();
+                button.closest('[data-zentra-associated-items-specific-values-extra-field-item]').remove();
             }
         });
     }

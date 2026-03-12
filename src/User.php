@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Dashboard\Dashboard;
-use Glpi\Dashboard\Filter;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
-use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\TreeBrowseInterface;
-use Glpi\Plugin\Hooks;
-use Glpi\Security\TOTPManager;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Dashboard\Dashboard;
+use Zentra\Dashboard\Filter;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Exception\ForgetPasswordException;
+use Zentra\Exception\PasswordTooWeakException;
+use Zentra\Features\Clonable;
+use Zentra\Features\TreeBrowse;
+use Zentra\Features\TreeBrowseInterface;
+use Zentra\Plugin\Hooks;
+use Zentra\Security\TOTPManager;
 use LDAP\Connection;
 use Sabre\VObject\Component\VCard;
 use Safe\DateTime;
@@ -222,7 +222,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (
-            ($_SESSION['glpiactive_entity'] > 0)
+            ($_SESSION['zentraactive_entity'] > 0)
             && (Profile::getDefault() == 0)
         ) {
             echo "<div class='tab_cadre_fixe warning'>"
@@ -254,8 +254,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         //prevent delete / purge from API
-        global $CFG_GLPI;
-        if ($this->fields['id'] == $CFG_GLPI['system_user']) {
+        global $CFG_ZENTRA;
+        if ($this->fields['id'] == $CFG_ZENTRA['system_user']) {
             return false;
         }
 
@@ -277,15 +277,15 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function isEntityAssign()
     {
-        // glpi_users.entities_id is only a pref.
+        // zentra_users.entities_id is only a pref.
         return false;
     }
 
 
     public static function isMassiveActionAllowed(int $items_id): bool
     {
-        global $CFG_GLPI;
-        return $CFG_GLPI['system_user'] != $items_id;
+        global $CFG_ZENTRA;
+        return $CFG_ZENTRA['system_user'] != $items_id;
     }
 
 
@@ -296,23 +296,23 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function computePreferences()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($this->fields['id'])) {
-            foreach ($CFG_GLPI['user_pref_field'] as $f) {
-                if (array_key_exists($f, $CFG_GLPI) && (!array_key_exists($f, $this->fields) || is_null($this->fields[$f]))) {
-                    $this->fields[$f] = $CFG_GLPI[$f];
+            foreach ($CFG_ZENTRA['user_pref_field'] as $f) {
+                if (array_key_exists($f, $CFG_ZENTRA) && (!array_key_exists($f, $this->fields) || is_null($this->fields[$f]))) {
+                    $this->fields[$f] = $CFG_ZENTRA[$f];
                 }
             }
         }
         /// Specific case for show_count_on_tabs : global config can forbid
-        if ($CFG_GLPI['show_count_on_tabs'] == -1) {
+        if ($CFG_ZENTRA['show_count_on_tabs'] == -1) {
             $this->fields['show_count_on_tabs'] = 0;
         }
 
         // Fallback for invalid language
-        if (!isset($CFG_GLPI['languages'][$this->fields["language"]])) {
-            $this->fields["language"] = $CFG_GLPI["language"];
+        if (!isset($CFG_ZENTRA['languages'][$this->fields["language"]])) {
+            $this->fields["language"] = $CFG_ZENTRA["language"];
         }
     }
 
@@ -323,12 +323,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     final public function loadPreferencesInSession(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->computePreferences();
-        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+        foreach ($CFG_ZENTRA['user_pref_field'] as $field) {
             if (isset($this->fields[$field])) {
-                $_SESSION["glpi$field"] = $this->fields[$field];
+                $_SESSION["zentra$field"] = $this->fields[$field];
             }
         }
     }
@@ -345,11 +345,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
-        if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
+        if (isset($this->fields['id']) && !isset($_SESSION["zentraID"])) {
             Session::destroy();
             Session::start();
-            $_SESSION["glpiID"]                      = $this->fields['id'];
-            $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
+            $_SESSION["zentraID"]                      = $this->fields['id'];
+            $_SESSION["zentra_use_mode"]               = Session::NORMAL_MODE;
             Session::loadEntity($entities_id, $is_recursive);
             $this->loadPreferencesInSession();
             Session::loadGroups();
@@ -358,7 +358,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         switch ($item::class) {
@@ -383,9 +383,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($item instanceof self) {
             switch ($tabnum) {
@@ -406,7 +406,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         } elseif ($item instanceof Preference) {
             $user = new self();
             $user->showMyForm(
-                $CFG_GLPI['root_doc'] . "/front/preference.php",
+                $CFG_ZENTRA['root_doc'] . "/front/preference.php",
                 Session::getLoginUserID()
             );
             return true;
@@ -450,11 +450,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function post_getEmpty()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->fields["is_active"] = 1;
-        if (isset($CFG_GLPI["language"])) {
-            $this->fields['language'] = $CFG_GLPI["language"];
+        if (isset($CFG_ZENTRA["language"])) {
+            $this->fields['language'] = $CFG_ZENTRA["language"];
         } else {
             $this->fields['language'] = "en_GB";
         }
@@ -484,7 +484,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         foreach ($entities as $ent) {
             if (Session::haveAccessToEntity($ent)) {
                 $DB->delete(
-                    'glpi_profiles_users',
+                    'zentra_profiles_users',
                     [
                         'users_id'     => $this->fields['id'],
                         'entities_id'  => $ent,
@@ -532,7 +532,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         // Set no user to consumables
         $DB->update(
-            'glpi_consumables',
+            'zentra_consumables',
             [
                 'items_id' => 0,
                 'itemtype' => 'NULL',
@@ -818,7 +818,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
-        $glpi_key = new GLPIKey();
+        $zentra_key = new ZENTRAKey();
 
         $iterator = $DB->request([
             'SELECT' => ['id', $field],
@@ -829,7 +829,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ],
         ]);
         foreach ($iterator as $user_data) {
-            if ($token === $glpi_key->decrypt($user_data[$field])) {
+            if ($token === $zentra_key->decrypt($user_data[$field])) {
                 return $this->getFromDB($user_data['id']);
             }
         }
@@ -891,7 +891,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (!isset($input["authtype"])) {
-            $input["authtype"] = Auth::DB_GLPI;
+            $input["authtype"] = Auth::DB_ZENTRA;
         }
 
         if (!isset($input["auths_id"])) {
@@ -928,7 +928,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        $input['password_last_update'] = $_SESSION['glpi_currenttime'];
+                        $input['password_last_update'] = $_SESSION['zentra_currenttime'];
                     } else {
                         Session::addMessagesAfterRedirect(
                             array_map('htmlescape', $password_errors),
@@ -974,14 +974,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $input["profiles_id"] = 0;
         }
 
-        $glpi_key = new GLPIKey();
+        $zentra_key = new ZENTRAKey();
         foreach (['api_token', 'cookie_token', 'password_forget_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
                 && $input[$token_field] !== ''
             ) {
-                $input[$token_field] = $glpi_key->encrypt($input[$token_field]);
+                $input[$token_field] = $zentra_key->encrypt($input[$token_field]);
             }
         }
 
@@ -1045,8 +1045,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     // entities_id (user's pref) always set in prepareInputForAdd
                     // use _entities_id for default right
                     $affectation["entities_id"] = $this->input["_entities_id"];
-                } elseif (isset($_SESSION['glpiactive_entity'])) {
-                    $affectation["entities_id"] = $_SESSION['glpiactive_entity'];
+                } elseif (isset($_SESSION['zentraactive_entity'])) {
+                    $affectation["entities_id"] = $_SESSION['zentraactive_entity'];
                 } else {
                     $affectation["entities_id"] = 0;
                 }
@@ -1076,9 +1076,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForUpdate($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $glpi_key = new GLPIKey();
+        $zentra_key = new ZENTRAKey();
 
         $input = $this->cleanInput($input);
 
@@ -1100,10 +1100,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $newPicture = true;
             }
             if ($newPicture) {
-                if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
+                if (!$fullpath = realpath(ZENTRA_TMP_DIR . "/" . $input["_picture"])) {
                     return false;
                 }
-                if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
+                if (!str_starts_with($fullpath, realpath(ZENTRA_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
                 }
                 if (Document::isImage($fullpath)) {
@@ -1117,10 +1117,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $extension = strtolower(pathinfo($fullpath, PATHINFO_EXTENSION));
                     $extension = in_array($extension, ['png', 'gif']) ? 'png' : 'jpg';
 
-                    if (!file_exists(GLPI_PICTURE_DIR . "/$sub")) {
-                        mkdir(GLPI_PICTURE_DIR . "/$sub");
+                    if (!file_exists(ZENTRA_PICTURE_DIR . "/$sub")) {
+                        mkdir(ZENTRA_PICTURE_DIR . "/$sub");
                     }
-                    $picture_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.{$extension}";
+                    $picture_path = ZENTRA_PICTURE_DIR . "/{$sub}/{$filename}.{$extension}";
                     self::dropPictureFiles("{$sub}/{$filename}.{$extension}");
 
                     if (Document::renameForce($fullpath, $picture_path)) {
@@ -1129,7 +1129,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $input['picture'] = "{$sub}/{$filename}.{$extension}";
 
                         //prepare a thumbnail
-                        $thumb_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.{$extension}";
+                        $thumb_path = ZENTRA_PICTURE_DIR . "/{$sub}/{$filename}_min.{$extension}";
                         Toolbox::resizePicture($picture_path, $thumb_path);
                     } else {
                         Session::addMessageAfterRedirect(
@@ -1170,13 +1170,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
-                        || (isset($this->fields['password_forget_token']) && ($input['password_forget_token'] == $glpi_key->decrypt($this->fields['password_forget_token']))
-                           && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
+                        || (isset($this->fields['password_forget_token']) && ($input['password_forget_token'] == $zentra_key->decrypt($this->fields['password_forget_token']))
+                           && (strtotime($_SESSION["zentra_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        $input['password_last_update'] = $_SESSION["zentra_currenttime"];
                     } else {
                         if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
@@ -1270,7 +1270,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // blank password when authtype changes
         if (
             isset($input["authtype"])
-            && $input["authtype"] != Auth::DB_GLPI
+            && $input["authtype"] != Auth::DB_ZENTRA
             && $input["authtype"] != $this->getField('authtype')
         ) {
             $input["password"] = "";
@@ -1290,7 +1290,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             isset($input["entities_id"])
             && (Session::getLoginUserID() == $input['id'])
         ) {
-            $_SESSION["glpidefault_entity"] = $input["entities_id"];
+            $_SESSION["zentradefault_entity"] = $input["entities_id"];
         }
 
         // Security on default profile update
@@ -1331,7 +1331,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             && $input['_reset_personal_token']
         ) {
             $input['personal_token']      = self::getUniqueToken('personal_token');
-            $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['personal_token_date'] = $_SESSION['zentra_currenttime'];
         }
 
         if (isset($input['_reset_api_token'])) {
@@ -1343,36 +1343,36 @@ class User extends CommonDBTM implements TreeBrowseInterface
             && $input['_regenerate_api_token']
         ) {
             $input['api_token']      = self::getUniqueToken('api_token');
-            $input['api_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['api_token_date'] = $_SESSION['zentra_currenttime'];
         }
 
         // Manage preferences fields
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
-                && ($_SESSION['glpi_use_mode'] !=  $input['use_mode'])
+                && ($_SESSION['zentra_use_mode'] !=  $input['use_mode'])
                 && Config::canUpdate()
             ) {
-                $_SESSION['glpi_use_mode'] = $input['use_mode'];
-                unset($_SESSION['glpimenu']); // Force menu regeneration
+                $_SESSION['zentra_use_mode'] = $input['use_mode'];
+                unset($_SESSION['zentramenu']); // Force menu regeneration
                 //Session::loadLanguage();
             }
         }
 
-        foreach ($CFG_GLPI['user_pref_field'] as $f) {
+        foreach ($CFG_ZENTRA['user_pref_field'] as $f) {
             if (isset($input[$f])) {
                 $pref_value = $input[$f];
                 if (Session::getLoginUserID() == $input['id']) {
-                    if ($_SESSION["glpi$f"] != $pref_value) {
-                        $_SESSION["glpi$f"] = $pref_value;
+                    if ($_SESSION["zentra$f"] != $pref_value) {
+                        $_SESSION["zentra$f"] = $pref_value;
                         // reinit translations
                         if ($f == 'language') {
-                            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-                            unset($_SESSION['glpimenu']);
+                            $_SESSION['zentra_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["zentralanguage"]);
+                            unset($_SESSION['zentramenu']);
                         }
                     }
                 }
-                if ($pref_value == $CFG_GLPI[$f]) {
+                if ($pref_value == $CFG_ZENTRA[$f]) {
                     $input[$f] = "NULL";
                 }
             }
@@ -1402,7 +1402,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 && $input[$token_field] !== null
                 && $input[$token_field] !== ''
             ) {
-                $input[$token_field] = $glpi_key->encrypt($input[$token_field]);
+                $input[$token_field] = $zentra_key->encrypt($input[$token_field]);
             }
         }
 
@@ -1662,21 +1662,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     // Delete not available groups like to LDAP
                     $iterator = $DB->request([
                         'SELECT'    => [
-                            'glpi_groups_users.id',
-                            'glpi_groups_users.groups_id',
-                            'glpi_groups_users.is_dynamic',
+                            'zentra_groups_users.id',
+                            'zentra_groups_users.groups_id',
+                            'zentra_groups_users.is_dynamic',
                         ],
-                        'FROM'      => 'glpi_groups_users',
+                        'FROM'      => 'zentra_groups_users',
                         'LEFT JOIN' => [
-                            'glpi_groups'  => [
+                            'zentra_groups'  => [
                                 'FKEY'   => [
-                                    'glpi_groups_users'  => 'groups_id',
-                                    'glpi_groups'        => 'id',
+                                    'zentra_groups_users'  => 'groups_id',
+                                    'zentra_groups'        => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'     => [
-                            'glpi_groups_users.users_id' => $this->fields['id'],
+                            'zentra_groups_users.users_id' => $this->fields['id'],
                         ],
                     ]);
 
@@ -1763,10 +1763,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $img       = array_pop($info[$picture_field]);
                     $filename  = uniqid($this->fields['id'] . '_');
                     $sub       = substr($filename, -2); /* 2 hex digit */
-                    $file      = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.jpg";
+                    $file      = ZENTRA_PICTURE_DIR . "/{$sub}/{$filename}.jpg";
 
                     if (array_key_exists('picture', $this->fields)) {
-                        $oldfile = GLPI_PICTURE_DIR . "/" . $this->fields["picture"];
+                        $oldfile = ZENTRA_PICTURE_DIR . "/" . $this->fields["picture"];
                     } else {
                         $oldfile = null;
                     }
@@ -1777,8 +1777,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         || !file_exists($oldfile)
                         || sha1_file($oldfile) !== sha1($img)
                     ) {
-                        if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
-                            mkdir(GLPI_PICTURE_DIR . "/$sub");
+                        if (!is_dir(ZENTRA_PICTURE_DIR . "/$sub")) {
+                            mkdir(ZENTRA_PICTURE_DIR . "/$sub");
                         }
 
                         //save picture
@@ -1787,7 +1787,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         fclose($outjpeg);
 
                         //save thumbnail
-                        $thumb = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.jpg";
+                        $thumb = ZENTRA_PICTURE_DIR . "/{$sub}/{$filename}_min.jpg";
                         Toolbox::resizePicture($file, $thumb);
 
                         return "{$sub}/{$filename}.jpg";
@@ -1868,7 +1868,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if ($userUpdated) {
             // calling $this->update() here leads to loss in $this->input
             $user = new User();
-            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['zentra_currenttime']]);
         }
     }
 
@@ -1919,7 +1919,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                             'email',
                             'is_dynamic',
                         ],
-                        'FROM'   => 'glpi_useremails',
+                        'FROM'   => 'zentra_useremails',
                         'WHERE'  => ['users_id' => $this->fields['id']],
                     ]);
 
@@ -1955,20 +1955,20 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if ($userUpdated) {
             // calling $this->update() here leads to loss in $this->input
             $user = new User();
-            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['zentra_currenttime']]);
         }
     }
 
     protected function computeFriendlyName()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
             //computeFriendlyName should not add ID
-            $bkp_conf = $CFG_GLPI['is_ids_visible'];
-            $CFG_GLPI['is_ids_visible'] = 0;
-            $bkp_sessconf = (isset($_SESSION['glpiis_ids_visible']) ? $_SESSION["glpiis_ids_visible"] : 0);
-            $_SESSION["glpiis_ids_visible"] = 0;
+            $bkp_conf = $CFG_ZENTRA['is_ids_visible'];
+            $CFG_ZENTRA['is_ids_visible'] = 0;
+            $bkp_sessconf = (isset($_SESSION['zentrais_ids_visible']) ? $_SESSION["zentrais_ids_visible"] : 0);
+            $_SESSION["zentrais_ids_visible"] = 0;
             $name = formatUserName(
                 $this->fields["id"],
                 $this->fields["name"],
@@ -1976,8 +1976,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ($this->fields["firstname"] ?? '')
             );
 
-            $CFG_GLPI['is_ids_visible'] = $bkp_conf;
-            $_SESSION["glpiis_ids_visible"] = $bkp_sessconf;
+            $CFG_ZENTRA['is_ids_visible'] = $bkp_conf;
+            $_SESSION["zentrais_ids_visible"] = $bkp_sessconf;
             return $name;
         }
         return '';
@@ -2031,7 +2031,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $iterator = $DB->request([
             'SELECT'          => 'ldap_field',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_groups',
+            'FROM'            => 'zentra_groups',
             'WHERE'           => ['NOT' => ['ldap_field' => '']],
             'ORDER'           => 'ldap_field',
         ]);
@@ -2079,7 +2079,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     ) {
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_groups',
+                            'FROM'   => 'zentra_groups',
                             'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']],
                         ]);
 
@@ -2110,7 +2110,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         }
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
-                            'FROM'   => 'glpi_groups',
+                            'FROM'   => 'zentra_groups',
                             'WHERE'  => [
                                 'ldap_field' => $field,
                                 'OR'         => $lgroups,
@@ -2171,7 +2171,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ) {
                 $iterator = $DB->request([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_groups',
+                    'FROM'   => 'zentra_groups',
                     'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]],
                 ]);
 
@@ -2197,7 +2197,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // we prevent some delay...
         if (empty($ldap_method["host"])) {
@@ -2243,7 +2243,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             //Store user's dn
             $this->fields['user_dn']    = $userdn;
             //Store date_sync
-            $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
+            $this->fields['date_sync']  = $_SESSION['zentra_currenttime'];
             // Empty array to ensure than syncDynamicEmails will be done
             $this->fields["_emails"]    = [];
             // force authtype as we retrieve this user by ldap (we could have login with SSO)
@@ -2374,7 +2374,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 //or no rights found & do not import users with no rights
                 if (
                     $import
-                    && !$CFG_GLPI["use_noright_users_add"]
+                    && !$CFG_ZENTRA["use_noright_users_add"]
                 ) {
                     $ok = false;
                     if (
@@ -2556,7 +2556,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         $this->fields['name']      = $name;
         //Store date_sync
-        $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
+        $this->fields['date_sync'] = $_SESSION['zentra_currenttime'];
         // force authtype as we retrieve this user by imap (we could have login with SSO)
         $this->fields["authtype"] = Auth::MAIL;
 
@@ -2592,10 +2592,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function getFromSSO()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $a_field = [];
-        foreach ($CFG_GLPI as $key => $value) {
+        foreach ($CFG_ZENTRA as $key => $value) {
             if (
                 !is_array($value) && !empty($value)
                 && strstr($key, "_ssofield")
@@ -2757,7 +2757,7 @@ HTML;
                 $impersonate_btn = <<<HTML
                     <form method="post" action="{$impersonate_form}">
                         <input type="hidden" name="id" value="{$ID}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{$csrf_token}">
+                        <input type="hidden" name="_zentra_csrf_token" value="{$csrf_token}">
                         <button type="button" name="impersonate" value="1"
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
@@ -2821,7 +2821,7 @@ HTML;
             $caneditpassword = true;
         }
 
-        $extauth = !(($this->fields["authtype"] == Auth::DB_GLPI)
+        $extauth = !(($this->fields["authtype"] == Auth::DB_ZENTRA)
                    || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                        && !empty($this->fields["password"])));
 
@@ -2844,7 +2844,7 @@ HTML;
         if (!empty($ID)) {
             if ($higherrights || $ismyself) {
                 $profiles = Dropdown::getDropdownArrayNames(
-                    'glpi_profiles',
+                    'zentra_profiles',
                     Profile_User::getUserProfiles($this->fields['id'])
                 );
             }
@@ -2885,7 +2885,7 @@ HTML;
      */
     public function showMyForm($target, $ID)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Affiche un formulaire User
         if (
@@ -2900,9 +2900,9 @@ HTML;
         }
 
         $profiles = [];
-        if (count($_SESSION['glpiprofiles']) > 1) {
+        if (count($_SESSION['zentraprofiles']) > 1) {
             $profiles = Dropdown::getDropdownArrayNames(
-                'glpi_profiles',
+                'zentra_profiles',
                 Profile_User::getUserProfiles($this->fields['id'])
             );
         }
@@ -2986,7 +2986,7 @@ HTML;
         ) {
             // extauth ldap case
             if (
-                $_SESSION["glpiextauth"]
+                $_SESSION["zentraextauth"]
                 && ($this->fields["authtype"] == Auth::LDAP
                  || Auth::isAlternateAuth($this->fields["authtype"]))
             ) {
@@ -3072,7 +3072,7 @@ HTML;
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         switch ($ma->getAction()) {
             case 'change_authtype':
@@ -3081,7 +3081,7 @@ HTML;
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_authtype$rand",
                     "show_massiveaction_field",
-                    $CFG_GLPI["root_doc"]
+                    $CFG_ZENTRA["root_doc"]
                                              . "/ajax/dropdownMassiveActionAuthMethods.php",
                     $paramsmassaction
                 );
@@ -3278,7 +3278,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => 'glpi_useremails',
+            'table'              => 'zentra_useremails',
             'field'              => 'email',
             'name'               => _n('Email', 'Emails', Session::getPluralNumber()),
             'datatype'           => 'email',
@@ -3334,7 +3334,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(Session::getPluralNumber()),
             'forcegroupby'       => true,
@@ -3343,7 +3343,7 @@ HTML;
             'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_users',
+                    'table'              => 'zentra_groups_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -3375,7 +3375,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '30',
-            'table'              => 'glpi_authldaps',
+            'table'              => 'zentra_authldaps',
             'field'              => 'name',
             'linkfield'          => 'auths_id',
             'name'               => __('LDAP directory for authentication'),
@@ -3388,7 +3388,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_authmails',
+            'table'              => 'zentra_authmails',
             'field'              => 'name',
             'linkfield'          => 'auths_id',
             'name'               => __('Email server for authentication'),
@@ -3437,7 +3437,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => 'glpi_profiles',
+            'table'              => 'zentra_profiles',
             'field'              => 'name',
             'name'               => sprintf(
                 __('%1$s (%2$s)'),
@@ -3449,7 +3449,7 @@ HTML;
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_profiles_users',
+                    'table'              => 'zentra_profiles_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -3494,7 +3494,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'linkfield'          => 'entities_id',
             'field'              => 'completename',
             'name'               => sprintf(
@@ -3507,7 +3507,7 @@ HTML;
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_profiles_users',
+                    'table'              => 'zentra_profiles_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -3517,7 +3517,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '81',
-            'table'              => 'glpi_usertitles',
+            'table'              => 'zentra_usertitles',
             'field'              => 'name',
             'name'               => __('Title'),
             'datatype'           => 'dropdown',
@@ -3525,7 +3525,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '82',
-            'table'              => 'glpi_usercategories',
+            'table'              => 'zentra_usercategories',
             'field'              => 'name',
             'name'               => _n('Category', 'Categories', 1),
             'datatype'           => 'dropdown',
@@ -3533,7 +3533,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_profiles',
+            'table'              => 'zentra_profiles',
             'field'              => 'name',
             'name'               => __('Default profile'),
             'datatype'           => 'dropdown',
@@ -3541,7 +3541,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '77',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'name',
             'massiveaction'      => true,
             'name'               => __('Default entity'),
@@ -3566,7 +3566,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '60',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'id',
             'name'               => __('Number of tickets as requester'),
             'forcegroupby'       => true,
@@ -3575,7 +3575,7 @@ HTML;
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
+                    'table'              => 'zentra_tickets_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
@@ -3586,7 +3586,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '61',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'id',
             'name'               => __('Number of written tickets'),
             'forcegroupby'       => true,
@@ -3601,7 +3601,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '64',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'id',
             'name'               => __('Number of assigned tickets'),
             'forcegroupby'       => true,
@@ -3610,7 +3610,7 @@ HTML;
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
+                    'table'              => 'zentra_tickets_users',
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
@@ -3621,7 +3621,7 @@ HTML;
 
         $tab[] = [
             'id'                 => '99',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_supervisor',
             'name'               => __('Supervisor'),
@@ -3634,7 +3634,7 @@ HTML;
 
         $tab[] = [
             'id'                => 130,
-            'table'             => 'glpi_users',
+            'table'             => 'zentra_users',
             'field'             => 'substitution_start_date',
             'name'              => __('Substitution start date'),
             'datatype'          => 'datetime',
@@ -3642,7 +3642,7 @@ HTML;
 
         $tab[] = [
             'id'                => 131,
-            'table'             => 'glpi_users',
+            'table'             => 'zentra_users',
             'field'             => 'substitution_end_date',
             'name'              => __('Substitution end date'),
             'datatype'          => 'datetime',
@@ -3650,7 +3650,7 @@ HTML;
 
         $tab[] = [
             'id'                => 132,
-            'table'             => 'glpi_users',
+            'table'             => 'zentra_users',
             'field'             => '_virtual_2fa_status',
             'name'              => __('2FA status'),
             'datatype'          => 'specific',
@@ -3722,21 +3722,21 @@ HTML;
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'          => 'glpi_groups_users.groups_id',
+            'SELECT'          => 'zentra_groups_users.groups_id',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_groups_users',
+            'FROM'            => 'zentra_groups_users',
             'INNER JOIN'      => [
-                'glpi_groups'  => [
+                'zentra_groups'  => [
                     'FKEY'   => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
+                        'zentra_groups_users'  => 'groups_id',
+                        'zentra_groups'        => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_groups_users.users_id'        => Session::getLoginUserID(),
-                'glpi_groups_users.is_userdelegate' => 1,
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, true),
+                'zentra_groups_users.users_id'        => Session::getLoginUserID(),
+                'zentra_groups_users.is_userdelegate' => 1,
+            ] + getEntitiesRestrictCriteria('zentra_groups', '', $entities_id, true),
         ]);
 
         $groups = [];
@@ -3778,7 +3778,7 @@ HTML;
     }
 
     /**
-     * Execute the query to select box with all glpi users where select key = name
+     * Execute the query to select box with all zentra users where select key = name
      *
      * Internally used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
      *
@@ -3811,7 +3811,7 @@ HTML;
 
         // No entity define : use active ones
         if (!is_array($entity_restrict) && $entity_restrict < 0) {
-            $entity_restrict = $_SESSION["glpiactiveentities"];
+            $entity_restrict = $_SESSION["zentraactiveentities"];
         }
 
         $joinprofile      = false;
@@ -3823,12 +3823,12 @@ HTML;
             case "interface":
                 $joinprofile = true;
                 $WHERE = [
-                    'glpi_profiles.interface' => 'central',
-                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true);
+                    'zentra_profiles.interface' => 'central',
+                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true);
                 break;
 
             case "id":
-                $WHERE = ['glpi_users.id' => Session::getLoginUserID()];
+                $WHERE = ['zentra_users.id' => Session::getLoginUserID()];
                 break;
 
             case "delegate":
@@ -3836,19 +3836,19 @@ HTML;
                 $users  = [];
                 if (count($groups)) {
                     $iterator = $DB->request([
-                        'SELECT'    => 'glpi_users.id',
-                        'FROM'      => 'glpi_groups_users',
+                        'SELECT'    => 'zentra_users.id',
+                        'FROM'      => 'zentra_groups_users',
                         'LEFT JOIN' => [
-                            'glpi_users'   => [
+                            'zentra_users'   => [
                                 'FKEY'   => [
-                                    'glpi_groups_users'  => 'users_id',
-                                    'glpi_users'         => 'id',
+                                    'zentra_groups_users'  => 'users_id',
+                                    'zentra_users'         => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'     => [
-                            'glpi_groups_users.groups_id' => $groups,
-                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
+                            'zentra_groups_users.groups_id' => $groups,
+                            'zentra_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
                         ],
                     ]);
                     foreach ($iterator as $data) {
@@ -3861,7 +3861,7 @@ HTML;
                 }
 
                 if (count($users)) {
-                    $WHERE = ['glpi_users.id' => $users];
+                    $WHERE = ['zentra_users.id' => $users];
                 } else {
                     $WHERE = ['0'];
                 }
@@ -3869,25 +3869,25 @@ HTML;
 
             case "groups":
                 $groups = [];
-                if (isset($_SESSION['glpigroups'])) {
-                    $groups = $_SESSION['glpigroups'];
+                if (isset($_SESSION['zentragroups'])) {
+                    $groups = $_SESSION['zentragroups'];
                 }
                 $users  = [];
                 if (count($groups)) {
                     $iterator = $DB->request([
-                        'SELECT'    => 'glpi_users.id',
-                        'FROM'      => 'glpi_groups_users',
+                        'SELECT'    => 'zentra_users.id',
+                        'FROM'      => 'zentra_groups_users',
                         'LEFT JOIN' => [
-                            'glpi_users'   => [
+                            'zentra_users'   => [
                                 'FKEY'   => [
-                                    'glpi_groups_users'  => 'users_id',
-                                    'glpi_users'         => 'id',
+                                    'zentra_groups_users'  => 'users_id',
+                                    'zentra_users'         => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'     => [
-                            'glpi_groups_users.groups_id' => $groups,
-                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
+                            'zentra_groups_users.groups_id' => $groups,
+                            'zentra_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
                         ],
                     ]);
                     foreach ($iterator as $data) {
@@ -3900,7 +3900,7 @@ HTML;
                 }
 
                 if (count($users)) {
-                    $WHERE = ['glpi_users.id' => $users];
+                    $WHERE = ['zentra_users.id' => $users];
                 } else {
                     $WHERE = ['0'];
                 }
@@ -3909,12 +3909,12 @@ HTML;
 
             case "all":
                 $WHERE = [
-                    'glpi_users.id' => ['>', 0],
-                    'OR' => getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                    'zentra_users.id' => ['>', 0],
+                    'OR' => getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                 ];
 
                 if ($with_no_right) {
-                    $WHERE['OR'][] = ['glpi_profiles_users.entities_id' => null];
+                    $WHERE['OR'][] = ['zentra_profiles_users.entities_id' => null];
                 }
                 if (empty($WHERE['OR'])) {
                     unset($WHERE['OR']);
@@ -3935,21 +3935,21 @@ HTML;
                         case 'own_ticket':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'ticket',
-                                    'glpi_profilerights.rights'   => ['&', Ticket::OWN],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'ticket',
+                                    'zentra_profilerights.rights'   => ['&', Ticket::OWN],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
                         case 'create_ticket_validate':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'  => 'ticketvalidation',
+                                    'zentra_profilerights.name'  => 'ticketvalidation',
                                     'OR'                       => [
-                                        ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST]],
-                                        ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]],
+                                        ['zentra_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST]],
+                                        ['zentra_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]],
                                     ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3957,9 +3957,9 @@ HTML;
                         case 'validate_request':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'ticketvalidation',
-                                    'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'ticketvalidation',
+                                    'zentra_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3967,9 +3967,9 @@ HTML;
                         case 'validate_incident':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'ticketvalidation',
-                                    'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'ticketvalidation',
+                                    'zentra_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3977,36 +3977,36 @@ HTML;
                         case 'validate':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'changevalidation',
-                                    'glpi_profilerights.rights'   => ['&', ChangeValidation::VALIDATE],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'changevalidation',
+                                    'zentra_profilerights.rights'   => ['&', ChangeValidation::VALIDATE],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
                         case 'create_validate':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'changevalidation',
-                                    'glpi_profilerights.rights'   => ['&', CREATE],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'changevalidation',
+                                    'zentra_profilerights.rights'   => ['&', CREATE],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
                         case 'see_project':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'project',
-                                    'glpi_profilerights.rights'   => ['&', Project::READMY],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'project',
+                                    'zentra_profilerights.rights'   => ['&', Project::READMY],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
                         case 'faq':
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => 'knowbase',
-                                    'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                    'zentra_profilerights.name'     => 'knowbase',
+                                    'zentra_profilerights.rights'   => ['&', KnowbaseItem::READFAQ],
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -4014,12 +4014,12 @@ HTML;
                             // Check read or active for rights
                             $ORWHERE[] = [
                                 [
-                                    'glpi_profilerights.name'     => $r,
-                                    'glpi_profilerights.rights'   => [
+                                    'zentra_profilerights.name'     => $r,
+                                    'zentra_profilerights.rights'   => [
                                         '&',
                                         READ | CREATE | UPDATE | DELETE | PURGE,
                                     ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
+                                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_restrict, true),
                             ];
                     }
                     if (in_array($r, Profile::$helpdesk_rights)) {
@@ -4032,7 +4032,7 @@ HTML;
                 }
 
                 if ($forcecentral) {
-                    $WHERE['glpi_profiles.interface'] = 'central';
+                    $WHERE['zentra_profiles.interface'] = 'central';
                 }
         }
 
@@ -4040,18 +4040,18 @@ HTML;
             $WHERE = array_merge(
                 $WHERE,
                 [
-                    'glpi_users.is_deleted' => 0,
-                    'glpi_users.is_active'  => 1,
+                    'zentra_users.is_deleted' => 0,
+                    'zentra_users.is_active'  => 1,
                     [
                         'OR' => [
-                            ['glpi_users.begin_date' => null],
-                            ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                            ['zentra_users.begin_date' => null],
+                            ['zentra_users.begin_date' => ['<', QueryFunction::now()]],
                         ],
                     ],
                     [
                         'OR' => [
-                            ['glpi_users.end_date' => null],
-                            ['glpi_users.end_date' => ['>', QueryFunction::now()]],
+                            ['zentra_users.end_date' => null],
+                            ['zentra_users.end_date' => ['>', QueryFunction::now()]],
                         ],
                     ],
 
@@ -4065,7 +4065,7 @@ HTML;
         ) {
             $WHERE[] = [
                 'NOT' => [
-                    'glpi_users.id' => $used,
+                    'zentra_users.id' => $used,
                 ],
             ];
         }
@@ -4074,48 +4074,48 @@ HTML;
         $config = Config::getConfigurationValues('core');
         $WHERE[] = [
             'NOT' => [
-                'glpi_users.id' => $config['system_user'],
+                'zentra_users.id' => $config['system_user'],
             ],
         ];
 
         $criteria = [
-            'FROM'            => 'glpi_users',
+            'FROM'            => 'zentra_users',
             'LEFT JOIN'       => [
-                'glpi_useremails'       => [
+                'zentra_useremails'       => [
                     'ON' => [
-                        'glpi_useremails' => 'users_id',
-                        'glpi_users'      => 'id',
-                        ['AND' => ['glpi_useremails.is_default' => 1]],
+                        'zentra_useremails' => 'users_id',
+                        'zentra_users'      => 'id',
+                        ['AND' => ['zentra_useremails.is_default' => 1]],
                     ],
                 ],
-                'glpi_profiles_users'   => [
+                'zentra_profiles_users'   => [
                     'ON' => [
-                        'glpi_profiles_users'   => 'users_id',
-                        'glpi_users'            => 'id',
+                        'zentra_profiles_users'   => 'users_id',
+                        'zentra_users'            => 'id',
                     ],
                 ],
             ],
         ];
         if ($count) {
-            $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
+            $criteria['SELECT'] = ['COUNT' => 'zentra_users.id AS CPT'];
             $criteria['DISTINCT'] = true;
         } else {
-            $criteria['SELECT'] = ['glpi_users.*', 'glpi_useremails.email AS default_email'];
+            $criteria['SELECT'] = ['zentra_users.*', 'zentra_useremails.email AS default_email'];
             $criteria['DISTINCT'] = true;
         }
 
         if ($joinprofile) {
-            $criteria['LEFT JOIN']['glpi_profiles'] = [
+            $criteria['LEFT JOIN']['zentra_profiles'] = [
                 'ON' => [
-                    'glpi_profiles_users'   => 'profiles_id',
-                    'glpi_profiles'         => 'id',
+                    'zentra_profiles_users'   => 'profiles_id',
+                    'zentra_profiles'         => 'id',
                 ],
             ];
             if ($joinprofileright) {
-                $criteria['LEFT JOIN']['glpi_profilerights'] = [
+                $criteria['LEFT JOIN']['zentra_profilerights'] = [
                     'ON' => [
-                        'glpi_profilerights' => 'profiles_id',
-                        'glpi_profiles'      => 'id',
+                        'zentra_profilerights' => 'profiles_id',
+                        'zentra_profiles'      => 'id',
                     ],
                 ];
             }
@@ -4127,35 +4127,35 @@ HTML;
 
                 $firstname_field = self::getTableField('firstname');
                 $realname_field = self::getTableField('realname');
-                $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
+                $fields = $_SESSION["zentranames_format"] == self::FIRSTNAME_BEFORE
                 ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
                 : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
 
                 $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
                     'OR' => [
-                        'glpi_users.name'                => ['LIKE', $txt_search],
-                        'glpi_users.realname'            => ['LIKE', $txt_search],
-                        'glpi_users.firstname'           => ['LIKE', $txt_search],
-                        'glpi_users.phone'               => ['LIKE', $txt_search],
-                        'glpi_users.registration_number' => ['LIKE', $txt_search],
-                        'glpi_useremails.email'          => ['LIKE', $txt_search],
+                        'zentra_users.name'                => ['LIKE', $txt_search],
+                        'zentra_users.realname'            => ['LIKE', $txt_search],
+                        'zentra_users.firstname'           => ['LIKE', $txt_search],
+                        'zentra_users.phone'               => ['LIKE', $txt_search],
+                        'zentra_users.registration_number' => ['LIKE', $txt_search],
+                        'zentra_useremails.email'          => ['LIKE', $txt_search],
                         $concat,
                     ],
                 ];
             }
 
-            if ($_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE) {
+            if ($_SESSION["zentranames_format"] == self::FIRSTNAME_BEFORE) {
                 $criteria['ORDERBY'] = [
-                    'glpi_users.firstname',
-                    'glpi_users.realname',
-                    'glpi_users.name',
+                    'zentra_users.firstname',
+                    'zentra_users.realname',
+                    'zentra_users.name',
                 ];
             } else {
                 $criteria['ORDERBY'] = [
-                    'glpi_users.realname ASC',
-                    'glpi_users.firstname ASC',
-                    'glpi_users.name ASC',
+                    'zentra_users.realname ASC',
+                    'zentra_users.firstname ASC',
+                    'zentra_users.name ASC',
                 ];
             }
 
@@ -4170,7 +4170,7 @@ HTML;
 
 
     /**
-     * Make a select box with all glpi users where select key = name
+     * Make a select box with all zentra users where select key = name
      *
      * @param $options array of possible options:
      *    - name             : string / name of the select (default is users_id)
@@ -4213,7 +4213,7 @@ HTML;
      */
     public static function dropdown($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         // Default values
         $p = [
             'name'                => 'users_id',
@@ -4237,7 +4237,7 @@ HTML;
             '_user_index'         => 0,
             'specific_tags'       => [],
             'class'               => "form-select",
-            'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
+            'url'                 => $CFG_ZENTRA['root_doc'] . "/ajax/getDropdownUsers.php",
             'inactive_deleted'    => 0,
             'with_no_right'       => 0,
             'toadd'               => [],
@@ -4282,12 +4282,12 @@ HTML;
             if (is_array($p['entity'])) {
                 $output .= "entity_sons options is not available with array of entity";
             } else {
-                $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
+                $p['entity'] = getSonsOf('zentra_entities', $p['entity']);
             }
         }
         $p['entity'] = Session::getMatchingActiveEntities($p['entity']);
 
-        // Make a select box with all glpi users
+        // Make a select box with all zentra users
         $view_users = self::canView();
 
         $default = '';
@@ -4397,7 +4397,7 @@ HTML;
             if (!$view_users) {
                 $tooltip_url = '';
             } elseif ($tooltip_url === '') {
-                $tooltip_url = $CFG_GLPI['root_doc'] . "/front/user.php";
+                $tooltip_url = $CFG_ZENTRA['root_doc'] . "/front/user.php";
             }
 
             if ($tooltip_content === '') {
@@ -4421,7 +4421,7 @@ HTML;
             $icons .= Ajax::updateItemOnSelectEvent(
                 $field_id,
                 $comment_id,
-                $CFG_GLPI["root_doc"] . "/ajax/comments.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/comments.php",
                 $paramscomment,
                 false
             );
@@ -4438,14 +4438,14 @@ HTML;
         if (
             Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
             && $p['ldap_import']
-            && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])
+            && Entity::isEntityDirectoryConfigured($_SESSION['zentraactive_entity'])
         ) {
             $icons .= '<div class="btn btn-outline-secondary">';
             $icons .= Ajax::createIframeModalWindow(
                 'userimport' . $rand,
-                $CFG_GLPI["root_doc"]
+                $CFG_ZENTRA["root_doc"]
                                                       . "/front/ldap.import.php?entity="
-                                                      . $_SESSION['glpiactive_entity'],
+                                                      . $_SESSION['zentraactive_entity'],
                 ['title'   => __s('Import a user'),
                     'display' => false,
                 ]
@@ -4531,7 +4531,7 @@ HTML;
 
         if (
             $IDs !== []
-            && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
+            && in_array($authtype, [Auth::DB_ZENTRA, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
         ) {
             $result = $DB->update(
                 self::getTable(),
@@ -4637,7 +4637,7 @@ HTML;
      */
     public function showItems($tech)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID = $this->getField('id');
 
@@ -4653,19 +4653,19 @@ HTML;
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_groups.id',
-                'glpi_groups.name',
+                'zentra_groups.id',
+                'zentra_groups.name',
             ],
-            'FROM'      => 'glpi_groups',
+            'FROM'      => 'zentra_groups',
             'LEFT JOIN' => [
-                'glpi_groups_users' => [
+                'zentra_groups_users' => [
                     'FKEY' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
+                        'zentra_groups_users'  => 'groups_id',
+                        'zentra_groups'        => 'id',
                     ],
                 ],
             ],
-            'WHERE'     => ['glpi_groups_users.users_id' => $ID],
+            'WHERE'     => ['zentra_groups_users.users_id' => $ID],
         ]);
         $number = 0;
 
@@ -4691,7 +4691,7 @@ HTML;
 
         $entries = [];
 
-        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['assignable_types'] as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
@@ -4733,7 +4733,7 @@ HTML;
                     $link   = $data[$item->getNameField()];
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
-                        if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
+                        if ($_SESSION["zentrais_ids_visible"] || empty($link)) {
                             $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
@@ -4749,17 +4749,17 @@ HTML;
                             $groups[$data['groups_id']]
                         );
                     }
-                    if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
+                    if ($number >= $start && $number < $start + $_SESSION['zentralist_limit']) {
                         $entries[] = [
                             'itemtype'      => $itemtype,
                             'id'            => $data["id"],
                             'type'          => $type_name,
-                            'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                            'entity'        => Dropdown::getDropdownName("zentra_entities", $data["entities_id"]),
                             'name'          => $link,
                             'serial'        => $data["serial"] ?? '',
                             'otherserial'   => $data["otherserial"] ?? '',
                             'states'        => !empty($data['states_id'])
-                                ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
+                                ? Dropdown::getDropdownName("zentra_states", $data['states_id'], false, true, false, '')
                                 : '',
                             'linktype'      => implode(', ', $linktypes),
                         ];
@@ -4791,7 +4791,7 @@ HTML;
             'filtered_number'       => $number,
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+                'num_displayed'    => min($_SESSION['zentralist_limit'], $number),
                 'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'update' => __('Update'),
@@ -4811,23 +4811,23 @@ HTML;
      */
     public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $iterator = $DB->request([
             'SELECT'    => 'users_id AS id',
-            'FROM'      => 'glpi_useremails',
+            'FROM'      => 'zentra_useremails',
             'LEFT JOIN' => [
-                'glpi_users' => [
+                'zentra_users' => [
                     'FKEY' => [
-                        'glpi_useremails' => 'users_id',
-                        'glpi_users'      => 'id',
+                        'zentra_useremails' => 'users_id',
+                        'zentra_users'      => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_useremails.email' => $email,
+                'zentra_useremails.email' => $email,
             ],
-            'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC'],
+            'ORDER'     => ['zentra_users.is_active DESC', 'is_deleted ASC'],
         ]);
 
         //User still exists in DB
@@ -4835,7 +4835,7 @@ HTML;
             $result = $iterator->current();
             return $result['id'];
         } else {
-            if ($CFG_GLPI["is_users_auto_add"]) {
+            if ($CFG_ZENTRA["is_users_auto_add"]) {
                 //Get all ldap servers with email field configured
                 $ldaps = AuthLDAP::getServersWithImportByEmailActive();
                 //Try to find the user by his email on each ldap server
@@ -4876,9 +4876,9 @@ HTML;
      */
     public static function manageDeletedUserInLdap($users_id)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        //The only case where users_id can be null if when a user has been imported into GLPI
+        //The only case where users_id can be null if when a user has been imported into ZENTRA
         //it's dn still exists, but doesn't match the connection filter anymore
         //In this case, do not try to process the user
         if (!$users_id) {
@@ -4900,7 +4900,7 @@ HTML;
         ];
 
         // Handle deleted user
-        switch ($CFG_GLPI['user_deleted_ldap_user']) {
+        switch ($CFG_ZENTRA['user_deleted_ldap_user']) {
             default:
             case AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
                 $myuser->update($tmp);
@@ -4918,7 +4918,7 @@ HTML;
         }
 
         // Handle deleted user's groups
-        switch ($CFG_GLPI['user_deleted_ldap_groups']) {
+        switch ($CFG_ZENTRA['user_deleted_ldap_groups']) {
             default:
             case AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
                 break;
@@ -4933,7 +4933,7 @@ HTML;
         }
 
         // Handle deleted user's authorizations
-        switch ($CFG_GLPI['user_deleted_ldap_authorizations']) {
+        switch ($CFG_ZENTRA['user_deleted_ldap_authorizations']) {
             default:
             case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
                 break;
@@ -4958,9 +4958,9 @@ HTML;
      */
     public static function manageRestoredUserInLdap($users_id): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        //The only case where users_id can be null if when a user has been imported into GLPI
+        //The only case where users_id can be null if when a user has been imported into ZENTRA
         //it's dn still exists, but doesn't match the connection filter anymore
         //In this case, do not try to process the user
         if (!$users_id) {
@@ -4982,7 +4982,7 @@ HTML;
         ];
 
         // Calling the update function for the user will reapply dynamic rights {@see User::post_updateItem()}
-        switch ($CFG_GLPI['user_restored_ldap']) {
+        switch ($CFG_ZENTRA['user_restored_ldap']) {
             // Do nothing except update the 'is_ldap_deleted' field to prevent re-processing the restore for each sync
             default:
             case AuthLDAP::RESTORED_USER_PRESERVE:
@@ -5153,8 +5153,8 @@ HTML;
 
         // Same check but for the account activation dates
         if (
-            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > $_SESSION['glpi_currenttime'])
-            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < $_SESSION['glpi_currenttime'])
+            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > $_SESSION['zentra_currenttime'])
+            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < $_SESSION['zentra_currenttime'])
         ) {
             throw new ForgetPasswordException(
                 __("Unable to reset password, please contact your administrator")
@@ -5162,7 +5162,7 @@ HTML;
         }
 
         // Safety check that the user authentication method support passwords changes
-        if ($user->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
+        if ($user->fields["authtype"] !== Auth::DB_ZENTRA && Auth::useAuthExt()) {
             throw new ForgetPasswordException(
                 __("The authentication method configuration doesn't allow you to change your password.")
             );
@@ -5189,7 +5189,7 @@ HTML;
         // Use a direct DB query to bypass rights checks.
         global $DB;
         $DB->update(
-            'glpi_users',
+            'zentra_users',
             [
                 'password_forget_token'      => '',
                 'password_forget_token_date' => 'NULL',
@@ -5248,7 +5248,7 @@ HTML;
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__s('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
+        Session::addMessageAfteRredirect(__s('If the given email address corresponds to one and only one ZENTRA user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,
@@ -5294,25 +5294,25 @@ HTML;
      */
     public function forgetPassword(string $email, bool $firstpassword = false): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         if ($firstpassword) {
             $event = 'passwordinit';
-            $token_date = strtotime($_SESSION["glpi_currenttime"]) + $CFG_GLPI['password_init_token_delay'];
+            $token_date = strtotime($_SESSION["zentra_currenttime"]) + $CFG_ZENTRA['password_init_token_delay'];
         } else {
             $event = 'passwordforget';
-            $token_date = strtotime($_SESSION["glpi_currenttime"]) + DAY_TIMESTAMP;
+            $token_date = strtotime($_SESSION["zentra_currenttime"]) + DAY_TIMESTAMP;
         }
         $condition = [
-            'glpi_users.is_active'  => 1,
-            'glpi_users.is_deleted' => 0, [
+            'zentra_users.is_active'  => 1,
+            'zentra_users.is_deleted' => 0, [
                 'OR' => [
-                    ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                    ['zentra_users.begin_date' => null],
+                    ['zentra_users.begin_date' => ['<', QueryFunction::now()]],
                 ],
             ], [
                 'OR'  => [
-                    ['glpi_users.end_date'   => null],
-                    ['glpi_users.end_date'   => ['>', QueryFunction::now()]],
+                    ['zentra_users.end_date'   => null],
+                    ['zentra_users.end_date'   => ['>', QueryFunction::now()]],
                 ],
             ],
         ];
@@ -5333,7 +5333,7 @@ HTML;
         }
 
         // Check that the configuration allow this user to change his password
-        if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
+        if ($this->fields["authtype"] !== Auth::DB_ZENTRA && Auth::useAuthExt()) {
             trigger_error(
                 "The authentication method configuration doesn't allow the user '$email' to change their password.",
                 E_USER_WARNING
@@ -5351,9 +5351,9 @@ HTML;
         // Use a direct DB query to bypass rights checks.
         global $DB;
         $DB->update(
-            'glpi_users',
+            'zentra_users',
             [
-                'password_forget_token'      => (new GLPIKey())->encrypt(sha1(Toolbox::getRandomString(30))),
+                'password_forget_token'      => (new ZENTRAKey())->encrypt(sha1(Toolbox::getRandomString(30))),
                 'password_forget_token_date' => date("Y-m-d H:i:s", $token_date),
             ],
             [
@@ -5501,12 +5501,12 @@ HTML;
             ],
         ]);
 
-        $glpi_key = new GLPIKey();
+        $zentra_key = new ZENTRAKey();
 
         // As encryption will not produce the same value each time, we have to compare decrypted values.
         $existing_tokens = [];
         foreach ($iterator as $user_data) {
-            $existing_tokens[] = $glpi_key->decrypt($user_data[$field]);
+            $existing_tokens[] = $zentra_key->decrypt($user_data[$field]);
         }
 
         do {
@@ -5548,7 +5548,7 @@ HTML;
      */
     public function getAuthToken($field = 'personal_token', $force_new = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->isNewItem()) {
             return false;
@@ -5561,7 +5561,7 @@ HTML;
                 $outdated = true;
             } else {
                 $date_create = new DateTime($this->fields[$field . "_date"]);
-                $date_expir = $date_create->add(new DateInterval('PT' . $CFG_GLPI["login_remember_time"] . 'S'));
+                $date_expir = $date_create->add(new DateInterval('PT' . $CFG_ZENTRA["login_remember_time"] . 'S'));
 
                 if ($date_expir < new DateTime()) {
                     $outdated = true;
@@ -5571,7 +5571,7 @@ HTML;
 
         // token exists, is not oudated, and we may use it
         if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
-            return (new GLPIKey())->decrypt($this->fields[$field]);
+            return (new ZENTRAKey())->decrypt($this->fields[$field]);
         }
 
         // else get a new token
@@ -5586,7 +5586,7 @@ HTML;
         // save this token in db
         $this->update(['id'             => $this->getID(),
             $field           => $hash,
-            $field . "_date" => $_SESSION['glpi_currenttime'],
+            $field . "_date" => $_SESSION['zentra_currenttime'],
         ]);
 
         return $token;
@@ -5602,7 +5602,7 @@ HTML;
     {
         global $DB;
 
-        $passwords = ['glpi'      => 'glpi',
+        $passwords = ['zentra'      => 'zentra',
             'tech'      => 'tech',
             'normal'    => 'normal',
             'post-only' => 'postonly',
@@ -5640,14 +5640,14 @@ HTML;
      */
     public static function getURLForPicture($picture, $full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $url = Toolbox::getPictureUrl($picture, $full);
         if (null !== $url) {
             return $url;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . "/pics/picture.png";
+        return ($full ? $CFG_ZENTRA["root_doc"] : "") . "/pics/picture.png";
     }
 
 
@@ -5662,12 +5662,12 @@ HTML;
      */
     public static function getThumbnailURLForPicture(?string $picture = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!empty($picture)) {
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                return $CFG_GLPI["root_doc"]
+                return $CFG_ZENTRA["root_doc"]
                     . "/front/document.send.php?"
                     . 'file='
                     . rawurlencode(sprintf('_pictures/%s_min.%s', $tmp[0], $tmp[1]))
@@ -5692,13 +5692,13 @@ HTML;
     {
         if (!empty($picture)) {
             try {
-                if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+                if (!$filepath = realpath(ZENTRA_PICTURE_DIR . "/$picture")) {
                     return;
                 }
             } catch (FilesystemException $e) {
                 return;
             }
-            if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {
+            if (!str_starts_with($filepath, realpath(ZENTRA_PICTURE_DIR))) {
                 trigger_error(sprintf('Invalid picture path `%s`', $picture), E_USER_WARNING);
             }
             // unlink main file
@@ -5708,10 +5708,10 @@ HTML;
             // unlink Thumbnail
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                if (!$thumbpath = realpath(GLPI_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
+                if (!$thumbpath = realpath(ZENTRA_PICTURE_DIR . "/" . $tmp[0] . "_min." . $tmp[1])) {
                     return;
                 }
-                if (!str_starts_with($thumbpath, realpath(GLPI_PICTURE_DIR))) {
+                if (!str_starts_with($thumbpath, realpath(ZENTRA_PICTURE_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $tmp[0] . "_min." . $tmp[1]), E_USER_WARNING);
                 }
                 if (file_exists($thumbpath)) {
@@ -5804,7 +5804,7 @@ HTML;
     public static function showSwitchLangForm()
     {
         $params = [
-            'value'     => $_SESSION["glpilanguage"],
+            'value'     => $_SESSION["zentralanguage"],
             'display'   => false,
             'on_change' => 'this.form.submit()',
         ];
@@ -5863,12 +5863,12 @@ HTML;
      */
     public static function cronPasswordExpiration(CronTask $task)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $expiration_delay   = (int) $CFG_GLPI['password_expiration_delay'];
-        $notice_time        = (int) $CFG_GLPI['password_expiration_notice'];
+        $expiration_delay   = (int) $CFG_ZENTRA['password_expiration_delay'];
+        $notice_time        = (int) $CFG_ZENTRA['password_expiration_notice'];
         $notification_limit = (int) $task->fields['param'];
-        $lock_delay         = (int) $CFG_GLPI['password_expiration_lock_delay'];
+        $lock_delay         = (int) $CFG_ZENTRA['password_expiration_lock_delay'];
 
         if (-1 === $expiration_delay || (-1 === $notice_time && -1 === $lock_delay)) {
             // Nothing to do if passwords does not expire
@@ -5897,7 +5897,7 @@ HTML;
                 'WHERE'     => [
                     self::getTableField('is_deleted') => 0,
                     self::getTableField('is_active')  => 1,
-                    self::getTableField('authtype')   => Auth::DB_GLPI,
+                    self::getTableField('authtype')   => Auth::DB_ZENTRA,
                     new QueryExpression(
                         QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
                             date: self::getTableField('password_last_update'),
@@ -5951,7 +5951,7 @@ HTML;
                 $is_notification_send = NotificationEvent::raiseEvent(
                     'passwordexpires',
                     $user,
-                    ['entities_id' => 0] // Notication on root entity (glpi_users.entities_id is only a pref)
+                    ['entities_id' => 0] // Notication on root entity (zentra_users.entities_id is only a pref)
                 );
                 if (!$is_notification_send) {
                     continue;
@@ -5989,7 +5989,7 @@ HTML;
                 [
                     'is_deleted' => 0,
                     'is_active'  => 1,
-                    'authtype'   => Auth::DB_GLPI,
+                    'authtype'   => Auth::DB_ZENTRA,
                     new QueryExpression(
                         QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
                             date: 'password_last_update',
@@ -6013,13 +6013,13 @@ HTML;
      */
     public function getPasswordExpirationTime()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!array_key_exists('id', $this->fields) || $this->fields['id'] < 1) {
             return null;
         }
 
-        $expiration_delay = (int) $CFG_GLPI['password_expiration_delay'];
+        $expiration_delay = (int) $CFG_ZENTRA['password_expiration_delay'];
 
         if (-1 === $expiration_delay) {
             return null;
@@ -6045,7 +6045,7 @@ HTML;
      */
     public function shouldChangePassword()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->hasPasswordExpired()) {
             return true; // too late to change password, but returning false would not be logical here
@@ -6056,7 +6056,7 @@ HTML;
             return false;
         }
 
-        $notice_delay    = (int) $CFG_GLPI['password_expiration_notice'];
+        $notice_delay    = (int) $CFG_ZENTRA['password_expiration_notice'];
         if (-1 === $notice_delay) {
             return false;
         }
@@ -6084,9 +6084,9 @@ HTML;
 
     public function getPasswordExpirationMessage(): ?string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $expiration_msg = null;
-        if ($this->fields['authtype'] == Auth::DB_GLPI && $this->shouldChangePassword()) {
+        if ($this->fields['authtype'] == Auth::DB_ZENTRA && $this->shouldChangePassword()) {
             $expire_time = $this->getPasswordExpirationTime();
             $expire_has_passed = $expire_time < time();
             if ($expire_has_passed) {
@@ -6347,7 +6347,7 @@ HTML;
     {
         if (
             $enable_anonymization
-            && $this->fields['id'] != $_SESSION['glpiID']
+            && $this->fields['id'] != $_SESSION['zentraID']
             && Session::getCurrentInterface() == 'helpdesk'
             && ($anon = $this->getAnonymizedName()) !== null
         ) {
@@ -6367,10 +6367,10 @@ HTML;
      */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
-            return $CFG_GLPI["root_doc"] . '/pics/picture.png';
+            return $CFG_ZENTRA["root_doc"] . '/pics/picture.png';
         }
 
         $path = Toolbox::getPictureUrl($this->fields['picture'], false);
@@ -6378,7 +6378,7 @@ HTML;
             return $path;
         }
 
-        return $CFG_GLPI["root_doc"] . '/pics/picture.png';
+        return $CFG_ZENTRA["root_doc"] . '/pics/picture.png';
     }
 
     /**
@@ -6464,7 +6464,7 @@ HTML;
      */
     public static function getUserByForgottenPasswordToken(string $token): ?User
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (empty($token)) {
             return null;
@@ -6480,17 +6480,17 @@ HTML;
                 new QueryExpression(
                     QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
                         date: 'password_forget_token_date',
-                        interval: $CFG_GLPI['password_init_token_delay'],
+                        interval: $CFG_ZENTRA['password_init_token_delay'],
                         interval_unit: 'SECOND'
                     )
                 ),
             ],
         ]);
 
-        $glpi_key = new GLPIKey();
+        $zentra_key = new ZENTRAKey();
 
         foreach ($iterator as $user_data) {
-            if ($token === $glpi_key->decrypt($user_data['password_forget_token'])) {
+            if ($token === $zentra_key->decrypt($user_data['password_forget_token'])) {
                 $user = new self();
                 return $user->getFromDB($user_data['id']) ? $user : null;
             }
@@ -6550,7 +6550,7 @@ HTML;
         global $DB;
 
         $iterator = $DB->request([
-            'FROM' => 'glpi_users',
+            'FROM' => 'zentra_users',
             'WHERE' => ['id' => $ID],
         ]);
 
@@ -6684,26 +6684,26 @@ HTML;
      */
     public function validatePassword(string $password, array &$errors = []): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Clear errors
         $errors = [];
 
         // Validate security policies
-        if ($CFG_GLPI["use_password_security"]) {
-            if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
+        if ($CFG_ZENTRA["use_password_security"]) {
+            if (Toolbox::strlen($password) < $CFG_ZENTRA['password_min_length']) {
                 $errors[] = __('Password too short!');
             }
-            if ($CFG_GLPI["password_need_number"] && !preg_match("/[0-9]+/", $password)) {
+            if ($CFG_ZENTRA["password_need_number"] && !preg_match("/[0-9]+/", $password)) {
                 $errors[] = __('Password must include at least a digit!');
             }
-            if ($CFG_GLPI["password_need_letter"] && !preg_match("/[a-z]+/", $password)) {
+            if ($CFG_ZENTRA["password_need_letter"] && !preg_match("/[a-z]+/", $password)) {
                 $errors[] = __('Password must include at least a lowercase letter!');
             }
-            if ($CFG_GLPI["password_need_caps"] && !preg_match("/[A-Z]+/", $password)) {
+            if ($CFG_ZENTRA["password_need_caps"] && !preg_match("/[A-Z]+/", $password)) {
                 $errors[] = __('Password must include at least a uppercase letter!');
             }
-            if ($CFG_GLPI["password_need_symbol"] && !preg_match("/\W+/", $password)) {
+            if ($CFG_ZENTRA["password_need_symbol"] && !preg_match("/\W+/", $password)) {
                 $errors[] = __('Password must include at least a symbol!');
             }
         }
@@ -6719,7 +6719,7 @@ HTML;
 
     /**
      * Check if this User is the last super-admin user.
-     * A "super-admin user" is a user that can edit GLPI's profiles.
+     * A "super-admin user" is a user that can edit ZENTRA's profiles.
      *
      * @return bool
      */
@@ -6730,7 +6730,7 @@ HTML;
             'profiles_id' => Profile::getSuperAdminProfilesId(),
             'users_id' => new QuerySubQuery([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_users',
+                'FROM'   => 'zentra_users',
                 'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
             ]),
         ]);
@@ -6748,12 +6748,12 @@ HTML;
      */
     final public function isUserNotificationEnable(): bool
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $user_pref = $this->fields['is_notif_enable_default'];
         //load default conf if needed
         if (is_null($user_pref)) {
-            $user_pref = $CFG_GLPI['is_notif_enable_default'];
+            $user_pref = $CFG_ZENTRA['is_notif_enable_default'];
         }
 
         return $user_pref;
@@ -6794,7 +6794,7 @@ HTML;
     private function cleanInput(array $input): array
     {
         // Check the validity of `pdffont` preference
-        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(GLPIPDF::getFontList()), true)) {
+        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(ZENTRAPDF::getFontList()), true)) {
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('The following field has an incorrect value: "%s".'),

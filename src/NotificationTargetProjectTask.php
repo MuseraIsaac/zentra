@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\URL;
+use Zentra\Toolbox\URL;
 
 /**
  * NotificationTargetTicket Class
@@ -121,7 +121,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'zentra_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => User::class,
                 'projecttasks_id' => $this->obj->fields['id'],
@@ -151,7 +151,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'zentra_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => Group::class,
                 'projecttasks_id' => $this->obj->fields['id'],
@@ -176,7 +176,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projectteams',
+            'FROM'   => 'zentra_projectteams',
             'WHERE'  => [
                 'itemtype'    => Group::class,
                 'projects_id' => $this->obj->fields['projects_id'],
@@ -196,11 +196,11 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamContacts()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'zentra_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => Contact::class,
                 'projecttasks_id' => $this->obj->fields['id'],
@@ -212,7 +212,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             if ($contact->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(["email"    => $contact->fields["email"],
                     "name"     => $contact->getName(),
-                    "language" => $CFG_GLPI["language"],
+                    "language" => $CFG_ZENTRA["language"],
                     'usertype' => NotificationTarget::ANONYMOUS_USER,
                 ]);
             }
@@ -226,11 +226,11 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamSuppliers()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'zentra_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => Supplier::class,
                 'projecttasks_id' => $this->obj->fields['id'],
@@ -242,7 +242,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             if ($supplier->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                     "name"     => $supplier->getName(),
-                    "language" => $CFG_GLPI["language"],
+                    "language" => $CFG_ZENTRA["language"],
                     'usertype' => NotificationTarget::ANONYMOUS_USER,
                 ]);
             }
@@ -252,7 +252,7 @@ class NotificationTargetProjectTask extends NotificationTarget
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         //----------- Reservation infos -------------- //
         $events     = $this->getAllEvents();
@@ -268,7 +268,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data["##projecttask.name##"]
                   = $item->getField('name');
         $this->data["##projecttask.project##"]
-                  = Dropdown::getDropdownName('glpi_projects', $item->getField('projects_id'));
+                  = Dropdown::getDropdownName('zentra_projects', $item->getField('projects_id'));
         $this->data["##projecttask.projecturl##"]
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
@@ -319,7 +319,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         if ($item->getField('projecttasks_id')) {
             $this->data["##projecttask.father##"]
                               = Dropdown::getDropdownName(
-                                  'glpi_projecttasks',
+                                  'zentra_projecttasks',
                                   $item->getField('projecttasks_id')
                               );
         }
@@ -328,7 +328,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         if ($item->getField('projectstates_id')) {
             $this->data["##projecttask.state##"]
                               = Dropdown::getDropdownName(
-                                  'glpi_projectstates',
+                                  'zentra_projectstates',
                                   $item->getField('projectstates_id')
                               );
         }
@@ -337,7 +337,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         if ($item->getField('projecttasktypes_id')) {
             $this->data["##projecttask.type##"]
                               = Dropdown::getDropdownName(
-                                  'glpi_projecttasktypes',
+                                  'zentra_projecttasktypes',
                                   $item->getField('projecttasktypes_id')
                               );
         }
@@ -351,7 +351,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         // Team infos
         $restrict = ['projecttasks_id' => $item->getField('id')];
-        $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
+        $items    = getAllDataFromTable('zentra_projecttaskteams', $restrict);
 
         $this->data['teammembers'] = [];
         if (count($items)) {
@@ -371,7 +371,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         // Task infos
         $tasks                = getAllDataFromTable(
-            'glpi_projecttasks',
+            'zentra_projecttasks',
             [
                 'WHERE'  => $restrict,
                 'ORDER'  => ['date_creation DESC', 'id ASC'],
@@ -388,11 +388,11 @@ class NotificationTargetProjectTask extends NotificationTarget
 
             $tmp['##task.state##']          = '';
             if ($task['projectstates_id']) {
-                $tmp['##task.state##'] = Dropdown::getDropdownName('glpi_projectstates', $task['projectstates_id']);
+                $tmp['##task.state##'] = Dropdown::getDropdownName('zentra_projectstates', $task['projectstates_id']);
             }
             $tmp['##task.type##']           = '';
             if ($task['projecttasktypes_id']) {
-                $tmp['##task.type##'] = Dropdown::getDropdownName('glpi_projecttasktypes', $task['projecttasktypes_id']);
+                $tmp['##task.type##'] = Dropdown::getDropdownName('zentra_projecttasktypes', $task['projecttasktypes_id']);
             }
             $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
@@ -422,7 +422,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $this->data['log'] = [];
         // Use list_limit_max or load the full history ?
-        $log_data = Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']);
+        $log_data = Log::getHistoryData($item, 0, $CFG_ZENTRA['list_limit_max']);
         foreach ($log_data as $data) {
             $tmp                                = [];
             $tmp["##projecttask.log.date##"]    = Html::convDateTime($data['date_mod']);
@@ -435,7 +435,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data["##projecttask.numberoflogs##"] = (string) count($this->data['log']);
 
         // Tickets infos
-        $tickets  = getAllDataFromTable('glpi_projecttasks_tickets', $restrict);
+        $tickets  = getAllDataFromTable('zentra_projecttasks_tickets', $restrict);
 
         $this->data['tickets'] = [];
         if (count($tickets)) {
@@ -464,19 +464,19 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         // Document
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_documents.*',
-            'FROM'      => 'glpi_documents',
+            'SELECT'    => 'zentra_documents.*',
+            'FROM'      => 'zentra_documents',
             'LEFT JOIN' => [
-                'glpi_documents_items'  => [
+                'zentra_documents_items'  => [
                     'ON' => [
-                        'glpi_documents_items'  => 'documents_id',
-                        'glpi_documents'        => 'id',
+                        'zentra_documents_items'  => 'documents_id',
+                        'zentra_documents'        => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_documents_items.itemtype'  => 'ProjectTask',
-                'glpi_documents_items.items_id'  => $item->fields['id'],
+                'zentra_documents_items.itemtype'  => 'ProjectTask',
+                'zentra_documents_items.items_id'  => $item->fields['id'],
             ],
         ]);
 
@@ -500,7 +500,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                                     );
             $tmp['##document.heading##'] = '';
             if ($data['documentcategories_id']) {
-                $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
+                $tmp['##document.heading##'] = Dropdown::getDropdownName('zentra_documentcategories', $data['documentcategories_id']);
             }
 
             $tmp['##document.filename##']

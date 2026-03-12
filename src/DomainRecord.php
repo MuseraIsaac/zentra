@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
 
 class DomainRecord extends CommonDBChild implements AssignableItemInterface
 {
@@ -63,11 +63,11 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return ['management', Domain::class, self::class];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb =  self::countForDomain($item);
             }
             return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), $nb, $item::class);
@@ -90,7 +90,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         );
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
             self::showForDomain($item);
@@ -106,7 +106,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_domains',
+            'table'              => 'zentra_domains',
             'field'              => 'name',
             'name'               => Domain::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -136,7 +136,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -161,13 +161,13 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'name',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -190,7 +190,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -201,7 +201,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canCreate(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'])) {
             return true;
         }
         return parent::canCreate();
@@ -212,7 +212,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         if (!self::canUpdateAssignableItem()) {
             return false;
         }
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'])) {
             return true;
         }
         return parent::canUpdate();
@@ -220,7 +220,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canDelete(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'])) {
             return true;
         }
         return parent::canDelete();
@@ -228,7 +228,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canPurge(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'])) {
             return true;
         }
         return parent::canPurge();
@@ -236,7 +236,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public function canCreateItem(): bool
     {
-        return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']) > 0;
+        return count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes']) > 0;
     }
 
     public function canUpdateItem(): bool
@@ -246,8 +246,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
         return parent::canUpdateItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
 
@@ -255,8 +255,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         return parent::canDeleteItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
 
@@ -264,8 +264,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         return parent::canPurgeItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
 
@@ -314,8 +314,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         //search entity
         if ($add && !isset($input['entities_id'])) {
-            $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
-            $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
+            $input['entities_id'] = $_SESSION['zentraactive_entity'] ?? 0;
+            $input['is_recursive'] = $_SESSION['zentraactive_entity_recursive'] ?? 0;
             $domain = new Domain();
             if (isset($input['domains_id']) && $domain->getFromDB($input['domains_id'])) {
                 $input['entities_id'] = $domain->fields['entities_id'];
@@ -324,8 +324,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
 
         if (!Session::isCron() && (isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id']))) {
-            if ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] !== [-1]) {
-                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
+            if ($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] !== [-1]) {
+                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'], true))) {
                     //no right to use selected type
                     Session::addMessageAfterRedirect(
                         __s('You are not allowed to use this type of records'),
@@ -334,7 +334,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     );
                     return false;
                 }
-                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
+                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'], true))) {
                     //no right to change existing type
                     Session::addMessageAfterRedirect(
                         __s('You are not allowed to edit this type of records'),
@@ -412,7 +412,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             return false;
         }
         $canedit = $domain->can($instID, UPDATE)
-                 || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
+                 || count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes']);
         $rand    = mt_rand();
 
         $iterator = $DB->request([
@@ -452,7 +452,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domains_id) }}
 
                         <div class="d-flex">
@@ -492,7 +492,7 @@ TWIG, $twig_params);
         $entries = [];
         foreach ($iterator as $data) {
             $name = self::getDisplayName($domain, $data['name']);
-            if ($_SESSION["glpiis_ids_visible"] || $name === '') {
+            if ($_SESSION["zentrais_ids_visible"] || $name === '') {
                 $name .= " (" . $data["id"] . ")";
             }
 

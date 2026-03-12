@@ -11,7 +11,7 @@
 
         <ignoreFiles>
             <!-- Psalm gets stuck on TCPDF analysis, must be ignored for now -->
-            <file name="src/Glpi/Search/Output/Tcpdf.php" />
+            <file name="src/Zentra/Search/Output/Tcpdf.php" />
         </ignoreFiles>
     </projectFiles>
 

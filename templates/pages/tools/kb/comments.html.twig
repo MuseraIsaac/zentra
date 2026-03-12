@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@
                                     <i class="ti ti-arrow-back-up"></i>
                                 </button>
                             {% endif %}
-                            {% if can_comment and comment['users_id'] == session('glpiID') %}
+                            {% if can_comment and comment['users_id'] == session('zentraID') %}
                                 <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
                                     <i class="ti ti-edit"></i>
                                 </button>
@@ -161,9 +161,9 @@
                         }
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
-                        glpi_alert({
+                        zentra_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
-                            message: '{{ __('Contact your GLPI admin!')|e('js') }}'
+                            message: '{{ __('Contact your ZENTRA admin!')|e('js') }}'
                         });
                     });
                 });
@@ -198,9 +198,9 @@
                             .find('.h_content').first()
                             .append(_form);
                     }, () => {
-                        glpi_alert({
+                        zentra_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
-                            message: '{{ __('Contact your GLPI admin!')|e('js') }}'
+                            message: '{{ __('Contact your ZENTRA admin!')|e('js') }}'
                         });
                     });
                 });

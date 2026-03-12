@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ describe('Notifications', () => {
                 cy.visit(`/front/notification.form.php?id=${notification_id}`);
 
                 cy.get('#tabspanel .nav-item').contains('Templates').within((nav_link) => {
-                    cy.get('.glpi-badge').should('exist').invoke('text').should((t) => {
+                    cy.get('.zentra-badge').should('exist').invoke('text').should((t) => {
                         expect(parseInt(t)).to.be.gte(1);
                     });
                     cy.wrap(nav_link).click();

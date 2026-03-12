@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@
 
 <form method="post" action="#" data-submit-once>
     {% set status_message %}
-        {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
+        {% if enforcement == constant('Zentra\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
             {{ __('2FA grace period ends %s')|format(grace_period_end|relative_datetime) }}
-        {% elseif enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
+        {% elseif enforcement == constant('Zentra\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
             {{ __('Mandatory') }}
         {% else %}
             {{ __('Optional') }}
@@ -48,7 +48,7 @@
    {{ tfa.tfa_backup_codes_container() }}
    <div>
       {{ fields.csrfField() }}
-      {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
+      {% if enforcement != constant('Zentra\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
          <button type="submit" class="btn btn-danger" name="disable_2fa">
             {{ __('Disable 2FA') }}
          </button>

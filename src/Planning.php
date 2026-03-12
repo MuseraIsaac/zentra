@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\CalDAV\Backend\Calendar;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\PlanningEvent;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\CalDAV\Backend\Calendar;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\PlanningEvent;
+use Zentra\RichText\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -56,7 +56,7 @@ use function Safe\strtotime;
 /**
  * Planning Class
  **/
-class Planning extends CommonGLPI
+class Planning extends CommonZENTRA
 {
     public static $rightname = 'planning';
 
@@ -140,7 +140,7 @@ class Planning extends CommonGLPI
             $links[$external] = PlanningExternalEvent::getSearchURL(false);
         }
 
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+        if ($_SESSION['zentra_use_mode'] === Session::DEBUG_MODE) {
             $caldav_title = __s('CalDAV browser interface');
             $caldav  = "<i class='ti ti-refresh pointer' title='$caldav_title'>
                         <span class='sr-only'>$caldav_title</span>
@@ -191,7 +191,7 @@ class Planning extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs[1] = self::createTabEntry(self::getTypeName());
@@ -201,12 +201,12 @@ class Planning extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1: // all
-                    self::showPlanning($_SESSION['glpiID']);
+                    self::showPlanning($_SESSION['zentraID']);
                     break;
             }
         }
@@ -347,7 +347,7 @@ JAVASCRIPT;
      */
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($users_id === 0) {
             return false;
@@ -356,7 +356,7 @@ JAVASCRIPT;
         $planned = false;
         $message = '';
 
-        foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['planning_types'] as $itemtype) {
             if (
                 !is_a($itemtype, CommonDBTM::class, true)
             ) {
@@ -364,7 +364,7 @@ JAVASCRIPT;
             }
             $item = new $itemtype();
             if (
-                // methods from the `Glpi\Features\PlanningEvent` trait
+                // methods from the `Zentra\Features\PlanningEvent` trait
                 !method_exists($item, 'populatePlanning')
                 || !method_exists($item, 'getAlreadyPlannedInformation')
             ) {
@@ -426,7 +426,7 @@ JAVASCRIPT;
      **/
     public static function checkAvailability($params = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!isset($params['itemtype'])) {
             return;
@@ -521,7 +521,7 @@ JAVASCRIPT;
         if ($fullview) {
             $options = [
                 'full_view'    => true,
-                'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
+                'default_view' => $_SESSION['zentra_plannings']['lastview'] ?? 'timeGridWeek',
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
@@ -555,7 +555,7 @@ JAVASCRIPT;
     public static function getTimelineResources()
     {
         $resources = [];
-        foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning) {
+        foreach ($_SESSION['zentra_plannings']['plannings'] as $planning_id => $planning) {
             if ($planning['type'] === 'external') {
                 $resources[] = [
                     'id'         => $planning_id,
@@ -659,31 +659,31 @@ JAVASCRIPT;
      */
     public static function getPlanningTypes()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         return array_merge(
-            $CFG_GLPI['planning_types'],
+            $CFG_ZENTRA['planning_types'],
             ['NotPlanned', 'OnlyBgEvents', 'StateDone']
         );
     }
 
     /**
-     * Init $_SESSION['glpi_plannings'] var with thses keys :
+     * Init $_SESSION['zentra_plannings'] var with thses keys :
      *  - 'filters' : type of planning available (ChangeTask, Reminder, etc)
      *  - 'plannings' : all plannings definided for current user.
      *
      * If currently logged user, has no plannings or filter, this function wiil init them
      *
-     * Also manage color index in $_SESSION['glpi_plannings_color_index']
+     * Also manage color index in $_SESSION['zentra_plannings_color_index']
      *
      * @return void
      */
     public static function initSessionForCurrentUser()
     {
         // new user in planning, init session
-        if (!isset($_SESSION['glpi_plannings']['filters'])) {
-            $_SESSION['glpi_plannings']['filters']   = [];
-            $_SESSION['glpi_plannings']['plannings'] = ['user_' . $_SESSION['glpiID'] => [
+        if (!isset($_SESSION['zentra_plannings']['filters'])) {
+            $_SESSION['zentra_plannings']['filters']   = [];
+            $_SESSION['zentra_plannings']['plannings'] = ['user_' . $_SESSION['zentraID'] => [
                 'color'   => self::getPaletteColor('bg', 0),
                 'display' => true,
                 'type'    => 'user',
@@ -692,7 +692,7 @@ JAVASCRIPT;
         }
 
         // complete missing filters
-        $filters = &$_SESSION['glpi_plannings']['filters'];
+        $filters = &$_SESSION['zentra_plannings']['filters'];
         $index_color = 0;
         foreach (self::getPlanningTypes() as $planning_type) {
             if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents', 'StateDone']) || $planning_type::canView()) {
@@ -708,12 +708,12 @@ JAVASCRIPT;
         }
 
         // compute color index for plannings
-        $_SESSION['glpi_plannings_color_index'] = 0;
-        foreach ($_SESSION['glpi_plannings']['plannings'] as $planning) {
+        $_SESSION['zentra_plannings_color_index'] = 0;
+        foreach ($_SESSION['zentra_plannings']['plannings'] as $planning) {
             if ($planning['type'] === 'group_users') {
-                $_SESSION['glpi_plannings_color_index'] += count($planning['users']);
+                $_SESSION['zentra_plannings_color_index'] += count($planning['users']);
             } else {
-                $_SESSION['glpi_plannings_color_index']++;
+                $_SESSION['zentra_plannings_color_index']++;
             }
         }
     }
@@ -746,7 +746,7 @@ JAVASCRIPT;
      */
     public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Invalid data, skip
         if (!isset($filter_data['type'])) {
@@ -833,7 +833,7 @@ JAVASCRIPT;
         $webcal_base_url = null;
         $show_export_buttons = in_array($filter_data['type'], ['user', 'group'], true);
         if ($show_export_buttons) {
-            $parsed_url = parse_url($CFG_GLPI["url_base"]);
+            $parsed_url = parse_url($CFG_ZENTRA["url_base"]);
 
             $url_port = array_key_exists('port', $parsed_url)
                 ? $parsed_url['port']
@@ -860,7 +860,7 @@ JAVASCRIPT;
             'gID'                   => $gID,
             'login_user'            => $login_user,
             'webcal_base_url'       => $webcal_base_url,
-            'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
+            'caldav_url'            => $caldav_item_url !== null ? $CFG_ZENTRA['url_base'] . '/caldav.php/' . $caldav_item_url : null,
         ]);
     }
 
@@ -892,7 +892,7 @@ JAVASCRIPT;
                     display_emptychoice: true,
                     rand: rand
                 }) }}
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                 <script>
                     $(() => {
                         $('#dropdown_planning_type{{ rand }}').on('change', function() {
@@ -918,7 +918,7 @@ TWIG, $twig_params);
     public static function showAddUserForm()
     {
         $used = [];
-        foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
+        foreach (array_keys($_SESSION['zentra_plannings']) as $actor) {
             $actor = explode("_", $actor);
             if ($actor[0] === "user") {
                 $used[] = $actor[1];
@@ -949,8 +949,8 @@ TWIG, $twig_params);
             {% import 'components/form/fields_macros.html.twig' as fields %}
             {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
             {{ fields.dropdownField('User', 'users_id', 0, 'User'|itemtype_name, {
-                entity: session('glpiactive_entity'),
-                entity_sons: session('glpiactive_entity_recursive'),
+                entity: session('zentraactive_entity'),
+                entity_sons: session('zentraactive_entity_recursive'),
                 right: rights,
                 used: used
             }) }}
@@ -972,13 +972,13 @@ TWIG, $twig_params);
             Session::addMessageAfterRedirect(__s('A user selection is required'), false, ERROR);
             return;
         }
-        $_SESSION['glpi_plannings']['plannings']["user_" . $params['users_id']]
-         = ['color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+        $_SESSION['zentra_plannings']['plannings']["user_" . $params['users_id']]
+         = ['color'   => self::getPaletteColor('bg', $_SESSION['zentra_plannings_color_index']),
              'display' => true,
              'type'    => 'user',
          ];
         self::savePlanningsInDB();
-        $_SESSION['glpi_plannings_color_index']++;
+        $_SESSION['zentra_plannings_color_index']++;
     }
 
     /**
@@ -991,8 +991,8 @@ TWIG, $twig_params);
     {
         $condition = [];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
-            $condition['id'] = $_SESSION['glpigroups'];
+        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['zentragroups'])) {
+            $condition['id'] = $_SESSION['zentragroups'];
         }
 
         $twig_params = [
@@ -1004,8 +1004,8 @@ TWIG, $twig_params);
             {% import 'components/form/fields_macros.html.twig' as fields %}
             {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
             {{ fields.dropdownField('Group', 'groups_id', 0, 'Group'|itemtype_name(1), {
-                entity: session('glpiactive_entity'),
-                entity_sons: session('glpiactive_entity_recursive'),
+                entity: session('zentraactive_entity'),
+                entity_sons: session('zentraactive_entity_recursive'),
                 condition: condition
             }) }}
             <input type="hidden" name="action" value="send_add_group_users_form">
@@ -1028,36 +1028,36 @@ TWIG, $twig_params);
             Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
             return;
         }
-        $current_group = &$_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
+        $current_group = &$_SESSION['zentra_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
         $current_group = [
             'display' => true,
             'type'    => 'group_users',
             'users'   => [],
         ];
         $users = Group_User::getGroupUsers($params['groups_id'], [
-            'glpi_users.is_active'  => 1,
-            'glpi_users.is_deleted' => 0,
+            'zentra_users.is_active'  => 1,
+            'zentra_users.is_deleted' => 0,
             [
                 'OR' => [
-                    ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                    ['zentra_users.begin_date' => null],
+                    ['zentra_users.begin_date' => ['<', QueryFunction::now()]],
                 ],
             ],
             [
                 'OR' => [
-                    ['glpi_users.end_date' => null],
-                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
+                    ['zentra_users.end_date' => null],
+                    ['zentra_users.end_date' => ['>', QueryFunction::now()]],
                 ],
             ],
         ]);
 
         foreach ($users as $user_data) {
             $current_group['users']['user_' . $user_data['id']] = [
-                'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+                'color'   => self::getPaletteColor('bg', $_SESSION['zentra_plannings_color_index']),
                 'display' => true,
                 'type'    => 'user',
             ];
-            $_SESSION['glpi_plannings_color_index']++;
+            $_SESSION['zentra_plannings_color_index']++;
         }
         self::savePlanningsInDB();
     }
@@ -1094,8 +1094,8 @@ TWIG, $twig_params);
             echo "</div>";
             echo "<hr>";
             $item->showForm((int) $params['id'], $options);
-            $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
+            $callback = "zentra_close_all_dialogs();
+                      ZENTRAPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#edit_event_form$rand", $callback);
         }
@@ -1113,8 +1113,8 @@ TWIG, $twig_params);
     {
         $condition = ['is_task' => 1];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
-            $condition['id'] = $_SESSION['glpigroups'];
+        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['zentragroups'])) {
+            $condition['id'] = $_SESSION['zentragroups'];
         }
 
         $twig_params = [
@@ -1126,8 +1126,8 @@ TWIG, $twig_params);
             {% import 'components/form/fields_macros.html.twig' as fields %}
             {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
             {{ fields.dropdownField('Group', 'groups_id', 0, 'Group'|itemtype_name(1), {
-                entity: session('glpiactive_entity'),
-                entity_sons: session('glpiactive_entity_recursive'),
+                entity: session('zentraactive_entity'),
+                entity_sons: session('zentraactive_entity_recursive'),
                 condition: condition
             }) }}
             <input type="hidden" name="action" value="send_add_group_form">
@@ -1150,16 +1150,16 @@ TWIG, $twig_params);
             Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
             return;
         }
-        $_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id']]
+        $_SESSION['zentra_plannings']['plannings']["group_" . $params['groups_id']]
          = ['color'   => self::getPaletteColor(
              'bg',
-             $_SESSION['glpi_plannings_color_index']
+             $_SESSION['zentra_plannings_color_index']
          ),
              'display' => true,
              'type'    => 'group',
          ];
         self::savePlanningsInDB();
-        $_SESSION['glpi_plannings_color_index']++;
+        $_SESSION['zentra_plannings_color_index']++;
     }
 
     /**
@@ -1214,15 +1214,15 @@ TWIG, $twig_params);
             return;
         }
 
-        $_SESSION['glpi_plannings']['plannings']['external_' . md5($params['url'])] = [
-            'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+        $_SESSION['zentra_plannings']['plannings']['external_' . md5($params['url'])] = [
+            'color'   => self::getPaletteColor('bg', $_SESSION['zentra_plannings_color_index']),
             'display' => true,
             'type'    => 'external',
             'name'    => $params['name'],
             'url'     => $params['url'],
         ];
         self::savePlanningsInDB();
-        $_SESSION['glpi_plannings_color_index']++;
+        $_SESSION['zentra_plannings_color_index']++;
     }
 
     /**
@@ -1232,14 +1232,14 @@ TWIG, $twig_params);
      */
     public static function showAddEventForm($params = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (count($CFG_GLPI['planning_add_types']) === 1) {
-            $params['itemtype'] = $CFG_GLPI['planning_add_types'][0];
+        if (count($CFG_ZENTRA['planning_add_types']) === 1) {
+            $params['itemtype'] = $CFG_ZENTRA['planning_add_types'][0];
             self::showAddEventSubForm($params);
         } else {
             $select_options = [];
-            foreach ($CFG_GLPI['planning_add_types'] as $add_types) {
+            foreach ($CFG_ZENTRA['planning_add_types'] as $add_types) {
                 $select_options[$add_types] = $add_types::getTypeName(1);
             }
 
@@ -1304,8 +1304,8 @@ TWIG, $twig_params);
                 'res_items_id'       => $params['res_items_id'],
                 'form_id'            => "ajax_reminder$rand",
             ]);
-            $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
+            $callback = "zentra_close_all_dialogs();
+                      ZENTRAPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#ajax_reminder$rand", $callback);
         }
@@ -1330,14 +1330,14 @@ TWIG, $twig_params);
      */
     public static function showAddEventClassicForm($params = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($params["id"]) && ($params["id"] > 0)) {
             echo "<input type='hidden' name='plan[id]' value='" . ((int) $params["id"]) . "'>";
         }
 
         $display_dates = $params['_display_dates'] ?? true;
-        $mintime = $CFG_GLPI["planning_begin"];
+        $mintime = $CFG_ZENTRA["planning_begin"];
         if (!empty($params["begin"])) {
             $begin = $params["begin"];
             $begintime = date("H:i:s", strtotime($begin));
@@ -1345,7 +1345,7 @@ TWIG, $twig_params);
                 $mintime = $begintime;
             }
         } else {
-            $ts = $CFG_GLPI['time_step'] * 60; // passage in minutes
+            $ts = $CFG_ZENTRA['time_step'] * 60; // passage in minutes
             $time = time() + $ts - 60;
             $time = ((int) floor($time / $ts)) * $ts;
             $begin = date("Y-m-d H:i", $time);
@@ -1359,7 +1359,7 @@ TWIG, $twig_params);
 
         $default_delay = $params['duration'] ?? 0;
         if ($display_dates) {
-            $default_delay = floor((strtotime($end) - strtotime($begin)) / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP) * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
+            $default_delay = floor((strtotime($end) - strtotime($begin)) / $CFG_ZENTRA['time_step'] / MINUTE_TIMESTAMP) * $CFG_ZENTRA['time_step'] * MINUTE_TIMESTAMP;
         }
 
         TemplateRenderer::getInstance()->display('pages/assistance/planning/add_classic_event.html.twig', [
@@ -1378,7 +1378,7 @@ TWIG, $twig_params);
      */
     public static function showPlanningCheck(array $data): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $append_params = [
             "checkavailability" => "checkavailability",
@@ -1403,7 +1403,7 @@ TWIG, $twig_params);
             echo "</a>";
             Ajax::createIframeModalWindow(
                 'planningcheck' . $rand,
-                $CFG_GLPI["root_doc"] . "/front/planning.php?" . Toolbox::append_params($append_params),
+                $CFG_ZENTRA["root_doc"] . "/front/planning.php?" . Toolbox::append_params($append_params),
                 ['title'  => __('Availability')]
             );
         }
@@ -1495,7 +1495,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * toggle display for selected line of $_SESSION['glpi_plannings']
+     * toggle display for selected line of $_SESSION['zentra_plannings']
      *
      * @since 9.1
      *
@@ -1513,9 +1513,9 @@ TWIG, $twig_params);
             $key = 'plannings';
         }
         if (empty($options['parent'])) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
+            $_SESSION['zentra_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
         } else {
-            $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
+            $_SESSION['zentra_plannings']['plannings'][$options['parent']]['users']
             [$options['name']]['display']
             = ($options['display'] === 'true');
         }
@@ -1523,7 +1523,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * change color for selected line of $_SESSION['glpi_plannings']
+     * change color for selected line of $_SESSION['zentra_plannings']
      *
      * @since 9.1
      *
@@ -1541,16 +1541,16 @@ TWIG, $twig_params);
             $key = 'plannings';
         }
         if (empty($options['parent'])) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['color'] = $options['color'];
+            $_SESSION['zentra_plannings'][$key][$options['name']]['color'] = $options['color'];
         } else {
-            $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
+            $_SESSION['zentra_plannings']['plannings'][$options['parent']]['users']
             [$options['name']]['color'] = $options['color'];
         }
         self::savePlanningsInDB();
     }
 
     /**
-     * delete selected line in $_SESSION['glpi_plannings']
+     * delete selected line in $_SESSION['zentra_plannings']
      *
      * @since 9.1
      *
@@ -1561,14 +1561,14 @@ TWIG, $twig_params);
      */
     public static function deleteFilter($options = [])
     {
-        $current = $_SESSION['glpi_plannings']['plannings'][$options['filter']];
+        $current = $_SESSION['zentra_plannings']['plannings'][$options['filter']];
         if ($current['type'] === 'group_users') {
-            $_SESSION['glpi_plannings_color_index'] -= count($current['users']);
+            $_SESSION['zentra_plannings_color_index'] -= count($current['users']);
         } else {
-            $_SESSION['glpi_plannings_color_index']--;
+            $_SESSION['zentra_plannings_color_index']--;
         }
 
-        unset($_SESSION['glpi_plannings']['plannings'][$options['filter']]);
+        unset($_SESSION['zentra_plannings']['plannings'][$options['filter']]);
         self::savePlanningsInDB();
     }
 
@@ -1578,14 +1578,14 @@ TWIG, $twig_params);
     public static function savePlanningsInDB()
     {
         $user = new User();
-        $user->update(['id' => $_SESSION['glpiID'],
-            'plannings' => exportArrayToDB($_SESSION['glpi_plannings']),
+        $user->update(['id' => $_SESSION['zentraID'],
+            'plannings' => exportArrayToDB($_SESSION['zentra_plannings']),
         ]);
     }
 
     /**
      * Prepare a set of events for jquery fullcalendar.
-     * Call populatePlanning functions for all $CFG_GLPI['planning_types'] types
+     * Call populatePlanning functions for all $CFG_ZENTRA['planning_types'] types
      *
      * @since 9.1
      *
@@ -1599,7 +1599,7 @@ TWIG, $twig_params);
      */
     public static function constructEventsArray($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $param['start']               = '';
         $param['end']                 = '';
@@ -1632,19 +1632,19 @@ TWIG, $twig_params);
         $param['begin'] = date("Y-m-d H:i:s", $time_begin);
         $param['end']   = date("Y-m-d H:i:s", $time_end);
 
-        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+        if (!$_SESSION['zentra_plannings']['filters']['StateDone']['display']) {
             $param['state_done'] = false;
         }
 
         $raw_events = [];
         $not_planned = [];
-        foreach ($CFG_GLPI['planning_types'] as $planning_type) {
+        foreach ($CFG_ZENTRA['planning_types'] as $planning_type) {
             if (!$planning_type::canView()) {
                 continue;
             }
-            if ($_SESSION['glpi_plannings']['filters'][$planning_type]['display']) {
-                $event_type_color = $_SESSION['glpi_plannings']['filters'][$planning_type]['color'];
-                foreach ($_SESSION['glpi_plannings']['plannings'] as $actor => $actor_params) {
+            if ($_SESSION['zentra_plannings']['filters'][$planning_type]['display']) {
+                $event_type_color = $_SESSION['zentra_plannings']['filters'][$planning_type]['color'];
+                foreach ($_SESSION['zentra_plannings']['plannings'] as $actor => $actor_params) {
                     if ($actor_params['type'] === 'external') {
                         continue; // Ignore external calendars
                     }
@@ -1678,7 +1678,7 @@ TWIG, $twig_params);
         $events = [];
         foreach ($raw_events as $event) {
             if (
-                $_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
+                $_SESSION['zentra_plannings']['filters']['OnlyBgEvents']['display']
                 && (!isset($event['background']) || !$event['background'])
             ) {
                 continue;
@@ -1706,7 +1706,7 @@ TWIG, $twig_params);
             // get duration in milliseconds
             $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
-            $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
+            $index_color = array_search("user_$users_id", array_keys($_SESSION['zentra_plannings']));
             $new_event = [
                 'title'       => $event['name'],
                 'content'     => $content,
@@ -1718,7 +1718,7 @@ TWIG, $twig_params);
                 '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
                 'rendering'   => isset($event['background'])
                              && $event['background']
-                             && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
+                             && !$_SESSION['zentra_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
                 'color'       => (empty($event['color'])
@@ -1890,7 +1890,7 @@ TWIG, $twig_params);
                     $raw_events = array_merge($raw_events, $current_events);
                 }
                 if (
-                    $_SESSION['glpi_plannings']['filters']['NotPlanned']['display']
+                    $_SESSION['zentra_plannings']['filters']['NotPlanned']['display']
                     && method_exists($params['planning_type'], 'populateNotPlanned')
                 ) {
                     $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
@@ -1905,11 +1905,11 @@ TWIG, $twig_params);
         // fill type of planning
         $raw_events = array_map(static fn($arr) => $arr + ['resourceId' => $actor], $raw_events);
 
-        if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
+        if ($_SESSION['zentra_plannings']['filters']['NotPlanned']['display']) {
             $not_planned = array_map(static fn($arr) => $arr + [
                 'not_planned' => true,
                 'resourceId' => $actor,
-                'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color'],
+                'event_type_color' => $_SESSION['zentra_plannings']['filters']['NotPlanned']['color'],
             ], $not_planned);
         }
     }
@@ -1924,17 +1924,17 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $raw_events = [];
 
-        foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
+        foreach ($_SESSION['zentra_plannings']['plannings'] as $planning_id => $planning_params) {
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non-external and inactive calendars
             }
             $errmsg = null;
             $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            if (in_array(self::class, $CFG_ZENTRA['proxy_exclusions'])) {
                 $eopts['proxy_excluded'] = true;
             }
             $calendar_data = Toolbox::getURLContent($planning_params['url'], $errmsg, 0, $eopts);
@@ -2193,7 +2193,7 @@ TWIG, $twig_params);
         $html = "";
 
         // bg event shouldn't have content displayed
-        if (!$complete && $_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']) {
+        if (!$complete && $_SESSION['zentra_plannings']['filters']['OnlyBgEvents']['display']) {
             return "";
         }
 
@@ -2259,7 +2259,7 @@ TWIG, ['msg' => __('Your planning')]);
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
             ($who === 0)
@@ -2268,10 +2268,10 @@ TWIG, ['msg' => __('Your planning')]);
             return;
         }
 
-        if (!empty($CFG_GLPI["version"])) {
-            $unique_id = "GLPI-Planning-" . trim($CFG_GLPI["version"]);
+        if (!empty($CFG_ZENTRA["version"])) {
+            $unique_id = "ZENTRA-Planning-" . trim($CFG_ZENTRA["version"]);
         } else {
-            $unique_id = "GLPI-Planning-UnknownVersion";
+            $unique_id = "ZENTRA-Planning-UnknownVersion";
         }
 
         // create vcalendar
@@ -2294,7 +2294,7 @@ TWIG, ['msg' => __('Your planning')]);
         ];
 
         if (empty($limititemtype)) {
-            foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+            foreach ($CFG_ZENTRA['planning_types'] as $itemtype) {
                 $interv = array_merge($interv, $itemtype::populatePlanning($params));
             }
         } else {
@@ -2421,7 +2421,7 @@ TWIG, ['msg' => __('Your planning')]);
      */
     public static function viewChanged($view_name = "ListView")
     {
-        $_SESSION['glpi_plannings']['lastview'] = $view_name;
+        $_SESSION['zentra_plannings']['lastview'] = $view_name;
     }
 
     /**

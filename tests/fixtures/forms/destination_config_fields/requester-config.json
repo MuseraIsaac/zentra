@@ -30,7 +30,7 @@
                     "id": 1,
                     "uuid": "c1d2e3f4-a5b6-7890-cdef-123456789012",
                     "name": "My Requester question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeRequester",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeRequester",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -57,7 +57,7 @@
                     "id": 2,
                     "uuid": "d1e2f3a4-b5c6-7890-defa-123456789013",
                     "name": "My Email question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeEmail",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeEmail",
                     "is_mandatory": false,
                     "vertical_rank": 1,
                     "horizontal_rank": null,
@@ -74,7 +74,7 @@
                     "id": 3,
                     "uuid": "e1f2a3b4-c5d6-7890-efab-123456789014",
                     "name": "My Computer question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeItem",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,
@@ -95,7 +95,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -109,7 +109,7 @@
             "destinations": [
                 {
                     "id": 1,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

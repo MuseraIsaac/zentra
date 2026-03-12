@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% macro forceUnlockButton(item, check_unlock_right) %}
-    {% set real_profile = session('glpilocksavedprofile')|default(null) %}
+    {% set real_profile = session('zentralocksavedprofile')|default(null) %}
     {% if not check_unlock_right or (real_profile != null and real_profile[get_static(item.fields['itemtype'], 'rightname')] b-and constant('UNLOCK')) %}
         <button type="button" class="btn btn-sm btn-primary ms-2 force-unlock-item">
             <i class="ti ti-lock-open"></i>
@@ -50,7 +50,7 @@
             {{ __('Read-only mode') }}
         </span>
         <form method="post" class="d-inline">
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
             {{ inputs.submit('lockwrite', __('Edit'), 1, {
                 class: 'btn btn-sm btn-primary ms-2',
                 icon: 'ti ti-pencil',
@@ -60,7 +60,7 @@
 {% else %}
     {% if not new_lock %}
         <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
-            {% if item.fields['users_id'] != session('glpiID') %}
+            {% if item.fields['users_id'] != session('zentraID') %}
                 <strong class="nowrap">
                     {% set locked_by_msg %}
                         {% set locked_by_link %}

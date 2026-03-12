@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\RichText\RichText;
 
 /**
  * NotificationTemplateTranslation Class
@@ -77,10 +77,10 @@ class NotificationTemplateTranslation extends CommonDBChild
     #[Override]
     protected function computeFriendlyName()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->getField('language') !== '') {
-            return $CFG_GLPI['languages'][$this->getField('language')][0];
+            return $CFG_ZENTRA['languages'][$this->getField('language')][0];
         }
         return __('Default translation');
     }
@@ -132,7 +132,7 @@ class NotificationTemplateTranslation extends CommonDBChild
      */
     public function showSummary(NotificationTemplate $template, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $nID     = $template->getField('id');
         $canedit = Config::canUpdate();
@@ -153,13 +153,13 @@ TWIG, $twig_params);
         $entries = [];
         foreach (
             $DB->request([
-                'FROM' => 'glpi_notificationtemplatetranslations',
+                'FROM' => 'zentra_notificationtemplatetranslations',
                 'WHERE' => ['notificationtemplates_id' => $nID],
             ]) as $data
         ) {
             if ($this->getFromDB($data['id'])) {
                 $href = self::getFormURL() . "?id=" . $data['id'] . "&notificationtemplates_id=" . $nID;
-                $lang = $data['language'] !== '' ? $CFG_GLPI['languages'][$data['language']][0] : __('Default translation');
+                $lang = $data['language'] !== '' ? $CFG_ZENTRA['languages'][$data['language']][0] : __('Default translation');
 
                 $entries[] = [
                     'itemtype' => self::class,
@@ -309,7 +309,7 @@ TWIG, $twig_params);
 
         $used_languages = $DB->request([
             'SELECT' => ['language'],
-            'FROM' => 'glpi_notificationtemplatetranslations',
+            'FROM' => 'zentra_notificationtemplatetranslations',
             'WHERE' => [
                 'notificationtemplates_id' => $language_id,
             ],
@@ -393,7 +393,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -402,7 +402,7 @@ TWIG, $twig_params);
                 case self::class:
                     return self::createTabEntry(__('Preview'), 0, $item::class, 'ti ti-template');
                 case NotificationTemplate::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ['notificationtemplates_id' => $item->getID()]
@@ -415,7 +415,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case self::class:
@@ -480,12 +480,12 @@ TWIG, $twig_params);
                 $options['items']       = [$item->getID() => $item->fields];
             }
             $target = NotificationTarget::getInstance($item, $event, $options);
-            $infos  = ['language' => $_SESSION['glpilanguage'],
-                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
+            $infos  = ['language' => $_SESSION['zentralanguage'],
+                'additionnaloption' => ['usertype' => NotificationTarget::ZENTRA_USER],
             ];
 
             $template->resetComputedTemplates();
-            $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
+            $template->setSignature(Notification::getMailingSignature($_SESSION['zentraactive_entity']));
             if ($target !== false && $tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
                 $data = $template->templates_by_languages[$tid];
             }

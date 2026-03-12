@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,9 +47,9 @@ $item->getFromDB((int) $_REQUEST['items_id']);
 
 $locations_id = $item->fields['locations_id'] ?? 0;
 
-$entities_id = $item->fields['entities_id'] ?? $_SESSION['glpiactive_entity'];
+$entities_id = $item->fields['entities_id'] ?? $_SESSION['zentraactive_entity'];
 
-$is_recursive = $_SESSION['glpiactive_entity_recursive'];
+$is_recursive = $_SESSION['zentraactive_entity_recursive'];
 if (isset($_REQUEST['is_recursive'])) {
     $is_recursive = (bool) $_REQUEST['is_recursive'];
 }

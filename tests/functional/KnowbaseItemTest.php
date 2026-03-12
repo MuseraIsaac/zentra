@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace test\units;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -225,7 +225,7 @@ HTML,
         ];
         $fpath = FIXTURE_DIR . '/uploads/foo.png';
         $this->assertTrue(
-            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            copy($fpath, ZENTRA_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath
         );
         $this->assertGreaterThan(0, $instance->add($input));
@@ -240,7 +240,7 @@ HTML,
         $this->assertNotSame(false, $fcontents, 'Cannot read ' . $fpath);
         $base64Image = base64_encode($fcontents);
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        $tmpFilename = GLPI_TMP_DIR . '/' . $filename;
+        $tmpFilename = ZENTRA_TMP_DIR . '/' . $filename;
         file_put_contents($tmpFilename, base64_decode($base64Image));
         $success = $instance->update([
             'id'       => $instance->getID(),
@@ -288,7 +288,7 @@ HTML,
         ];
         $fpath = FIXTURE_DIR . '/uploads/foo.txt';
         $this->assertTrue(
-            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            copy($fpath, ZENTRA_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath
         );
         $instance->add($input);
@@ -304,7 +304,7 @@ HTML,
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
         $fpath = FIXTURE_DIR . '/uploads/bar.txt';
         $this->assertTrue(
-            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            copy($fpath, ZENTRA_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath
         );
         $success = $instance->update([
@@ -925,20 +925,20 @@ HTML,
 
     protected function testGetVisibilityCriteriaProvider_FAQ_public(): iterable
     {
-        global $DB, $CFG_GLPI;
+        global $DB, $CFG_ZENTRA;
 
         // Removing existing data
         $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
         $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects
-        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $zentra_user = getItemByTypeName("User", "zentra", true);
         $this->createItems("KnowbaseItem", [
             [
                 'name'     => 'FAQ 1',
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -946,7 +946,7 @@ HTML,
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -954,7 +954,7 @@ HTML,
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => false, // Not really a FAQ article
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -969,41 +969,41 @@ HTML,
         ]);
 
         // First FAQ test case: public FAQ disabled
-        $CFG_GLPI['use_public_faq'] = false;
+        $CFG_ZENTRA['use_public_faq'] = false;
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        $_SESSION['glpi_multientitiesmode'] = 1;
-        $CFG_GLPI['use_public_faq'] = true;
+        $_SESSION['zentra_multientitiesmode'] = 1;
+        $CFG_ZENTRA['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
         // Third FAQ test case: public FAQ enabled + single entity
-        $_SESSION['glpi_multientitiesmode'] = 0;
+        $_SESSION['zentra_multientitiesmode'] = 0;
         yield ['articles' => ['FAQ 1', 'FAQ 2']];
 
         // Revert session / config
-        $_SESSION['glpi_multientitiesmode'] = 1;
-        $CFG_GLPI['use_public_faq'] = false;
+        $_SESSION['zentra_multientitiesmode'] = 1;
+        $CFG_ZENTRA['use_public_faq'] = false;
     }
 
     protected function testGetVisibilityCriteriaProvider_FAQ_logged(): iterable
     {
         global $DB;
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         // Removing existing data
         $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
         $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects
-        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $zentra_user = getItemByTypeName("User", "zentra", true);
         $this->createItems("KnowbaseItem", [
             [
                 'name'     => 'FAQ 1',
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1011,7 +1011,7 @@ HTML,
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1019,7 +1019,7 @@ HTML,
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1027,7 +1027,7 @@ HTML,
                 'name'     => 'FAQ 4',
                 'answer'   => 'FAQ 4',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1035,7 +1035,7 @@ HTML,
                 'name'     => 'FAQ 5',
                 'answer'   => 'FAQ 5',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1043,7 +1043,7 @@ HTML,
                 'name'     => 'FAQ 6',
                 'answer'   => 'FAQ 6',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1051,7 +1051,7 @@ HTML,
                 'name'     => 'FAQ 7',
                 'answer'   => 'FAQ 7',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1059,7 +1059,7 @@ HTML,
                 'name'     => 'FAQ 8',
                 'answer'   => 'FAQ 8',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1067,7 +1067,7 @@ HTML,
                 'name'     => 'FAQ 9',
                 'answer'   => 'FAQ 9',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1075,7 +1075,7 @@ HTML,
                 'name'     => 'FAQ 10',
                 'answer'   => 'FAQ 10',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1083,7 +1083,7 @@ HTML,
                 'name'     => 'FAQ 11',
                 'answer'   => 'FAQ 11',
                 'is_faq'   => true,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1223,14 +1223,14 @@ HTML,
     protected function testGetVisibilityCriteriaProvider_KB(): iterable
     {
         // Create set of test subjects
-        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $zentra_user = getItemByTypeName("User", "zentra", true);
         $tech_user = getItemByTypeName("User", "tech", true);
         $this->createItems("KnowbaseItem", [
             [
                 'name'     => 'KB 1',
                 'answer'   => 'KB 1',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1246,7 +1246,7 @@ HTML,
                 'name'     => 'KB 3',
                 'answer'   => 'KB 3',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1254,7 +1254,7 @@ HTML,
                 'name'     => 'KB 4',
                 'answer'   => 'KB 4',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1262,7 +1262,7 @@ HTML,
                 'name'     => 'KB 5',
                 'answer'   => 'KB 5',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1270,7 +1270,7 @@ HTML,
                 'name'     => 'KB 6',
                 'answer'   => 'KB 6',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1278,7 +1278,7 @@ HTML,
                 'name'     => 'KB 7',
                 'answer'   => 'KB 7',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1286,7 +1286,7 @@ HTML,
                 'name'     => 'KB 8',
                 'answer'   => 'KB 8',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1294,7 +1294,7 @@ HTML,
                 'name'     => 'KB 9',
                 'answer'   => 'KB 9',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1302,7 +1302,7 @@ HTML,
                 'name'     => 'KB 10',
                 'answer'   => 'KB 10',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1310,7 +1310,7 @@ HTML,
                 'name'     => 'KB 11',
                 'answer'   => 'KB 11',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1318,7 +1318,7 @@ HTML,
                 'name'     => 'KB 12',
                 'answer'   => 'KB 12',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1326,7 +1326,7 @@ HTML,
                 'name'     => 'KB 13',
                 'answer'   => 'KB 13',
                 'is_faq'   => false,
-                'users_id' => $glpi_user,
+                'users_id' => $zentra_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
             ],
@@ -1467,7 +1467,7 @@ HTML,
         ];
 
         // Last test, admin should see all articles
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         yield [
             'articles' => [
                 'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',
@@ -1540,7 +1540,7 @@ HTML,
         $entity->getFromDBByCrit(['name' => '_test_root_entity']);
 
         $date = date('Y-m-d H:i:s');
-        $_SESSION['glpi_currenttime'] = $date;
+        $_SESSION['zentra_currenttime'] = $date;
 
         // Test item cloning
         $knowbaseitem = new \KnowbaseItem();
@@ -1669,7 +1669,7 @@ HTML,
 
     /**
      * @return void
-     * @see https://github.com/glpi-project/glpi/issues/21873
+     * @see https://github.com/zentra-project/zentra/issues/21873
      */
     public function testUnsetCateogry(): void
     {
@@ -1735,7 +1735,7 @@ HTML,
             'name'     => 'KB visible to tech',
             'answer'   => 'KB anwser',
             'is_faq'   => false,
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => $_SESSION['zentraID'],
         ]);
 
         $this->login('tech', 'tech');

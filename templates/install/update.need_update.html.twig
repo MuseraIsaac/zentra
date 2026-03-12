@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@
                                 {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
                             {% endif %}
                             <p class="my-2 alert alert-important alert-warning">
-                                {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
+                                {{ __('The ZENTRA codebase has been updated. The update of the ZENTRA database is necessary.') }}
                             </p>
                             <button type="submit" name="continue" value="1" class="btn btn-primary">
                                 <i class="ti ti-check"></i>{{ _x('button', 'Upgrade') }}
@@ -62,7 +62,7 @@
                         </form>
                     {% else %}
                         <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                            {{ __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') }}
+                            {{ __('You are trying to use ZENTRA with outdated files compared to the version of the database. Please install the correct ZENTRA files corresponding to the version of your database.') }}
                         </p>
                     {% endif %}
                 {% endif %}

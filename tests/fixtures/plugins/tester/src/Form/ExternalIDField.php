@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +32,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiPlugin\Tester\Form;
+namespace ZentraPlugin\Tester\Form;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\AbstractConfigField;
-use Glpi\Form\Destination\CommonITILField\Category;
-use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\JsonFieldInterface;
+use Zentra\Form\AnswersSet;
+use Zentra\Form\Destination\AbstractConfigField;
+use Zentra\Form\Destination\CommonITILField\Category;
+use Zentra\Form\Destination\FormDestination;
+use Zentra\Form\Form;
+use Zentra\Form\QuestionType\QuestionTypeShortText;
 use InvalidArgumentException;
 use Override;
 

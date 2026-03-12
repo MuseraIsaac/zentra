@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @since 9.5.0
  * @todo Shouldn't this extend CommonDBChild?
  * @todo The 'parent_id' field should be named 'impactcompounds_id'
- * @todo This should use standard GLPI right management. Currently blocking API access.
+ * @todo This should use standard ZENTRA right management. Currently blocking API access.
  */
 class ImpactItem extends CommonDBTM
 {
@@ -58,12 +58,12 @@ class ImpactItem extends CommonDBTM
 
         $it = $DB->request([
             'SELECT' => [
-                'glpi_impactitems.id',
+                'zentra_impactitems.id',
             ],
             'FROM' => self::getTable(),
             'WHERE'  => [
-                'glpi_impactitems.itemtype' => get_class($item),
-                'glpi_impactitems.items_id' => $item->fields['id'],
+                'zentra_impactitems.itemtype' => get_class($item),
+                'zentra_impactitems.items_id' => $item->fields['id'],
             ],
         ]);
 

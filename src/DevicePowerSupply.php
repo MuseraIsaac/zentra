@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicepowersupplymodels',
+            'table'              => 'zentra_devicepowersupplymodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -152,7 +152,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '39',
-            'table'              => 'glpi_devicepowersupplies',
+            'table'              => 'zentra_devicepowersupplies',
             'field'              => 'designation',
             'name'               => static::getTypeName(1),
             'forcegroupby'       => true,
@@ -161,7 +161,7 @@ class DevicePowerSupply extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicepowersupplies',
+                    'table'              => 'zentra_items_devicepowersupplies',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -169,7 +169,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '1334',
-            'table'              => 'glpi_items_devicepowersupplies',
+            'table'              => 'zentra_items_devicepowersupplies',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -181,7 +181,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '1335',
-            'table'              => 'glpi_items_devicepowersupplies',
+            'table'              => 'zentra_items_devicepowersupplies',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

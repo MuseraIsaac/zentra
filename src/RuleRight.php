@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * RuleRight Class
@@ -201,7 +201,7 @@ class RuleRight extends Rule
             $criterias['TYPE']['name']             = __('Authentication type');
             $criterias['TYPE']['allow_condition']  = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT];
 
-            $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
+            $criterias['LDAP_SERVER']['table']     = 'zentra_authldaps';
             $criterias['LDAP_SERVER']['field']     = 'name';
             $criterias['LDAP_SERVER']['name']      = AuthLDAP::getTypeName(1);
             $criterias['LDAP_SERVER']['linkfield'] = '';
@@ -209,7 +209,7 @@ class RuleRight extends Rule
             $criterias['LDAP_SERVER']['virtual']   = true;
             $criterias['LDAP_SERVER']['id']        = 'ldap_server';
 
-            $criterias['MAIL_SERVER']['table']     = 'glpi_authmails';
+            $criterias['MAIL_SERVER']['table']     = 'zentra_authmails';
             $criterias['MAIL_SERVER']['field']     = 'name';
             $criterias['MAIL_SERVER']['name']      = _n('Email server', 'Email servers', 1);
             $criterias['MAIL_SERVER']['linkfield'] = '';
@@ -231,7 +231,7 @@ class RuleRight extends Rule
             $criterias['LOGIN']['virtual']         = true;
             $criterias['LOGIN']['id']              = 'login';
 
-            $criterias['_groups_id']['table']      = 'glpi_groups';
+            $criterias['_groups_id']['table']      = 'zentra_groups';
             $criterias['_groups_id']['field']      = 'completename';
             $criterias['_groups_id']['name']       = Group::getTypeName(1);
             $criterias['_groups_id']['linkfield']  = '';
@@ -272,7 +272,7 @@ class RuleRight extends Rule
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
         $actions['entities_id']['type']                       = 'dropdown';
-        $actions['entities_id']['table']                      = 'glpi_entities';
+        $actions['entities_id']['table']                      = 'zentra_entities';
 
         $actions['_affect_entity_by_dn']['name']              = __('Entity based on LDAP information');
         $actions['_affect_entity_by_dn']['type']              = 'text';
@@ -296,7 +296,7 @@ class RuleRight extends Rule
 
         $actions['profiles_id']['name']                       = _n('Profile', 'Profiles', Session::getPluralNumber());
         $actions['profiles_id']['type']                       = 'dropdown';
-        $actions['profiles_id']['table']                      = 'glpi_profiles';
+        $actions['profiles_id']['table']                      = 'zentra_profiles';
 
         $actions['is_recursive']['name']                      = __('Recursive');
         $actions['is_recursive']['type']                      = 'yesno';
@@ -310,7 +310,7 @@ class RuleRight extends Rule
         $actions['_ignore_user_import']['type']               = 'yesonly';
         $actions['_ignore_user_import']['table']              = '';
 
-        $actions['_entities_id_default']['table']             = 'glpi_entities';
+        $actions['_entities_id_default']['table']             = 'zentra_entities';
         $actions['_entities_id_default']['field']             = 'name';
         $actions['_entities_id_default']['name']              = __('Default entity');
         $actions['_entities_id_default']['linkfield']         = 'entities_id';
@@ -318,17 +318,17 @@ class RuleRight extends Rule
 
         $actions['specific_groups_id']['name'] = Group::getTypeName(Session::getPluralNumber());
         $actions['specific_groups_id']['type'] = 'dropdown';
-        $actions['specific_groups_id']['table'] = 'glpi_groups';
+        $actions['specific_groups_id']['table'] = 'zentra_groups';
         $actions['specific_groups_id']['force_actions'] = ['assign', 'regex_result'];
 
-        $actions['groups_id']['table']                        = 'glpi_groups';
+        $actions['groups_id']['table']                        = 'zentra_groups';
         $actions['groups_id']['field']                        = 'name';
         $actions['groups_id']['name']                         = __('Default group');
         $actions['groups_id']['linkfield']                    = 'groups_id';
         $actions['groups_id']['type']                         = 'dropdown';
         $actions['groups_id']['condition']                    = ['is_usergroup' => 1];
 
-        $actions['_profiles_id_default']['table']             = 'glpi_profiles';
+        $actions['_profiles_id_default']['table']             = 'zentra_profiles';
         $actions['_profiles_id_default']['field']             = 'name';
         $actions['_profiles_id_default']['name']              = __('Default profile');
         $actions['_profiles_id_default']['linkfield']         = 'profiles_id';
@@ -380,7 +380,7 @@ class RuleRight extends Rule
     public function addSpecificCriteriasToArray(array &$criteria): void
     {
         $criteria['ldap'] = __('LDAP criteria');
-        $all = getAllDataFromTable('glpi_rulerightparameters', [], true);
+        $all = getAllDataFromTable('zentra_rulerightparameters', [], true);
         foreach ($all as $data) {
             $criteria[$data["value"]]['name']      = $data["name"];
             $criteria[$data["value"]]['field']     = $data["value"];
@@ -396,7 +396,7 @@ class RuleRight extends Rule
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $new_item = static::isNewID($ID);
         if (!$new_item) {
@@ -424,7 +424,7 @@ class RuleRight extends Rule
             'match_operators' => $this->getRulesMatch(),
             'conditions' => static::getConditionsArray(),
             'rand' => mt_rand(),
-            'test_url' => $CFG_GLPI["root_doc"] . "/front/rule.test.php",
+            'test_url' => $CFG_ZENTRA["root_doc"] . "/front/rule.test.php",
             'params' => [
                 'canedit' => $canedit,
                 'addbuttons' => $add_buttons,

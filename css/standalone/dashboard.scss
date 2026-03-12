@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ $break_tablet: 1400px;
 }
 
 .dashboard {
-    --glpi-dashboard-soft-border: rgb(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
+    --zentra-dashboard-soft-border: rgb(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
 
     position: relative;
     padding-top: $toolbar_height;
@@ -114,8 +114,8 @@ $break_tablet: 1400px;
         background: white;
         padding: 100px;
 
-        .glpi_logo {
-            background: url("../pics/logos/logo-GLPI-100-black.png") no-repeat;
+        .zentra_logo {
+            background: url("../pics/logos/logo-ZENTRA-100-black.png") no-repeat;
             width: 100px;
             height: 55px;
             position: absolute;
@@ -247,7 +247,7 @@ $break_tablet: 1400px;
             }
 
             .filters-control {
-                border-color: var(--glpi-dashboard-soft-border);
+                border-color: var(--zentra-dashboard-soft-border);
 
                 .add-filter {
                     display: inline-block;
@@ -1312,8 +1312,8 @@ $break_tablet: 1400px;
 .theme-dark .dashboard {
     &.fullscreen,
     &.embed {
-        .glpi_logo {
-            background: url("../pics/logos/logo-GLPI-100-white.png") no-repeat;
+        .zentra_logo {
+            background: url("../pics/logos/logo-ZENTRA-100-white.png") no-repeat;
         }
     }
 
@@ -1321,22 +1321,22 @@ $break_tablet: 1400px;
     color: var(--tblr-light);
 
     .grid-guide {
-        border: 1px solid var(--glpi-dashboard-soft-border);
+        border: 1px solid var(--zentra-dashboard-soft-border);
         background-image:
-            linear-gradient(to right, var(--glpi-dashboard-soft-border) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--glpi-dashboard-soft-border) 1px, transparent 1px);
+            linear-gradient(to right, var(--zentra-dashboard-soft-border) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--zentra-dashboard-soft-border) 1px, transparent 1px);
     }
 
     .filters_toolbar {
         .filters {
             fieldset.filter:not(.filled) {
-                border: 2px solid var(--glpi-dashboard-soft-border);
+                border: 2px solid var(--zentra-dashboard-soft-border);
             }
         }
     }
 }
 
-html[data-glpi-theme-dark="1"] {
+html[data-zentra-theme-dark="1"] {
     .widgettype_field img {
         filter: invert(1);
     }

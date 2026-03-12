@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 describe('Actor form question type', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Tests form for the actor form question type suite',
         }).as('form_id');
 
@@ -40,7 +40,7 @@ describe('Actor form question type', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\Form$main';
+            const tab = 'Zentra\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
             // Add a question
@@ -90,7 +90,7 @@ describe('Actor form question type', () => {
 
         // Define default values
         cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('E2E Tests');
-        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('glpi');
+        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('zentra');
 
         // Save
         cy.findByRole('button', { name: 'Save' }).click();
@@ -100,7 +100,7 @@ describe('Actor form question type', () => {
 
         // Check the default values
         cy.getDropdownByLabelText('Select an actor...').contains('e2e_tests');
-        cy.getDropdownByLabelText('Select an actor...').contains('glpi');
+        cy.getDropdownByLabelText('Select an actor...').contains('zentra');
     });
 
     it('should be able to switch between multiple actors and single actor', () => {
@@ -133,7 +133,7 @@ describe('Actor form question type', () => {
         cy.getDropdownByLabelText('Select an actor...').should('have.text', '×e2e_tests');
 
         // Add another actor
-        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('glpi');
+        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('zentra');
 
         // Save
         cy.findByRole('button', { name: 'Save' }).click();
@@ -143,7 +143,7 @@ describe('Actor form question type', () => {
 
         // Check the default values
         cy.getDropdownByLabelText('Select an actor...').contains('e2e_tests');
-        cy.getDropdownByLabelText('Select an actor...').contains('glpi');
+        cy.getDropdownByLabelText('Select an actor...').contains('zentra');
     });
 
     it('can duplicate a single actor question', () => {
@@ -171,7 +171,7 @@ describe('Actor form question type', () => {
 
         // Define default values
         cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('E2E Tests');
-        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('glpi');
+        cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('zentra');
 
         // Duplicate the question
         cy.findByRole('button', { 'name': "Duplicate question" }).click();
@@ -179,7 +179,7 @@ describe('Actor form question type', () => {
         cy.findAllByRole('region', { 'name': 'Question details' }).each((region) => {
             cy.wrap(region).within(() => {
                 cy.getDropdownByLabelText('Select an actor...').contains('E2E Tests');
-                cy.getDropdownByLabelText('Select an actor...').contains('glpi');
+                cy.getDropdownByLabelText('Select an actor...').contains('zentra');
             });
         });
     });
@@ -198,7 +198,7 @@ describe('Actor form question type', () => {
             function checkActorOptions(questionAlias, userOptionsExist, groupOptionsExist) {
                 cy.get(questionAlias).getDropdownByLabelText('Select an actor...').click();
                 cy.findByRole('group', { name: 'User' }).within(() => {
-                    cy.findByRole('option', { name: 'glpi' }).should(userOptionsExist.glpi ? 'exist' : 'not.exist');
+                    cy.findByRole('option', { name: 'zentra' }).should(userOptionsExist.zentra ? 'exist' : 'not.exist');
                     cy.findByRole('option', { name: 'post-only' }).should(userOptionsExist.postOnly ? 'exist' : 'not.exist');
                 });
                 cy.findByRole('group', { name: 'Group' }).within(() => {
@@ -224,15 +224,15 @@ describe('Actor form question type', () => {
 
             // Verify the assignee question
             cy.findByRole('region', { name: 'Question details' }).as('assignee_question');
-            checkActorOptions('@assignee_question', { glpi: true, postOnly: false }, { firstGroup: true, secondGroup: false });
+            checkActorOptions('@assignee_question', { zentra: true, postOnly: false }, { firstGroup: true, secondGroup: false });
 
             // Add and verify the observer question
             addNewQuestion("Test observer question", 'Observers', 'observer_question');
-            checkActorOptions('@observer_question', { glpi: true, postOnly: true }, { firstGroup: true, secondGroup: false });
+            checkActorOptions('@observer_question', { zentra: true, postOnly: true }, { firstGroup: true, secondGroup: false });
 
             // Add and verify the requester question
             addNewQuestion("Test requestor question", 'Requesters', 'requestor_question');
-            checkActorOptions('@requestor_question', { glpi: true, postOnly: true }, { firstGroup: true, secondGroup: false });
+            checkActorOptions('@requestor_question', { zentra: true, postOnly: true }, { firstGroup: true, secondGroup: false });
         });
     });
 

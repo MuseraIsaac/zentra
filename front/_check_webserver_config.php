@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
+use Zentra\Kernel\Kernel;
 
 if (!class_exists(Kernel::class, autoload: false)) {
-    // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
+    // `Zentra\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
     // and will not be found otherwise.
     header('HTTP/1.1 404 Not Found');
     readfile(__DIR__ . '/../index.html'); // @phpstan-ignore theCodingMachineSafe.function (vendor libs are not yet loaded)
-    exit(); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
+    exit(); // @phpstan-ignore zentra.forbidExit (Script execution should be stopped to prevent further errors)
 }

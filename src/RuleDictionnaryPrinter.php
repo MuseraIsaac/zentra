@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
  */
 
 /**
- * Rule class store all information about a GLPI rule :
+ * Rule class store all information about a ZENTRA rule :
  *   - description
  *   - criterias
  *   - actions
@@ -59,7 +59,7 @@ class RuleDictionnaryPrinter extends Rule
 
         $criterias['name']['field']         = 'name';
         $criterias['name']['name']          = __('Name');
-        $criterias['name']['table']         = 'glpi_printers';
+        $criterias['name']['table']         = 'zentra_printers';
 
         $criterias['manufacturer']['field'] = 'name';
         $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
@@ -83,7 +83,7 @@ class RuleDictionnaryPrinter extends Rule
         $actions['_ignore_import']['type']     = 'yesonly';
 
         $actions['manufacturer']['name']       = Manufacturer::getTypeName(1);
-        $actions['manufacturer']['table']      = 'glpi_manufacturers';
+        $actions['manufacturer']['table']      = 'zentra_manufacturers';
         $actions['manufacturer']['type']       = 'dropdown';
 
         $actions['is_global']['name']          = __('Management type');

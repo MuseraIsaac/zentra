@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,15 +36,15 @@
  * @var DBmysql $DB
  */
 
-//Fix possible duplicates, see https://github.com/glpi-project/glpi/issues/22235
+//Fix possible duplicates, see https://github.com/zentra-project/zentra/issues/22235
 $DB->doQuery(
     "
-  DELETE FROM glpi_printerlogs WHERE id IN (
+  DELETE FROM zentra_printerlogs WHERE id IN (
     SELECT id FROM (
-      SELECT a.id FROM glpi_printerlogs AS a
+      SELECT a.id FROM zentra_printerlogs AS a
       JOIN(
           SELECT items_id, date
-          FROM glpi_printerlogs
+          FROM zentra_printerlogs
           GROUP BY items_id, date
           HAVING COUNT(items_id) > 1
       ) AS b
@@ -54,4 +54,4 @@ $DB->doQuery(
 );
 
 //add missing itemtype
-$DB->update('glpi_printerlogs', ['itemtype' => 'Printer'], ['itemtype' => '']);
+$DB->update('zentra_printerlogs', ['itemtype' => 'Printer'], ['itemtype' => '']);

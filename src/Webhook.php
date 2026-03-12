@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,26 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Controller\AdministrationController;
-use Glpi\Api\HL\Controller\AssetController;
-use Glpi\Api\HL\Controller\CustomAssetController;
-use Glpi\Api\HL\Controller\ITILController;
-use Glpi\Api\HL\Controller\ManagementController;
-use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Glpi\Api\HL\ResourceAccessor;
-use Glpi\Api\HL\Router;
-use Glpi\Application\Environment;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinition;
-use Glpi\ContentTemplates\TemplateManager;
-use Glpi\Error\ErrorHandler;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Http\Request;
-use Glpi\Search\FilterableInterface;
-use Glpi\Search\FilterableTrait;
+use Zentra\Api\HL\Controller\AbstractController;
+use Zentra\Api\HL\Controller\AdministrationController;
+use Zentra\Api\HL\Controller\AssetController;
+use Zentra\Api\HL\Controller\CustomAssetController;
+use Zentra\Api\HL\Controller\ITILController;
+use Zentra\Api\HL\Controller\ManagementController;
+use Zentra\Api\HL\Doc as Doc;
+use Zentra\Api\HL\Middleware\InternalAuthMiddleware;
+use Zentra\Api\HL\ResourceAccessor;
+use Zentra\Api\HL\Router;
+use Zentra\Application\Environment;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinition;
+use Zentra\ContentTemplates\TemplateManager;
+use Zentra\Error\ErrorHandler;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Http\Request;
+use Zentra\Search\FilterableInterface;
+use Zentra\Search\FilterableTrait;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
@@ -123,13 +123,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public function canCreateItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
-        return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
+        return empty($itemtype) || (is_subclass_of($itemtype, CommonZENTRA::class) && $itemtype::canView());
     }
 
     public function canUpdateItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
-        return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
+        return empty($itemtype) || (is_subclass_of($itemtype, CommonZENTRA::class) && $itemtype::canView());
     }
 
     public function defineTabs($options = [])
@@ -197,7 +197,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_webhookcategories',
+            'table'              => 'zentra_webhookcategories',
             'field'              => 'completename',
             'name'               => WebhookCategory::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -289,12 +289,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-     * Return a list of GLPI events that are valid for an itemtype.
+     * Return a list of ZENTRA events that are valid for an itemtype.
      *
      * @param class-string<CommonDBTM>|null $itemtype
      * @return array
      */
-    public static function getGlpiEventsList(?string $itemtype): array
+    public static function getZentraEventsList(?string $itemtype): array
     {
         if ($itemtype !== null && class_exists($itemtype)) {
             return self::getDefaultEventsList();
@@ -458,7 +458,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return a list of GLPI itemtypes available through HL API.
+    * Return a list of ZENTRA itemtypes available through HL API.
     *
     * @return array<array>
     */
@@ -764,7 +764,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $this->getFromDB($id);
 
             //validate CRA if needed
-            if (GLPI_WEBHOOK_CRA_MANDATORY || (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge'])) {
+            if (ZENTRA_WEBHOOK_CRA_MANDATORY || (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge'])) {
                 $response = self::validateCRAChallenge($this->fields['url'], 'validate_cra_challenge', $this->fields['secret']);
                 if (!$response['status']) {
                     $this->fields['is_cra_challenge_valid'] = false;
@@ -784,7 +784,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             throw new RuntimeException("This tab is only available for Webhooks items");
@@ -820,7 +820,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $tabs;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;
@@ -1086,7 +1086,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Toolbox::isUrlSafe($url)) {
             return [
@@ -1100,7 +1100,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'base_uri'        => $url,
             'connect_timeout' => 1,
         ];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+        if (in_array(self::class, $CFG_ZENTRA['proxy_exclusions'])) {
             $options['proxy_excluded'] = true;
         }
 
@@ -1230,8 +1230,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 }
                 $timestamp = time();
                 $headers = [
-                    'X-GLPI-signature' => self::getSignature($body . $timestamp, $webhook->fields['secret']),
-                    'X-GLPI-timestamp' => $timestamp,
+                    'X-ZENTRA-signature' => self::getSignature($body . $timestamp, $webhook->fields['secret']),
+                    'X-ZENTRA-timestamp' => $timestamp,
                 ];
 
                 $api_data = [
@@ -1312,10 +1312,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public function post_getFromDB()
     {
         if (!empty($this->fields['secret'])) {
-            $this->fields['secret'] = (new GLPIKey())->decrypt($this->fields['secret']);
+            $this->fields['secret'] = (new ZENTRAKey())->decrypt($this->fields['secret']);
         }
         if (!empty($this->fields['clientsecret'])) {
-            $this->fields['clientsecret'] = (new GLPIKey())->decrypt($this->fields['clientsecret']);
+            $this->fields['clientsecret'] = (new ZENTRAKey())->decrypt($this->fields['clientsecret']);
         }
         $this->fields['custom_headers'] = importArrayFromDB($this->fields['custom_headers']);
     }
@@ -1337,7 +1337,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         $valid_input = true;
 
-        $static_headers = ['X-GLPI-signature', 'X-GLPI-timestamp'];
+        $static_headers = ['X-ZENTRA-signature', 'X-ZENTRA-timestamp'];
         if (isset($input['header_name'], $input['header_value'])) {
             $custom_headers = array_combine($input['header_name'], $input['header_value']);
             foreach ($static_headers as $static_header) {
@@ -1368,11 +1368,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
 
         if (!empty($input['secret'])) {
-            $input['secret'] = (new GLPIKey())->encrypt($input['secret']);
+            $input['secret'] = (new ZENTRAKey())->encrypt($input['secret']);
         }
 
         if (!empty($input['clientsecret'])) {
-            $input['clientsecret'] = (new GLPIKey())->encrypt($input['clientsecret']);
+            $input['clientsecret'] = (new ZENTRAKey())->encrypt($input['clientsecret']);
         }
 
         if (isset($input['use_cra_challenge'])) {

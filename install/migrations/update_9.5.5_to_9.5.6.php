@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
 
 /**
  * Update from 9.5.5 to 9.5.6
@@ -43,11 +43,11 @@ use Glpi\DBAL\QuerySubQuery;
 function update955to956()
 {
     /**
-     * @var array $CFG_GLPI
+     * @var array $CFG_ZENTRA
      * @var DBmysql $DB
      * @var Migration $migration
      */
-    global $DB, $migration, $CFG_GLPI;
+    global $DB, $migration, $CFG_ZENTRA;
 
     $updateresult     = true;
 
@@ -59,23 +59,23 @@ function update955to956()
     $migration->changeSearchOption(PDU::class, 50, 61);
     $migration->changeSearchOption(Rack::class, 50, 61);
 
-    /* Add `date` to some glpi_documents_items */
-    if (!$DB->fieldExists('glpi_documents_items', 'date')) {
-        $migration->addField('glpi_documents_items', 'date', 'timestamp');
-        $migration->addKey('glpi_documents_items', 'date');
+    /* Add `date` to some zentra_documents_items */
+    if (!$DB->fieldExists('zentra_documents_items', 'date')) {
+        $migration->addField('zentra_documents_items', 'date', 'timestamp');
+        $migration->addKey('zentra_documents_items', 'date');
 
         // Init date from the parent followup
         $parent_date = new QuerySubQuery([
             'SELECT' => 'date',
-            'FROM' => 'glpi_itilfollowups',
+            'FROM' => 'zentra_itilfollowups',
             'WHERE' => [
-                'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id')),
+                'id' => new QueryExpression($DB->quoteName('zentra_documents_items.items_id')),
             ],
         ]);
 
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_documents_items',
+                'zentra_documents_items',
                 ['date' => new QueryExpression($parent_date->getQuery())],
                 ['itemtype' => ['ITILFollowup']]
             )
@@ -84,13 +84,13 @@ function update955to956()
         // Init date as the value of date_creation for others items
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_documents_items',
-                ['date' => new QueryExpression($DB->quoteName('glpi_documents_items.date_creation'))],
+                'zentra_documents_items',
+                ['date' => new QueryExpression($DB->quoteName('zentra_documents_items.date_creation'))],
                 ['itemtype' => ['!=', 'ITILFollowup']]
             )
         );
     }
-    /* /Add `date` to glpi_documents_items */
+    /* /Add `date` to zentra_documents_items */
 
     // ************ Keep it at the end **************
     $migration->executeMigration();

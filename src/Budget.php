@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Features\Clonable;
 
 /**
  * Budget class
@@ -95,7 +95,7 @@ class Budget extends CommonDropdown
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -109,7 +109,7 @@ class Budget extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof self) {
@@ -195,7 +195,7 @@ class Budget extends CommonDropdown
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_budgettypes',
+            'table'              => 'zentra_budgettypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -246,7 +246,7 @@ class Budget extends CommonDropdown
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -285,7 +285,7 @@ class Budget extends CommonDropdown
         $iterator = $DB->request([
             'SELECT'          => 'itemtype',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_infocoms',
+            'FROM'            => 'zentra_infocoms',
             'WHERE'           => [
                 'budgets_id'   => $budgets_id,
                 'NOT'          => ['itemtype' => [ConsumableItem::class, CartridgeItem::class, Software::class]],
@@ -293,7 +293,7 @@ class Budget extends CommonDropdown
             'ORDER'           => 'itemtype',
         ]);
         $itemtypes = [
-            // These types shouldn't be in the glpi_infocoms table, but have their costs elsewhere
+            // These types shouldn't be in the zentra_infocoms table, but have their costs elsewhere
             Contract::class, Ticket::class, Problem::class, Change::class, Project::class,
         ];
         foreach ($iterator as $row) {
@@ -331,18 +331,18 @@ class Budget extends CommonDropdown
                     $item_table => ['id', 'entities_id'],
 
                 ],
-                'FROM'         => 'glpi_infocoms',
+                'FROM'         => 'zentra_infocoms',
                 'INNER JOIN'   => [
                     $item_table => [
                         'ON' => [
                             $item_table => 'id',
-                            'glpi_infocoms'   => 'items_id',
+                            'zentra_infocoms'   => 'items_id',
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_infocoms.itemtype'            => $itemtype,
-                    'glpi_infocoms.budgets_id'          => $budgets_id,
+                    'zentra_infocoms.itemtype'            => $itemtype,
+                    'zentra_infocoms.budgets_id'          => $budgets_id,
                 ],
                 'ORDERBY'      => [
                     $item_table . '.entities_id',
@@ -363,7 +363,7 @@ class Budget extends CommonDropdown
             } else {
                 $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
             }
-            $criteria['SELECT'][] = 'glpi_infocoms.value';
+            $criteria['SELECT'][] = 'zentra_infocoms.value';
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
@@ -449,7 +449,7 @@ class Budget extends CommonDropdown
         $criteria = [
             'FROM' => $this->getItemListCriteria(),
             'START' => $start,
-            'LIMIT' => $_SESSION['glpilist_limit'],
+            'LIMIT' => $_SESSION['zentralist_limit'],
         ];
         $iterator = $DB->request($criteria);
 
@@ -492,7 +492,7 @@ class Budget extends CommonDropdown
 
             if (!array_key_exists($data['entities_id'], $entity_names)) {
                 $entity_names[$data['entities_id']] = Dropdown::getDropdownName(
-                    "glpi_entities",
+                    "zentra_entities",
                     $data["entities_id"]
                 );
             }
@@ -506,7 +506,7 @@ class Budget extends CommonDropdown
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
@@ -559,7 +559,7 @@ class Budget extends CommonDropdown
         $entries = [];
         $itemtype_totals = [];
         $grand_total = 0;
-        $active_entities = $_SESSION['glpiactiveentities'];
+        $active_entities = $_SESSION['zentraactiveentities'];
 
         foreach ($iterator as $data) {
             $itemtype = $data['_itemtype'];
@@ -571,7 +571,7 @@ class Budget extends CommonDropdown
             if (!array_key_exists($entity, $entities)) {
                 $entities[$entity] = [
                     'name' => Dropdown::getDropdownName(
-                        "glpi_entities",
+                        "zentra_entities",
                         $data["entities_id"]
                     ),
                     'itemtypes' => [],

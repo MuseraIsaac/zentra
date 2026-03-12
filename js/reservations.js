@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales */
-/* global glpi_ajax_dialog */
+/* global zentra_ajax_dialog */
 /* global _ */
 
 var Reservations = function() {
@@ -75,8 +75,8 @@ var Reservations = function() {
             theme: true,
             editable: true,
             defaultDate: my.defaultDate,
-            minTime:     CFG_GLPI.planning_begin,
-            maxTime:     CFG_GLPI.planning_end,
+            minTime:     CFG_ZENTRA.planning_begin,
+            maxTime:     CFG_ZENTRA.planning_end,
             weekNumbers: true,
             defaultView:  localStorage.getItem("fcDefaultViewReservation") !== null
                 ? localStorage.getItem("fcDefaultViewReservation")
@@ -134,7 +134,7 @@ var Reservations = function() {
             },
 
             events: {
-                url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
+                url:  `${CFG_ZENTRA.root_doc}/ajax/reservations.php`,
                 type: 'GET',
                 extraParams: {
                     'action': 'get_events',
@@ -149,7 +149,7 @@ var Reservations = function() {
             },
 
             resources: {
-                url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
+                url:  `${CFG_ZENTRA.root_doc}/ajax/reservations.php`,
                 method: 'GET',
                 extraParams: {
                     'action': 'get_resources',
@@ -229,9 +229,9 @@ var Reservations = function() {
             selectable: my.can_reserve,
             select: function(info) {
                 if (my.can_reserve) {
-                    glpi_ajax_dialog({
+                    zentra_ajax_dialog({
                         title: __("Add reservation"),
-                        url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
+                        url: `${CFG_ZENTRA.root_doc}/ajax/reservations.php`,
                         params: {
                             action: 'add_edit_reservation_fromselect',
                             id: 0,
@@ -257,7 +257,7 @@ var Reservations = function() {
                     return;
                 }
 
-                glpi_ajax_dialog({
+                zentra_ajax_dialog({
                     title: __("Edit reservation"),
                     url: `${ajaxurl}`,
                     dialogclass: 'modal-xl',
@@ -283,7 +283,7 @@ var Reservations = function() {
         var end        = event.end;
 
         $.ajax({
-            url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/reservations.php`,
             type: 'POST',
             data: {
                 action:        'update_event',

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 /**
  * CalendarSegment Class
@@ -128,7 +128,7 @@ class CalendarSegment extends CommonDBChild
 
         // Do not check hour if day before the end day of after the begin day
         return getAllDataFromTable(
-            'glpi_calendarsegments',
+            'zentra_calendarsegments',
             [
                 'calendars_id' => $calendars_id,
                 ['day'          => ['>=', $begin_day]],
@@ -171,7 +171,7 @@ class CalendarSegment extends CommonDBChild
                     alias: 'TDIFF'
                 ),
             ],
-            'FROM'   => 'glpi_calendarsegments',
+            'FROM'   => 'zentra_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
@@ -300,7 +300,7 @@ class CalendarSegment extends CommonDBChild
         // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'SELECT' => ['MIN' => 'begin AS minb'],
-            'FROM'   => 'glpi_calendarsegments',
+            'FROM'   => 'zentra_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
@@ -324,7 +324,7 @@ class CalendarSegment extends CommonDBChild
         // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'SELECT' => ['MAX' => 'end AS mend'],
-            'FROM'   => 'glpi_calendarsegments',
+            'FROM'   => 'zentra_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
@@ -349,7 +349,7 @@ class CalendarSegment extends CommonDBChild
         // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_calendarsegments',
+            'FROM'   => 'zentra_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
@@ -381,7 +381,7 @@ class CalendarSegment extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'day', 'begin', 'end'],
-            'FROM'   => 'glpi_calendarsegments',
+            'FROM'   => 'zentra_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $ID,
             ],
@@ -434,19 +434,19 @@ class CalendarSegment extends CommonDBChild
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 'container'     => 'mass' . self::class . $rand,
             ],
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             if ($item instanceof Calendar) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]);
                 }
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -455,7 +455,7 @@ class CalendarSegment extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Calendar) {
             self::showForCalendar($item);

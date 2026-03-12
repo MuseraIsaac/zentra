@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Features\Clonable;
-use Glpi\Plugin\Hooks;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Features\Clonable;
+use Zentra\Plugin\Hooks;
 
 use function Safe\simplexml_load_file;
 
 /**
- * Rule Class store all information about a GLPI rule:
+ * Rule Class store all information about a ZENTRA rule:
  *   - description
  *   - criteria
  *   - actions
@@ -239,7 +239,7 @@ class Rule extends CommonDBTM
 
     public static function getMenuContent()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $menu = [];
 
@@ -256,7 +256,7 @@ class Rule extends CommonDBTM
             $menu['rule']['page']  = static::getSearchURL(false);
             $menu['rule']['icon']  = static::getIcon();
 
-            foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+            foreach ($CFG_ZENTRA["rulecollections_types"] as $rulecollectionclass) {
                 if (!is_a($rulecollectionclass, RuleCollection::class, true)) {
                     continue;
                 }
@@ -816,7 +816,7 @@ class Rule extends CommonDBTM
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -902,7 +902,7 @@ class Rule extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $new_item = static::isNewID($ID);
         if (!$new_item) {
@@ -916,7 +916,7 @@ class Rule extends CommonDBTM
         $rand = mt_rand();
 
         $plugin = isPluginItemType(static::class);
-        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? "/plugins/{$plugin['plugin']}" : '');
+        $base_url = $CFG_ZENTRA["root_doc"] . ($plugin !== false ? "/plugins/{$plugin['plugin']}" : '');
 
         $add_buttons = [];
         if (!$new_item && $canedit) {
@@ -1060,7 +1060,7 @@ class Rule extends CommonDBTM
      **/
     public function showActionsList($rules_id, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $rules_id = (int) $rules_id;
         $rand = mt_rand();
@@ -1126,7 +1126,7 @@ TWIG, $twig_params);
         }
 
         $massiveactionparams = [
-            'num_displayed'  => min($_SESSION['glpilist_limit'], count($entries)),
+            'num_displayed'  => min($_SESSION['zentralist_limit'], count($entries)),
             'check_itemtype' => static::class,
             'check_items_id' => $rules_id,
             'container'      => 'mass' . $this->ruleactionclass . $rand,
@@ -1163,7 +1163,7 @@ TWIG, $twig_params);
                         }
                         const action_id = $(e.currentTarget).data('id');
                         if (action_id) {
-                            $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
+                            $('#viewaction{$rules_id}{$rand}').load(CFG_ZENTRA.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
                                 rules_id: $rules_id,
@@ -1243,7 +1243,7 @@ TWIG, $twig_params);
         }
 
         $massiveactionparams = [
-            'num_displayed'  => min($_SESSION['glpilist_limit'], count($entries)),
+            'num_displayed'  => min($_SESSION['zentralist_limit'], count($entries)),
             'check_itemtype' => static::class,
             'check_items_id' => $rules_id,
             'container'      => 'mass' . $this->rulecriteriaclass . $rand,
@@ -1954,7 +1954,7 @@ TWIG, $twig_params);
             $data['criteria'] = '';
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
-                $data['criteria'] .= '<span class="glpi-badge mb-1">'
+                $data['criteria'] .= '<span class="zentra-badge mb-1">'
                     . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
@@ -1966,7 +1966,7 @@ TWIG, $twig_params);
             $data['actions'] = '';
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
-                $data['actions'] .= '<span class="glpi-badge mb-1">'
+                $data['actions'] .= '<span class="zentra-badge mb-1">'
                     . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
@@ -1982,7 +1982,7 @@ TWIG, $twig_params);
         $data['rank'] = '<span class="badge">' . ((int) $this->fields["ranking"]) . '</span>';
 
         if ($display_entity) {
-            $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+            $entname = htmlescape(Dropdown::getDropdownName('zentra_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {
                 $entname = sprintf(__s('%1$s %2$s'), $entname, "<span class='fw-bold'>(" . __s('R') . ")</span>");
             }
@@ -2071,9 +2071,9 @@ TWIG, $twig_params);
     private function handleRankChange($new_rule = false)
     {
         // Some classes like SlaLevels and OlaLevels extends this class but do
-        // not share the same glpi_rules tables which is used by the `moveRule`
+        // not share the same zentra_rules tables which is used by the `moveRule`
         // method.
-        if (static::getTable() !== "glpi_rules") {
+        if (static::getTable() !== "zentra_rules") {
             return;
         }
 
@@ -2364,7 +2364,7 @@ TWIG, $twig_params);
                                     __('%1$s (%2$s)'),
                                     $addentity,
                                     Dropdown::getDropdownName(
-                                        'glpi_entities',
+                                        'zentra_entities',
                                         $item->getEntityID()
                                     )
                                 );
@@ -2445,7 +2445,7 @@ TWIG, $twig_params);
      **/
     public function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $crit    = $this->getCriteria($ID);
         $display = false;
@@ -2505,12 +2505,12 @@ TWIG, $twig_params);
                     break;
 
                 case "dropdown_assets_itemtype":
-                    Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
+                    Dropdown::showItemTypes($name, $CFG_ZENTRA['asset_types'], ['value' => $value]);
                     $display = true;
                     break;
 
                 case "dropdown_inventory_itemtype":
-                    $types = $CFG_GLPI['ruleimportasset_types'];
+                    $types = $CFG_ZENTRA['ruleimportasset_types'];
                     $types[''] = __('No item type defined');
                     Dropdown::showItemTypes($name, $types, ['value' => $value]);
                     $display = true;
@@ -2672,7 +2672,7 @@ TWIG, $twig_params);
                     return getUserName($value);
 
                 case "dropdown_groups_validate":
-                    $name = Dropdown::getDropdownName('glpi_groups', $value);
+                    $name = Dropdown::getDropdownName('zentra_groups', $value);
                     return $name == '' ? NOT_AVAILABLE : $name;
 
                 case "percent":
@@ -2899,7 +2899,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<int|string, array<string, array<int|string>|string>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
+     * @return array<int|string, array<string, array<int|string>|string>|string> If the value is defined as a string (since ZENTRA 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {
@@ -3153,7 +3153,7 @@ TWIG, ['label' => $this->getTitle()]);
      * @param CommonDBTM $item
      * @param string     $field      name (default is FK to item)
      * @param Rule       $ruleitem   instance of Rules of SlaLevel
-     * @param string     $table      glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias
+     * @param string     $table      zentra_ruleactions, zentra_rulescriterias or zentra_slalevelcriterias
      * @param string     $valfield   value or pattern
      * @param string     $fieldfield criteria of field
      *
@@ -3225,7 +3225,7 @@ TWIG, ['label' => $this->getTitle()]);
             $item,
             $field,
             new self(),
-            'glpi_ruleactions',
+            'zentra_ruleactions',
             'value',
             'field'
         );
@@ -3234,7 +3234,7 @@ TWIG, ['label' => $this->getTitle()]);
             $item,
             $field,
             new SlaLevel(),
-            'glpi_slalevelactions',
+            'zentra_slalevelactions',
             'value',
             'field'
         );
@@ -3243,7 +3243,7 @@ TWIG, ['label' => $this->getTitle()]);
             $item,
             $field,
             new OlaLevel(),
-            'glpi_olalevelactions',
+            'zentra_olalevelactions',
             'value',
             'field'
         );
@@ -3263,19 +3263,19 @@ TWIG, ['label' => $this->getTitle()]);
             $item,
             $field,
             new self(),
-            'glpi_rulecriterias',
+            'zentra_rulecriterias',
             'pattern',
             'criteria'
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case Entity::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $types      = [];
                         $collection = new RuleRightCollection();
                         if ($collection->canList()) {
@@ -3291,12 +3291,12 @@ TWIG, ['label' => $this->getTitle()]);
                         }
                         if (count($types)) {
                             $nb = countElementsInTable(
-                                ['glpi_rules', 'glpi_ruleactions'],
+                                ['zentra_rules', 'zentra_ruleactions'],
                                 [
-                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
-                                    'glpi_rules.sub_type'         => $types,
-                                    'glpi_ruleactions.field'      => 'entities_id',
-                                    'glpi_ruleactions.value'      => $item->getID(),
+                                    'zentra_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('zentra_rules.id')),
+                                    'zentra_rules.sub_type'         => $types,
+                                    'zentra_ruleactions.field'      => 'entities_id',
+                                    'zentra_ruleactions.value'      => $item->getID(),
                                 ]
                             );
                         }
@@ -3305,9 +3305,9 @@ TWIG, ['label' => $this->getTitle()]);
 
                 case SLA::class:
                 case OLA::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            'glpi_ruleactions',
+                            'zentra_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
                                 'value' => $item->getID(),
                             ]
@@ -3320,7 +3320,7 @@ TWIG, ['label' => $this->getTitle()]);
                         $ong    = [];
                         $nbcriteria = 0;
                         $nbaction   = 0;
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $nbcriteria = countElementsInTable(
                                 getTableForItemType($item->getRuleCriteriaClass()),
                                 [$item->getRuleIdField() => $item->getID()]
@@ -3350,7 +3350,7 @@ TWIG, ['label' => $this->getTitle()]);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === Entity::class) {
             $collection = new RuleRightCollection();
@@ -3389,7 +3389,7 @@ TWIG, ['label' => $this->getTitle()]);
     }
 
     /**
-     * Generate unique id for rule based on server name, glpi directory and basetime
+     * Generate unique id for rule based on server name, zentra directory and basetime
      *
      * @since 0.85
      *
@@ -3399,7 +3399,7 @@ TWIG, ['label' => $this->getTitle()]);
     {
         // encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
         $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
-        // encode script current dir, ex : /var/www/glpi_X
+        // encode script current dir, ex : /var/www/zentra_X
         $dirSubSha1    = substr(sha1(__FILE__), 0, 8);
 
         return uniqid("$serverSubSha1-$dirSubSha1-", true);
@@ -3496,10 +3496,10 @@ TWIG, ['label' => $this->getTitle()]);
             if ($itemtype !== null) {
                 $joins = [
                     'LEFT JOIN' => [
-                        'glpi_rulecriterias' => [
+                        'zentra_rulecriterias' => [
                             'FKEY' => [
-                                'glpi_rules' => 'id',
-                                'glpi_rulecriterias' => 'rules_id',
+                                'zentra_rules' => 'id',
+                                'zentra_rulecriterias' => 'rules_id',
                             ],
                         ],
                     ],
@@ -3697,7 +3697,7 @@ TWIG, ['label' => $this->getTitle()]);
     {
         return sprintf(
             '%s/resources/Rules/%s.xml',
-            GLPI_ROOT,
+            ZENTRA_ROOT,
             static::class
         );
     }

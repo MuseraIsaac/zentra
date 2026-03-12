@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\StateInterface;
 
 /**
  * @since 9.2
@@ -45,7 +45,7 @@ use Glpi\Features\StateInterface;
 
 class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem;
 
     // From CommonDBTM
@@ -136,7 +136,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_linetypes',
+            'table'              => 'zentra_linetypes',
             'field'              => 'name',
             'name'               => LineType::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -170,7 +170,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -179,13 +179,13 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -199,7 +199,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -217,7 +217,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $tab[] = [
             'id'                 => '184',
-            'table'              => 'glpi_lineoperators',
+            'table'              => 'zentra_lineoperators',
             'field'              => 'name',
             'name'               => LineOperator::getTypeName(1),
             'massiveaction'      => true,
@@ -250,12 +250,12 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
     public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
-        if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA['line_types'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
                 . _sx('button', 'Add a phone line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a phone line');

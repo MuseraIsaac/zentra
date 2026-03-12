@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use Symfony\Component\BrowserKit\HttpBrowser;
 
-class FrontBaseClass extends GLPITestCase
+class FrontBaseClass extends ZENTRATestCase
 {
     protected HttpBrowser $http_client;
     protected string $base_uri;
@@ -45,7 +45,7 @@ class FrontBaseClass extends GLPITestCase
     public function setUp(): void
     {
         $this->http_client = new HttpBrowser();
-        $this->base_uri    = trim(GLPI_URI, '/') . '/';
+        $this->base_uri    = trim(ZENTRA_URI, '/') . '/';
 
         $this->doCleanup();
         parent::setUp();
@@ -71,7 +71,7 @@ class FrontBaseClass extends GLPITestCase
         //once logged in, we reach standard interface
         $page_title = $crawler->filter('title')->text();
         $this->assertSame(
-            'Standard interface - GLPI',
+            'Standard interface - ZENTRA',
             $page_title
         );
     }

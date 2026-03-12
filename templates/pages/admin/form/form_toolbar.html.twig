@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form                                      Glpi\Form\Form #}
+{# @var form                                      Zentra\Form\Form #}
 {# @var can_update                                bool #}
 {# @var vertical_layout                           bool #}
 {# @var ghost_button                              bool #}
@@ -49,7 +49,7 @@
         class="d-flex h-full {{ (vertical_layout ?? false) ? 'position-absolute btn-group-vertical justify-content-end ms-2 pb-2 ' ~ extra_class|default('') : 'btn-group justify-content-center mt-2' }}"
         style="box-shadow:none;"
         role="group"
-        data-glpi-form-editor-toolbar
+        data-zentra-form-editor-toolbar
     >
         {# Add question action #}
         <button
@@ -58,7 +58,7 @@
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
             title="{{ __("Add a question") }}"
-            data-glpi-form-editor-on-click="add-question"
+            data-zentra-form-editor-on-click="add-question"
             type="button"
         >
             <span class="px-2 d-flex align-items-center">
@@ -74,7 +74,7 @@
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
             title="{{ __("Add a comment") }}"
-            data-glpi-form-editor-on-click="add-comment"
+            data-zentra-form-editor-on-click="add-comment"
         >
             <span class="px-2 d-flex align-items-center">
                 <i class="ti ti-letter-case"></i>
@@ -91,7 +91,7 @@
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title="{{ __("Add a section") }}"
-                data-glpi-form-editor-on-click="add-section"
+                data-zentra-form-editor-on-click="add-section"
                 type="button"
             >
                 <i class="ti ti-box-align-top"></i>
@@ -107,7 +107,7 @@
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title="{{ __("Add a horizontal layout") }}"
-                data-glpi-form-editor-on-click="add-horizontal-layout"
+                data-zentra-form-editor-on-click="add-horizontal-layout"
             >
                 <span class="px-2 d-flex align-items-center">
                     <i class="ti ti-layout-columns"></i>
@@ -123,7 +123,7 @@
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title="{{ __("Remove slot") }}"
-                data-glpi-form-editor-on-click="remove-horizontal-layout-slot"
+                data-zentra-form-editor-on-click="remove-horizontal-layout-slot"
                 type="button"
             >
                 <span class="px-2 d-flex align-items-center">

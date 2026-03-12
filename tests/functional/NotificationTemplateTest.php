@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use NotificationTarget;
 use NotificationTargetTicket;
 use NotificationTemplate;
@@ -81,63 +81,63 @@ class NotificationTemplateTest extends DbTestCase
 
     public static function linksProvider(): iterable
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $base_url = $CFG_GLPI['url_base'];
+        $base_url = $CFG_ZENTRA['url_base'];
 
         yield [
             'content' => <<<HTML
-Relative link from GLPI: <a href="/">GLPI index</a>
+Relative link from ZENTRA: <a href="/">ZENTRA index</a>
 HTML,
             'expected' => <<<HTML
-Relative link from GLPI: <a href="{$base_url}/">GLPI index</a>
+Relative link from ZENTRA: <a href="{$base_url}/">ZENTRA index</a>
 HTML,
         ];
 
         yield [
             'content' => <<<HTML
-Relative link from GLPI: <a href="/front/computer.php?id=2" title="Computer 2">Computer</a>
+Relative link from ZENTRA: <a href="/front/computer.php?id=2" title="Computer 2">Computer</a>
 HTML,
             'expected' => <<<HTML
-Relative link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+Relative link from ZENTRA: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
 HTML,
         ];
 
         yield [
             'content' => <<<HTML
-Absolute link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+Absolute link from ZENTRA: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
 HTML,
             'expected' => <<<HTML
-Absolute link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+Absolute link from ZENTRA: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
 HTML,
         ];
 
         yield [
             'content' => <<<HTML
-External link from GLPI: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+External link from ZENTRA: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
 HTML,
             'expected' => <<<HTML
-External link from GLPI: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+External link from ZENTRA: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
 HTML,
         ];
 
         yield [
             'content' => <<<HTML
-External link without protocol from GLPI: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+External link without protocol from ZENTRA: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
 HTML,
             'expected' => <<<HTML
-External link without protocol from GLPI: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+External link without protocol from ZENTRA: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
 HTML,
         ];
     }
 
     #[DataProvider('linksProvider')]
-    public function testConvertRelativeGlpiLinksToAbsolute(
+    public function testConvertRelativeZentraLinksToAbsolute(
         string $content,
         string $expected
     ): void {
         $instance = new NotificationTemplate();
-        $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content, true);
+        $result = $this->callPrivateMethod($instance, 'convertRelativeZentraLinksToAbsolute', $content, true);
         $this->assertEquals($expected, $result);
     }
 
@@ -174,7 +174,7 @@ HTML,
         $user_infos = [
             'language' => 'en_GB',
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
             ],
             'username' => TU_USER,
             'email' => 'mail@example.com',

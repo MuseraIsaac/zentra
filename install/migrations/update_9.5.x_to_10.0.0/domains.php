@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,25 +41,25 @@
 
 /** Add templates to domains  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 use function Safe\json_encode;
 
-$migration->addField('glpi_domains', 'is_template', 'bool', [
+$migration->addField('zentra_domains', 'is_template', 'bool', [
     'after' => 'comment',
 ]);
-$migration->addField('glpi_domains', 'template_name', 'string', [
+$migration->addField('zentra_domains', 'template_name', 'string', [
     'after' => 'is_template',
 ]);
-$migration->addKey('glpi_domains', 'is_template');
+$migration->addKey('zentra_domains', 'is_template');
 /** /Add templates to domains  */
 
 /** Active domains */
-$migration->addField('glpi_domains', 'is_active', 'bool', ['after' => 'template_name']);
-$migration->addKey('glpi_domains', 'is_active');
+$migration->addField('zentra_domains', 'is_active', 'bool', ['after' => 'template_name']);
+$migration->addKey('zentra_domains', 'is_active');
 $migration->addPostQuery(
     $DB->buildUpdate(
-        'glpi_domains',
+        'zentra_domains',
         ['is_active' => 1],
         [new QueryExpression('true')]
     )
@@ -67,12 +67,12 @@ $migration->addPostQuery(
 /** /Active domains */
 
 //remove "useless "other" field
-$migration->dropField('glpi_domains', 'others');
+$migration->dropField('zentra_domains', 'others');
 
 // Add fields descriptor field
-if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
+if (!$DB->fieldExists('zentra_domainrecordtypes', 'fields')) {
     $migration->addField(
-        'glpi_domainrecordtypes',
+        'zentra_domainrecordtypes',
         'fields',
         'text',
         [
@@ -80,12 +80,12 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
         ]
     );
     foreach (DomainRecordType::getDefaults() as $type) {
-        if (countElementsInTable('glpi_domainrecordtypes', ['name' => $type['name']]) === 0) {
+        if (countElementsInTable('zentra_domainrecordtypes', ['name' => $type['name']]) === 0) {
             continue;
         }
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_domainrecordtypes',
+                'zentra_domainrecordtypes',
                 ['fields' => $type['fields']],
                 ['name' => $type['name']]
             )
@@ -103,7 +103,7 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
     ];
 
     $fields_it = $DB->request([
-        'FROM'   => 'glpi_domainrecordtypes',
+        'FROM'   => 'zentra_domainrecordtypes',
         'WHERE'  => ['name' => array_keys($fields)],
     ]);
     foreach ($fields_it as $field) {
@@ -133,7 +133,7 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
         if ($updated) {
             $migration->addPostQuery(
                 $DB->buildUpdate(
-                    'glpi_domainrecordtypes',
+                    'zentra_domainrecordtypes',
                     ['fields' => json_encode($type_fields)],
                     ['name' => $field['name']]
                 )
@@ -143,13 +143,13 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
 }
 
 // Create new CAA default
-if (countElementsInTable('glpi_domainrecordtypes', ['name' => 'CAA']) === 0) {
+if (countElementsInTable('zentra_domainrecordtypes', ['name' => 'CAA']) === 0) {
     foreach (DomainRecordType::getDefaults() as $type) {
         if ($type['name'] === 'CAA') {
             unset($type['id']);
             $migration->addPostQuery(
                 $DB->buildInsert(
-                    'glpi_domainrecordtypes',
+                    'zentra_domainrecordtypes',
                     $type
                 )
             );
@@ -160,7 +160,7 @@ if (countElementsInTable('glpi_domainrecordtypes', ['name' => 'CAA']) === 0) {
 
 // Add a field to store record data as an object if user inputs data using helper form
 $migration->addField(
-    'glpi_domainrecords',
+    'zentra_domainrecords',
     'data_obj',
     'text',
     [
@@ -168,7 +168,7 @@ $migration->addField(
     ]
 );
 
-// Rename date_creation (date the domain is created outside GLPI) field, then re-add field (Date the GLPI item was created)
+// Rename date_creation (date the domain is created outside ZENTRA) field, then re-add field (Date the ZENTRA item was created)
 if (!$DB->fieldExists(Domain::getTable(), 'date_domaincreation')) {
     $migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreation', 'datetime', [
         'after'  => 'date_expiration',

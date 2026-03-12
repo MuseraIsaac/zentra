@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,10 +52,10 @@ function update940to941()
     $migration->setVersion('9.4.1');
 
     /** Add a search option for profile id */
-    if (countElementsInTable('glpi_displaypreferences', ['num' => '2', 'itemtype' => 'Profile'])) {
+    if (countElementsInTable('zentra_displaypreferences', ['num' => '2', 'itemtype' => 'Profile'])) {
         // First, update SO ID of 'interface' field display preference
         $migration->addPostQuery($DB->buildUpdate(
-            'glpi_displaypreferences',
+            'zentra_displaypreferences',
             [
                 'num' => '5',
             ],
@@ -69,7 +69,7 @@ function update940to941()
         $rank_result = $DB->request(
             [
                 'SELECT' => ['MAX' => 'rank AS maxrank'],
-                'FROM'   => 'glpi_displaypreferences',
+                'FROM'   => 'zentra_displaypreferences',
                 'WHERE'  => [
                     'itemtype'  => 'Profile',
                     'users_id'  => '0',
@@ -78,7 +78,7 @@ function update940to941()
         )->current();
         $migration->addPostQuery(
             $DB->buildInsert(
-                'glpi_displaypreferences',
+                'zentra_displaypreferences',
                 [
                     'num'      => '2',
                     'itemtype' => 'Profile',
@@ -107,19 +107,19 @@ function update940to941()
 
     $itil_mappings = [
         'Change' => [
-            'itil_table' => 'glpi_changes',
+            'itil_table' => 'zentra_changes',
             'itil_fkey'  => 'changes_id',
-            'task_table' => 'glpi_changetasks',
+            'task_table' => 'zentra_changetasks',
         ],
         'Problem' => [
-            'itil_table' => 'glpi_problems',
+            'itil_table' => 'zentra_problems',
             'itil_fkey'  => 'problems_id',
-            'task_table' => 'glpi_problemtasks',
+            'task_table' => 'zentra_problemtasks',
         ],
         'Ticket' => [
-            'itil_table' => 'glpi_tickets',
+            'itil_table' => 'zentra_tickets',
             'itil_fkey'  => 'tickets_id',
-            'task_table' => 'glpi_tickettasks',
+            'task_table' => 'zentra_tickettasks',
         ],
     ];
 
@@ -136,7 +136,7 @@ function update940to941()
         $task_table = $itil_specs['task_table'];
 
         // Fix followups and solutions
-        foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
+        foreach (['zentra_itilfollowups', 'zentra_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
                     'SELECT'    => ['id', 'items_id', 'content'],
@@ -171,9 +171,9 @@ function update940to941()
     /** /Fix URL of images inside ITIL objects contents */
 
     // Create a dedicated token for rememberme process
-    if (!$DB->fieldExists('glpi_users', 'cookie_token')) {
-        $migration->addField('glpi_users', 'cookie_token', 'string', ['after' => 'api_token_date']);
-        $migration->addField('glpi_users', 'cookie_token_date', 'datetime', ['after' => 'cookie_token']);
+    if (!$DB->fieldExists('zentra_users', 'cookie_token')) {
+        $migration->addField('zentra_users', 'cookie_token', 'string', ['after' => 'api_token_date']);
+        $migration->addField('zentra_users', 'cookie_token_date', 'datetime', ['after' => 'cookie_token']);
     }
 
     // ************ Keep it at the end **************

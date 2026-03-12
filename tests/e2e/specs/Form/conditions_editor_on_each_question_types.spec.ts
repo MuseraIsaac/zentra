@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  */
 
 import { randomUUID } from 'crypto';
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { FormPage } from '../../pages/FormPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
@@ -436,32 +436,32 @@ types.set('QuestionTypeRequester', {
     conditions: [
         {
             operator: 'Is equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Is not equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Do not contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
         {
             operator: 'Do not match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
     ]
@@ -471,32 +471,32 @@ types.set('QuestionTypeObserver', {
     conditions: [
         {
             operator: 'Is equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Is not equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Do not contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
         {
             operator: 'Do not match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
     ]
@@ -506,32 +506,32 @@ types.set('QuestionTypeAssignee', {
     conditions: [
         {
             operator: 'Is equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Is not equal to',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Do not contains',
-            value: 'glpi',
+            value: 'zentra',
             valueType: 'dropdown'
         },
         {
             operator: 'Match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
         {
             operator: 'Do not match regular expression',
-            value: '/glpi/',
+            value: '/zentra/',
             valueType: 'string'
         },
     ]

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Mail\SMTP\OauthConfig;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Mail\SMTP\OauthConfig;
 
 use function Safe\json_decode;
 
@@ -127,14 +127,14 @@ class NotificationMailingSetting extends NotificationSetting
 
     public function showFormConfig()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // warning and no form if can't read keyfile
         // always display no matter what $options['display']
         // see comment at the end of this function
-        $glpi_encryption_key = new GLPIKey();
-        if ($glpi_encryption_key->hasReadErrors()) {
-            $glpi_encryption_key->showReadErrors();
+        $zentra_encryption_key = new ZENTRAKey();
+        if ($zentra_encryption_key->hasReadErrors()) {
+            $zentra_encryption_key->showReadErrors();
 
             return;
         }
@@ -161,8 +161,8 @@ class NotificationMailingSetting extends NotificationSetting
             $providers_values[$provider_class] = $provider_class::getName();
         }
 
-        $provider_options = Toolbox::isJSON($CFG_GLPI['smtp_oauth_options'])
-                ? json_decode($CFG_GLPI['smtp_oauth_options'], true)
+        $provider_options = Toolbox::isJSON($CFG_ZENTRA['smtp_oauth_options'])
+                ? json_decode($CFG_ZENTRA['smtp_oauth_options'], true)
                 : [];
 
         $supported_providers = OauthConfig::getInstance()->getSupportedProviders();

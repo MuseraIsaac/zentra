@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Plugin\Command;
+namespace Zentra\Tools\Plugin\Command;
 
-use Glpi\Tools\Command\AbstractCommand;
+use Zentra\Tools\Command\AbstractCommand;
 use Override;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -42,8 +42,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command extending this class don't have a native way to interact with the GLPI core.
- * If you need to interact with it or its database, use the `Glpi\Console\AbstractCommand` instead.
+ * Command extending this class don't have a native way to interact with the ZENTRA core.
+ * If you need to interact with it or its database, use the `Zentra\Console\AbstractCommand` instead.
  */
 abstract class AbstractPluginCommand extends AbstractCommand
 {

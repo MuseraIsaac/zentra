@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/software.class.php */
 
@@ -75,19 +75,19 @@ class SoftwareTest extends DbTestCase
         $tabs     = $software->defineTabs();
         $this->assertCount(16, $tabs);
 
-        $_SESSION['glpiactiveprofile']['license'] = 0;
+        $_SESSION['zentraactiveprofile']['license'] = 0;
         $tabs = $software->defineTabs();
         $this->assertCount(15, $tabs);
 
-        $_SESSION['glpiactiveprofile']['link'] = 0;
+        $_SESSION['zentraactiveprofile']['link'] = 0;
         $tabs = $software->defineTabs();
         $this->assertCount(14, $tabs);
 
-        $_SESSION['glpiactiveprofile']['infocom'] = 0;
+        $_SESSION['zentraactiveprofile']['infocom'] = 0;
         $tabs = $software->defineTabs();
         $this->assertCount(13, $tabs);
 
-        $_SESSION['glpiactiveprofile']['document'] = 0;
+        $_SESSION['zentraactiveprofile']['document'] = 0;
         $tabs = $software->defineTabs();
         $this->assertCount(12, $tabs);
     }
@@ -189,7 +189,7 @@ class SoftwareTest extends DbTestCase
 
     public function testPost_addItem()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -205,11 +205,11 @@ class SoftwareTest extends DbTestCase
         $this->assertSame('MySoft', $software->fields['name']);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(0, (int) countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(0, (int) countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(0, (int) countElementsInTable('zentra_infocoms', $query));
+        $this->assertSame(0, (int) countElementsInTable('zentra_contracts_items', $query));
 
         //Force creation of infocom when an asset is added
-        $CFG_GLPI['auto_create_infocoms'] = 1;
+        $CFG_ZENTRA['auto_create_infocoms'] = 1;
 
         $softwares_id = $software->add([
             'name'         => 'MySoft2',
@@ -219,7 +219,7 @@ class SoftwareTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $softwares_id);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(1, (int) countElementsInTable('glpi_infocoms', $query));
+        $this->assertSame(1, (int) countElementsInTable('zentra_infocoms', $query));
     }
 
     public function testPost_addItemWithTemplate()
@@ -276,17 +276,17 @@ class SoftwareTest extends DbTestCase
         $this->assertSame('MySoft', $software->fields['name']);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id_2];
-        $this->assertSame(1, (int) countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(1, (int) countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(1, (int) countElementsInTable('zentra_infocoms', $query));
+        $this->assertSame(1, (int) countElementsInTable('zentra_contracts_items', $query));
     }
 
     public function testCleanDBonPurge()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $this->login();
 
         //Force creation of infocom when an asset is added
-        $CFG_GLPI['auto_create_infocoms'] = 1;
+        $CFG_ZENTRA['auto_create_infocoms'] = 1;
 
         $software     = new \Software();
         $softwares_id = $software->add([
@@ -315,8 +315,8 @@ class SoftwareTest extends DbTestCase
 
         $this->assertTrue($software->delete(['id' => $softwares_id], true));
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(0, (int) countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(0, (int) countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(0, (int) countElementsInTable('zentra_infocoms', $query));
+        $this->assertSame(0, (int) countElementsInTable('zentra_contracts_items', $query));
 
         //TODO : test Change_Item, Item_Problem, Item_Project
     }
@@ -392,14 +392,14 @@ class SoftwareTest extends DbTestCase
 
     public function testGetEmpty()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $software = new \Software();
-        $CFG_GLPI['default_software_helpdesk_visible'] = 0;
+        $CFG_ZENTRA['default_software_helpdesk_visible'] = 0;
         $software->getEmpty();
         $this->assertEquals(0, $software->fields['is_helpdesk_visible']);
 
-        $CFG_GLPI['default_software_helpdesk_visible'] = 1;
+        $CFG_ZENTRA['default_software_helpdesk_visible'] = 1;
 
         $software->getEmpty();
         $this->assertEquals(1, $software->fields['is_helpdesk_visible']);
@@ -413,22 +413,22 @@ class SoftwareTest extends DbTestCase
         $result = $software->getSpecificMassiveActions();
         $this->assertCount(5, $result);
 
-        $all_rights = $_SESSION['glpiactiveprofile']['software'];
+        $all_rights = $_SESSION['zentraactiveprofile']['software'];
 
-        $_SESSION['glpiactiveprofile']['software'] = 0;
+        $_SESSION['zentraactiveprofile']['software'] = 0;
         $result = $software->getSpecificMassiveActions();
         $this->assertEmpty($result);
 
-        $_SESSION['glpiactiveprofile']['software'] = READ;
+        $_SESSION['zentraactiveprofile']['software'] = READ;
         $result = $software->getSpecificMassiveActions();
         $this->assertEmpty($result);
 
-        $_SESSION['glpiactiveprofile']['software'] = $all_rights;
-        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+        $_SESSION['zentraactiveprofile']['software'] = $all_rights;
+        $_SESSION['zentraactiveprofile']['knowbase'] = 0;
         $result = $software->getSpecificMassiveActions();
         $this->assertCount(4, $result);
 
-        $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = 0;
+        $_SESSION['zentraactiveprofile']['rule_dictionnary_software'] = 0;
         $result = $software->getSpecificMassiveActions();
         $this->assertCount(4, $result);
     }

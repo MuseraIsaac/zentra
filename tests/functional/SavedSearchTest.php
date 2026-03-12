@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use MassiveAction;
 use SavedSearch;
 
@@ -52,7 +52,7 @@ class SavedSearchTest extends DbTestCase
             ['WHERE' => []],
             SavedSearch::getVisibilityCriteria()
         );
-        $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
+        $_SESSION["zentraactiveprofile"]['config'] = $_SESSION["zentraactiveprofile"]['config'] & ~UPDATE;
         $this->assertNotEmpty(SavedSearch::getVisibilityCriteria()['WHERE']);
     }
 
@@ -69,14 +69,14 @@ class SavedSearchTest extends DbTestCase
 
         $this->login('normal', 'normal');
         $this->assertSame(
-            "`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5' AND (true)",
+            "`zentra_savedsearches`.`is_private` = '1' AND `zentra_savedsearches`.`users_id` = '5' AND (true)",
             SavedSearch::addVisibilityRestrict()
         );
 
         //add public saved searches read right for normal profile
         global $DB;
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 1],
             [
                 'profiles_id'  => 2,
@@ -88,14 +88,14 @@ class SavedSearchTest extends DbTestCase
         $this->login('normal', 'normal');
 
         $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND (true)",
+            "((`zentra_savedsearches`.`is_private` = '1' AND `zentra_savedsearches`.`users_id` = '5') OR (`zentra_savedsearches`.`is_private` = '0')) AND (true)",
             SavedSearch::addVisibilityRestrict()
         );
 
         // Check entity restriction
         $this->setEntity('_test_root_entity', true);
         $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
+            "((`zentra_savedsearches`.`is_private` = '1' AND `zentra_savedsearches`.`users_id` = '5') OR (`zentra_savedsearches`.`is_private` = '0')) AND ((`zentra_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3') OR (`zentra_savedsearches`.`is_recursive` = '1' AND `zentra_savedsearches`.`entities_id` IN ('0'))))",
             SavedSearch::addVisibilityRestrict()
         );
     }
@@ -190,7 +190,7 @@ class SavedSearchTest extends DbTestCase
             $expected,
             array_column($mine, 'name')
         );
-        $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
+        $_SESSION["zentraactiveprofile"]['config'] = $_SESSION["zentraactiveprofile"]['config'] & ~UPDATE;
         $this->assertCount(count($expected), $mine);
         $this->assertEqualsCanonicalizing(
             $expected,
@@ -209,7 +209,7 @@ class SavedSearchTest extends DbTestCase
 
         //add public saved searches read right for normal profile
         $DB->update(
-            'glpi_profilerights',
+            'zentra_profilerights',
             ['rights' => 1],
             [
                 'profiles_id'  => 2,

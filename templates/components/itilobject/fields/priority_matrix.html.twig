@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@
 $(function() {
    $('#dropdown_urgency{{ field_options.rand }}, #dropdown_impact{{ field_options.rand }}').on('change.select2', function (e) {
       $.ajax({
-         url: `${CFG_GLPI.root_doc}/ajax/priority.php`,
+         url: `${CFG_ZENTRA.root_doc}/ajax/priority.php`,
          datatype: 'json',
          data: {
             'urgency': $('#dropdown_urgency{{ field_options.rand }}').select2('data') ? $('#dropdown_urgency{{ field_options.rand }}').select2('data')[0].id : 0,

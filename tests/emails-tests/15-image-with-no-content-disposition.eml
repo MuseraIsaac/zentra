@@ -1,8 +1,8 @@
-Return-Path: <normal@glpi-project.org>
-Delivered-To: unittests@glpi-project.org
+Return-Path: <normal@zentra-project.org>
+Delivered-To: unittests@zentra-project.org
 Received: from localhost (localhost [127.0.0.1])
 	by pop1.resotic.fr (Postfix) with ESMTP id 40EBA231479
-	for unittests@glpi-project.org; Wed, 29 Jul 2020 16:17:24 +0200 (CEST)
+	for unittests@zentra-project.org; Wed, 29 Jul 2020 16:17:24 +0200 (CEST)
 Received: from pop1.resotic.fr ([127.0.0.1])
 	by localhost (localhost [127.0.0.1]) (amavisd-new, port 10024)
 	with ESMTP id pfzQWtOriPbG for <support@afga.cerfrance.fr>;
@@ -10,16 +10,16 @@ Received: from pop1.resotic.fr ([127.0.0.1])
 Received: from greg10 (unknown [37.111.093.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: normal@glpi-project.org)
+	(Authenticated sender: normal@zentra-project.org)
 	by pop1.resotic.fr (Postfix) with ESMTPSA id 3A015231455
-	for <unittests@glpi-project.org>; Wed, 29 Jul 2020 16:17:22 +0200 (CEST)
-From: <normal@glpi-project.org>
-To: <unittests@glpi-project.org>
+	for <unittests@zentra-project.org>; Wed, 29 Jul 2020 16:17:22 +0200 (CEST)
+From: <normal@zentra-project.org>
+To: <unittests@zentra-project.org>
 References: 
 In-Reply-To: 
 Subject: Inlined image with no Content-Disposition
 Date: Wed, 29 Jul 2020 16:17:21 +0200
-Message-ID: <008b01d665b2$f9b08e90$ed11abb0$@glpi-project.org>
+Message-ID: <008b01d665b2$f9b08e90$ed11abb0$@zentra-project.org>
 MIME-Version: 1.0
 Content-Type: multipart/related;
 	boundary="----=_NextPart_000_008C_01D665C3.BD3BCF90"

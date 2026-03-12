@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\BadRequestHttpException;
 
 /**
  * @since 0.85
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
             4,
             "maintain",
             //TRANS: %s is the user login
-            sprintf(__('%s adds a cost'), $_SESSION["glpiname"])
+            sprintf(__('%s adds a cost'), $_SESSION["zentraname"])
         );
     }
     Html::back();
@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
             4,
             "maintain",
             //TRANS: %s is the user login
-            sprintf(__('%s purges a cost'), $_SESSION["glpiname"])
+            sprintf(__('%s purges a cost'), $_SESSION["zentraname"])
         );
     }
 
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
             4,
             "maintain",
             //TRANS: %s is the user login
-            sprintf(__('%s updates a cost'), $_SESSION["glpiname"])
+            sprintf(__('%s updates a cost'), $_SESSION["zentraname"])
         );
     }
     Html::back();

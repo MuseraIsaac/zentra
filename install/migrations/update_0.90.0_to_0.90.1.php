@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ function update0900to0901()
     $migration->setVersion('0.90.1');
 
     // Add missing fill in 0.90 empty version
-    $migration->addField("glpi_entities", 'inquest_duration', "integer", ['value' => 0]);
+    $migration->addField("zentra_entities", 'inquest_duration', "integer", ['value' => 0]);
 
     // ************ Keep it at the end **************
     $migration->executeMigration();

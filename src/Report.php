@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Dashboard\Widget;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Socket;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Dashboard\Widget;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Socket;
 
 use function Safe\mktime;
 
@@ -49,7 +49,7 @@ use function Safe\mktime;
  *
  * @phpstan-type ReportData array{title: string, report_id: string, report_type: string, params: array, data: array}
  **/
-class Report extends CommonGLPI
+class Report extends CommonZENTRA
 {
     /** @var bool */
     protected static $notable = false;
@@ -67,7 +67,7 @@ class Report extends CommonGLPI
 
     public static function getReports(): array
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         // Report generation
         // Default Report included
@@ -119,7 +119,7 @@ class Report extends CommonGLPI
                     foreach ($pages as $page => $name) {
                         $report_list[Plugin::getInfo($plug, 'name')][$page] = [
                             'name' => $name,
-                            'file' => "{$CFG_GLPI['root_doc']}/plugins/{$plug}/{$page}",
+                            'file' => "{$CFG_ZENTRA['root_doc']}/plugins/{$plug}/{$page}",
                             'plug' => $plug,
                         ];
                     }
@@ -197,10 +197,10 @@ TWIG, $twig_params);
      */
     private static function getAssetCounts(): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $items = $CFG_GLPI["asset_types"];
-        $linkitems = $CFG_GLPI['directconnect_types'];
+        $items = $CFG_ZENTRA["asset_types"];
+        $linkitems = $CFG_ZENTRA['directconnect_types'];
         $result = [];
 
         foreach ($items as $itemtype) {
@@ -254,20 +254,20 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'    => [
                 'COUNT' => '* AS count',
-                'glpi_operatingsystems.id AS id',
-                'glpi_operatingsystems.name AS name',
+                'zentra_operatingsystems.id AS id',
+                'zentra_operatingsystems.name AS name',
             ],
-            'FROM'      => 'glpi_items_operatingsystems',
+            'FROM'      => 'zentra_items_operatingsystems',
             'LEFT JOIN' => [
-                'glpi_operatingsystems' => [
+                'zentra_operatingsystems' => [
                     'ON' => [
-                        'glpi_items_operatingsystems' => 'operatingsystems_id',
-                        'glpi_operatingsystems'       => 'id',
+                        'zentra_items_operatingsystems' => 'operatingsystems_id',
+                        'zentra_operatingsystems'       => 'id',
                     ],
                 ],
             ],
-            'WHERE'     => ['is_deleted' => 0] + getEntitiesRestrictCriteria('glpi_items_operatingsystems'),
-            'GROUPBY'   => 'glpi_operatingsystems.name',
+            'WHERE'     => ['is_deleted' => 0] + getEntitiesRestrictCriteria('zentra_items_operatingsystems'),
+            'GROUPBY'   => 'zentra_operatingsystems.name',
         ]);
 
         foreach ($iterator as $data) {
@@ -285,10 +285,10 @@ TWIG, $twig_params);
 
     private static function getAssetTypeCounts(): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $items = $CFG_GLPI["asset_types"];
-        $linkitems = $CFG_GLPI['directconnect_types'];
+        $items = $CFG_ZENTRA["asset_types"];
+        $linkitems = $CFG_ZENTRA['directconnect_types'];
         $result = [];
 
         $val   = array_flip($items);
@@ -506,7 +506,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
             ],
             'INNER JOIN'   => [],
             'LEFT JOIN'    => [
-                'glpi_networknames AS NAME_1' => [
+                'zentra_networknames AS NAME_1' => [
                     'ON'  => [
                         'PORT_1' => 'id',
                         'NAME_1' => 'items_id', [
@@ -517,7 +517,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         ],
                     ],
                 ],
-                'glpi_ipaddresses AS ADDR_1'  => [
+                'zentra_ipaddresses AS ADDR_1'  => [
                     'ON'  => [
                         'NAME_1' => 'id',
                         'ADDR_1' => 'items_id', [
@@ -528,7 +528,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         ],
                     ],
                 ],
-                'glpi_networkports_networkports AS LINK'  => [
+                'zentra_networkports_networkports AS LINK'  => [
                     'ON'  => [
                         'LINK'   => 'networkports_id_1',
                         'PORT_1' => 'id', [
@@ -538,7 +538,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         ],
                     ],
                 ],
-                'glpi_networkports AS PORT_2' => [
+                'zentra_networkports AS PORT_2' => [
                     'ON'  => [
                         'PORT_2' => 'id',
                         QueryFunction::if(
@@ -548,7 +548,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         ),
                     ],
                 ],
-                'glpi_networknames AS NAME_2' => [
+                'zentra_networknames AS NAME_2' => [
                     'ON'  => [
                         'PORT_2' => 'id',
                         'NAME_2' => 'items_id', [
@@ -559,7 +559,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         ],
                     ],
                 ],
-                'glpi_ipaddresses AS ADDR_2'  => [
+                'zentra_ipaddresses AS ADDR_2'  => [
                     'ON'  => [
                         'NAME_2' => 'id',
                         'ADDR_2' => 'items_id', [
@@ -583,30 +583,30 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     {
         $criteria = self::getNetworkCommonCriteria();
         if ($locations_id > 0) {
-            $sons = getSonsOf('glpi_locations', $locations_id);
-            $criteria['WHERE'] = ['glpi_locations.id' => $sons];
+            $sons = getSonsOf('zentra_locations', $locations_id);
+            $criteria['WHERE'] = ['zentra_locations.id' => $sons];
         }
-        $criteria['SELECT'] = array_merge($criteria['SELECT'], ['glpi_locations.completename AS extra']);
-        $criteria['FROM'] = 'glpi_locations';
-        $criteria['INNER JOIN']['glpi_sockets'] = [
+        $criteria['SELECT'] = array_merge($criteria['SELECT'], ['zentra_locations.completename AS extra']);
+        $criteria['FROM'] = 'zentra_locations';
+        $criteria['INNER JOIN']['zentra_sockets'] = [
             'ON' => [
-                'glpi_sockets' => 'locations_id',
-                'glpi_locations' => 'id',
+                'zentra_sockets' => 'locations_id',
+                'zentra_locations' => 'id',
             ],
         ];
-        $criteria['INNER JOIN']['glpi_networkportethernets'] = [
+        $criteria['INNER JOIN']['zentra_networkportethernets'] = [
             'ON' => [
-                'glpi_networkportethernets' => 'networkports_id',
-                'glpi_sockets' => 'networkports_id',
+                'zentra_networkportethernets' => 'networkports_id',
+                'zentra_sockets' => 'networkports_id',
             ],
         ];
-        $criteria['INNER JOIN']['glpi_networkports AS PORT_1'] = [
+        $criteria['INNER JOIN']['zentra_networkports AS PORT_1'] = [
             'ON' => [
                 'PORT_1' => 'id',
-                'glpi_networkportethernets' => 'networkports_id',
+                'zentra_networkportethernets' => 'networkports_id',
             ],
         ];
-        $criteria['ORDER'] = ['glpi_locations.completename', 'PORT_1.name'];
+        $criteria['ORDER'] = ['zentra_locations.completename', 'PORT_1.name'];
 
         return $criteria;
     }
@@ -618,27 +618,27 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     private static function getNetworkSocketCriteria(int $sockets_id): array
     {
         $criteria = self::getNetworkCommonCriteria();
-        $criteria['SELECT'] = array_merge($criteria['SELECT'], ['glpi_sockets.name AS extra']);
-        $criteria['FROM'] = 'glpi_sockets';
-        $criteria['INNER JOIN']['glpi_networkportethernets'] = [
+        $criteria['SELECT'] = array_merge($criteria['SELECT'], ['zentra_sockets.name AS extra']);
+        $criteria['FROM'] = 'zentra_sockets';
+        $criteria['INNER JOIN']['zentra_networkportethernets'] = [
             'ON' => [
-                'glpi_networkportethernets' => 'networkports_id',
-                'glpi_sockets' => 'networkports_id',
+                'zentra_networkportethernets' => 'networkports_id',
+                'zentra_sockets' => 'networkports_id',
             ],
         ];
-        $criteria['INNER JOIN']['glpi_networkports AS PORT_1'] = [
+        $criteria['INNER JOIN']['zentra_networkports AS PORT_1'] = [
             'ON' => [
                 'PORT_1' => 'id',
-                'glpi_networkportethernets' => 'networkports_id',
+                'zentra_networkportethernets' => 'networkports_id',
             ],
         ];
-        $criteria['LEFT JOIN']['glpi_locations'] = [
+        $criteria['LEFT JOIN']['zentra_locations'] = [
             'ON' => [
-                'glpi_locations' => 'id',
-                'glpi_sockets' => 'locations_id',
+                'zentra_locations' => 'id',
+                'zentra_sockets' => 'locations_id',
             ],
         ];
-        $criteria['WHERE'] = ['glpi_sockets.id' => $sockets_id];
+        $criteria['WHERE'] = ['zentra_sockets.id' => $sockets_id];
         return $criteria;
     }
 
@@ -649,8 +649,8 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     private static function getNetworkEquipmentCriteria(int $networkequipments_id): array
     {
         $criteria = self::getNetworkCommonCriteria();
-        $criteria['FROM'] = 'glpi_networkequipments AS ITEM';
-        $criteria['INNER JOIN']['glpi_networkports AS PORT_1'] = [
+        $criteria['FROM'] = 'zentra_networkequipments AS ITEM';
+        $criteria['INNER JOIN']['zentra_networkports AS PORT_1'] = [
             'ON' => [
                 'PORT_1' => 'items_id',
                 'ITEM' => 'id', [
@@ -714,7 +714,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     /**
      * Show network report
      *
-     * @param 'Location'|'NetworkEquioment'|'Glpi\Socket'|null $by_itemtype
+     * @param 'Location'|'NetworkEquioment'|'Zentra\Socket'|null $by_itemtype
      * @param int $by_items_id
      *
      * @return void
@@ -896,10 +896,10 @@ TWIG, $twig_params);
      */
     private static function getYearlyAssetsReport(array $itemtypes, array $years): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['report_types'], true));
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_ZENTRA['report_types'], true));
 
         $report = [
             'title' => __("Equipment's report by year"),
@@ -924,14 +924,14 @@ TWIG, $twig_params);
                 'SELECT'    => [
                     "$itemtable.name AS itemID",
                     "$itemtable.name AS itemname",
-                    'glpi_contracttypes.id AS contracttypeID',
-                    'glpi_contracttypes.name AS contracttypename',
-                    'glpi_infocoms.buy_date',
-                    'glpi_infocoms.warranty_duration',
-                    'glpi_contracts.begin_date',
-                    'glpi_contracts.duration',
-                    'glpi_entities.completename AS entname',
-                    'glpi_entities.id AS entID',
+                    'zentra_contracttypes.id AS contracttypeID',
+                    'zentra_contracttypes.name AS contracttypename',
+                    'zentra_infocoms.buy_date',
+                    'zentra_infocoms.warranty_duration',
+                    'zentra_contracts.begin_date',
+                    'zentra_contracts.duration',
+                    'zentra_entities.completename AS entname',
+                    'zentra_entities.id AS entID',
                 ],
                 'FROM'      => $itemtable,
                 'LEFT JOIN' => [],
@@ -940,75 +940,75 @@ TWIG, $twig_params);
             ];
 
             if ($itemtype !== Project::class) {
-                $location_field      = "glpi_locations.completename";
-                $criteria['LEFT JOIN']['glpi_locations'] = [
+                $location_field      = "zentra_locations.completename";
+                $criteria['LEFT JOIN']['zentra_locations'] = [
                     'ON'  => [
                         $itemtable  => 'locations_id',
-                        'glpi_locations.id',
+                        'zentra_locations.id',
                     ],
                 ];
                 $criteria['WHERE']["$itemtable.is_template"] = 0;
             }
             if ($itemtype === SoftwareLicense::class) {
-                $deleted_field       = "glpi_softwares.is_deleted";
+                $deleted_field       = "zentra_softwares.is_deleted";
                 $location_field      = null;
-                $criteria['LEFT JOIN']['glpi_softwares'] = [
+                $criteria['LEFT JOIN']['zentra_softwares'] = [
                     'ON'  => [
-                        'glpi_softwares'        => 'id',
-                        'glpi_softwarelicenses' => 'softwares_id',
+                        'zentra_softwares'        => 'id',
+                        'zentra_softwarelicenses' => 'softwares_id',
                     ],
                 ];
-                $criteria['WHERE']['glpi_softwares.is_template'] = 0;
+                $criteria['WHERE']['zentra_softwares.is_template'] = 0;
             }
             $criteria['SELECT'][] = "$deleted_field AS itemdeleted";
             $criteria['SELECT'][] = ($location_field !== null
                 ? "$location_field AS locationname"
                 : new QueryExpression($DB::quoteValue(''), 'locationname'));
             $criteria['SELECT'][] = ($location_field !== null
-                ? "glpi_locations.id AS locationID"
+                ? "zentra_locations.id AS locationID"
                 : new QueryExpression($DB::quoteValue(''), 'locationID'));
 
             $criteria['LEFT JOIN'] += [
-                'glpi_contracts_items'  => [
+                'zentra_contracts_items'  => [
                     'ON'  => [
                         $itemtable              => 'id',
-                        'glpi_contracts_items'  => 'items_id', [
+                        'zentra_contracts_items'  => 'items_id', [
                             'AND' => [
-                                'glpi_contracts_items.itemtype' => $itemtype,
+                                'zentra_contracts_items.itemtype' => $itemtype,
                             ],
                         ],
                     ],
                 ],
-                'glpi_contracts'        => [
+                'zentra_contracts'        => [
                     'ON'  => [
-                        'glpi_contracts_items'  => 'contracts_id',
-                        'glpi_contracts'        => 'id', [
+                        'zentra_contracts_items'  => 'contracts_id',
+                        'zentra_contracts'        => 'id', [
                             'AND' => [
-                                'NOT' => ['glpi_contracts_items.contracts_id' => null],
+                                'NOT' => ['zentra_contracts_items.contracts_id' => null],
                             ],
                         ],
                     ],
                 ],
-                'glpi_infocoms'         => [
+                'zentra_infocoms'         => [
                     'ON'  => [
                         $itemtable        => 'id',
-                        'glpi_infocoms'   => 'items_id', [
+                        'zentra_infocoms'   => 'items_id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype' => $itemtype,
+                                'zentra_infocoms.itemtype' => $itemtype,
                             ],
                         ],
                     ],
                 ],
-                'glpi_contracttypes'    => [
+                'zentra_contracttypes'    => [
                     'ON'  => [
-                        'glpi_contracts'     => 'contracttypes_id',
-                        'glpi_contracttypes' => 'id',
+                        'zentra_contracts'     => 'contracttypes_id',
+                        'zentra_contracttypes' => 'id',
                     ],
                 ],
-                'glpi_entities'         => [
+                'zentra_entities'         => [
                     'ON'  => [
                         $itemtable        => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
             ];
@@ -1016,8 +1016,8 @@ TWIG, $twig_params);
 
             $ors = [];
             foreach ($years as $val2) {
-                $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . " = " . $DB->quote($val2));
-                $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . " = " . $DB->quote($val2));
+                $ors[] = new QueryExpression(QueryFunction::year('zentra_infocoms.buy_date') . " = " . $DB->quote($val2));
+                $ors[] = new QueryExpression(QueryFunction::year('zentra_contracts.begin_date') . " = " . $DB->quote($val2));
             }
             if (count($ors)) {
                 $criteria['WHERE'][] = [
@@ -1146,10 +1146,10 @@ TWIG, $twig_params);
      */
     private static function getContractAssetsReport(array $itemtypes, array $years): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['contract_types'], true));
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_ZENTRA['contract_types'], true));
 
         $report = [
             'title' => __('List of the hardware under contract'),
@@ -1170,43 +1170,43 @@ TWIG, $twig_params);
             $criteria = [
                 'SELECT' => [
                     "$itemtable.id AS itemID",
-                    'glpi_contracttypes.id AS contracttypeID',
-                    'glpi_contracttypes.name AS contracttypename',
-                    'glpi_contracts.duration',
-                    'glpi_entities.completename AS entname',
-                    'glpi_entities.id AS entID',
-                    'glpi_contracts.begin_date',
+                    'zentra_contracttypes.id AS contracttypeID',
+                    'zentra_contracttypes.name AS contracttypename',
+                    'zentra_contracts.duration',
+                    'zentra_entities.completename AS entname',
+                    'zentra_entities.id AS entID',
+                    'zentra_contracts.begin_date',
                 ],
-                'FROM'   => 'glpi_contracts_items',
+                'FROM'   => 'zentra_contracts_items',
                 'INNER JOIN'   => [
-                    'glpi_contracts'  => [
+                    'zentra_contracts'  => [
                         'ON'  => [
-                            'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id',
+                            'zentra_contracts_items'  => 'contracts_id',
+                            'zentra_contracts'        => 'id',
                         ],
                     ],
                     $itemtable  => [
                         'ON'  => [
                             $itemtable  => 'id',
-                            'glpi_contracts_items'  => 'items_id', [
+                            'zentra_contracts_items'  => 'items_id', [
                                 'AND' => [
-                                    'glpi_contracts_items.itemtype' => $itemtype,
+                                    'zentra_contracts_items.itemtype' => $itemtype,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'LEFT JOIN'    => [
-                    'glpi_contracttypes' => [
+                    'zentra_contracttypes' => [
                         'ON'  => [
-                            'glpi_contracts'     => 'contracttypes_id',
-                            'glpi_contracttypes' => 'id',
+                            'zentra_contracts'     => 'contracttypes_id',
+                            'zentra_contracttypes' => 'id',
                         ],
                     ],
-                    'glpi_entities'   => [
+                    'zentra_entities'   => [
                         'ON'  => [
                             $itemtable        => 'entities_id',
-                            'glpi_entities'   => 'id',
+                            'zentra_entities'   => 'id',
                         ],
                     ],
                 ],
@@ -1225,14 +1225,14 @@ TWIG, $twig_params);
                     $criteria['ORDERBY'] = ["entname ASC", "itemname ASC"];
                     $criteria['SELECT'] = array_merge(
                         $criteria['SELECT'],
-                        ['glpi_infocoms.buy_date', 'glpi_infocoms.warranty_duration']
+                        ['zentra_infocoms.buy_date', 'zentra_infocoms.warranty_duration']
                     );
-                    $criteria['LEFT JOIN']['glpi_infocoms'] = [
+                    $criteria['LEFT JOIN']['zentra_infocoms'] = [
                         'ON'  => [
-                            'glpi_infocoms' => 'items_id',
+                            'zentra_infocoms' => 'items_id',
                             $itemtable     => 'id', [
                                 'AND' => [
-                                    'glpi_infocoms.itemtype'   => $itemtype,
+                                    'zentra_infocoms.itemtype'   => $itemtype,
                                 ],
                             ],
                         ],
@@ -1245,9 +1245,9 @@ TWIG, $twig_params);
                 if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                     $ors = [];
                     foreach ($_POST["year"] as $val2) {
-                        $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB->quote($val2));
+                        $ors[] = new QueryExpression(QueryFunction::year('zentra_contracts.begin_date') . ' = ' . $DB->quote($val2));
                         if ($itemtype === SoftwareLicense::class) {
-                            $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB->quote($val2));
+                            $ors[] = new QueryExpression(QueryFunction::year('zentra_infocoms.buy_date') . ' = ' . $DB->quote($val2));
                         }
                     }
                     if (count($ors)) {
@@ -1257,26 +1257,26 @@ TWIG, $twig_params);
             } else {
                 $criteria['SELECT'] = array_merge($criteria['SELECT'], [
                     "$itemtable.is_deleted AS itemdeleted",
-                    'glpi_infocoms.buy_date',
-                    'glpi_infocoms.warranty_duration',
+                    'zentra_infocoms.buy_date',
+                    'zentra_infocoms.warranty_duration',
                 ]);
-                $criteria['LEFT JOIN']['glpi_infocoms'] = [
+                $criteria['LEFT JOIN']['zentra_infocoms'] = [
                     'ON'  => [
                         $itemtable        => 'id',
-                        'glpi_infocoms'   => 'items_id', [
+                        'zentra_infocoms'   => 'items_id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype' => $itemtype,
+                                'zentra_infocoms.itemtype' => $itemtype,
                             ],
                         ],
                     ],
                 ];
                 if ($DB->fieldExists($itemtable, 'locations_id')) {
-                    $criteria['SELECT'][] = 'glpi_locations.completename AS locationname';
-                    $criteria['SELECT'][] = 'glpi_locations.id AS locationID';
-                    $criteria['LEFT JOIN']['glpi_locations'] = [
+                    $criteria['SELECT'][] = 'zentra_locations.completename AS locationname';
+                    $criteria['SELECT'][] = 'zentra_locations.id AS locationID';
+                    $criteria['LEFT JOIN']['zentra_locations'] = [
                         'ON'  => [
                             $itemtable        => 'locations_id',
-                            'glpi_locations'   => 'id',
+                            'zentra_locations'   => 'id',
                         ],
                     ];
                 } else {
@@ -1290,8 +1290,8 @@ TWIG, $twig_params);
 
                 $ors = [];
                 foreach ($years as $val2) {
-                    $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB::quoteValue($val2));
-                    $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB::quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year('zentra_infocoms.buy_date') . ' = ' . $DB::quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year('zentra_contracts.begin_date') . ' = ' . $DB::quoteValue($val2));
                 }
                 if (count($ors)) {
                     $criteria['WHERE'][] = ['OR' => $ors];
@@ -1446,7 +1446,7 @@ TWIG, $twig_params);
      */
     private static function getInfocomReport(?string $begin, ?string $end, bool $is_assets = true): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         [$begin, $end] = self::handleInfocomDates($begin, $end);
 
@@ -1463,7 +1463,7 @@ TWIG, $twig_params);
             ],
         ];
 
-        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['infocom_types'] as $itemtype) {
             $results = $is_assets ? Infocom::getDataForAssetInfocomReport($itemtype, $begin, $end) : Infocom::getDataForOtherInfocomReport($itemtype, $begin, $end);
             if ($results === null) {
                 continue;
@@ -1482,7 +1482,7 @@ TWIG, $twig_params);
                     $result["sink_coeff"],
                     $result["buy_date"],
                     $result["use_date"],
-                    $CFG_GLPI["date_tax"],
+                    $CFG_ZENTRA["date_tax"],
                     'n'
                 );
 
@@ -1493,7 +1493,7 @@ TWIG, $twig_params);
                     $result["sink_coeff"],
                     $result["buy_date"],
                     $result["use_date"],
-                    $CFG_GLPI["date_tax"],
+                    $CFG_ZENTRA["date_tax"],
                     'all'
                 );
 
@@ -1611,7 +1611,7 @@ TWIG, $twig_params);
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
             $item_object = getItemForItemtype($itemtype);
-            if (!$item_object instanceof CommonGLPI) {
+            if (!$item_object instanceof CommonZENTRA) {
                 throw new RuntimeException("Invalid itemtype: $itemtype");
             }
 
@@ -1637,7 +1637,7 @@ TWIG, $twig_params);
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
             $item_object = getItemForItemtype($itemtype);
-            if (!$item_object instanceof CommonGLPI) {
+            if (!$item_object instanceof CommonZENTRA) {
                 throw new RuntimeException("Invalid itemtype: $itemtype");
             }
 
@@ -1780,7 +1780,7 @@ TWIG, $twig_params);
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
             $item_object = getItemForItemtype($itemtype);
-            if (!$item_object instanceof CommonGLPI) {
+            if (!$item_object instanceof CommonZENTRA) {
                 throw new RuntimeException("Invalid itemtype: $itemtype");
             }
 
@@ -1806,7 +1806,7 @@ TWIG, $twig_params);
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
             $item_object = getItemForItemtype($itemtype);
-            if (!$item_object instanceof CommonGLPI) {
+            if (!$item_object instanceof CommonZENTRA) {
                 throw new RuntimeException("Invalid itemtype: $itemtype");
             }
 

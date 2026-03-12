@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,9 +74,9 @@ class OLA extends LevelAgreement
 
     public function showFormWarning()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        echo "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/warning.png' alt='" . __s('Warning') . "'>";
+        echo "<img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/warning.png' alt='" . __s('Warning') . "'>";
         echo __s('The internal time is recalculated when assigning the OLA');
     }
 

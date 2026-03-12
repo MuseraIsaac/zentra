@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 if (
     isset($_POST["itemtype"])
@@ -55,7 +55,7 @@ if (
             $link = null;
             $comments = [];
             if ($_POST['value'] == 0) {
-                $link = $CFG_GLPI['root_doc'] . "/front/user.php";
+                $link = $CFG_ZENTRA['root_doc'] . "/front/user.php";
             } else {
                 $user = new User();
                 if (is_array($_POST["value"])) {

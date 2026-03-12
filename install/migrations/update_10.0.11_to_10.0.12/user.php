@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,19 +32,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
  * @var Migration $migration
  */
 // Add user_dn_hash field
-$migration->addField('glpi_users', 'user_dn_hash', 'varchar(32)', [
+$migration->addField('zentra_users', 'user_dn_hash', 'varchar(32)', [
     'after'  => 'user_dn',
 ]);
 
 $migration->addPostQuery($DB->buildUpdate(
-    'glpi_users',
+    'zentra_users',
     [
         'user_dn_hash' => new QueryExpression('MD5(`user_dn`)'),
     ],
@@ -56,4 +56,4 @@ $migration->addPostQuery($DB->buildUpdate(
 ));
 
 // Add user_dn_hash index
-$migration->addKey('glpi_users', 'user_dn_hash');
+$migration->addKey('zentra_users', 'user_dn_hash');

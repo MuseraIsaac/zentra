@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ function testDefaultForm({ profile, formId }) {
     cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
     cy.getDropdownByLabelText('Category').selectDropdownValue(`»Test ITILCategory - ${uuid}`);
     cy.getDropdownByLabelText('User devices').selectDropdownValue(`Computers - Test Computer - ${uuid}`);
-    cy.getDropdownByLabelText('Observers').selectDropdownValue('glpi');
+    cy.getDropdownByLabelText('Observers').selectDropdownValue('zentra');
     cy.getDropdownByLabelText('Location').selectDropdownValue(`»Test Location - ${uuid}`);
     cy.findByRole('textbox', { name: "Title" }).type("My title");
     cy.findByLabelText("Description").awaitTinyMCE().type("My description");

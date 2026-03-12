@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +34,14 @@
 
 namespace tests\units;
 
-use Glpi\Inventory\Inventory;
-use Glpi\Tests\DbTestCase;
+use Zentra\Inventory\Inventory;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/ruleimportlocation.class.php */
 
 class RuleLocationTest extends DbTestCase
 {
-    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    protected const INV_FIXTURES = ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/';
 
     public function testActions()
     {
@@ -337,8 +337,8 @@ class RuleLocationTest extends DbTestCase
         $agent = $agents->current();
 
         $this->assertIsArray($agent);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $agent['deviceid']);
-        $this->assertSame('glpixps-2018-07-09-09-07-13', $agent['name']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $agent['deviceid']);
+        $this->assertSame('zentraxps-2018-07-09-09-07-13', $agent['name']);
         $this->assertSame('2.5.2-1.fc31', $agent['version']);
         $this->assertSame('Computer', $agent['itemtype']);
 

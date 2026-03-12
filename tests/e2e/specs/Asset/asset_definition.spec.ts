@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { test, expect } from '../../fixtures/zentra_fixture';
 import { AssetDefinitionPage } from '../../pages/AssetDefinitionPage';
 import { Profiles } from '../../utils/Profiles';
 
@@ -68,13 +68,13 @@ test('Profiles tab', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
 
     const system_name = `test${Math.random().toString(36).replace(/[^a-z0-9_]+/g, '')}`;
-    const definition_id = await api.createItem('Glpi\\Asset\\AssetDefinition', {
+    const definition_id = await api.createItem('Zentra\\Asset\\AssetDefinition', {
         system_name: system_name,
         is_active: true,
     });
 
     const asset_page = new AssetDefinitionPage(page);
-    await asset_page.goto(definition_id, 'Glpi\\Asset\\AssetDefinition$3');
+    await asset_page.goto(definition_id, 'Zentra\\Asset\\AssetDefinition$3');
     await expect(
         page.getByLabel(`Profiles that can associate ${system_name} with tickets, problems or changes`)
     ).toBeVisible();

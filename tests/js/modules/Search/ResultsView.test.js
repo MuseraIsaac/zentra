@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI */
+/* global ZENTRA */
 
 import '/js/modules/Search/ResultsView.js';
 import '/js/modules/Search/Table.js';
@@ -51,13 +51,13 @@ describe('Search ResultsView', () => {
     </div>
 `);
 
-    const results_view = new GLPI.Search.ResultsView('massformComputer', GLPI.Search.Table);
+    const results_view = new ZENTRA.Search.ResultsView('massformComputer', ZENTRA.Search.Table);
     test('Class exists', () => {
-        expect(GLPI).toBeDefined();
-        expect(GLPI.Search).toBeDefined();
-        expect(GLPI.Search.ResultsView).toBeDefined();
+        expect(ZENTRA).toBeDefined();
+        expect(ZENTRA.Search).toBeDefined();
+        expect(ZENTRA.Search.ResultsView).toBeDefined();
     });
     test('getView', () => {
-        expect(results_view.getView() instanceof GLPI.Search.Table).toBeTrue();
+        expect(results_view.getView() instanceof ZENTRA.Search.Table).toBeTrue();
     });
 });

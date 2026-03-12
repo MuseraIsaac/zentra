@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ abstract class NotificationSetting extends CommonDBTM
     /**
      * @var string
      */
-    public $table           = 'glpi_configs';
+    public $table           = 'zentra_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
@@ -97,7 +97,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case static::class:
@@ -108,7 +108,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (get_class($item) == static::class) {
             switch ($tabnum) {
@@ -127,12 +127,12 @@ abstract class NotificationSetting extends CommonDBTM
      */
     public static function disableAll()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $CFG_GLPI['use_notifications'] = 0;
-        foreach (array_keys($CFG_GLPI) as $key) {
+        $CFG_ZENTRA['use_notifications'] = 0;
+        foreach (array_keys($CFG_ZENTRA) as $key) {
             if (str_starts_with($key, 'notifications_')) {
-                $CFG_GLPI[$key] = 0;
+                $CFG_ZENTRA[$key] = 0;
             }
         }
     }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,14 +35,14 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\BadRequestHttpException;
 
 /**
  * @since 0.85
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 $link = new Group_Problem();
 $item = new Problem();
@@ -56,7 +56,7 @@ if (isset($_POST['delete'])) {
         "problem",
         4,
         "maintain",
-        sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
+        sprintf(__('%s deletes an actor'), $_SESSION["zentraname"])
     );
 
     if ($item->can($link->fields["problems_id"], READ)) {
@@ -68,7 +68,7 @@ if (isset($_POST['delete'])) {
         ERROR
     );
 
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/problem.php");
+    Html::redirect($CFG_ZENTRA["root_doc"] . "/front/problem.php");
 }
 
 throw new BadRequestHttpException();

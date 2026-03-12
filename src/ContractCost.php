@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * ContractCost Class
@@ -87,7 +87,7 @@ class ContractCost extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         // can exist for template
@@ -96,15 +96,15 @@ class ContractCost extends CommonDBChild
             && Contract::canView()
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]);
+            if ($_SESSION['zentrashow_count_on_tabs']) {
+                $nb = countElementsInTable('zentra_contractcosts', ['contracts_id' => $item->getID()]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof Contract) {
             return false;
@@ -176,7 +176,7 @@ class ContractCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_budgets',
+            'table'              => 'zentra_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -184,7 +184,7 @@ class ContractCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -366,7 +366,7 @@ TWIG, $twig_params);
                 !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
             );
             if (!isset($budget_cache[$data['budgets_id']])) {
-                $budget_cache[$data['budgets_id']] = Dropdown::getDropdownName(table: 'glpi_budgets', id: $data['budgets_id'], default: '');
+                $budget_cache[$data['budgets_id']] = Dropdown::getDropdownName(table: 'zentra_budgets', id: $data['budgets_id'], default: '');
             }
             $entries[] = [
                 'itemtype' => self::class,

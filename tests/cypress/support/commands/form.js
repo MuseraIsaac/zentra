@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ Cypress.Commands.add('createFormWithAPI', (
         name: "My test form",
     }
 ) => {
-    return cy.createWithAPI('Glpi\\Form\\Form', fields).then((form_id) => {
+    return cy.createWithAPI('Zentra\\Form\\Form', fields).then((form_id) => {
         return form_id;
     });
 });
@@ -45,10 +45,10 @@ Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
     tab_name
 ) => {
     const fully_qualified_tabs = new Map([
-        ['Form', 'Glpi\\Form\\Form\\Form$main'],
-        ['Policies', 'Glpi\\Form\\AccessControl\\FormAccessControl$1'],
-        ['Destinations', 'Glpi\\Form\\Destination\\FormDestination$1'],
-        ['ServiceCatalog', 'Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1'],
+        ['Form', 'Zentra\\Form\\Form\\Form$main'],
+        ['Policies', 'Zentra\\Form\\AccessControl\\FormAccessControl$1'],
+        ['Destinations', 'Zentra\\Form\\Destination\\FormDestination$1'],
+        ['ServiceCatalog', 'Zentra\\Form\\ServiceCatalog\\ServiceCatalog$1'],
     ]);
     const tab = fully_qualified_tabs.get(tab_name);
 
@@ -77,7 +77,7 @@ Cypress.Commands.add('addSection', (name) => {
 });
 
 Cypress.Commands.add('getFormSections', (form_id) => {
-    return cy.initApi().doApiRequest('GET', `Glpi\\Form\\Form/${form_id}/Glpi\\Form\\Section`).then((response) => {
+    return cy.initApi().doApiRequest('GET', `Zentra\\Form\\Form/${form_id}/Zentra\\Form\\Section`).then((response) => {
         return response.body;
     });
 });
@@ -106,7 +106,7 @@ Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
             is_mandatory     : is_mandatory,
         };
 
-        return cy.createWithAPI('Glpi\\Form\\Question', question).then((question_id) => {
+        return cy.createWithAPI('Zentra\\Form\\Question', question).then((question_id) => {
             return question_id;
         });
     });
@@ -115,14 +115,14 @@ Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
 Cypress.Commands.add('changeQuestionType', {prevSubject: true}, (question, new_type) => {
     cy.wrap(question).within(() => {
         cy.getDropdownByLabelText('Question type').selectDropdownValue(new_type);
-        cy.wrap(question).find('[data-glpi-loading="true"]').should('not.exist');
+        cy.wrap(question).find('[data-zentra-loading="true"]').should('not.exist');
     });
 });
 
 Cypress.Commands.add('changeQuestionSubType', {prevSubject: true}, (question, new_sub_type) => {
     cy.wrap(question).within(() => {
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue(new_sub_type);
-        cy.wrap(question).find('[data-glpi-loading="true"]').should('not.exist');
+        cy.wrap(question).find('[data-zentra-loading="true"]').should('not.exist');
     });
 });
 

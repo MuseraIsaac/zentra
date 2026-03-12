@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@
  * Client code to handle AJAX updates orchestrated by the CommonAjaxController class
  */
 
-/* global glpi_toast_info */
-/* global glpi_toast_warning */
-/* global glpi_toast_error */
+/* global zentra_toast_info */
+/* global zentra_toast_warning */
+/* global zentra_toast_error */
 /* global _ */
 
 // Isolate functions and run when document is ready
-class GlpiCommonAjaxController
+class ZentraCommonAjaxController
 {
     constructor() {
         // Init events handler
@@ -67,7 +67,7 @@ class GlpiCommonAjaxController
         // Send AJAX request
         try {
             const response = await $.ajax({
-                url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
+                url: `${CFG_ZENTRA.root_doc}/GenericAjaxCrud`,
                 method: 'POST',
                 contentType: 'application/json',
                 data: data,
@@ -83,7 +83,7 @@ class GlpiCommonAjaxController
 
             // Trigger a custom event to allow the client to execute an handler
             // after the form has been successfully submitted
-            form.trigger("glpi-ajax-controller-submit-success", response);
+            form.trigger("zentra-ajax-controller-submit-success", response);
         } catch (error) {
             // Handle known backend errors
             if (
@@ -189,13 +189,13 @@ class GlpiCommonAjaxController
 
         // Display feedback messages as a toast
         if (response.messages.info !== undefined) {
-            response.messages.info.forEach(message => glpi_toast_info(message));
+            response.messages.info.forEach(message => zentra_toast_info(message));
         }
         if (response.messages.warning !== undefined) {
-            response.messages.warning.forEach(message => glpi_toast_warning(message));
+            response.messages.warning.forEach(message => zentra_toast_warning(message));
         }
         if (response.messages.error !== undefined) {
-            response.messages.error.forEach(message => glpi_toast_error(message));
+            response.messages.error.forEach(message => zentra_toast_error(message));
         }
     }
 
@@ -249,7 +249,7 @@ class GlpiCommonAjaxController
     }
 
     #removeCachedTabsContent() {
-        $('[data-glpi-tab-content]').each((index, element) => {
+        $('[data-zentra-tab-content]').each((index, element) => {
             const is_current_tab = $(element).hasClass('active');
             if (is_current_tab) {
                 return;

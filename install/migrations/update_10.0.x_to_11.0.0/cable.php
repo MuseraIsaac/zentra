@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists("glpi_cables", "is_template", false)) {
-    $migration->addField('glpi_cables', 'is_template', "tinyint NOT NULL DEFAULT '0'", ['after' => 'is_recursive' ]);
-    $migration->addKey('glpi_cables', 'is_template');
+if (!$DB->fieldExists("zentra_cables", "is_template", false)) {
+    $migration->addField('zentra_cables', 'is_template', "tinyint NOT NULL DEFAULT '0'", ['after' => 'is_recursive' ]);
+    $migration->addKey('zentra_cables', 'is_template');
 }
 
-if (!$DB->fieldExists("glpi_cables", "template_name", false)) {
-    $migration->addField('glpi_cables', 'template_name', "varchar(255) DEFAULT NULL", ['after' => 'is_template' ]);
+if (!$DB->fieldExists("zentra_cables", "template_name", false)) {
+    $migration->addField('zentra_cables', 'template_name', "varchar(255) DEFAULT NULL", ['after' => 'is_template' ]);
 }

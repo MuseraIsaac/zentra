@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,22 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\Output\ExportSearchOutput;
-use Glpi\Search\Output\HTMLSearchOutput;
-use Glpi\Search\Output\MapSearchOutput;
-use Glpi\Search\Output\NamesListSearchOutput;
-use Glpi\Search\Provider\SQLProvider;
-use Glpi\Search\SearchEngine;
-use Glpi\Search\SearchOption;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Search\Input\QueryBuilder;
+use Zentra\Search\Output\ExportSearchOutput;
+use Zentra\Search\Output\HTMLSearchOutput;
+use Zentra\Search\Output\MapSearchOutput;
+use Zentra\Search\Output\NamesListSearchOutput;
+use Zentra\Search\Provider\SQLProvider;
+use Zentra\Search\SearchEngine;
+use Zentra\Search\SearchOption;
 
 /**
  * Search Class
  *
  * Generic class for Search Engine
  * <hr>
- * **Many of the methods in this class are now stubs. You should use the classes in the Glpi\Search namespace instead.**
+ * **Many of the methods in this class are now stubs. You should use the classes in the Zentra\Search namespace instead.**
  **/
 class Search
 {
@@ -1179,10 +1179,10 @@ class Search
 
         Toolbox::deprecated();
 
-        return "LEFT JOIN " . $DB::quoteName('glpi_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
+        return "LEFT JOIN " . $DB::quoteName('zentra_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
                   ON (" . $DB::quoteName($alias . '.itemtype') . " = " . $DB->quote($itemtype) . "
                     AND " . $DB::quoteName($alias . '.items_id') . " = " . $DB::quoteName($table . '.id') . "
-                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['glpilanguage']) . "
+                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['zentralanguage']) . "
                     AND " . $DB::quoteName($alias . '.field') . " = " . $DB->quote($field) . ")";
     }
 

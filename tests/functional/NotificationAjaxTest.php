@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/notificationajax.class.php .class.php */
 
@@ -56,7 +56,7 @@ class NotificationAjaxTest extends DbTestCase
 
     public function testGetMyNotifications()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //setup
         $this->login();
@@ -76,7 +76,7 @@ class NotificationAjaxTest extends DbTestCase
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => \Session::getLoginUserID(),
-            'from'                        => 'glpi@tests',
+            'from'                        => 'zentra@tests',
             'toname'                      => '',
             'event'                       => 'test_notification',
         ]);
@@ -86,7 +86,7 @@ class NotificationAjaxTest extends DbTestCase
         $notifs = \NotificationAjax::getMyNotifications();
         $this->assertFalse($notifs);
 
-        $CFG_GLPI['notifications_ajax'] = 1;
+        $CFG_ZENTRA['notifications_ajax'] = 1;
 
         $notifs = \NotificationAjax::getMyNotifications();
         $this->assertCount(2, $notifs);
@@ -143,6 +143,6 @@ class NotificationAjaxTest extends DbTestCase
         );
 
         //reset
-        $CFG_GLPI['notifications_ajax'] = 0;
+        $CFG_ZENTRA['notifications_ajax'] = 0;
     }
 }

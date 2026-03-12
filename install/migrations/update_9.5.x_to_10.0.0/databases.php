@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_databaseinstancetypes')) {
-    $query = "CREATE TABLE `glpi_databaseinstancetypes` (
+if (!$DB->tableExists('zentra_databaseinstancetypes')) {
+    $query = "CREATE TABLE `zentra_databaseinstancetypes` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
@@ -56,8 +56,8 @@ if (!$DB->tableExists('glpi_databaseinstancetypes')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_databaseinstancecategories')) {
-    $query = "CREATE TABLE `glpi_databaseinstancecategories` (
+if (!$DB->tableExists('zentra_databaseinstancecategories')) {
+    $query = "CREATE TABLE `zentra_databaseinstancecategories` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
@@ -71,8 +71,8 @@ if (!$DB->tableExists('glpi_databaseinstancecategories')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_databaseinstances')) {
-    $query = "CREATE TABLE `glpi_databaseinstances` (
+if (!$DB->tableExists('zentra_databaseinstances')) {
+    $query = "CREATE TABLE `zentra_databaseinstances` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -122,25 +122,25 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
     $DB->doQuery($query);
 }
 
-// Create glpi_databaseinstances itemtype/items_id if they are not existing (datamodel changed during v10.0 development)
-if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists('glpi_databaseinstances', 'items_id')) {
-    //1- migrate glpi_databaseinstances table
-    $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
+// Create zentra_databaseinstances itemtype/items_id if they are not existing (datamodel changed during v10.0 development)
+if (!$DB->fieldExists('zentra_databaseinstances', 'itemtype') || !$DB->fieldExists('zentra_databaseinstances', 'items_id')) {
+    //1- migrate zentra_databaseinstances table
+    $migration->addField('zentra_databaseinstances', 'itemtype', 'string', [
         'after' => 'states_id',
     ]);
-    $migration->addField('glpi_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
+    $migration->addField('zentra_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
         'after' => 'itemtype',
     ]);
-    $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
-    $migration->migrationOneTable('glpi_databaseinstances');
+    $migration->addKey('zentra_databaseinstances', ['itemtype', 'items_id'], 'item');
+    $migration->migrationOneTable('zentra_databaseinstances');
 }
 // Delete old table
-if ($DB->tableExists('glpi_databaseinstances_items')) {
-    $migration->dropTable('glpi_databaseinstances_items');
+if ($DB->tableExists('zentra_databaseinstances_items')) {
+    $migration->dropTable('zentra_databaseinstances_items');
 }
 
-if (!$DB->tableExists('glpi_databases')) {
-    $query = "CREATE TABLE `glpi_databases` (
+if (!$DB->tableExists('zentra_databases')) {
+    $query = "CREATE TABLE `zentra_databases` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -169,25 +169,25 @@ if (!$DB->tableExists('glpi_databases')) {
     $DB->doQuery($query);
 }
 
-if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
+if ($DB->fieldExists('zentra_states', 'is_visible_database')) {
     // Dev migration
-    $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
-    $migration->dropKey('glpi_states', 'is_visible_database');
-} elseif (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
-    $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
+    $migration->changeField('zentra_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
+    $migration->dropKey('zentra_states', 'is_visible_database');
+} elseif (!$DB->fieldExists('zentra_states', 'is_visible_databaseinstance')) {
+    $migration->addField('zentra_states', 'is_visible_databaseinstance', 'bool', [
         'value' => 1,
         'after' => 'is_visible_appliance',
     ]);
 }
-$migration->addKey('glpi_states', 'is_visible_databaseinstance');
+$migration->addKey('zentra_states', 'is_visible_databaseinstance');
 
-// Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
-if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
-    $migration->addField('glpi_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
+// Create zentra_databases is_dynamic if not exist (datamodel changed during v10.0 development)
+if (!$DB->fieldExists('zentra_databases', 'is_dynamic')) {
+    $migration->addField('zentra_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
         'after' => 'is_deleted',
     ]);
-    $migration->addKey('glpi_databases', 'is_dynamic');
-    $migration->migrationOneTable('glpi_databases');
+    $migration->addKey('zentra_databases', 'is_dynamic');
+    $migration->migrationOneTable('zentra_databases');
 }
 
 $migration->addRight('database', ALLSTANDARDRIGHT);

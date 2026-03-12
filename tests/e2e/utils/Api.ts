@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ import { join } from "path";
 import { Config } from "./Config";
 import { WorkerSessionCache } from "./WorkerSessionCache";
 
-const ENTITY_LOCK_FILE = join(tmpdir(), 'glpi-e2e-entity-creation.lock');
-const ASSET_DEFINITION_LOCK_FILE = join(tmpdir(), 'glpi-e2e-asset-definition-creation.lock');
+const ENTITY_LOCK_FILE = join(tmpdir(), 'zentra-e2e-entity-creation.lock');
+const ASSET_DEFINITION_LOCK_FILE = join(tmpdir(), 'zentra-e2e-asset-definition-creation.lock');
 
 type Tile = {
     title: string,
@@ -48,7 +48,7 @@ type Tile = {
 };
 
 /**
- * Utility class to interact with GLPI's API.
+ * Utility class to interact with ZENTRA's API.
  * This help to setup tests by creating the needed items directly using the API
  * instead of the UI, which is much faster.
  */
@@ -80,15 +80,15 @@ export class Api
     {
         if (itemtype === 'Entity') {
             // Hack for entities to prevent the issue described here:
-            // https://github.com/glpi-project/glpi/issues/22625
+            // https://github.com/zentra-project/zentra/issues/22625
             // Can be removed once the issue is resolved.
             return this.createItemWithLock(ENTITY_LOCK_FILE, itemtype, fields);
         }
 
-        if (itemtype === 'Glpi\\Asset\\AssetDefinition') {
+        if (itemtype === 'Zentra\\Asset\\AssetDefinition') {
             // AssetDefinition creation triggers syncProfilesRights() which
             // calls fillProfileRights(). This method collects right names from
-            // ALL profiles and inserts missing rows into glpi_profilerights.
+            // ALL profiles and inserts missing rows into zentra_profilerights.
             // When two definitions are created concurrently, both see the same
             // missing rows and try to INSERT them, causing a duplicate-key error.
             return this.createItemWithLock(ASSET_DEFINITION_LOCK_FILE, itemtype, fields);
@@ -135,7 +135,7 @@ export class Api
         const created_tiles = [];
         for (const tile of tiles) {
             created_tiles.push(
-                this.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile)
+                this.createItem('Zentra\\Helpdesk\\Tile\\ZentraPageTile', tile)
             );
         }
         const tile_ids = await Promise.all(created_tiles);
@@ -143,10 +143,10 @@ export class Api
         const linked_tiles = [];
         let i = 0;
         for (const tile_id of tile_ids) {
-            linked_tiles.push(this.createItem('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+            linked_tiles.push(this.createItem('Zentra\\Helpdesk\\Tile\\Item_Tile', {
                 'itemtype_item': itemtype,
                 'items_id_item': id,
-                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                'itemtype_tile': 'Zentra\\Helpdesk\\Tile\\ZentraPageTile',
                 'items_id_tile': tile_id,
                 'rank': i++,
             }));

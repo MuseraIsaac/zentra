@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ return $config
         'src/UploadHandler.php',
     ], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtensionAndPaths('ext-pcntl', ['src/CronTask.php'], [ErrorType::SHADOW_DEPENDENCY])
-    ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php', 'src/Glpi/Console/Application.php'], [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php', 'src/Zentra/Console/Application.php'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-ldap', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-sodium', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-zend-opcache', [ErrorType::SHADOW_DEPENDENCY])

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ var cytoscape = window.cytoscape;
 /* global hexToRgb */
 /* global contrast */
 
-var GLPIImpact = {
+var ZENTRAImpact = {
 
     // Constants to represent nodes and edges
     NODE: 1,
@@ -283,7 +283,7 @@ var GLPIImpact = {
                 // Available data: data, children
             case this.ACTION_ADD_COMPOUND:
                 data.children.forEach(function(id) {
-                    GLPIImpact.cy.filter("node" + GLPIImpact.makeIDSelector(id))
+                    ZENTRAImpact.cy.filter("node" + ZENTRAImpact.makeIDSelector(id))
                         .move({parent: null});
                 });
                 this.cy.remove("node" + this.makeIDSelector(data.data.id));
@@ -295,23 +295,23 @@ var GLPIImpact = {
             case this.ACTION_ADD_GRAPH:
             // Delete edges
                 data.edges.forEach(function(edge) {
-                    GLPIImpact.cy.getElementById(edge.id).remove();
+                    ZENTRAImpact.cy.getElementById(edge.id).remove();
                 });
 
                 // Delete compounds
                 data.compounds.forEach(function(compound) {
                     compound.compoundChildren.forEach(function(nodeId) {
-                        GLPIImpact.cy.getElementById(nodeId).move({
+                        ZENTRAImpact.cy.getElementById(nodeId).move({
                             parent: null
                         });
                     });
 
-                    GLPIImpact.cy.getElementById(compound.compoundData.id).remove();
+                    ZENTRAImpact.cy.getElementById(compound.compoundData.id).remove();
                 });
 
                 // Delete nodes
                 data.nodes.forEach(function(node) {
-                    GLPIImpact.cy.getElementById(node.nodeData.id).remove();
+                    ZENTRAImpact.cy.getElementById(node.nodeData.id).remove();
                 });
 
                 this.updateFlags();
@@ -325,7 +325,7 @@ var GLPIImpact = {
                     label: data.oldLabel,
                     color: data.oldColor,
                 });
-                GLPIImpact.cy.trigger("change");
+                ZENTRAImpact.cy.trigger("change");
                 break;
 
             // Revert edit
@@ -334,7 +334,7 @@ var GLPIImpact = {
                 this.cy.filter("node" + this.makeIDSelector(data.id)).data({
                     label: data.oldLabel,
                 });
-                GLPIImpact.cy.trigger("change");
+                ZENTRAImpact.cy.trigger("change");
                 break;
 
                 // Re-add node to the compound (and recreate it needed)
@@ -348,7 +348,7 @@ var GLPIImpact = {
                     });
 
                     data.children.forEach(function(childId) {
-                        GLPIImpact.cy.getElementById(childId)
+                        ZENTRAImpact.cy.getElementById(childId)
                             .move({parent: data.compoundData.id});
                     });
                 } else {
@@ -364,7 +364,7 @@ var GLPIImpact = {
             case this.ACTION_DELETE:
             // Add nodes
                 data.nodes.forEach(function(node) {
-                    var newNode = GLPIImpact.cy.add({
+                    var newNode = ZENTRAImpact.cy.add({
                         group: "nodes",
                         data: node.nodeData,
                     });
@@ -373,13 +373,13 @@ var GLPIImpact = {
 
                 // Add compound
                 data.compounds.forEach(function(compound) {
-                    GLPIImpact.cy.add({
+                    ZENTRAImpact.cy.add({
                         group: "nodes",
                         data: compound.compoundData,
                     });
 
                     compound.compoundChildren.forEach(function(nodeId) {
-                        GLPIImpact.cy.getElementById(nodeId).move({
+                        ZENTRAImpact.cy.getElementById(nodeId).move({
                             parent: compound.compoundData.id
                         });
                     });
@@ -387,7 +387,7 @@ var GLPIImpact = {
 
                 // Add edges
                 data.edges.forEach(function(edge) {
-                    GLPIImpact.cy.add({
+                    ZENTRAImpact.cy.add({
                         group: "edges",
                         data: edge,
                     });
@@ -400,18 +400,18 @@ var GLPIImpact = {
                 // Toggle impact visibility
             case this.ACTION_EDIT_IMPACT_VISIBILITY:
                 this.toggleVisibility(this.FORWARD);
-                $(GLPIImpact.selectors.toggleImpact).prop(
+                $(ZENTRAImpact.selectors.toggleImpact).prop(
                     'checked',
-                    !$(GLPIImpact.selectors.toggleImpact).prop('checked')
+                    !$(ZENTRAImpact.selectors.toggleImpact).prop('checked')
                 );
                 break;
 
                 // Toggle depends visibility
             case this.ACTION_EDIT_DEPENDS_VISIBILITY:
                 this.toggleVisibility(this.BACKWARD);
-                $(GLPIImpact.selectors.toggleDepends).prop(
+                $(ZENTRAImpact.selectors.toggleDepends).prop(
                     'checked',
-                    !$(GLPIImpact.selectors.toggleDepends).prop('checked')
+                    !$(ZENTRAImpact.selectors.toggleDepends).prop('checked')
                 );
                 break;
 
@@ -421,8 +421,8 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     backward: data.oldColor,
                 });
-                $(GLPIImpact.selectors.dependsColor).val(
-                    GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+                $(ZENTRAImpact.selectors.dependsColor).val(
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -434,8 +434,8 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     forward: data.oldColor,
                 });
-                $(GLPIImpact.selectors.impactColor).val(
-                    GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+                $(ZENTRAImpact.selectors.impactColor).val(
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -447,8 +447,8 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     both: data.oldColor,
                 });
-                $(GLPIImpact.selectors.impactAndDependsColor).val(
-                    GLPIImpact.edgeColors[GLPIImpact.BOTH]
+                $(ZENTRAImpact.selectors.impactAndDependsColor).val(
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -458,7 +458,7 @@ var GLPIImpact = {
                 // Available data: oldDepth, newDepth
             case this.ACTION_EDIT_MAX_DEPTH:
                 this.setDepth(data.oldDepth);
-                $(GLPIImpact.selectors.maxDepth).val(data.oldDepth);
+                $(ZENTRAImpact.selectors.maxDepth).val(data.oldDepth);
                 break;
         }
 
@@ -525,7 +525,7 @@ var GLPIImpact = {
                     data: data.data,
                 });
                 data.children.forEach(function(id) {
-                    GLPIImpact.cy.filter("node" + GLPIImpact.makeIDSelector(id))
+                    ZENTRAImpact.cy.filter("node" + ZENTRAImpact.makeIDSelector(id))
                         .move({parent: data.data.id});
                 });
                 this.updateFlags();
@@ -537,7 +537,7 @@ var GLPIImpact = {
             case this.ACTION_ADD_GRAPH:
             // Add nodes
                 data.nodes.forEach(function(node) {
-                    var newNode = GLPIImpact.cy.add({
+                    var newNode = ZENTRAImpact.cy.add({
                         group: "nodes",
                         data: node.nodeData,
                     });
@@ -546,13 +546,13 @@ var GLPIImpact = {
 
                 // Add compound
                 data.compounds.forEach(function(compound) {
-                    GLPIImpact.cy.add({
+                    ZENTRAImpact.cy.add({
                         group: "nodes",
                         data: compound.compoundData,
                     });
 
                     compound.compoundChildren.forEach(function(nodeId) {
-                        GLPIImpact.cy.getElementById(nodeId).move({
+                        ZENTRAImpact.cy.getElementById(nodeId).move({
                             parent: compound.compoundData.id
                         });
                     });
@@ -560,7 +560,7 @@ var GLPIImpact = {
 
                 // Add edges
                 data.edges.forEach(function(edge) {
-                    GLPIImpact.cy.add({
+                    ZENTRAImpact.cy.add({
                         group: "edges",
                         data: edge,
                     });
@@ -577,7 +577,7 @@ var GLPIImpact = {
                     label: data.label,
                     color: data.color,
                 });
-                GLPIImpact.cy.trigger("change");
+                ZENTRAImpact.cy.trigger("change");
                 break;
                 // Reapply edit
                 // Available data : id, label, previousLabel
@@ -585,7 +585,7 @@ var GLPIImpact = {
                 this.cy.filter("node" + this.makeIDSelector(data.id)).data({
                     label: data.label,
                 });
-                GLPIImpact.cy.trigger("change");
+                ZENTRAImpact.cy.trigger("change");
                 break;
                 // Remove node from the compound (and delete if needed)
                 // Available data: nodeData, compoundData, children
@@ -593,7 +593,7 @@ var GLPIImpact = {
                 if (data.children.length <= 2) {
                     // Remove every nodes and delete the compound
                     data.children.forEach(function(childId) {
-                        GLPIImpact.cy.getElementById(childId)
+                        ZENTRAImpact.cy.getElementById(childId)
                             .move({parent: null});
                     });
 
@@ -611,23 +611,23 @@ var GLPIImpact = {
             case this.ACTION_DELETE:
             // Delete edges
                 data.edges.forEach(function(edge) {
-                    GLPIImpact.cy.getElementById(edge.id).remove();
+                    ZENTRAImpact.cy.getElementById(edge.id).remove();
                 });
 
                 // Delete compounds
                 data.compounds.forEach(function(compound) {
                     compound.compoundChildren.forEach(function(nodeId) {
-                        GLPIImpact.cy.getElementById(nodeId).move({
+                        ZENTRAImpact.cy.getElementById(nodeId).move({
                             parent: null
                         });
                     });
 
-                    GLPIImpact.cy.getElementById(compound.compoundData.id).remove();
+                    ZENTRAImpact.cy.getElementById(compound.compoundData.id).remove();
                 });
 
                 // Delete nodes
                 data.nodes.forEach(function(node) {
-                    GLPIImpact.cy.getElementById(node.id).remove();
+                    ZENTRAImpact.cy.getElementById(node.id).remove();
                 });
 
                 this.updateFlags();
@@ -637,18 +637,18 @@ var GLPIImpact = {
                 // Toggle impact visibility
             case this.ACTION_EDIT_IMPACT_VISIBILITY:
                 this.toggleVisibility(this.FORWARD);
-                $(GLPIImpact.selectors.toggleImpact).prop(
+                $(ZENTRAImpact.selectors.toggleImpact).prop(
                     'checked',
-                    !$(GLPIImpact.selectors.toggleImpact).prop('checked')
+                    !$(ZENTRAImpact.selectors.toggleImpact).prop('checked')
                 );
                 break;
 
                 // Toggle depends visibility
             case this.ACTION_EDIT_DEPENDS_VISIBILITY:
                 this.toggleVisibility(this.BACKWARD);
-                $(GLPIImpact.selectors.toggleDepends).prop(
+                $(ZENTRAImpact.selectors.toggleDepends).prop(
                     'checked',
-                    !$(GLPIImpact.selectors.toggleDepends).prop('checked')
+                    !$(ZENTRAImpact.selectors.toggleDepends).prop('checked')
                 );
                 break;
 
@@ -658,8 +658,8 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     backward: data.newColor,
                 });
-                $(GLPIImpact.selectors.dependsColor).val(
-                    GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+                $(ZENTRAImpact.selectors.dependsColor).val(
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -671,9 +671,9 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     forward: data.newColor,
                 });
-                $(GLPIImpact.selectors.forwardColor).val(
+                $(ZENTRAImpact.selectors.forwardColor).val(
                     "set",
-                    GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -685,8 +685,8 @@ var GLPIImpact = {
                 this.setEdgeColors({
                     both: data.newColor,
                 });
-                $(GLPIImpact.selectors.impactAndDependsColor).val(
-                    GLPIImpact.edgeColors[GLPIImpact.BOTH]
+                $(ZENTRAImpact.selectors.impactAndDependsColor).val(
+                    ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH]
                 );
                 this.updateStyle();
                 this.cy.trigger("change");
@@ -696,7 +696,7 @@ var GLPIImpact = {
                 // Available data: oldDepth, newDepth
             case this.ACTION_EDIT_MAX_DEPTH:
                 this.setDepth(data.newDepth);
-                $(GLPIImpact.selectors.maxDepth).val(data.newDepth);
+                $(ZENTRAImpact.selectors.maxDepth).val(data.newDepth);
                 break;
         }
 
@@ -822,7 +822,7 @@ var GLPIImpact = {
                 }
             },
             {
-                selector: GLPIImpact.getHiddenSelector(),
+                selector: ZENTRAImpact.getHiddenSelector(),
                 style: {
                     'display': 'none',
                 }
@@ -872,24 +872,24 @@ var GLPIImpact = {
                 }
             },
             {
-                selector: '[flag=' + GLPIImpact.FORWARD + ']',
+                selector: '[flag=' + ZENTRAImpact.FORWARD + ']',
                 style: {
-                    'line-color'        : this.edgeColors[GLPIImpact.FORWARD],
-                    'target-arrow-color': this.edgeColors[GLPIImpact.FORWARD],
+                    'line-color'        : this.edgeColors[ZENTRAImpact.FORWARD],
+                    'target-arrow-color': this.edgeColors[ZENTRAImpact.FORWARD],
                 }
             },
             {
-                selector: '[flag=' + GLPIImpact.BACKWARD + ']',
+                selector: '[flag=' + ZENTRAImpact.BACKWARD + ']',
                 style: {
-                    'line-color'        : this.edgeColors[GLPIImpact.BACKWARD],
-                    'target-arrow-color': this.edgeColors[GLPIImpact.BACKWARD],
+                    'line-color'        : this.edgeColors[ZENTRAImpact.BACKWARD],
+                    'target-arrow-color': this.edgeColors[ZENTRAImpact.BACKWARD],
                 }
             },
             {
-                selector: '[flag=' + GLPIImpact.BOTH + ']',
+                selector: '[flag=' + ZENTRAImpact.BOTH + ']',
                 style: {
-                    'line-color'        : this.edgeColors[GLPIImpact.BOTH],
-                    'target-arrow-color': this.edgeColors[GLPIImpact.BOTH],
+                    'line-color'        : this.edgeColors[ZENTRAImpact.BOTH],
+                    'target-arrow-color': this.edgeColors[ZENTRAImpact.BOTH],
                 }
             }
         ];
@@ -914,7 +914,7 @@ var GLPIImpact = {
                     y = parseFloat(positions[node.data('id')].y);
                 } else if (!node.isParent()) {
                     // Add node to no_positions list if it doesn't have a saved position
-                    GLPIImpact.no_positions.push(node);
+                    ZENTRAImpact.no_positions.push(node);
                 }
 
                 return {
@@ -989,7 +989,7 @@ var GLPIImpact = {
                     np_valid.push(node.data('id'));
                     clean_order.push(node);
                     // not_placed.splice(index, 1);
-                    GLPIImpact.no_positions.splice(index, 1);
+                    ZENTRAImpact.no_positions.splice(index, 1);
                 }
             });
         }
@@ -1037,7 +1037,7 @@ var GLPIImpact = {
                     return;
                 }
 
-                var ele_distance = GLPIImpact.getDistance(neighbor.position(), ele.position());
+                var ele_distance = ZENTRAImpact.getDistance(neighbor.position(), ele.position());
                 if (ele_distance < distance) {
                     distance = ele_distance;
                     closest = ele;
@@ -1081,7 +1081,7 @@ var GLPIImpact = {
 
                     // Check if position is available
                     var available = true;
-                    GLPIImpact.cy.filter().forEach(function(ele){
+                    ZENTRAImpact.cy.filter().forEach(function(ele){
                         var bdb = ele.boundingBox();
                         // var bdb = ele.renderedBoundingBox();
 
@@ -1146,7 +1146,7 @@ var GLPIImpact = {
         var data = {edges: {}, compounds: {}, items: {}};
 
         // Load edges
-        GLPIImpact.cy.edges().forEach(function(edge) {
+        ZENTRAImpact.cy.edges().forEach(function(edge) {
             data.edges[edge.data('id')] = {
                 name: edge.data('label'),
                 source: edge.data('source'),
@@ -1155,7 +1155,7 @@ var GLPIImpact = {
         });
 
         // Load compounds
-        GLPIImpact.cy.filter("node:parent").forEach(function(compound) {
+        ZENTRAImpact.cy.filter("node:parent").forEach(function(compound) {
             data.compounds[compound.data('id')] = {
                 name: compound.data('label'),
                 color: compound.data('color'),
@@ -1163,7 +1163,7 @@ var GLPIImpact = {
         });
 
         // Load items
-        GLPIImpact.cy.filter("node:childless").forEach(function(node) {
+        ZENTRAImpact.cy.filter("node:childless").forEach(function(node) {
             data.items[node.data('id')] = {
                 impactitem_id: node.data('impactitem_id'),
                 parent       : node.data('parent'),
@@ -1183,10 +1183,10 @@ var GLPIImpact = {
         var edgesDelta = {};
 
         // First iterate on the edges we had in the initial state
-        Object.keys(GLPIImpact.initialState.edges).forEach(function(edgeID) {
-            var edge = GLPIImpact.initialState.edges[edgeID];
-            var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
-            var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
+        Object.keys(ZENTRAImpact.initialState.edges).forEach(function(edgeID) {
+            var edge = ZENTRAImpact.initialState.edges[edgeID];
+            var source = edge.source.split(ZENTRAImpact.NODE_ID_SEPERATOR);
+            var target = edge.target.split(ZENTRAImpact.NODE_ID_SEPERATOR);
             if (Object.prototype.hasOwnProperty.call(currentEdges, edgeID)) {
             // If the edge is still here in the current state, nothing happened
                 var currentEdge = currentEdges[edgeID];
@@ -1194,7 +1194,7 @@ var GLPIImpact = {
                 // Check for updates ...
                 if (edge.name != currentEdge.name) {
                     edgesDelta[edgeID] = {
-                        action: GLPIImpact.DELTA_ACTION_UPDATE,
+                        action: ZENTRAImpact.DELTA_ACTION_UPDATE,
                         name  : currentEdge.name,
                         itemtype_source  : source[0],
                         items_id_source  : source[1],
@@ -1207,7 +1207,7 @@ var GLPIImpact = {
             } else {
             // If the edge is missing in the current state, it has been deleted
                 edgesDelta[edgeID] = {
-                    action           : GLPIImpact.DELTA_ACTION_DELETE,
+                    action           : ZENTRAImpact.DELTA_ACTION_DELETE,
                     itemtype_source  : source[0],
                     items_id_source  : source[1],
                     itemtype_impacted: target[0],
@@ -1221,10 +1221,10 @@ var GLPIImpact = {
         // the remaining edges can only be new ones
         Object.keys(currentEdges).forEach(function (edgeID) {
             var edge = currentEdges[edgeID];
-            var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
-            var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
+            var source = edge.source.split(ZENTRAImpact.NODE_ID_SEPERATOR);
+            var target = edge.target.split(ZENTRAImpact.NODE_ID_SEPERATOR);
             edgesDelta[edgeID] = {
-                action           : GLPIImpact.DELTA_ACTION_ADD,
+                action           : ZENTRAImpact.DELTA_ACTION_ADD,
                 itemtype_source  : source[0],
                 items_id_source  : source[1],
                 itemtype_impacted: target[0],
@@ -1244,8 +1244,8 @@ var GLPIImpact = {
         var compoundsDelta = {};
 
         // First iterate on the compounds we had in the initial state
-        Object.keys(GLPIImpact.initialState.compounds).forEach(function(compoundID) {
-            var compound = GLPIImpact.initialState.compounds[compoundID];
+        Object.keys(ZENTRAImpact.initialState.compounds).forEach(function(compoundID) {
+            var compound = ZENTRAImpact.initialState.compounds[compoundID];
             if (Object.prototype.hasOwnProperty.call(currentCompounds, compoundID)) {
             // If the compound is still here in the current state
                 var currentCompound = currentCompounds[compoundID];
@@ -1254,7 +1254,7 @@ var GLPIImpact = {
                 if (compound.name != currentCompound.name
                || compound.color != currentCompound.color) {
                     compoundsDelta[compoundID] = {
-                        action: GLPIImpact.DELTA_ACTION_UPDATE,
+                        action: ZENTRAImpact.DELTA_ACTION_UPDATE,
                         name  : currentCompound.name,
                         color : currentCompound.color
                     };
@@ -1265,7 +1265,7 @@ var GLPIImpact = {
             } else {
             // If the compound is missing in the current state, it's been deleted
                 compoundsDelta[compoundID] = {
-                    action           : GLPIImpact.DELTA_ACTION_DELETE,
+                    action           : ZENTRAImpact.DELTA_ACTION_DELETE,
                 };
             }
         });
@@ -1273,7 +1273,7 @@ var GLPIImpact = {
         // Now iterate on the compounds we have in the current state
         Object.keys(currentCompounds).forEach(function (compoundID) {
             compoundsDelta[compoundID] = {
-                action: GLPIImpact.DELTA_ACTION_ADD,
+                action: ZENTRAImpact.DELTA_ACTION_ADD,
                 name  : currentCompounds[compoundID].name,
                 color : currentCompounds[compoundID].color
             };
@@ -1301,15 +1301,15 @@ var GLPIImpact = {
         return {
             node_id                 : this.startNode,
             positions               : JSON.stringify(positions),
-            zoom                    : GLPIImpact.cy.zoom(),
-            pan_x                   : GLPIImpact.cy.pan().x,
-            pan_y                   : GLPIImpact.cy.pan().y,
-            impact_color            : GLPIImpact.edgeColors[GLPIImpact.FORWARD],
-            depends_color           : GLPIImpact.edgeColors[GLPIImpact.BACKWARD],
-            impact_and_depends_color: GLPIImpact.edgeColors[GLPIImpact.BOTH],
-            show_depends            : GLPIImpact.directionVisibility[GLPIImpact.BACKWARD],
-            show_impact             : GLPIImpact.directionVisibility[GLPIImpact.FORWARD],
-            max_depth               : GLPIImpact.maxDepth,
+            zoom                    : ZENTRAImpact.cy.zoom(),
+            pan_x                   : ZENTRAImpact.cy.pan().x,
+            pan_y                   : ZENTRAImpact.cy.pan().y,
+            impact_color            : ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD],
+            depends_color           : ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD],
+            impact_and_depends_color: ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH],
+            show_depends            : ZENTRAImpact.directionVisibility[ZENTRAImpact.BACKWARD],
+            show_impact             : ZENTRAImpact.directionVisibility[ZENTRAImpact.FORWARD],
+            max_depth               : ZENTRAImpact.maxDepth,
         };
     },
 
@@ -1325,7 +1325,7 @@ var GLPIImpact = {
         Object.keys(currentNodes).forEach(function (nodeID) {
             var node = currentNodes[nodeID];
             itemsDelta[node.impactitem_id] = {
-                action   : GLPIImpact.DELTA_ACTION_UPDATE,
+                action   : ZENTRAImpact.DELTA_ACTION_UPDATE,
                 parent_id: node.parent,
             };
 
@@ -1336,7 +1336,7 @@ var GLPIImpact = {
 
             // Store parent
             itemsDelta[node.impactitem_id] = {
-                action    : GLPIImpact.DELTA_ACTION_UPDATE,
+                action    : ZENTRAImpact.DELTA_ACTION_UPDATE,
                 parent_id : node.parent,
             };
         });
@@ -1427,25 +1427,25 @@ var GLPIImpact = {
             itemtype: itemType,
             items_id: itemID
         };
-        var nodeID = GLPIImpact.makeID(GLPIImpact.NODE, node.itemtype, node.items_id);
+        var nodeID = ZENTRAImpact.makeID(ZENTRAImpact.NODE, node.itemtype, node.items_id);
 
         // Check if the node is already on the graph
-        if (GLPIImpact.cy.filter('node[id="' + CSS.escape(nodeID) + '"]').length > 0) {
+        if (ZENTRAImpact.cy.filter('node[id="' + CSS.escape(nodeID) + '"]').length > 0) {
             alert(__('This asset already exists.'));
             return;
         }
 
         // Build the new subgraph
-        $.when(GLPIImpact.buildGraphFromNode(node))
+        $.when(ZENTRAImpact.buildGraphFromNode(node))
             .done(
                 function (graph, params) {
                     // Insert the new graph data into the current graph
-                    GLPIImpact.insertGraph(graph, params, {
+                    ZENTRAImpact.insertGraph(graph, params, {
                         id: nodeID,
                         x: position.x,
                         y: position.y
                     });
-                    GLPIImpact.updateFlags();
+                    ZENTRAImpact.updateFlags();
                 }
             ).fail(
                 function () {
@@ -1459,10 +1459,10 @@ var GLPIImpact = {
     * Show the add node dialog
     */
     showOngoingDialog: function(ITILObjects) {
-        $(GLPIImpact.selectors.ongoingDialogBody).html(
-            GLPIImpact.buildOngoingDialogContent(ITILObjects)
+        $(ZENTRAImpact.selectors.ongoingDialogBody).html(
+            ZENTRAImpact.buildOngoingDialogContent(ITILObjects)
         );
-        $(GLPIImpact.selectors.ongoingDialog).modal('show');
+        $(ZENTRAImpact.selectors.ongoingDialog).modal('show');
     },
 
     /**
@@ -1470,30 +1470,30 @@ var GLPIImpact = {
     */
     prepareEditCompoundDialog: function() {
         $(this.selectors.editCompoundDialogSave).on('click', function() {
-            var compound = GLPIImpact.eventData.editCompound.target;
+            var compound = ZENTRAImpact.eventData.editCompound.target;
 
             // Save compound name
             compound.data(
                 'label',
-                $(GLPIImpact.selectors.compoundName).val()
+                $(ZENTRAImpact.selectors.compoundName).val()
             );
 
             // Save compound color
             compound.data(
                 'color',
-                $(GLPIImpact.selectors.compoundColor).val()
+                $(ZENTRAImpact.selectors.compoundColor).val()
             );
 
             // Close dialog
-            $(GLPIImpact.selectors.editCompoundDialog).modal('hide');
-            GLPIImpact.cy.trigger("change");
+            $(ZENTRAImpact.selectors.editCompoundDialog).modal('hide');
+            ZENTRAImpact.cy.trigger("change");
 
             // Log for undo
-            if (GLPIImpact.eventData.newCompound == null) {
-                var previousLabel = GLPIImpact.eventData.editCompound.previousLabel;
-                var previousColor = GLPIImpact.eventData.editCompound.previousColor;
+            if (ZENTRAImpact.eventData.newCompound == null) {
+                var previousLabel = ZENTRAImpact.eventData.editCompound.previousLabel;
+                var previousColor = ZENTRAImpact.eventData.editCompound.previousColor;
 
-                GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_COMPOUND, {
+                ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_COMPOUND, {
                     id      : compound.data('id'),
                     label   : compound.data('label'),
                     color   : compound.data('color'),
@@ -1501,18 +1501,18 @@ var GLPIImpact = {
                     oldColor: previousColor,
                 });
             } else {
-                var label = $(GLPIImpact.selectors.compoundName).val();
-                var color = $(GLPIImpact.selectors.compoundColor).val();
+                var label = $(ZENTRAImpact.selectors.compoundName).val();
+                var color = $(ZENTRAImpact.selectors.compoundColor).val();
 
-                GLPIImpact.eventData.newCompound.data.label = label;
-                GLPIImpact.eventData.newCompound.data.color = color;
+                ZENTRAImpact.eventData.newCompound.data.label = label;
+                ZENTRAImpact.eventData.newCompound.data.color = color;
 
-                GLPIImpact.addToUndo(
-                    GLPIImpact.ACTION_ADD_COMPOUND,
-                    _.cloneDeep(GLPIImpact.eventData.newCompound)
+                ZENTRAImpact.addToUndo(
+                    ZENTRAImpact.ACTION_ADD_COMPOUND,
+                    _.cloneDeep(ZENTRAImpact.eventData.newCompound)
                 );
 
-                GLPIImpact.eventData.newCompound = null;
+                ZENTRAImpact.eventData.newCompound = null;
             }
         });
     },
@@ -1522,38 +1522,38 @@ var GLPIImpact = {
      */
     prepareEditEdgeDialog: function() {
         $(this.selectors.editEdgeDialogSave).on('click', function() {
-            var edge = GLPIImpact.eventData.editEdge.target;
+            var edge = ZENTRAImpact.eventData.editEdge.target;
 
             // Save edge name
             edge.data(
                 'label',
-                $(GLPIImpact.selectors.edgeName).val()
+                $(ZENTRAImpact.selectors.edgeName).val()
             );
 
             // Close dialog
-            $(GLPIImpact.selectors.editEdgeDialog).modal('hide');
-            GLPIImpact.cy.trigger("change");
+            $(ZENTRAImpact.selectors.editEdgeDialog).modal('hide');
+            ZENTRAImpact.cy.trigger("change");
 
             // Log for undo
-            if (GLPIImpact.eventData.newEdge == null) {
-                var previousLabel = GLPIImpact.eventData.editEdge.previousLabel;
+            if (ZENTRAImpact.eventData.newEdge == null) {
+                var previousLabel = ZENTRAImpact.eventData.editEdge.previousLabel;
 
-                GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_EDGE, {
+                ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_EDGE, {
                     id      : edge.data('id'),
                     label   : edge.data('label'),
                     oldLabel: previousLabel,
                 });
             } else {
-                var label = $(GLPIImpact.selectors.edgeName).val();
+                var label = $(ZENTRAImpact.selectors.edgeName).val();
 
-                GLPIImpact.eventData.newEdge.data.label = label;
+                ZENTRAImpact.eventData.newEdge.data.label = label;
 
-                GLPIImpact.addToUndo(
-                    GLPIImpact.ACTION_ADD_EDGE,
-                    _.cloneDeep(GLPIImpact.eventData.newEdge)
+                ZENTRAImpact.addToUndo(
+                    ZENTRAImpact.ACTION_ADD_EDGE,
+                    _.cloneDeep(ZENTRAImpact.eventData.newEdge)
                 );
 
-                GLPIImpact.eventData.newEdge = null;
+                ZENTRAImpact.eventData.newEdge = null;
             }
         });
     },
@@ -1568,8 +1568,8 @@ var GLPIImpact = {
         var previousColor = compound.data('color');
 
         // Reset inputs
-        $(GLPIImpact.selectors.compoundName).val(previousLabel);
-        $(GLPIImpact.selectors.compoundColor).val(previousColor);
+        $(ZENTRAImpact.selectors.compoundName).val(previousLabel);
+        $(ZENTRAImpact.selectors.compoundColor).val(previousColor);
 
         // Set global event data
         this.eventData.editCompound = {
@@ -1579,7 +1579,7 @@ var GLPIImpact = {
         };
 
         // Show modal
-        $(GLPIImpact.selectors.editCompoundDialog).modal('show');
+        $(ZENTRAImpact.selectors.editCompoundDialog).modal('show');
     },
 
     /**
@@ -1591,7 +1591,7 @@ var GLPIImpact = {
         var previousLabel = edge.data('label');
 
         // Reset inputs
-        $(GLPIImpact.selectors.edgeName).val(previousLabel);
+        $(ZENTRAImpact.selectors.edgeName).val(previousLabel);
 
         // Set global event data
         this.eventData.editEdge = {
@@ -1600,7 +1600,7 @@ var GLPIImpact = {
         };
 
         // Show modal
-        $(GLPIImpact.selectors.editEdgeDialog).modal('show');
+        $(ZENTRAImpact.selectors.editEdgeDialog).modal('show');
     },
 
     /**
@@ -1619,8 +1619,8 @@ var GLPIImpact = {
         this.impactContainer = impactContainer;
 
         // Init directionVisibility
-        this.directionVisibility[GLPIImpact.FORWARD] = true;
-        this.directionVisibility[GLPIImpact.BACKWARD] = true;
+        this.directionVisibility[ZENTRAImpact.FORWARD] = true;
+        this.directionVisibility[ZENTRAImpact.BACKWARD] = true;
 
         // Set colors for edges
         this.defaultColors = colors;
@@ -1645,7 +1645,7 @@ var GLPIImpact = {
         var layout;
 
         // Init workspace status
-        GLPIImpact.showDefaultWorkspaceStatus();
+        ZENTRAImpact.showDefaultWorkspaceStatus();
 
         // Load params - phase1 (before cytoscape creation)
         if (params.impactcontexts_id !== undefined && params.impactcontexts_id !== 0) {
@@ -1723,10 +1723,10 @@ var GLPIImpact = {
         if (params.impactcontexts_id !== undefined && params.impactcontexts_id !== 0) {
             // Apply saved visibility
             if (!parseInt(params.show_depends)) {
-                $(GLPIImpact.selectors.toggleImpact).prop("checked", false);
+                $(ZENTRAImpact.selectors.toggleImpact).prop("checked", false);
             }
             if (!parseInt(params.show_impact)) {
-                $(GLPIImpact.selectors.toggleDepends).prop("checked", false);
+                $(ZENTRAImpact.selectors.toggleDepends).prop("checked", false);
             }
             this.updateFlags();
 
@@ -1742,9 +1742,9 @@ var GLPIImpact = {
                 });
 
                 // Check viewport is not empty or contains only one item
-                var viewport = GLPIImpact.cy.extent();
+                var viewport = ZENTRAImpact.cy.extent();
                 var empty = true;
-                GLPIImpact.cy.nodes().forEach(function(node) {
+                ZENTRAImpact.cy.nodes().forEach(function(node) {
                     if (node.position().x > viewport.x1
                   && node.position().x < viewport.x2
                   && node.position().y > viewport.x1
@@ -1754,7 +1754,7 @@ var GLPIImpact = {
                     }
                 });
 
-                if (empty || GLPIImpact.cy.filter("node:childless").length == 1) {
+                if (empty || ZENTRAImpact.cy.filter("node:childless").length == 1) {
                     this.cy.fit();
 
                     if (this.cy.zoom() > 2.3) {
@@ -1803,25 +1803,25 @@ var GLPIImpact = {
         $(document).keyup(this.onKeyUp);
 
         // Enter EDITION_DEFAULT mode
-        this.setEditionMode(GLPIImpact.EDITION_DEFAULT);
+        this.setEditionMode(ZENTRAImpact.EDITION_DEFAULT);
 
         // Init depth value
-        var text = GLPIImpact.maxDepth;
-        if (GLPIImpact.maxDepth >= GLPIImpact.MAX_DEPTH) {
+        var text = ZENTRAImpact.maxDepth;
+        if (ZENTRAImpact.maxDepth >= ZENTRAImpact.MAX_DEPTH) {
             text = "infinity";
         }
-        $(GLPIImpact.selectors.maxDepthView).html(text);
-        $(GLPIImpact.selectors.maxDepth).val(GLPIImpact.maxDepth);
+        $(ZENTRAImpact.selectors.maxDepthView).html(text);
+        $(ZENTRAImpact.selectors.maxDepth).val(ZENTRAImpact.maxDepth);
 
         // Set color widgets default values
-        $(GLPIImpact.selectors.dependsColor).val(
-            GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+        $(ZENTRAImpact.selectors.dependsColor).val(
+            ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD]
         );
-        $(GLPIImpact.selectors.impactColor).val(
-            GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+        $(ZENTRAImpact.selectors.impactColor).val(
+            ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD]
         );
-        $(GLPIImpact.selectors.impactAndDependsColor).val(
-            GLPIImpact.edgeColors[GLPIImpact.BOTH]
+        $(ZENTRAImpact.selectors.impactAndDependsColor).val(
+            ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH]
         );
     },
 
@@ -1853,9 +1853,9 @@ var GLPIImpact = {
     */
     makeID: function(type, a, b) {
         switch (type) {
-            case GLPIImpact.NODE:
+            case ZENTRAImpact.NODE:
                 return a + "::" + b;
-            case GLPIImpact.EDGE:
+            case ZENTRAImpact.EDGE:
                 return a + "->" + b;
         }
 
@@ -1883,8 +1883,8 @@ var GLPIImpact = {
         // If either the source of the target node of an edge is hidden, hide the
         // edge too by setting it's dept to the maximum value
         this.cy.edges().forEach(function(edge) {
-            var source = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('source')));
-            var target = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('target')));
+            var source = ZENTRAImpact.cy.filter(ZENTRAImpact.makeIDSelector(edge.data('source')));
+            var target = ZENTRAImpact.cy.filter(ZENTRAImpact.makeIDSelector(edge.data('target')));
             if (source.visible() && target.visible()) {
                 edge.data('depth', 0);
             } else {
@@ -1902,9 +1902,9 @@ var GLPIImpact = {
        * the depth of B is the shortest distance between AB and BA.
        */
 
-        // Init flag to GLPIImpact.DEFAULT for all elements of the graph
+        // Init flag to ZENTRAImpact.DEFAULT for all elements of the graph
         this.cy.elements().forEach(function(ele) {
-            ele.data('flag', GLPIImpact.DEFAULT);
+            ele.data('flag', ZENTRAImpact.DEFAULT);
         });
 
         // First, calculate AB: Apply dijkstra on A and get distances for each
@@ -1921,7 +1921,7 @@ var GLPIImpact = {
 
             // Set node as part of the "Forward" graph
             if (distanceAB !== Infinity) {
-                node.data('flag', node.data('flag') | GLPIImpact.FORWARD);
+                node.data('flag', node.data('flag') | ZENTRAImpact.FORWARD);
             }
         });
 
@@ -1929,18 +1929,18 @@ var GLPIImpact = {
         // get the distance to A
         this.cy.$("node:childless").forEach(function(node) {
             // Skip A
-            if (node.data('id') == GLPIImpact.startNode) {
+            if (node.data('id') == ZENTRAImpact.startNode) {
                 return;
             }
 
-            var otherNodeDijkstra = GLPIImpact.cy.elements().dijkstra(
+            var otherNodeDijkstra = ZENTRAImpact.cy.elements().dijkstra(
                 node,
                 function() { return 1; }, // Same weight for each path
                 true                      // Do not ignore edge directions
             );
 
             var distanceBA = otherNodeDijkstra.distanceTo(
-                GLPIImpact.makeIDSelector(GLPIImpact.startNode)
+                ZENTRAImpact.makeIDSelector(ZENTRAImpact.startNode)
             );
 
             // If distance BA is shorter than distance AB, use it instead
@@ -1950,12 +1950,12 @@ var GLPIImpact = {
 
             // Set node as part of the "Backward" graph
             if (distanceBA !== Infinity) {
-                node.data('flag', node.data('flag') | GLPIImpact.BACKWARD);
+                node.data('flag', node.data('flag') | ZENTRAImpact.BACKWARD);
             }
         });
 
         // Set start node to this.BOTH so it doen't impact the computation of it's neighbors
-        GLPIImpact.cy.$(GLPIImpact.makeIDSelector(GLPIImpact.startNode)).data(
+        ZENTRAImpact.cy.$(ZENTRAImpact.makeIDSelector(ZENTRAImpact.startNode)).data(
             'flag',
             this.BOTH
         );
@@ -1964,7 +1964,7 @@ var GLPIImpact = {
         // their children
         this.cy.filter("node:parent").forEach(function(compound) {
             var lowestDepth = Infinity;
-            var flag = GLPIImpact.DEFAULT;
+            var flag = ZENTRAImpact.DEFAULT;
 
             compound.children().forEach(function(childNode) {
                 var childNodeDepth = childNode.data('depth');
@@ -1981,20 +1981,20 @@ var GLPIImpact = {
 
         // Apply flag to edges so they can get the right colors
         this.cy.edges().forEach(function(edge) {
-            var source = GLPIImpact.cy.$(GLPIImpact.makeIDSelector(edge.data('source')));
-            var target = GLPIImpact.cy.$(GLPIImpact.makeIDSelector(edge.data('target')));
+            var source = ZENTRAImpact.cy.$(ZENTRAImpact.makeIDSelector(edge.data('source')));
+            var target = ZENTRAImpact.cy.$(ZENTRAImpact.makeIDSelector(edge.data('target')));
 
             edge.data('flag', source.data('flag') & target.data('flag'));
         });
 
         // Set start node to this.DEFAULT when all calculation are down so he is
         // always shown
-        GLPIImpact.cy.$(GLPIImpact.makeIDSelector(GLPIImpact.startNode)).data(
+        ZENTRAImpact.cy.$(ZENTRAImpact.makeIDSelector(ZENTRAImpact.startNode)).data(
             'flag',
             this.DEFAULT
         );
 
-        GLPIImpact.updateStyle();
+        ZENTRAImpact.updateStyle();
     },
 
     /**
@@ -2004,9 +2004,9 @@ var GLPIImpact = {
     */
     toggleVisibility: function(toToggle) {
         // Update visibility setting
-        GLPIImpact.directionVisibility[toToggle] = !GLPIImpact.directionVisibility[toToggle];
-        GLPIImpact.updateFlags();
-        GLPIImpact.cy.trigger("change");
+        ZENTRAImpact.directionVisibility[toToggle] = !ZENTRAImpact.directionVisibility[toToggle];
+        ZENTRAImpact.updateFlags();
+        ZENTRAImpact.cy.trigger("change");
     },
 
     /**
@@ -2014,16 +2014,16 @@ var GLPIImpact = {
     * @param {Number} max max depth
     */
     setDepth: function(max) {
-        GLPIImpact.maxDepth = max;
+        ZENTRAImpact.maxDepth = max;
 
-        if (max >= GLPIImpact.MAX_DEPTH) {
+        if (max >= ZENTRAImpact.MAX_DEPTH) {
             max = "infinity";
-            GLPIImpact.maxDepth = GLPIImpact.NO_DEPTH_LIMIT;
+            ZENTRAImpact.maxDepth = ZENTRAImpact.NO_DEPTH_LIMIT;
         }
 
-        $(GLPIImpact.selectors.maxDepthView).text(max);
-        GLPIImpact.updateStyle();
-        GLPIImpact.cy.trigger("change");
+        $(ZENTRAImpact.selectors.maxDepthView).text(max);
+        ZENTRAImpact.updateStyle();
+        ZENTRAImpact.cy.trigger("change");
     },
 
     /**
@@ -2039,7 +2039,7 @@ var GLPIImpact = {
         // Request to backend
         $.ajax({
             type: "GET",
-            url: CFG_GLPI.root_doc + "/ajax/impact.php",
+            url: CFG_ZENTRA.root_doc + "/ajax/impact.php",
             dataType: "json",
             data: node,
             success: function(data) {
@@ -2087,7 +2087,7 @@ var GLPIImpact = {
 
             // Remove node from side list if needed
             if (graph[i].group == "nodes" && graph[i].data.color === undefined ) {
-                var node_info = graph[i].data.id.split(GLPIImpact.NODE_ID_SEPERATOR);
+                var node_info = graph[i].data.id.split(ZENTRAImpact.NODE_ID_SEPERATOR);
                 var itemtype = node_info[0];
                 var items_id = node_info[1];
                 $("p[data-id=" + CSS.escape(items_id) + "][data-type='" + CSS.escape(itemtype) + "']").remove();
@@ -2164,7 +2164,7 @@ var GLPIImpact = {
             // If we have saved positions, just finish and don't apply collision detection
             this.cy.animate({
                 center: {
-                    eles : GLPIImpact.cy.filter(""),
+                    eles : ZENTRAImpact.cy.filter(""),
                 },
             });
 
@@ -2259,9 +2259,9 @@ var GLPIImpact = {
                             return;
                         }
 
-                        if ((GLPIImpact.getDistance(point, edge.a)
-                     + GLPIImpact.getDistance(point, edge.b))
-                     == GLPIImpact.getDistance(edge.a, edge.b)) {
+                        if ((ZENTRAImpact.getDistance(point, edge.a)
+                     + ZENTRAImpact.getDistance(point, edge.b))
+                     == ZENTRAImpact.getDistance(edge.a, edge.b)) {
                             // Found intersection
                             intersect = {
                                 x: point.x,
@@ -2296,7 +2296,7 @@ var GLPIImpact = {
                 var min_dist;
 
                 vertices.forEach(function(vertice) {
-                    var dist = GLPIImpact.getDistance(vertice, center);
+                    var dist = ZENTRAImpact.getDistance(vertice, center);
                     if (min_dist == undefined || dist < min_dist) {
                         min_dist = dist;
                         closest = vertice;
@@ -2324,7 +2324,7 @@ var GLPIImpact = {
         this.generateMissingPositions();
         this.cy.animate({
             center: {
-                eles : GLPIImpact.cy.filter(""),
+                eles : ZENTRAImpact.cy.filter(""),
             },
         });
 
@@ -2360,10 +2360,10 @@ var GLPIImpact = {
     * @param {object} colors default, backward, forward, both
     */
     setEdgeColors: function (colors) {
-        this.setColorIfExist(GLPIImpact.DEFAULT, colors.default);
-        this.setColorIfExist(GLPIImpact.BACKWARD, colors.backward);
-        this.setColorIfExist(GLPIImpact.FORWARD, colors.forward);
-        this.setColorIfExist(GLPIImpact.BOTH, colors.both);
+        this.setColorIfExist(ZENTRAImpact.DEFAULT, colors.default);
+        this.setColorIfExist(ZENTRAImpact.BACKWARD, colors.backward);
+        this.setColorIfExist(ZENTRAImpact.FORWARD, colors.forward);
+        this.setColorIfExist(ZENTRAImpact.BOTH, colors.both);
     },
 
     /**
@@ -2385,7 +2385,7 @@ var GLPIImpact = {
     setEditionMode: function (mode) {
         // Switching to a mode we are already in -> go to default
         if (this.editionMode == mode) {
-            mode = GLPIImpact.EDITION_DEFAULT;
+            mode = ZENTRAImpact.EDITION_DEFAULT;
         }
 
         this.exitEditionMode();
@@ -2398,45 +2398,45 @@ var GLPIImpact = {
     */
     exitEditionMode: function() {
         switch (this.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                GLPIImpact.cy.nodes().ungrabify();
+            case ZENTRAImpact.EDITION_DEFAULT:
+                ZENTRAImpact.cy.nodes().ungrabify();
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
-                GLPIImpact.cy.nodes().ungrabify();
-                $(GLPIImpact.selectors.sideToggleIcon).addClass('fa-chevron-left');
-                $(GLPIImpact.selectors.sideToggleIcon).removeClass('fa-chevron-right');
-                $(GLPIImpact.selectors.side).removeClass('impact-side-expanded');
-                $(GLPIImpact.selectors.sidePanel).removeClass('impact-side-expanded');
-                $(GLPIImpact.selectors.addNode).removeClass("active");
+            case ZENTRAImpact.EDITION_ADD_NODE:
+                ZENTRAImpact.cy.nodes().ungrabify();
+                $(ZENTRAImpact.selectors.sideToggleIcon).addClass('fa-chevron-left');
+                $(ZENTRAImpact.selectors.sideToggleIcon).removeClass('fa-chevron-right');
+                $(ZENTRAImpact.selectors.side).removeClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.sidePanel).removeClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.addNode).removeClass("active");
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
-                $(GLPIImpact.selectors.addEdge).removeClass("active");
+            case ZENTRAImpact.EDITION_ADD_EDGE:
+                $(ZENTRAImpact.selectors.addEdge).removeClass("active");
                 // Empty event data and remove tmp node
-                GLPIImpact.eventData.addEdgeStart = null;
-                GLPIImpact.cy.filter("#tmp_node").remove();
+                ZENTRAImpact.eventData.addEdgeStart = null;
+                ZENTRAImpact.cy.filter("#tmp_node").remove();
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
-                GLPIImpact.cy.filter().unselect();
-                GLPIImpact.cy.data('todelete', 0);
-                $(GLPIImpact.selectors.deleteElement).removeClass("active");
+            case ZENTRAImpact.EDITION_DELETE:
+                ZENTRAImpact.cy.filter().unselect();
+                ZENTRAImpact.cy.data('todelete', 0);
+                $(ZENTRAImpact.selectors.deleteElement).removeClass("active");
                 break;
 
-            case GLPIImpact.EDITION_ADD_COMPOUND:
-                GLPIImpact.cy.panningEnabled(true);
-                GLPIImpact.cy.boxSelectionEnabled(false);
-                $(GLPIImpact.selectors.addCompound).removeClass("active");
+            case ZENTRAImpact.EDITION_ADD_COMPOUND:
+                ZENTRAImpact.cy.panningEnabled(true);
+                ZENTRAImpact.cy.boxSelectionEnabled(false);
+                $(ZENTRAImpact.selectors.addCompound).removeClass("active");
                 break;
 
-            case GLPIImpact.EDITION_SETTINGS:
-                GLPIImpact.cy.nodes().ungrabify();
-                $(GLPIImpact.selectors.sideToggleIcon).addClass('fa-chevron-left');
-                $(GLPIImpact.selectors.sideToggleIcon).removeClass('fa-chevron-right');
-                $(GLPIImpact.selectors.side).removeClass('impact-side-expanded');
-                $(GLPIImpact.selectors.sidePanel).removeClass('impact-side-expanded');
-                $(GLPIImpact.selectors.impactSettings).removeClass("active");
+            case ZENTRAImpact.EDITION_SETTINGS:
+                ZENTRAImpact.cy.nodes().ungrabify();
+                $(ZENTRAImpact.selectors.sideToggleIcon).addClass('fa-chevron-left');
+                $(ZENTRAImpact.selectors.sideToggleIcon).removeClass('fa-chevron-right');
+                $(ZENTRAImpact.selectors.side).removeClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.sidePanel).removeClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.impactSettings).removeClass("active");
                 break;
         }
     },
@@ -2448,55 +2448,55 @@ var GLPIImpact = {
     */
     enterEditionMode: function(mode) {
         switch (mode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                GLPIImpact.clearHelpText();
-                GLPIImpact.cy.nodes().grabify();
-                $(GLPIImpact.impactContainer).css('cursor', "move");
+            case ZENTRAImpact.EDITION_DEFAULT:
+                ZENTRAImpact.clearHelpText();
+                ZENTRAImpact.cy.nodes().grabify();
+                $(ZENTRAImpact.impactContainer).css('cursor', "move");
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
-                GLPIImpact.cy.nodes().grabify();
-                GLPIImpact.clearHelpText();
-                $(GLPIImpact.selectors.sideToggleIcon).removeClass('fa-chevron-left');
-                $(GLPIImpact.selectors.sideToggleIcon).addClass('fa-chevron-right');
-                $(GLPIImpact.selectors.side).addClass('impact-side-expanded');
-                $(GLPIImpact.selectors.sidePanel).addClass('impact-side-expanded');
-                $(GLPIImpact.selectors.addNode).addClass("active");
-                $(GLPIImpact.impactContainer).css('cursor', "move");
-                $(GLPIImpact.selectors.sideSettings).hide();
-                $(GLPIImpact.selectors.sideAddNode).show();
+            case ZENTRAImpact.EDITION_ADD_NODE:
+                ZENTRAImpact.cy.nodes().grabify();
+                ZENTRAImpact.clearHelpText();
+                $(ZENTRAImpact.selectors.sideToggleIcon).removeClass('fa-chevron-left');
+                $(ZENTRAImpact.selectors.sideToggleIcon).addClass('fa-chevron-right');
+                $(ZENTRAImpact.selectors.side).addClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.sidePanel).addClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.addNode).addClass("active");
+                $(ZENTRAImpact.impactContainer).css('cursor', "move");
+                $(ZENTRAImpact.selectors.sideSettings).hide();
+                $(ZENTRAImpact.selectors.sideAddNode).show();
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
-                GLPIImpact.showHelpText(__("Draw a line between two assets to add an impact relation"));
-                $(GLPIImpact.selectors.addEdge).addClass("active");
-                $(GLPIImpact.impactContainer).css('cursor', "crosshair");
+            case ZENTRAImpact.EDITION_ADD_EDGE:
+                ZENTRAImpact.showHelpText(__("Draw a line between two assets to add an impact relation"));
+                $(ZENTRAImpact.selectors.addEdge).addClass("active");
+                $(ZENTRAImpact.impactContainer).css('cursor', "crosshair");
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
-                GLPIImpact.cy.filter().unselect();
-                GLPIImpact.showHelpText(__("Click on an element to remove it from the network"));
-                $(GLPIImpact.selectors.deleteElement).addClass("active");
-                $(GLPIImpact.impactContainer).css('cursor', "move");
+            case ZENTRAImpact.EDITION_DELETE:
+                ZENTRAImpact.cy.filter().unselect();
+                ZENTRAImpact.showHelpText(__("Click on an element to remove it from the network"));
+                $(ZENTRAImpact.selectors.deleteElement).addClass("active");
+                $(ZENTRAImpact.impactContainer).css('cursor', "move");
                 break;
 
-            case GLPIImpact.EDITION_ADD_COMPOUND:
-                GLPIImpact.cy.panningEnabled(false);
-                GLPIImpact.cy.boxSelectionEnabled(true);
-                GLPIImpact.showHelpText(__("Draw a square containing the assets you wish to group"));
-                $(GLPIImpact.selectors.addCompound).addClass("active");
-                $(GLPIImpact.impactContainer).css('cursor', "crosshair");
+            case ZENTRAImpact.EDITION_ADD_COMPOUND:
+                ZENTRAImpact.cy.panningEnabled(false);
+                ZENTRAImpact.cy.boxSelectionEnabled(true);
+                ZENTRAImpact.showHelpText(__("Draw a square containing the assets you wish to group"));
+                $(ZENTRAImpact.selectors.addCompound).addClass("active");
+                $(ZENTRAImpact.impactContainer).css('cursor', "crosshair");
                 break;
 
-            case GLPIImpact.EDITION_SETTINGS:
-                GLPIImpact.cy.nodes().grabify();
-                $(GLPIImpact.selectors.sideToggleIcon).removeClass('fa-chevron-left');
-                $(GLPIImpact.selectors.sideToggleIcon).addClass('fa-chevron-right');
-                $(GLPIImpact.selectors.side).addClass('impact-side-expanded');
-                $(GLPIImpact.selectors.sidePanel).addClass('impact-side-expanded');
-                $(GLPIImpact.selectors.impactSettings).addClass("active");
-                $(GLPIImpact.selectors.sideAddNode).hide();
-                $(GLPIImpact.selectors.sideSettings).show();
+            case ZENTRAImpact.EDITION_SETTINGS:
+                ZENTRAImpact.cy.nodes().grabify();
+                $(ZENTRAImpact.selectors.sideToggleIcon).removeClass('fa-chevron-left');
+                $(ZENTRAImpact.selectors.sideToggleIcon).addClass('fa-chevron-right');
+                $(ZENTRAImpact.selectors.side).addClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.sidePanel).addClass('impact-side-expanded');
+                $(ZENTRAImpact.selectors.impactSettings).addClass("active");
+                $(ZENTRAImpact.selectors.sideAddNode).hide();
+                $(ZENTRAImpact.selectors.sideSettings).show();
                 break;
         }
     },
@@ -2507,14 +2507,14 @@ var GLPIImpact = {
     * @param {string} text
     */
     showHelpText: function(text) {
-        $(GLPIImpact.selectors.helpText).html(text).show();
+        $(ZENTRAImpact.selectors.helpText).html(text).show();
     },
 
     /**
     * Hide the help text and show the toolbar
     */
     clearHelpText: function() {
-        $(GLPIImpact.selectors.helpText).hide();
+        $(ZENTRAImpact.selectors.helpText).hide();
     },
 
     /**
@@ -2530,7 +2530,7 @@ var GLPIImpact = {
         var filecontent;
 
         // Create fake link
-        GLPIImpact.impactContainer.append("<a id='impact_download'></a>");
+        ZENTRAImpact.impactContainer.append("<a id='impact_download'></a>");
         var link = $('#impact_download');
 
         switch (format) {
@@ -2582,25 +2582,25 @@ var GLPIImpact = {
     * Enable the save button
     */
     showCleanWorkspaceStatus: function() {
-        $(GLPIImpact.selectors.save).removeClass('dirty');
-        $(GLPIImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
-        $(GLPIImpact.selectors.save).addClass('clean');
+        $(ZENTRAImpact.selectors.save).removeClass('dirty');
+        $(ZENTRAImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
+        $(ZENTRAImpact.selectors.save).addClass('clean');
     },
 
     /**
     * Enable the save button
     */
     showDirtyWorkspaceStatus: function() {
-        $(GLPIImpact.selectors.save).removeClass('clean');
-        $(GLPIImpact.selectors.save).addClass('dirty');
+        $(ZENTRAImpact.selectors.save).removeClass('clean');
+        $(ZENTRAImpact.selectors.save).addClass('dirty');
     },
 
     /**
     * Enable the save button
     */
     showDefaultWorkspaceStatus: function() {
-        $(GLPIImpact.selectors.save).removeClass('clean');
-        $(GLPIImpact.selectors.save).removeClass('dirty');
+        $(ZENTRAImpact.selectors.save).removeClass('clean');
+        $(ZENTRAImpact.selectors.save).removeClass('dirty');
     },
 
     /**
@@ -2634,7 +2634,7 @@ var GLPIImpact = {
             html += "<ul>";
 
             elements.forEach(function(element) {
-                var link = CFG_GLPI.root_doc + "/front/" + url + ".form.php?id=" + element.id;
+                var link = CFG_ZENTRA.root_doc + "/front/" + url + ".form.php?id=" + element.id;
                 html += '<li><a target="_blank" href="' + _.escape(link) + '">' + _.escape(element.name)
                + '</a></li>';
             });
@@ -2648,37 +2648,37 @@ var GLPIImpact = {
     */
     addCompoundFromSelection: _.debounce(function(){
         // Check that there is enough selected nodes
-        if (GLPIImpact.eventData.boxSelected.length < 1) {
+        if (ZENTRAImpact.eventData.boxSelected.length < 1) {
             alert(__("You need to select at least 1 asset to make a group"));
         } else {
             // Create the compound
-            var newCompound = GLPIImpact.cy.add({
+            var newCompound = ZENTRAImpact.cy.add({
                 group: 'nodes',
                 data: {color: '#dadada'},
             });
 
             // Log event data (for undo)
-            GLPIImpact.eventData.newCompound = {
+            ZENTRAImpact.eventData.newCompound = {
                 data: {id: newCompound.data('id')},
                 children: [],
             };
 
             // Set parent for coumpound member
-            GLPIImpact.eventData.boxSelected.forEach(function(ele) {
+            ZENTRAImpact.eventData.boxSelected.forEach(function(ele) {
                 ele.move({'parent': newCompound.data('id')});
-                GLPIImpact.eventData.newCompound.children.push(ele.data('id'));
+                ZENTRAImpact.eventData.newCompound.children.push(ele.data('id'));
             });
 
             // Show edit dialog
-            GLPIImpact.showEditCompoundDialog(newCompound);
+            ZENTRAImpact.showEditCompoundDialog(newCompound);
 
             // Back to default mode
-            GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
+            ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_DEFAULT);
         }
 
         // Clear the selection
-        GLPIImpact.eventData.boxSelected = [];
-        GLPIImpact.cy.filter(":selected").unselect();
+        ZENTRAImpact.eventData.boxSelected = [];
+        ZENTRAImpact.cy.filter(":selected").unselect();
     }, 100, false),
 
     /**
@@ -2687,7 +2687,7 @@ var GLPIImpact = {
     * @param {object} ele
     */
     deleteFromGraph: function(ele) {
-        if (ele.data('id') == GLPIImpact.startNode) {
+        if (ele.data('id') == ZENTRAImpact.startNode) {
             alert("Can't remove starting node");
             return;
         }
@@ -2750,8 +2750,8 @@ var GLPIImpact = {
                 });
 
                 // In case of multiple deletion, check in the buffer too
-                if (GLPIImpact.eventData.multipleDeletion != null) {
-                    GLPIImpact.eventData.multipleDeletion.edges.forEach(
+                if (ZENTRAImpact.eventData.multipleDeletion != null) {
+                    ZENTRAImpact.eventData.multipleDeletion.edges.forEach(
                         function(deletedEdge) {
                             if (deletedEdge.id == edge.data('id')) {
                                 exist = true;
@@ -2770,7 +2770,7 @@ var GLPIImpact = {
         }
 
         // Update flags
-        GLPIImpact.updateFlags();
+        ZENTRAImpact.updateFlags();
 
         // Multiple deletion, set the data in eventData buffer so it can be added
         // as a simple undo/redo entry later
@@ -2804,7 +2804,7 @@ var GLPIImpact = {
             $('html, body').css('overflow', 'unset');
         }
 
-        GLPIImpact.cy.resize();
+        ZENTRAImpact.cy.resize();
     },
 
     /**
@@ -2818,9 +2818,9 @@ var GLPIImpact = {
     */
     checkBadgeHitboxes: function (renderedPosition, trigger, blank) {
         var hit = false;
-        var margin = 5 * GLPIImpact.cy.zoom();
+        var margin = 5 * ZENTRAImpact.cy.zoom();
 
-        GLPIImpact.badgesHitboxes.forEach(function(badgeHitboxDetails) {
+        ZENTRAImpact.badgesHitboxes.forEach(function(badgeHitboxDetails) {
             if (hit) {
                 return;
             }
@@ -2877,21 +2877,21 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     onClick: function (event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
         }
 
-        GLPIImpact.checkBadgeHitboxes(event.renderedPosition, true, GLPIImpact.eventData.ctrlDown);
+        ZENTRAImpact.checkBadgeHitboxes(event.renderedPosition, true, ZENTRAImpact.eventData.ctrlDown);
     },
 
     /**
@@ -2900,19 +2900,19 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     edgeOnClick: function (event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
             // Remove the edge from the graph
-                GLPIImpact.deleteFromGraph(event.target);
+                ZENTRAImpact.deleteFromGraph(event.target);
                 break;
         }
     },
@@ -2923,28 +2923,28 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     nodeOnClick: function (event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                if (GLPIImpact.eventData.lastClicktimestamp != null) {
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
+                if (ZENTRAImpact.eventData.lastClicktimestamp != null) {
                     // Trigger homemade double click event
-                    if (event.timeStamp - GLPIImpact.eventData.lastClicktimestamp < 500
-                  && event.target == GLPIImpact.eventData.lastClickTarget) {
+                    if (event.timeStamp - ZENTRAImpact.eventData.lastClicktimestamp < 500
+                  && event.target == ZENTRAImpact.eventData.lastClickTarget) {
                         event.target.trigger('doubleClick', event);
                     }
                 }
 
-                GLPIImpact.eventData.lastClicktimestamp = event.timeStamp;
-                GLPIImpact.eventData.lastClickTarget = event.target;
+                ZENTRAImpact.eventData.lastClicktimestamp = event.timeStamp;
+                ZENTRAImpact.eventData.lastClickTarget = event.target;
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
-                GLPIImpact.deleteFromGraph(event.target);
+            case ZENTRAImpact.EDITION_DELETE:
+                ZENTRAImpact.deleteFromGraph(event.target);
                 break;
         }
     },
@@ -2955,26 +2955,26 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     onBox: function (event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_COMPOUND:
+            case ZENTRAImpact.EDITION_ADD_COMPOUND:
                 var ele = event.target;
                 // Add node to selected list if he is not part of a compound already
                 if (ele.isNode() && ele.isOrphan() && !ele.isParent()) {
-                    GLPIImpact.eventData.boxSelected.push(ele);
+                    ZENTRAImpact.eventData.boxSelected.push(ele);
                 }
-                GLPIImpact.addCompoundFromSelection();
+                ZENTRAImpact.addCompoundFromSelection();
                 break;
         }
     },
@@ -2985,10 +2985,10 @@ var GLPIImpact = {
     * @param {*} event
     */
     onChange: function() {
-        GLPIImpact.showDirtyWorkspaceStatus();
+        ZENTRAImpact.showDirtyWorkspaceStatus();
 
         // Remove hightligh for recently inserted graph
-        GLPIImpact.cy.$("[highlight][!start_node]").data("highlight", 0);
+        ZENTRAImpact.cy.$("[highlight][!start_node]").data("highlight", 0);
     },
 
     /**
@@ -2998,7 +2998,7 @@ var GLPIImpact = {
     onDoubleClick: function(event) {
         if (event.target.isParent()) {
             // Open edit dialog on compound nodes
-            GLPIImpact.showEditCompoundDialog(event.target);
+            ZENTRAImpact.showEditCompoundDialog(event.target);
         } else if (event.target.isNode()) {
             // Go to on nodes
             window.open(event.target.data('link'));
@@ -3012,7 +3012,7 @@ var GLPIImpact = {
     */
     onGrabOn: function(event) {
         // Store original position (shallow copy)
-        GLPIImpact.eventData.grabNodePosition = {
+        ZENTRAImpact.eventData.grabNodePosition = {
             x: event.target.position().x,
             y: event.target.position().y,
         };
@@ -3022,7 +3022,7 @@ var GLPIImpact = {
         if (event.target.parent() !== undefined) {
             parent = event.target.parent().data('id');
         }
-        GLPIImpact.eventData.grabNodeParent = parent;
+        ZENTRAImpact.eventData.grabNodeParent = parent;
     },
 
     /**
@@ -3036,17 +3036,17 @@ var GLPIImpact = {
         }
 
         var newParent = null;
-        if (parent !== GLPIImpact.eventData.grabNodeParent) {
+        if (parent !== ZENTRAImpact.eventData.grabNodeParent) {
             newParent = parent;
         }
 
         // If there was a real position change
-        if (GLPIImpact.eventData.grabNodePosition.x !== event.target.position().x
-         || GLPIImpact.eventData.grabNodePosition.y !== event.target.position().y) {
+        if (ZENTRAImpact.eventData.grabNodePosition.x !== event.target.position().x
+         || ZENTRAImpact.eventData.grabNodePosition.y !== event.target.position().y) {
 
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_MOVE, {
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_MOVE, {
                 node: event.target.data('id'),
-                oldPosition: GLPIImpact.eventData.grabNodePosition,
+                oldPosition: ZENTRAImpact.eventData.grabNodePosition,
                 newPosition: {
                     x: event.target.position().x,
                     y: event.target.position().y,
@@ -3063,16 +3063,16 @@ var GLPIImpact = {
     onRemove: function(event) {
         if (event.target.isNode() && !event.target.isParent()) {
             var itemtype = event.target.data('id')
-                .split(GLPIImpact.NODE_ID_SEPERATOR)[0];
+                .split(ZENTRAImpact.NODE_ID_SEPERATOR)[0];
 
             // If a node was deleted and its itemtype is the same as the one
             // selected in the add node panel, refresh the search
-            if (itemtype == GLPIImpact.selectedItemtype) {
-                $(GLPIImpact.selectors.sideSearchResults).html("");
-                GLPIImpact.searchAssets(
-                    GLPIImpact.selectedItemtype,
-                    JSON.stringify(GLPIImpact.getUsedAssets()),
-                    $(GLPIImpact.selectors.sideFilterAssets).val(),
+            if (itemtype == ZENTRAImpact.selectedItemtype) {
+                $(ZENTRAImpact.selectors.sideSearchResults).html("");
+                ZENTRAImpact.searchAssets(
+                    ZENTRAImpact.selectedItemtype,
+                    JSON.stringify(ZENTRAImpact.getUsedAssets()),
+                    $(ZENTRAImpact.selectors.sideFilterAssets).val(),
                     0
                 );
             }
@@ -3095,62 +3095,62 @@ var GLPIImpact = {
             case 16:
                 if (event.ctrlKey) {
                     // Enter add compound edge mode
-                    if (GLPIImpact.editionMode != GLPIImpact.EDITION_ADD_COMPOUND) {
-                        if (GLPIImpact.eventData.previousEditionMode === undefined) {
-                            GLPIImpact.eventData.previousEditionMode = GLPIImpact.editionMode;
+                    if (ZENTRAImpact.editionMode != ZENTRAImpact.EDITION_ADD_COMPOUND) {
+                        if (ZENTRAImpact.eventData.previousEditionMode === undefined) {
+                            ZENTRAImpact.eventData.previousEditionMode = ZENTRAImpact.editionMode;
                         }
-                        GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
+                        ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_COMPOUND);
                     }
                 } else {
                     // Enter edit edge mode
-                    if (GLPIImpact.editionMode != GLPIImpact.EDITION_ADD_EDGE) {
-                        if (GLPIImpact.eventData.previousEditionMode === undefined) {
-                            GLPIImpact.eventData.previousEditionMode = GLPIImpact.editionMode;
+                    if (ZENTRAImpact.editionMode != ZENTRAImpact.EDITION_ADD_EDGE) {
+                        if (ZENTRAImpact.eventData.previousEditionMode === undefined) {
+                            ZENTRAImpact.eventData.previousEditionMode = ZENTRAImpact.editionMode;
                         }
-                        GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
+                        ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_EDGE);
                     }
                 }
                 break;
 
                 // Ctrl
             case 17:
-                GLPIImpact.eventData.ctrlDown = true;
+                ZENTRAImpact.eventData.ctrlDown = true;
                 break;
 
                 // ESC
             case 27:
             // Exit specific edition mode
-                if (GLPIImpact.editionMode != GLPIImpact.EDITION_DEFAULT) {
-                    GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
+                if (ZENTRAImpact.editionMode != ZENTRAImpact.EDITION_DEFAULT) {
+                    ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_DEFAULT);
                 }
                 break;
 
                 // Delete
             case 46:
-                if (GLPIImpact.readonly) {
+                if (ZENTRAImpact.readonly) {
                     break;
                 }
 
                 // Prepare multiple deletion buffer (for undo/redo)
-                GLPIImpact.eventData.multipleDeletion = {
+                ZENTRAImpact.eventData.multipleDeletion = {
                     edges    : [],
                     nodes    : [],
                     compounds: [],
                 };
 
                 // Delete selected element(s)
-                GLPIImpact.cy.filter(":selected").forEach(function(ele) {
-                    GLPIImpact.deleteFromGraph(ele);
+                ZENTRAImpact.cy.filter(":selected").forEach(function(ele) {
+                    ZENTRAImpact.deleteFromGraph(ele);
                 });
 
                 // Set undo/redo data
-                GLPIImpact.addToUndo(
-                    GLPIImpact.ACTION_DELETE,
-                    GLPIImpact.eventData.multipleDeletion
+                ZENTRAImpact.addToUndo(
+                    ZENTRAImpact.ACTION_DELETE,
+                    ZENTRAImpact.eventData.multipleDeletion
                 );
 
                 // Reset multiple deletion buffer (for undo/redo)
-                GLPIImpact.eventData.multipleDeletion = null;
+                ZENTRAImpact.eventData.multipleDeletion = null;
                 break;
 
                 // CTRL + Y
@@ -3159,7 +3159,7 @@ var GLPIImpact = {
                     break;
                 }
 
-                GLPIImpact.redo();
+                ZENTRAImpact.redo();
                 break;
 
                 // CTRL + Z / CTRL + SHIFT + Z
@@ -3169,9 +3169,9 @@ var GLPIImpact = {
                 }
 
                 if (event.shiftKey) {
-                    GLPIImpact.redo();
+                    ZENTRAImpact.redo();
                 } else {
-                    GLPIImpact.undo();
+                    ZENTRAImpact.undo();
                 }
 
                 break;
@@ -3188,24 +3188,24 @@ var GLPIImpact = {
             // Shift
             case 16:
             // Return to previous edition mode if needed
-                if (GLPIImpact.eventData.previousEditionMode !== undefined
-               && (GLPIImpact.editionMode == GLPIImpact.EDITION_ADD_EDGE
-                  || GLPIImpact.editionMode == GLPIImpact.EDITION_ADD_COMPOUND)
+                if (ZENTRAImpact.eventData.previousEditionMode !== undefined
+               && (ZENTRAImpact.editionMode == ZENTRAImpact.EDITION_ADD_EDGE
+                  || ZENTRAImpact.editionMode == ZENTRAImpact.EDITION_ADD_COMPOUND)
                 ) {
-                    GLPIImpact.setEditionMode(GLPIImpact.eventData.previousEditionMode);
-                    GLPIImpact.eventData.previousEditionMode = undefined;
+                    ZENTRAImpact.setEditionMode(ZENTRAImpact.eventData.previousEditionMode);
+                    ZENTRAImpact.eventData.previousEditionMode = undefined;
                 }
                 break;
 
                 // Ctrl
             case 17:
             // Return to previous edition mode if needed
-                if (GLPIImpact.editionMode == GLPIImpact.EDITION_ADD_COMPOUND
-               && GLPIImpact.eventData.previousEditionMode !== undefined) {
-                    GLPIImpact.setEditionMode(GLPIImpact.eventData.previousEditionMode);
-                    GLPIImpact.eventData.previousEditionMode = undefined;
+                if (ZENTRAImpact.editionMode == ZENTRAImpact.EDITION_ADD_COMPOUND
+               && ZENTRAImpact.eventData.previousEditionMode !== undefined) {
+                    ZENTRAImpact.setEditionMode(ZENTRAImpact.eventData.previousEditionMode);
+                    ZENTRAImpact.eventData.previousEditionMode = undefined;
                 }
-                GLPIImpact.eventData.ctrlDown = false;
+                ZENTRAImpact.eventData.ctrlDown = false;
                 break;
         }
     },
@@ -3216,29 +3216,29 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     nodeOnMousedown: function (event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                $(GLPIImpact.impactContainer).css('cursor', "grabbing");
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
+                $(ZENTRAImpact.impactContainer).css('cursor', "grabbing");
 
                 // If we are not on a compound node or a node already inside one
                 if (event.target.isOrphan() && !event.target.isParent()) {
-                    GLPIImpact.eventData.grabNodeStart = event.target;
+                    ZENTRAImpact.eventData.grabNodeStart = event.target;
                 }
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 if (!event.target.isParent()) {
-                    GLPIImpact.eventData.addEdgeStart = this.data('id');
+                    ZENTRAImpact.eventData.addEdgeStart = this.data('id');
                 }
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_COMPOUND:
+            case ZENTRAImpact.EDITION_ADD_COMPOUND:
                 break;
         }
     },
@@ -3251,36 +3251,36 @@ var GLPIImpact = {
     onMouseUp: function(event) {
         if (event.target.data('id') != undefined && event.target.isNode()) {
             // Handler for nodes
-            GLPIImpact.nodeOnMouseup();
+            ZENTRAImpact.nodeOnMouseup();
         }
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
             // Exit if no start node
-                if (GLPIImpact.eventData.addEdgeStart == null) {
+                if (ZENTRAImpact.eventData.addEdgeStart == null) {
                     return;
                 }
 
                 // Reset addEdgeStart
-                var startEdge = GLPIImpact.eventData.addEdgeStart; // Keep a copy to use later
-                GLPIImpact.eventData.addEdgeStart = null;
+                var startEdge = ZENTRAImpact.eventData.addEdgeStart; // Keep a copy to use later
+                ZENTRAImpact.eventData.addEdgeStart = null;
 
                 // Remove current tmp collection
-                event.cy.remove(GLPIImpact.eventData.tmpEles);
-                var edgeID = GLPIImpact.eventData.tmpEles.data('id');
-                GLPIImpact.eventData.tmpEles = null;
+                event.cy.remove(ZENTRAImpact.eventData.tmpEles);
+                var edgeID = ZENTRAImpact.eventData.tmpEles.data('id');
+                ZENTRAImpact.eventData.tmpEles = null;
 
                 // Option 1: Edge between a node and the fake tmp_node -> ignore
                 if (edgeID == 'tmp_node') {
                     return;
                 }
 
-                var edgeDetails = edgeID.split(GLPIImpact.EDGE_ID_SEPERATOR);
+                var edgeDetails = edgeID.split(ZENTRAImpact.EDGE_ID_SEPERATOR);
 
                 // Option 2: Edge between two nodes that already exist -> ignore
                 if (event.cy.filter('edge[id="' + edgeID + '"]').length > 0) {
@@ -3302,14 +3302,14 @@ var GLPIImpact = {
                     group: 'edges',
                     data: data,
                 });
-                GLPIImpact.addToUndo(GLPIImpact.ACTION_ADD_EDGE, _.clone(data));
+                ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_ADD_EDGE, _.clone(data));
 
                 // Update dependencies flags according to the new link
-                GLPIImpact.updateFlags();
+                ZENTRAImpact.updateFlags();
 
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
         }
     },
@@ -3320,23 +3320,23 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     nodeOnMouseup: function () {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                $(GLPIImpact.impactContainer).css('cursor', "grab");
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
+                $(ZENTRAImpact.impactContainer).css('cursor', "grab");
 
                 // Reset eventData for node grabbing
-                GLPIImpact.eventData.grabNodeStart = null;
-                GLPIImpact.eventData.boundingBox = null;
+                ZENTRAImpact.eventData.grabNodeStart = null;
+                ZENTRAImpact.eventData.boundingBox = null;
 
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
         }
     },
@@ -3350,37 +3350,37 @@ var GLPIImpact = {
         var node;
 
         // Check for badges hitboxes
-        if (GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false, false)
-         && !GLPIImpact.eventData.showPointerForBadge) {
+        if (ZENTRAImpact.checkBadgeHitboxes(event.renderedPosition, false, false)
+         && !ZENTRAImpact.eventData.showPointerForBadge) {
             // Entering a badge hitbox
-            GLPIImpact.eventData.showPointerForBadge = true;
+            ZENTRAImpact.eventData.showPointerForBadge = true;
 
             // Store previous cursor and show pointer
-            GLPIImpact.eventData.previousCursor = $(GLPIImpact.impactContainer).css('cursor');
-            $(GLPIImpact.impactContainer).css('cursor', "pointer");
-        } else if (GLPIImpact.eventData.showPointerForBadge
-         && !GLPIImpact.checkBadgeHitboxes(event.renderedPosition, false, false)) {
+            ZENTRAImpact.eventData.previousCursor = $(ZENTRAImpact.impactContainer).css('cursor');
+            $(ZENTRAImpact.impactContainer).css('cursor', "pointer");
+        } else if (ZENTRAImpact.eventData.showPointerForBadge
+         && !ZENTRAImpact.checkBadgeHitboxes(event.renderedPosition, false, false)) {
             // Exiiting a badge hitbox
-            GLPIImpact.eventData.showPointerForBadge = false;
+            ZENTRAImpact.eventData.showPointerForBadge = false;
 
             // Reset to previous cursor
-            $(GLPIImpact.impactContainer).css(
+            $(ZENTRAImpact.impactContainer).css(
                 'cursor',
-                GLPIImpact.eventData.previousCursor
+                ZENTRAImpact.eventData.previousCursor
             );
         }
 
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-            case GLPIImpact.EDITION_ADD_NODE:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
+            case ZENTRAImpact.EDITION_ADD_NODE:
 
                 // No action if we are not grabbing a node
-                if (GLPIImpact.eventData.grabNodeStart == null) {
+                if (ZENTRAImpact.eventData.grabNodeStart == null) {
                     return;
                 }
 
                 // Look for a compound at the cursor position
-                node = GLPIImpact.getNodeAt(event.position, function(node) {
+                node = ZENTRAImpact.getNodeAt(event.position, function(node) {
                     return node.isParent();
                 });
 
@@ -3389,47 +3389,47 @@ var GLPIImpact = {
                     // being placed into a compound, we need to check if it was moved
                     // outside this original bouding box to know if the user is
                     // trying to move it away from the compound
-                    if (GLPIImpact.eventData.boundingBox != null) {
+                    if (ZENTRAImpact.eventData.boundingBox != null) {
                         // If the user tried to move out of the compound
-                        if (GLPIImpact.eventData.boundingBox.x1 > event.position.x
-                     || GLPIImpact.eventData.boundingBox.x2 < event.position.x
-                     || GLPIImpact.eventData.boundingBox.y1 > event.position.y
-                     || GLPIImpact.eventData.boundingBox.y2 < event.position.y) {
+                        if (ZENTRAImpact.eventData.boundingBox.x1 > event.position.x
+                     || ZENTRAImpact.eventData.boundingBox.x2 < event.position.x
+                     || ZENTRAImpact.eventData.boundingBox.y1 > event.position.y
+                     || ZENTRAImpact.eventData.boundingBox.y2 < event.position.y) {
                             // Remove it from the compound
-                            GLPIImpact.eventData.grabNodeStart.move({parent: null});
-                            GLPIImpact.eventData.boundingBox = null;
+                            ZENTRAImpact.eventData.grabNodeStart.move({parent: null});
+                            ZENTRAImpact.eventData.boundingBox = null;
                         }
                     } else {
                         // If we found a compound, add the grabbed node inside
-                        GLPIImpact.eventData.grabNodeStart.move({parent: node.data('id')});
+                        ZENTRAImpact.eventData.grabNodeStart.move({parent: node.data('id')});
 
                         // Store the original bouding box of the compound
-                        GLPIImpact.eventData.boundingBox = node.boundingBox();
+                        ZENTRAImpact.eventData.boundingBox = node.boundingBox();
                     }
                 } else {
                     // Else; reset it's parent so it can be removed from any temporary
                     // compound while the user is stil grabbing
-                    GLPIImpact.eventData.grabNodeStart.move({parent: null});
+                    ZENTRAImpact.eventData.grabNodeStart.move({parent: null});
                 }
 
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
             // No action if we are not placing an edge
-                if (GLPIImpact.eventData.addEdgeStart == null) {
+                if (ZENTRAImpact.eventData.addEdgeStart == null) {
                     return;
                 }
 
                 // Remove current tmp collection
-                if (GLPIImpact.eventData.tmpEles != null) {
-                    event.cy.remove(GLPIImpact.eventData.tmpEles);
+                if (ZENTRAImpact.eventData.tmpEles != null) {
+                    event.cy.remove(ZENTRAImpact.eventData.tmpEles);
                 }
 
-                node = GLPIImpact.getNodeAt(event.position, function(node) {
+                node = ZENTRAImpact.getNodeAt(event.position, function(node) {
                     var nodeID = node.data('id');
 
                     // Can't link to itself
-                    if (nodeID == GLPIImpact.eventData.addEdgeStart) {
+                    if (nodeID == ZENTRAImpact.eventData.addEdgeStart) {
                         return false;
                     }
 
@@ -3439,13 +3439,13 @@ var GLPIImpact = {
                     }
 
                     // The created edge shouldn't already exist
-                    var edgeID = GLPIImpact.makeID(GLPIImpact.EDGE, GLPIImpact.eventData.addEdgeStart, nodeID);
-                    if (GLPIImpact.cy.filter('edge[id="' + edgeID + '"]').length > 0) {
+                    var edgeID = ZENTRAImpact.makeID(ZENTRAImpact.EDGE, ZENTRAImpact.eventData.addEdgeStart, nodeID);
+                    if (ZENTRAImpact.cy.filter('edge[id="' + edgeID + '"]').length > 0) {
                         return false;
                     }
 
                     // The node must be visible
-                    if (!GLPIImpact.cy.getElementById(nodeID).visible()) {
+                    if (!ZENTRAImpact.cy.getElementById(nodeID).visible()) {
                         return false;
                     }
 
@@ -3456,19 +3456,19 @@ var GLPIImpact = {
                     node = node.data('id');
 
                     // Add temporary edge to node hovered by the user
-                    GLPIImpact.eventData.tmpEles = event.cy.add([
+                    ZENTRAImpact.eventData.tmpEles = event.cy.add([
                         {
                             group: 'edges',
                             data: {
-                                id: GLPIImpact.makeID(GLPIImpact.EDGE, GLPIImpact.eventData.addEdgeStart, node),
-                                source: GLPIImpact.eventData.addEdgeStart,
+                                id: ZENTRAImpact.makeID(ZENTRAImpact.EDGE, ZENTRAImpact.eventData.addEdgeStart, node),
+                                source: ZENTRAImpact.eventData.addEdgeStart,
                                 target: node,
                             }
                         }
                     ]);
                 } else {
                     // Add temporary edge to a new invisible node at mouse position
-                    GLPIImpact.eventData.tmpEles = event.cy.add([
+                    ZENTRAImpact.eventData.tmpEles = event.cy.add([
                         {
                             group: 'nodes',
                             data: {
@@ -3482,12 +3482,12 @@ var GLPIImpact = {
                         {
                             group: 'edges',
                             data: {
-                                id: GLPIImpact.makeID(
-                                    GLPIImpact.EDGE,
-                                    GLPIImpact.eventData.addEdgeStart,
+                                id: ZENTRAImpact.makeID(
+                                    ZENTRAImpact.EDGE,
+                                    ZENTRAImpact.eventData.addEdgeStart,
                                     "tmp_node"
                                 ),
-                                source: GLPIImpact.eventData.addEdgeStart,
+                                source: ZENTRAImpact.eventData.addEdgeStart,
                                 target: 'tmp_node',
                             }
                         }
@@ -3495,7 +3495,7 @@ var GLPIImpact = {
                 }
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 break;
         }
     }, 25),
@@ -3506,52 +3506,52 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     onMouseover: function(event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
             // No valid target, no action needed
                 if (event.target.data('id') == undefined) {
                     break;
                 }
 
                 if (event.target.isNode()) {
-                    if (!GLPIImpact.eventData.showPointerForBadge) {
+                    if (!ZENTRAImpact.eventData.showPointerForBadge) {
                         // Don't alter the cursor if hovering a badge
-                        $(GLPIImpact.impactContainer).css('cursor', "grab");
+                        $(ZENTRAImpact.impactContainer).css('cursor', "grab");
                     }
                 } else if (event.target.isEdge()) {
                     // If mouseover on edge, show default cursor and disable panning
-                    GLPIImpact.cy.panningEnabled(false);
-                    if (!GLPIImpact.eventData.showPointerForBadge) {
+                    ZENTRAImpact.cy.panningEnabled(false);
+                    if (!ZENTRAImpact.eventData.showPointerForBadge) {
                         // Don't alter the cursor if hovering a badge
-                        $(GLPIImpact.impactContainer).css('cursor', "default");
+                        $(ZENTRAImpact.impactContainer).css('cursor', "default");
                     }
                 }
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
+            case ZENTRAImpact.EDITION_ADD_NODE:
                 if (event.target.data('id') == undefined) {
                     break;
                 }
 
                 if (event.target.isNode()) {
                     // If mouseover on node, show grab cursor
-                    $(GLPIImpact.impactContainer).css('cursor', "grab");
+                    $(ZENTRAImpact.impactContainer).css('cursor', "grab");
                 } else if (event.target.isEdge()) {
                     // If mouseover on edge, show default cursor and disable panning
-                    $(GLPIImpact.impactContainer).css('cursor', "default");
-                    GLPIImpact.cy.panningEnabled(false);
+                    $(ZENTRAImpact.impactContainer).css('cursor', "default");
+                    ZENTRAImpact.cy.panningEnabled(false);
                 }
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
                 if (event.target.data('id') == undefined) {
                     break;
                 }
 
-                $(GLPIImpact.impactContainer).css('cursor', "default");
+                $(ZENTRAImpact.impactContainer).css('cursor', "default");
                 var id = event.target.data('id');
 
                 // Remove red overlay
@@ -3559,8 +3559,8 @@ var GLPIImpact = {
                 event.cy.filter().unselect();
 
                 // Store here if one default node
-                if (event.target.data('id') == GLPIImpact.startNode) {
-                    $(GLPIImpact.impactContainer).css('cursor', "not-allowed");
+                if (event.target.data('id') == ZENTRAImpact.startNode) {
+                    $(ZENTRAImpact.impactContainer).css('cursor', "not-allowed");
                     break;
                 }
 
@@ -3585,36 +3585,36 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     onMouseout: function(event) {
-        switch (GLPIImpact.editionMode) {
-            case GLPIImpact.EDITION_DEFAULT:
-                if (!GLPIImpact.eventData.showPointerForBadge) {
+        switch (ZENTRAImpact.editionMode) {
+            case ZENTRAImpact.EDITION_DEFAULT:
+                if (!ZENTRAImpact.eventData.showPointerForBadge) {
                     // Don't alter the cursor if hovering a badge
-                    $(GLPIImpact.impactContainer).css('cursor', "move");
+                    $(ZENTRAImpact.impactContainer).css('cursor', "move");
                 }
 
                 // Re-enable panning in case the mouse was over an edge
-                GLPIImpact.cy.panningEnabled(true);
+                ZENTRAImpact.cy.panningEnabled(true);
                 break;
 
-            case GLPIImpact.EDITION_ADD_NODE:
-                if (!GLPIImpact.eventData.showPointerForBadge) {
+            case ZENTRAImpact.EDITION_ADD_NODE:
+                if (!ZENTRAImpact.eventData.showPointerForBadge) {
                     // Don't alter the cursor if hovering a badge
-                    $(GLPIImpact.impactContainer).css('cursor', "move");
+                    $(ZENTRAImpact.impactContainer).css('cursor', "move");
                 }
                 // Re-enable panning in case the mouse was over an edge
-                GLPIImpact.cy.panningEnabled(true);
+                ZENTRAImpact.cy.panningEnabled(true);
                 break;
 
-            case GLPIImpact.EDITION_ADD_EDGE:
+            case ZENTRAImpact.EDITION_ADD_EDGE:
                 break;
 
-            case GLPIImpact.EDITION_DELETE:
+            case ZENTRAImpact.EDITION_DELETE:
             // Remove red overlay
                 event.cy.filter().data('todelete', 0);
                 event.cy.filter().unselect();
-                if (!GLPIImpact.eventData.showPointerForBadge) {
+                if (!ZENTRAImpact.eventData.showPointerForBadge) {
                     // Don't alter the cursor if hovering a badge
-                    $(GLPIImpact.impactContainer).css('cursor', "move");
+                    $(ZENTRAImpact.impactContainer).css('cursor', "move");
                 }
                 break;
         }
@@ -3635,7 +3635,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     menuOnShowOngoing: function(event) {
-        GLPIImpact.showOngoingDialog(event.target.data('ITILObjects'));
+        ZENTRAImpact.showOngoingDialog(event.target.data('ITILObjects'));
     },
 
     /**
@@ -3644,7 +3644,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     menuOnEditCompound: function (event) {
-        GLPIImpact.showEditCompoundDialog(event.target);
+        ZENTRAImpact.showEditCompoundDialog(event.target);
     },
 
     /**
@@ -3653,12 +3653,12 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     menuOnRemoveFromCompound: function(event) {
-        var parent = GLPIImpact.cy.getElementById(
+        var parent = ZENTRAImpact.cy.getElementById(
             event.target.data('parent')
         );
 
         // Undo log
-        GLPIImpact.addToUndo(GLPIImpact.ACTION_REMOVE_FROM_COMPOUND, {
+        ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_REMOVE_FROM_COMPOUND, {
             nodeData    : _.clone(event.target.data()),
             compoundData: _.clone(parent.data()),
             children    : parent.children().map(function(node) {
@@ -3672,7 +3672,7 @@ var GLPIImpact = {
         // Destroy compound if only one or zero member left
         if (parent.children().length < 2) {
             parent.children().move({parent: null});
-            GLPIImpact.cy.remove(parent);
+            ZENTRAImpact.cy.remove(parent);
         }
     },
 
@@ -3682,7 +3682,7 @@ var GLPIImpact = {
      * @param {JQuery.Event} event
      */
     menuOnEditEdge: function (event) {
-        GLPIImpact.showEditEdgeDialog(event.target);
+        ZENTRAImpact.showEditEdgeDialog(event.target);
     },
 
     /**
@@ -3691,7 +3691,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     menuOnDelete: function(event){
-        GLPIImpact.deleteFromGraph(event.target);
+        ZENTRAImpact.deleteFromGraph(event.target);
     },
 
     /**
@@ -3703,8 +3703,8 @@ var GLPIImpact = {
     * @param {Number} page
     */
     searchAssets: function(itemtype, used, filter, page) {
-        var hidden = GLPIImpact.cy
-            .nodes(GLPIImpact.getHiddenSelector())
+        var hidden = ZENTRAImpact.cy
+            .nodes(ZENTRAImpact.getHiddenSelector())
             .filter(function(node) {
                 return !node.isParent();
             })
@@ -3712,11 +3712,11 @@ var GLPIImpact = {
                 return node.data('id');
             });
 
-        $(GLPIImpact.selectors.sideSearchSpinner).show();
-        $(GLPIImpact.selectors.sideSearchNoResults).hide();
+        $(ZENTRAImpact.selectors.sideSearchSpinner).show();
+        $(ZENTRAImpact.selectors.sideSearchNoResults).hide();
         $.ajax({
             type: "GET",
-            url: $(GLPIImpact.selectors.form).prop('action'),
+            url: $(ZENTRAImpact.selectors.form).prop('action'),
             data: {
                 'action'  : 'search',
                 'itemtype': itemtype,
@@ -3726,7 +3726,7 @@ var GLPIImpact = {
             },
             success: function(data){
                 $.each(data.items, function(index, value) {
-                    var graph_id = itemtype + GLPIImpact.NODE_ID_SEPERATOR + value['id'];
+                    var graph_id = itemtype + ZENTRAImpact.NODE_ID_SEPERATOR + value['id'];
                     var isHidden = hidden.indexOf(graph_id) !== -1;
                     var cssClass = "";
 
@@ -3744,22 +3744,22 @@ var GLPIImpact = {
 
                     str += "</p>";
 
-                    $(GLPIImpact.selectors.sideSearchResults).append(str);
+                    $(ZENTRAImpact.selectors.sideSearchResults).append(str);
                 });
 
                 // All data was loaded, hide "More..."
                 if (data.total <= ((page + 1) * 20)) {
-                    $(GLPIImpact.selectors.sideSearchMore).hide();
+                    $(ZENTRAImpact.selectors.sideSearchMore).hide();
                 } else {
-                    $(GLPIImpact.selectors.sideSearchMore).show();
+                    $(ZENTRAImpact.selectors.sideSearchMore).show();
                 }
 
                 // No results
                 if (data.total == 0 && page == 0) {
-                    $(GLPIImpact.selectors.sideSearchNoResults).show();
+                    $(ZENTRAImpact.selectors.sideSearchNoResults).show();
                 }
 
-                $(GLPIImpact.selectors.sideSearchSpinner).hide();
+                $(ZENTRAImpact.selectors.sideSearchSpinner).hide();
             },
             error: function(){
                 alert("error");
@@ -3773,14 +3773,14 @@ var GLPIImpact = {
     getUsedAssets: function() {
         // Get used ids for this itemtype
         var used = [];
-        GLPIImpact.cy.nodes().not(GLPIImpact.getHiddenSelector()).forEach(function(node) {
+        ZENTRAImpact.cy.nodes().not(ZENTRAImpact.getHiddenSelector()).forEach(function(node) {
             if (node.isParent()) {
                 return;
             }
 
             var nodeId = node.data('id')
-                .split(GLPIImpact.NODE_ID_SEPERATOR);
-            if (nodeId[0] == GLPIImpact.selectedItemtype) {
+                .split(ZENTRAImpact.NODE_ID_SEPERATOR);
+            if (nodeId[0] == ZENTRAImpact.selectedItemtype) {
                 used.push(parseInt(nodeId[1]));
             }
         });
@@ -3863,48 +3863,48 @@ var GLPIImpact = {
     */
     initToolbar: function() {
         // Save the graph
-        $(GLPIImpact.selectors.save).click(function() {
-            GLPIImpact.showCleanWorkspaceStatus();
+        $(ZENTRAImpact.selectors.save).click(function() {
+            ZENTRAImpact.showCleanWorkspaceStatus();
             // Send data as JSON on submit
             $.ajax({
                 type: "POST",
-                url: $(GLPIImpact.selectors.form).prop('action'),
+                url: $(ZENTRAImpact.selectors.form).prop('action'),
                 data: {
-                    'impacts': JSON.stringify(GLPIImpact.computeDelta())
+                    'impacts': JSON.stringify(ZENTRAImpact.computeDelta())
                 },
                 success: function(){
-                    GLPIImpact.initialState = GLPIImpact.getCurrentState();
+                    ZENTRAImpact.initialState = ZENTRAImpact.getCurrentState();
                     $(document).trigger('impactUpdated');
                 },
                 error: function(){
-                    GLPIImpact.showDirtyWorkspaceStatus();
+                    ZENTRAImpact.showDirtyWorkspaceStatus();
                 },
             });
         });
 
         // Add a node on the graph
-        $(GLPIImpact.selectors.addNode).click(function() {
-            GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
+        $(ZENTRAImpact.selectors.addNode).click(function() {
+            ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_NODE);
         });
 
         // Add a edge on the graph
-        $(GLPIImpact.selectors.addEdge).click(function() {
-            GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
+        $(ZENTRAImpact.selectors.addEdge).click(function() {
+            ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_EDGE);
         });
 
         // Add a compound on the graph
-        $(GLPIImpact.selectors.addCompound).click(function() {
-            GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
+        $(ZENTRAImpact.selectors.addCompound).click(function() {
+            ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_COMPOUND);
         });
 
         // Enter delete mode
-        $(GLPIImpact.selectors.deleteElement).click(function() {
-            GLPIImpact.setEditionMode(GLPIImpact.EDITION_DELETE);
+        $(ZENTRAImpact.selectors.deleteElement).click(function() {
+            ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_DELETE);
         });
 
         // Export graph
-        $(GLPIImpact.selectors.export).click(function() {
-            GLPIImpact.download(
+        $(ZENTRAImpact.selectors.export).click(function() {
+            ZENTRAImpact.download(
                 'png',
                 false
             );
@@ -3913,61 +3913,61 @@ var GLPIImpact = {
         // Show settings
         $(this.selectors.impactSettings).click(function() {
             if ($(this).find('i.fa-chevron-right').length) {
-                GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
+                ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_DEFAULT);
             } else {
-                GLPIImpact.setEditionMode(GLPIImpact.EDITION_SETTINGS);
+                ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_SETTINGS);
             }
         });
 
-        $(GLPIImpact.selectors.undo).click(function() {
-            GLPIImpact.undo();
+        $(ZENTRAImpact.selectors.undo).click(function() {
+            ZENTRAImpact.undo();
         });
 
         // Redo button
-        $(GLPIImpact.selectors.redo).click(function() {
-            GLPIImpact.redo();
+        $(ZENTRAImpact.selectors.redo).click(function() {
+            ZENTRAImpact.redo();
         });
 
         // Toggle expanded toolbar
         $(this.selectors.sideToggle).click(function() {
             if ($(this).find('i.fa-chevron-right').length) {
-                GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
+                ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_DEFAULT);
             } else {
-                GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
+                ZENTRAImpact.setEditionMode(ZENTRAImpact.EDITION_ADD_NODE);
             }
         });
 
         // Toggle impact visibility
-        $(GLPIImpact.selectors.toggleImpact).click(function() {
-            GLPIImpact.toggleVisibility(GLPIImpact.FORWARD);
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_IMPACT_VISIBILITY, {});
+        $(ZENTRAImpact.selectors.toggleImpact).click(function() {
+            ZENTRAImpact.toggleVisibility(ZENTRAImpact.FORWARD);
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_IMPACT_VISIBILITY, {});
         });
 
         // Toggle depends visibility
-        $(GLPIImpact.selectors.toggleDepends).click(function() {
-            GLPIImpact.toggleVisibility(GLPIImpact.BACKWARD);
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_DEPENDS_VISIBILITY, {});
+        $(ZENTRAImpact.selectors.toggleDepends).click(function() {
+            ZENTRAImpact.toggleVisibility(ZENTRAImpact.BACKWARD);
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_DEPENDS_VISIBILITY, {});
         });
 
         // Depth selector
-        $(GLPIImpact.selectors.maxDepth).on('input', function() {
-            var previous = GLPIImpact.maxDepth;
-            GLPIImpact.setDepth($(GLPIImpact.selectors.maxDepth).val());
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_MAX_DEPTH, {
+        $(ZENTRAImpact.selectors.maxDepth).on('input', function() {
+            var previous = ZENTRAImpact.maxDepth;
+            ZENTRAImpact.setDepth($(ZENTRAImpact.selectors.maxDepth).val());
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_MAX_DEPTH, {
                 oldDepth: previous,
-                newDepth: GLPIImpact.maxDepth,
+                newDepth: ZENTRAImpact.maxDepth,
             });
         });
 
-        $(GLPIImpact.selectors.toggleFullscreen).click(function() {
-            GLPIImpact.toggleFullscreen();
+        $(ZENTRAImpact.selectors.toggleFullscreen).click(function() {
+            ZENTRAImpact.toggleFullscreen();
         });
 
         // Filter available itemtypes
-        $(GLPIImpact.selectors.sideSearchFilterItemtype).on('input', function() {
-            var value = $(GLPIImpact.selectors.sideSearchFilterItemtype).val().toLowerCase();
+        $(ZENTRAImpact.selectors.sideSearchFilterItemtype).on('input', function() {
+            var value = $(ZENTRAImpact.selectors.sideSearchFilterItemtype).val().toLowerCase();
 
-            $(GLPIImpact.selectors.sideFilterItem + ' img').each(function() {
+            $(ZENTRAImpact.selectors.sideFilterItem + ' img').each(function() {
                 var itemtype = $(this).attr('title').toLowerCase();
                 if (value == "" || itemtype.indexOf(value) != -1) {
                     $(this).parent().show();
@@ -3978,101 +3978,101 @@ var GLPIImpact = {
         });
 
         // Exit type selection and enter asset search
-        $(GLPIImpact.selectors.sideFilterItem).click(function() {
+        $(ZENTRAImpact.selectors.sideFilterItem).click(function() {
             var img = $(this).find('img').eq(0);
 
-            GLPIImpact.selectedItemtype = $(img).attr('data-itemtype');
-            $(GLPIImpact.selectors.sideSearch).show();
-            $(GLPIImpact.selectors.sideSearch + " img").attr('title', $(img).attr('title'));
-            $(GLPIImpact.selectors.sideSearch + " img").attr('src', $(img).attr('src'));
-            $(GLPIImpact.selectors.sideSearch + " > h4 > span").html(_.escape($(img).attr('title')));
-            $(GLPIImpact.selectors.sideSearchSelectItemtype).hide();
+            ZENTRAImpact.selectedItemtype = $(img).attr('data-itemtype');
+            $(ZENTRAImpact.selectors.sideSearch).show();
+            $(ZENTRAImpact.selectors.sideSearch + " img").attr('title', $(img).attr('title'));
+            $(ZENTRAImpact.selectors.sideSearch + " img").attr('src', $(img).attr('src'));
+            $(ZENTRAImpact.selectors.sideSearch + " > h4 > span").html(_.escape($(img).attr('title')));
+            $(ZENTRAImpact.selectors.sideSearchSelectItemtype).hide();
 
             // Empty search
-            GLPIImpact.searchAssets(
-                GLPIImpact.selectedItemtype,
-                JSON.stringify(GLPIImpact.getUsedAssets()),
-                $(GLPIImpact.selectors.sideFilterAssets).val(),
+            ZENTRAImpact.searchAssets(
+                ZENTRAImpact.selectedItemtype,
+                JSON.stringify(ZENTRAImpact.getUsedAssets()),
+                $(ZENTRAImpact.selectors.sideFilterAssets).val(),
                 0
             );
         });
 
         // Exit asset search and return to type selection
-        $(GLPIImpact.selectors.sideSearch + ' > h4 > i').click(function() {
-            $(GLPIImpact.selectors.sideSearch).hide();
-            $(GLPIImpact.selectors.sideSearchSelectItemtype).show();
-            $(GLPIImpact.selectors.sideSearchResults).html("");
+        $(ZENTRAImpact.selectors.sideSearch + ' > h4 > i').click(function() {
+            $(ZENTRAImpact.selectors.sideSearch).hide();
+            $(ZENTRAImpact.selectors.sideSearchSelectItemtype).show();
+            $(ZENTRAImpact.selectors.sideSearchResults).html("");
         });
 
-        $(GLPIImpact.selectors.sideFilterAssets).on('input', function() {
+        $(ZENTRAImpact.selectors.sideFilterAssets).on('input', function() {
             // Reset results
-            $(GLPIImpact.selectors.sideSearchResults).html("");
-            $(GLPIImpact.selectors.sideSearchMore).hide();
-            $(GLPIImpact.selectors.sideSearchSpinner).show();
-            $(GLPIImpact.selectors.sideSearchNoResults).hide();
+            $(ZENTRAImpact.selectors.sideSearchResults).html("");
+            $(ZENTRAImpact.selectors.sideSearchMore).hide();
+            $(ZENTRAImpact.selectors.sideSearchSpinner).show();
+            $(ZENTRAImpact.selectors.sideSearchNoResults).hide();
 
             searchAssetsDebounced(
-                GLPIImpact.selectedItemtype,
-                JSON.stringify(GLPIImpact.getUsedAssets()),
-                $(GLPIImpact.selectors.sideFilterAssets).val(),
+                ZENTRAImpact.selectedItemtype,
+                JSON.stringify(ZENTRAImpact.getUsedAssets()),
+                $(ZENTRAImpact.selectors.sideFilterAssets).val(),
                 0
             );
         });
 
         // Load more results on "More..." click
-        $(GLPIImpact.selectors.sideSearchMore).on('click', function() {
-            GLPIImpact.searchAssets(
-                GLPIImpact.selectedItemtype,
-                JSON.stringify(GLPIImpact.getUsedAssets()),
-                $(GLPIImpact.selectors.sideFilterAssets).val(),
-                ++GLPIImpact.addAssetPage
+        $(ZENTRAImpact.selectors.sideSearchMore).on('click', function() {
+            ZENTRAImpact.searchAssets(
+                ZENTRAImpact.selectedItemtype,
+                JSON.stringify(ZENTRAImpact.getUsedAssets()),
+                $(ZENTRAImpact.selectors.sideFilterAssets).val(),
+                ++ZENTRAImpact.addAssetPage
             );
         });
 
         // Watch for color changes (depends)
-        $(GLPIImpact.selectors.dependsColor).change(function(){
-            var previous = GLPIImpact.edgeColors[GLPIImpact.BACKWARD];
-            GLPIImpact.setEdgeColors({
-                backward: $(GLPIImpact.selectors.dependsColor).val(),
+        $(ZENTRAImpact.selectors.dependsColor).change(function(){
+            var previous = ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD];
+            ZENTRAImpact.setEdgeColors({
+                backward: $(ZENTRAImpact.selectors.dependsColor).val(),
             });
-            GLPIImpact.updateStyle();
-            GLPIImpact.cy.trigger("change");
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_DEPENDS_COLOR, {
+            ZENTRAImpact.updateStyle();
+            ZENTRAImpact.cy.trigger("change");
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_DEPENDS_COLOR, {
                 oldColor: previous,
-                newColor: GLPIImpact.edgeColors[GLPIImpact.BACKWARD]
+                newColor: ZENTRAImpact.edgeColors[ZENTRAImpact.BACKWARD]
             });
         });
 
         // Watch for color changes (impact)
-        $(GLPIImpact.selectors.impactColor).change(function(){
-            var previous = GLPIImpact.edgeColors[GLPIImpact.FORWARD];
-            GLPIImpact.setEdgeColors({
-                forward: $(GLPIImpact.selectors.impactColor).val(),
+        $(ZENTRAImpact.selectors.impactColor).change(function(){
+            var previous = ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD];
+            ZENTRAImpact.setEdgeColors({
+                forward: $(ZENTRAImpact.selectors.impactColor).val(),
             });
-            GLPIImpact.updateStyle();
-            GLPIImpact.cy.trigger("change");
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_IMPACT_COLOR, {
+            ZENTRAImpact.updateStyle();
+            ZENTRAImpact.cy.trigger("change");
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_IMPACT_COLOR, {
                 oldColor: previous,
-                newColor: GLPIImpact.edgeColors[GLPIImpact.FORWARD]
+                newColor: ZENTRAImpact.edgeColors[ZENTRAImpact.FORWARD]
             });
         });
 
         // Watch for color changes (impact and depends)
-        $(GLPIImpact.selectors.impactAndDependsColor).change(function(){
-            var previous = GLPIImpact.edgeColors[GLPIImpact.BOTH];
-            GLPIImpact.setEdgeColors({
-                both: $(GLPIImpact.selectors.impactAndDependsColor).val(),
+        $(ZENTRAImpact.selectors.impactAndDependsColor).change(function(){
+            var previous = ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH];
+            ZENTRAImpact.setEdgeColors({
+                both: $(ZENTRAImpact.selectors.impactAndDependsColor).val(),
             });
-            GLPIImpact.updateStyle();
-            GLPIImpact.cy.trigger("change");
-            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_IMPACT_AND_DEPENDS_COLOR, {
+            ZENTRAImpact.updateStyle();
+            ZENTRAImpact.cy.trigger("change");
+            ZENTRAImpact.addToUndo(ZENTRAImpact.ACTION_EDIT_IMPACT_AND_DEPENDS_COLOR, {
                 oldColor: previous,
-                newColor: GLPIImpact.edgeColors[GLPIImpact.BOTH]
+                newColor: ZENTRAImpact.edgeColors[ZENTRAImpact.BOTH]
             });
         });
 
         // Handle drag & drop on add node search result
-        $(document).on('mousedown', GLPIImpact.selectors.sideSearchResults + ' p', function(e) {
+        $(document).on('mousedown', ZENTRAImpact.selectors.sideSearchResults + ' p', function(e) {
             // Only on left click and not for disabled item
             if (e.which !== 1
             || $(e.target).hasClass('impact-res-disabled')
@@ -4081,18 +4081,18 @@ var GLPIImpact = {
             }
 
             // Tmp data to be shared with mousedown event
-            GLPIImpact.eventData.addNodeStart = {
+            ZENTRAImpact.eventData.addNodeStart = {
                 id  : $(this).attr("data-id"),
                 type: $(this).attr("data-type"),
             };
 
             // Show preview icon at cursor location
-            $(GLPIImpact.selectors.dropPreview).css({
+            $(ZENTRAImpact.selectors.dropPreview).css({
                 left: e.clientX - 24,
                 top: e.clientY - 24,
             });
-            $(GLPIImpact.selectors.dropPreview).attr('src', $(this).find('img').attr('src'));
-            $(GLPIImpact.selectors.dropPreview).show();
+            $(ZENTRAImpact.selectors.dropPreview).attr('src', $(this).find('img').attr('src'));
+            $(ZENTRAImpact.selectors.dropPreview).show();
 
             $("*").css({cursor: "grabbing"});
         });
@@ -4101,40 +4101,40 @@ var GLPIImpact = {
         $(document).on('mouseup', function(e) {
             // Middle click on badge, open link in new tab
             if (event.which == 2) {
-                GLPIImpact.checkBadgeHitboxes(
-                    GLPIImpact.projectIntoViewport(e.clientX, e.clientY, true),
+                ZENTRAImpact.checkBadgeHitboxes(
+                    ZENTRAImpact.projectIntoViewport(e.clientX, e.clientY, true),
                     true,
                     true
                 );
             }
 
-            if (GLPIImpact.eventData.addNodeStart === undefined) {
+            if (ZENTRAImpact.eventData.addNodeStart === undefined) {
                 return;
             }
 
             if (e.target.nodeName == "CANVAS") {
             // Add node at event position
-                GLPIImpact.addNode(
-                    GLPIImpact.eventData.addNodeStart.id,
-                    GLPIImpact.eventData.addNodeStart.type,
-                    GLPIImpact.projectIntoViewport(e.clientX, e.clientY, false)
+                ZENTRAImpact.addNode(
+                    ZENTRAImpact.eventData.addNodeStart.id,
+                    ZENTRAImpact.eventData.addNodeStart.type,
+                    ZENTRAImpact.projectIntoViewport(e.clientX, e.clientY, false)
                 );
             }
 
-            $(GLPIImpact.selectors.dropPreview).hide();
+            $(ZENTRAImpact.selectors.dropPreview).hide();
 
             // Clear tmp event data
-            GLPIImpact.eventData.addNodeStart = undefined;
+            ZENTRAImpact.eventData.addNodeStart = undefined;
             $("*").css('cursor', "");
         });
 
         $(document).on('mousemove', function(e) {
-            if (GLPIImpact.eventData.addNodeStart === undefined) {
+            if (ZENTRAImpact.eventData.addNodeStart === undefined) {
                 return;
             }
 
             // Show preview icon at cursor location
-            $(GLPIImpact.selectors.dropPreview).css({
+            $(ZENTRAImpact.selectors.dropPreview).css({
                 left: e.clientX - 24,
                 top: e.clientY - 24,
             });
@@ -4145,16 +4145,16 @@ var GLPIImpact = {
     * Init and render the canvas overlay used to show the badges
     */
     initCanvasOverlay: function() {
-        var layer = GLPIImpact.cy.cyCanvas();
+        var layer = ZENTRAImpact.cy.cyCanvas();
         var canvas = layer.getCanvas();
         var ctx = canvas.getContext('2d');
 
-        GLPIImpact.cy.on("render cyCanvas.resize", function() {
+        ZENTRAImpact.cy.on("render cyCanvas.resize", function() {
             layer.resetTransform(ctx);
             layer.clear(ctx);
-            GLPIImpact.badgesHitboxes = [];
+            ZENTRAImpact.badgesHitboxes = [];
 
-            GLPIImpact.cy.filter("node:childless:visible").forEach(function(node) {
+            ZENTRAImpact.cy.filter("node:childless:visible").forEach(function(node) {
             // Stop here if the node has no badge defined
                 if (!node.data('badge')) {
                     return;
@@ -4170,22 +4170,22 @@ var GLPIImpact = {
                     includeNodes   : true,
                 });
                 var pos = {
-                    x: bbox.x2 + GLPIImpact.cy.zoom(),
-                    y: bbox.y2 + GLPIImpact.cy.zoom(),
+                    x: bbox.x2 + ZENTRAImpact.cy.zoom(),
+                    y: bbox.y2 + ZENTRAImpact.cy.zoom(),
                 };
 
                 // Register badge position so it can be clicked
-                GLPIImpact.badgesHitboxes.push({
+                ZENTRAImpact.badgesHitboxes.push({
                     position: pos,
                     target  : node.data('badge').target,
-                    itemtype: node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[0],
-                    id      : node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[1],
+                    itemtype: node.data('id').split(ZENTRAImpact.NODE_ID_SEPERATOR)[0],
+                    id      : node.data('id').split(ZENTRAImpact.NODE_ID_SEPERATOR)[1],
                     id_option: node.data('id_option'),
                 });
 
                 // Draw the badge
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 4 * GLPIImpact.cy.zoom(), 0, 2 * Math.PI, false);
+                ctx.arc(pos.x, pos.y, 4 * ZENTRAImpact.cy.zoom(), 0, 2 * Math.PI, false);
                 ctx.fillStyle = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
                 ctx.fill();
 
@@ -4194,17 +4194,17 @@ var GLPIImpact = {
                 }).toHexString();
 
                 // Print number
-                ctx.font = 6 * GLPIImpact.cy.zoom() + "px sans-serif";
+                ctx.font = 6 * ZENTRAImpact.cy.zoom() + "px sans-serif";
                 ctx.fillText(
                     node.data('badge').count,
-                    pos.x - (1.95 * GLPIImpact.cy.zoom()),
-                    pos.y + (2.23 * GLPIImpact.cy.zoom())
+                    pos.x - (1.95 * ZENTRAImpact.cy.zoom()),
+                    pos.y + (2.23 * ZENTRAImpact.cy.zoom())
                 );
             });
         });
     }
 };
 // Explicitly bind to the `window` object for Jest tests
-window.GLPIImpact = GLPIImpact;
+window.ZENTRAImpact = ZENTRAImpact;
 
-var searchAssetsDebounced = _.debounce(window.GLPIImpact.searchAssets, 400, false);
+var searchAssetsDebounced = _.debounce(window.ZENTRAImpact.searchAssets, 400, false);

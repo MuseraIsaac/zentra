@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var Glpi\Form\Destination\AbstractCommonITILFormDestination item #}
-{# @var Glpi\Form\Form\ form #}
+{# @var Zentra\Form\Destination\AbstractCommonITILFormDestination item #}
+{# @var Zentra\Form\Form\ form #}
 {# @var array config #}
 {# @var bool can_update #}
 
@@ -48,7 +48,7 @@
                         name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
                         type="hidden"
                         value="0"
-                        data-glpi-itildestination-toggle-do-not-disable
+                        data-zentra-itildestination-toggle-do-not-disable
                     >
                     <input
                         name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
@@ -56,8 +56,8 @@
                         type="checkbox"
                         value="1"
                         {{ use_auto_configuration ? 'checked' : '' }}
-                        data-glpi-itildestination-toggle-auto-config
-                        data-glpi-itildestination-toggle-do-not-disable
+                        data-zentra-itildestination-toggle-auto-config
+                        data-zentra-itildestination-toggle-do-not-disable
                     >
                     <span class="form-check-label">{{ __("Auto config") }}</span>
                 </label>
@@ -79,18 +79,18 @@
 
     {% set field_container_rand = random() %}
     {% set rand = random() %}
-    <section data-glpi-itildestination-field="{{ field_container_rand }}" aria-label="{{ field.getLabel() ~ " configuration" }}">
-        {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+    <section data-zentra-itildestination-field="{{ field_container_rand }}" aria-label="{{ field.getLabel() ~ " configuration" }}">
+        {% if config_field is instanceof('Zentra\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
             {% set label_for = call('Html::cleanId', [
                 'dropdown_' ~ '%s[%s][]'|format(
                     item.formatConfigInputName(field.getKey()),
                     config_field.getStrategiesInputName()
                 ) ~ rand
             ]) %}
-        {% elseif config_field is instanceof('Glpi\\Form\\Destination\\CommonITILField\\SimpleValueConfig') %}
+        {% elseif config_field is instanceof('Zentra\\Form\\Destination\\CommonITILField\\SimpleValueConfig') %}
             {% set label_for = '%s[%s]_%s'|format(
                 item.formatConfigInputName(field.getKey()),
-                constant('Glpi\\Form\\Destination\\CommonITILField\\SimpleValueConfig::VALUE'),
+                constant('Zentra\\Form\\Destination\\CommonITILField\\SimpleValueConfig::VALUE'),
                 rand
             ) %}
         {% endif %}
@@ -108,8 +108,8 @@
                 {{ auto_configuration_checkbox }}
             {% endif %}
         </div>
-        <section data-glpi-itildestination-field-configs>
-            {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+        <section data-zentra-itildestination-field-configs>
+            {% if config_field is instanceof('Zentra\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
                 {% for index, strategy in config_field.getStrategies() %}
                     {# Update the random value for each iteration except the first one, to avoid conflicts with labels #}
                     {% if not loop.first %}
@@ -120,9 +120,9 @@
                         {% if field.canHaveMultipleStrategies() %}
                             class="mb-2"
                         {% endif %}
-                        data-glpi-itildestination-field-config
+                        data-zentra-itildestination-field-config
                     >
-                        <div data-glpi-itildestination-field-config-content>
+                        <div data-zentra-itildestination-field-config-content>
                             {{ fields.dropdownArrayField(
                                 '%s[%s][]'|format(
                                     item.formatConfigInputName(field.getKey()),
@@ -139,7 +139,7 @@
                                     rand: rand,
                                     aria_label: __('Select strategy...'),
                                     add_data_attributes: {
-                                        'glpi-itildestination-strategy-select': '',
+                                        'zentra-itildestination-strategy-select': '',
                                         'testid': 'strategy-dropdown',
                                     },
                                 }|merge(extra_options)
@@ -162,7 +162,7 @@
                                 class="btn btn-icon btn-outline"
                                 title="{{ __('Remove strategy') }}"
                                 aria-label="{{ __('Remove strategy') }}"
-                                data-glpi-itildestination-remove-field-config
+                                data-zentra-itildestination-remove-field-config
                             >
                                 <i class="ti ti-x"></i>
                             </button>
@@ -174,7 +174,7 @@
                         type="button"
                         class="btn btn-outline"
                         aria-label="{{ __('Combine with another option') }}"
-                        data-glpi-itildestination-add-field-config
+                        data-zentra-itildestination-add-field-config
                     >
                         <i class="ti ti-plus me-2"></i>
                         {{ __('Combine with another option') }}
@@ -197,7 +197,7 @@
                         type="button"
                         class="btn btn-outline"
                         aria-label="{{ __('Combine with another option') }}"
-                        data-glpi-itildestination-add-field-config
+                        data-zentra-itildestination-add-field-config
                     >
                         <i class="ti ti-plus me-2"></i>
                         {{ __('Combine with another option') }}
@@ -207,13 +207,13 @@
         </section>
 
         {% if field.canHaveMultipleStrategies() %}
-            <template data-glpi-itildestination-field-config-template>
-                {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+            <template data-zentra-itildestination-field-config-template>
+                {% if config_field is instanceof('Zentra\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
                     <section
                         class="mb-2"
-                        data-glpi-itildestination-field-config
+                        data-zentra-itildestination-field-config
                     >
-                        <div data-glpi-itildestination-field-config-content>
+                        <div data-zentra-itildestination-field-config-content>
                             {{ fields.dropdownArrayField(
                                 '%s[%s][]'|format(
                                     item.formatConfigInputName(field.getKey()),
@@ -231,7 +231,7 @@
                                     init: false,
                                     aria_label: __('Select strategy...'),
                                     add_data_attributes: {
-                                        'glpi-itildestination-strategy-select': '',
+                                        'zentra-itildestination-strategy-select': '',
                                         'testid': 'strategy-dropdown',
                                     },
                                 }|merge(extra_options)
@@ -253,7 +253,7 @@
                             class="btn btn-icon btn-outline"
                             title="{{ __('Remove strategy') }}"
                             aria-label="{{ __('Remove strategy') }}"
-                            data-glpi-itildestination-remove-field-config
+                            data-zentra-itildestination-remove-field-config
                         >
                             <i class="ti ti-x"></i>
                         </button>
@@ -277,8 +277,8 @@
 
     <script>
         import("/js/modules/Forms/FieldDestinationMultipleConfig.js").then((m) => {
-            new m.GlpiFormFieldDestinationMultipleConfig(
-                $('[data-glpi-itildestination-field="{{ field_container_rand }}"]'),
+            new m.ZentraFormFieldDestinationMultipleConfig(
+                $('[data-zentra-itildestination-field="{{ field_container_rand }}"]'),
                 {{ field.getReusableStrategies()|json_encode|raw }}
             );
         });
@@ -294,11 +294,11 @@
                         <div class="card-body">
                             <div class="read-only-content">
                                 <div class="card-title card-header mx-n3 mt-n3">
-                                    {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-titlefield') %}
+                                    {% set field = item.getConfigurableFieldByKey('zentra-form-destination-commonitilfield-titlefield') %}
                                     {{ _self.field_config_section(item, destination, field, form, config, false) }}
                                 </div>
                                 <div class="rich_text_container">
-                                    {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-contentfield') %}
+                                    {% set field = item.getConfigurableFieldByKey('zentra-form-destination-commonitilfield-contentfield') %}
                                     {{ _self.field_config_section(item, destination, field, form, config, false) }}
                                 </div>
                             </div>
@@ -313,7 +313,7 @@
                 <div class="col-12 col-sm">
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
-                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itilfollowupfield') %}
+                            {% set field = item.getConfigurableFieldByKey('zentra-form-destination-commonitilfield-itilfollowupfield') %}
                             {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
@@ -326,7 +326,7 @@
                 <div class="col-12 col-sm">
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
-                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itiltaskfield') %}
+                            {% set field = item.getConfigurableFieldByKey('zentra-form-destination-commonitilfield-itiltaskfield') %}
                             {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
@@ -339,7 +339,7 @@
                 <div class="col-12 col-sm">
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
-                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-validationfield') %}
+                            {% set field = item.getConfigurableFieldByKey('zentra-form-destination-commonitilfield-validationfield') %}
                             {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
@@ -351,17 +351,17 @@
         {% set rand = random() %}
 
         <section
-            id="glpi-itil-destinations-accordion-{{ rand }}"
+            id="zentra-itil-destinations-accordion-{{ rand }}"
             class="accordion open accordion-flush"
             aria-label="{{ __('Destination fields accordion') }}"
         >
             {% for category in item.getConfigurableFieldsGroupedByCategory() %}
                 {% set already_rendered_config = [
-                    'glpi-form-destination-commonitilfield-titlefield',
-                    'glpi-form-destination-commonitilfield-contentfield',
-                    'glpi-form-destination-commonitilfield-itilfollowupfield',
-                    'glpi-form-destination-commonitilfield-itiltaskfield',
-                    'glpi-form-destination-commonitilfield-validationfield',
+                    'zentra-form-destination-commonitilfield-titlefield',
+                    'zentra-form-destination-commonitilfield-contentfield',
+                    'zentra-form-destination-commonitilfield-itilfollowupfield',
+                    'zentra-form-destination-commonitilfield-itiltaskfield',
+                    'zentra-form-destination-commonitilfield-validationfield',
                 ] %}
                 {% set fields = category.fields|filter(field => field.getKey() not in already_rendered_config) %}
 
@@ -385,7 +385,7 @@
                             id="item-{{ rand }}-{{ loop.index }}"
                             class="accordion-collapse collapse"
                             aria-labelledby="heading-item-{{ rand }}-{{ loop.index }}"
-                            data-bs-parent="#glpi-itil-destinations-accordion-{{ rand }}"
+                            data-bs-parent="#zentra-itil-destinations-accordion-{{ rand }}"
                         >
                             <div class="accordion-body d-flex flex-column space-y-3">
                                 {% for field in fields %}

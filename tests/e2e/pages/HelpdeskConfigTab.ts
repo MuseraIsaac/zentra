@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@
  */
 
 import { expect, Locator, Page } from "@playwright/test";
-import { GlpiPage } from "./GlpiPage";
+import { ZentraPage } from "./ZentraPage";
 
-export class HelpdeskHomeConfigTag extends GlpiPage
+export class HelpdeskHomeConfigTag extends ZentraPage
 {
     public constructor(page: Page)
     {
@@ -118,7 +118,7 @@ export class HelpdeskHomeConfigTag extends GlpiPage
         await this.getTiles()
             .filter({ hasText: source})
             .nth(0)
-            .locator('[data-glpi-helpdesk-config-tile-handle]')
+            .locator('[data-zentra-helpdesk-config-tile-handle]')
             .dragTo(
                 this.getTiles().filter({ hasText: destination})
             )
@@ -149,7 +149,7 @@ export class HelpdeskHomeConfigTag extends GlpiPage
         await this.getRichTextByLabel("Description").fill(content);
     }
 
-    public async doSetActiveGlpiPageTileTarget(page: string): Promise<void>
+    public async doSetActiveZentraPageTileTarget(page: string): Promise<void>
     {
         await this.doSetDropdownValue(
             this.getDropdownByLabel("Target page"),

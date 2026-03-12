@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ class NotificationMailing implements NotificationInterface
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
         //drop sanitize...
-        $isValid = GLPIMailer::validateAddress($address);
+        $isValid = ZENTRAMailer::validateAddress($address);
 
         $checkdns = ($options['checkdns'] ?? false);
         if ($checkdns) {
@@ -89,7 +89,7 @@ class NotificationMailing implements NotificationInterface
      */
     public static function testNotification(): array
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $sender = Config::getEmailSender();
         if ($sender['email'] === null || !self::isUserAddressValid($sender['email'])) {
@@ -101,7 +101,7 @@ class NotificationMailing implements NotificationInterface
         }
 
         try {
-            $mmail = new GLPIMailer();
+            $mmail = new ZENTRAMailer();
         } catch (Exception $e) {
             return [
                 'success' => false,
@@ -116,18 +116,18 @@ class NotificationMailing implements NotificationInterface
         $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
         $mail->from(new Address($sender['email'], $sender['name'] ?? ''));
 
-        $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
-        $recipient = $CFG_GLPI['admin_email'];
-        if (defined('GLPI_FORCE_MAIL')) {
-            Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
+        $text = __('This is a test email.') . "\n-- \n" . $CFG_ZENTRA["mailing_signature"];
+        $recipient = $CFG_ZENTRA['admin_email'];
+        if (defined('ZENTRA_FORCE_MAIL')) {
+            Toolbox::deprecated('Usage of the `ZENTRA_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
             //force recipient to configured email address
-            $recipient = GLPI_FORCE_MAIL;
+            $recipient = ZENTRA_FORCE_MAIL;
             //add original email address to message body
-            $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
+            $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_ZENTRA['admin_email']);
         }
 
-        $mail->to(new Address($recipient, $CFG_GLPI['admin_email_name']));
-        $mail->subject("[GLPI] " . __('Mail test'));
+        $mail->to(new Address($recipient, $CFG_ZENTRA['admin_email_name']));
+        $mail->subject("[ZENTRA] " . __('Mail test'));
         $mail->text($text);
 
         $success = $mmail->send();
@@ -142,7 +142,7 @@ class NotificationMailing implements NotificationInterface
     #[Override]
     public function sendNotification($options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];
@@ -156,7 +156,7 @@ class NotificationMailing implements NotificationInterface
         $data['sender']                               = $options['from'];
         $data['sendername']                           = $options['fromname'];
 
-        $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
+        $data['event'] = $options['event'] ?? null; // `event` has been added in ZENTRA 10.0.7
         $data['itemtype_trigger'] = $options['itemtype_trigger'] ?? null;
         $data['items_id_trigger'] = $options['items_id_trigger'] ?? 0;
 
@@ -187,7 +187,7 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
-        $data['attach_documents'] = $options['attach_documents'] ?? $CFG_GLPI['attach_ticket_documents_to_mail'];
+        $data['attach_documents'] = $options['attach_documents'] ?? $CFG_ZENTRA['attach_ticket_documents_to_mail'];
 
         $queue = new QueuedNotification();
 

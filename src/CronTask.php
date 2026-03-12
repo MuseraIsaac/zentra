@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@
 // Needed for signal handler to handle SIGTERM in CLI mode
 declare(ticks=1);
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Error\ErrorHandler;
-use Glpi\Event;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Error\ErrorHandler;
+use Zentra\Event;
 use Safe\Exceptions\FilesystemException;
 
 use function Safe\filemtime;
@@ -75,7 +75,7 @@ class CronTask extends CommonDBTM
     /** The automatic action was started and hasn't returned to the waiting state yet */
     public const STATE_RUNNING = 2;
 
-    /** The automatic action is run internally (run by GLPI via a hidden image src) */
+    /** The automatic action is run internally (run by ZENTRA via a hidden image src) */
     public const MODE_INTERNAL = 1;
     /** The automatic action is run with an external scheduler like cron or Task Scheduler */
     public const MODE_EXTERNAL = 2;
@@ -165,8 +165,8 @@ class CronTask extends CommonDBTM
         }
 
         if (
-            is_file(GLPI_CRON_DIR . '/all.lock')
-            || is_file(GLPI_CRON_DIR . '/' . $this->fields['name'] . '.lock')
+            is_file(ZENTRA_CRON_DIR . '/all.lock')
+            || is_file(ZENTRA_CRON_DIR . '/' . $this->fields['name'] . '.lock')
         ) {
             // Global lock
             return 2;
@@ -223,10 +223,10 @@ class CronTask extends CommonDBTM
             $this->end(null);
 
             // End of this cron
-            $_SESSION["glpicronuserrunning"] = '';
+            $_SESSION["zentracronuserrunning"] = '';
             self::release_lock();
             Toolbox::logInFile('cron', __('Action aborted') . "\n");
-            exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
+            exit(); // @phpstan-ignore zentra.forbidExit (CLI context)
         }
     }
 
@@ -276,7 +276,7 @@ class CronTask extends CommonDBTM
 
             $this->startlog = $log->add([
                 'crontasks_id'    => $this->fields['id'],
-                'date'            => $_SESSION['glpi_currenttime'],
+                'date'            => $_SESSION['zentra_currenttime'],
                 'content'         => $txt,
                 'crontasklogs_id' => 0,
                 'state'           => CronTaskLog::STATE_START,
@@ -368,7 +368,7 @@ class CronTask extends CommonDBTM
 
             $log = new CronTaskLog();
             $log->add(['crontasks_id'    => $this->fields['id'],
-                'date'            => $_SESSION['glpi_currenttime'],
+                'date'            => $_SESSION['zentra_currenttime'],
                 'content'         => $content,
                 'crontasklogs_id' => $this->startlog,
                 'state'           => $log_state,
@@ -395,7 +395,7 @@ class CronTask extends CommonDBTM
         $log     = new CronTaskLog();
         $content = Toolbox::substr($content, 0, 200);
         return $log->add(['crontasks_id'    => $this->fields['id'],
-            'date'            => $_SESSION['glpi_currenttime'],
+            'date'            => $_SESSION['zentra_currenttime'],
             'content'         => $content,
             'crontasklogs_id' => $this->startlog,
             'state'           => CronTaskLog::STATE_RUN,
@@ -423,7 +423,7 @@ class CronTask extends CommonDBTM
             // Core crontasks
             [
                 ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]],
-                ['NOT' => ['itemtype' => ['LIKE', 'GlpiPlugin\\\\' . '%']]],
+                ['NOT' => ['itemtype' => ['LIKE', 'ZentraPlugin\\\\' . '%']]],
             ],
         ];
         foreach (Plugin::getPlugins() as $plug) {
@@ -431,7 +431,7 @@ class CronTask extends CommonDBTM
             $itemtype_orwhere[] = [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plug) . '%']],
-                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']],
+                    ['itemtype' => ['LIKE', sprintf('ZentraPlugin\\\\%s\\\\', $plug) . '%']],
                 ],
             ];
         }
@@ -455,12 +455,12 @@ class CronTask extends CommonDBTM
             }
 
             // Get system lock
-            if (is_file(GLPI_CRON_DIR . '/all.lock')) {
+            if (is_file(ZENTRA_CRON_DIR . '/all.lock')) {
                 // Global lock
                 return false;
             }
             $locks = [];
-            foreach (glob(GLPI_CRON_DIR . '/*.lock') as $lock) {
+            foreach (glob(ZENTRA_CRON_DIR . '/*.lock') as $lock) {
                 $reg = [];
                 if (preg_match('!.*/(.*).lock$!', $lock, $reg)) {
                     $locks[] = $reg[1];
@@ -530,7 +530,7 @@ class CronTask extends CommonDBTM
 
         $alert_iterator = $DB->request(
             [
-                'FROM'      => 'glpi_alerts',
+                'FROM'      => 'zentra_alerts',
                 'WHERE'     => [
                     'items_id' => $this->fields['id'],
                     'itemtype' => CronTask::class,
@@ -559,7 +559,7 @@ class CronTask extends CommonDBTM
 
         $iterator = $DB->request(
             [
-                'FROM'   => 'glpi_crontasklogs',
+                'FROM'   => 'zentra_crontasklogs',
                 'WHERE'  => [
                     'crontasks_id' => $this->fields['id'],
                     'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
@@ -780,7 +780,7 @@ class CronTask extends CommonDBTM
     public static function getModeName($mode)
     {
         return match ($mode) {
-            self::MODE_INTERNAL => __('GLPI'),
+            self::MODE_INTERNAL => __('ZENTRA'),
             self::MODE_EXTERNAL => __('CLI'),
             default => '???',
         };
@@ -796,7 +796,7 @@ class CronTask extends CommonDBTM
         global $DB;
 
         // Change name every hour in case of MySQL blocking (it happens)
-        $name = "glpicron." . (int) (time() / HOUR_TIMESTAMP - 340000);
+        $name = "zentracron." . (int) (time() / HOUR_TIMESTAMP - 340000);
 
         if ($DB->getLock($name)) {
             self::$lockname = $name;
@@ -830,10 +830,10 @@ class CronTask extends CommonDBTM
      **/
     public static function launch($mode, $max = 1, $name = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // No cron in maintenance mode
-        if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
+        if (isset($CFG_ZENTRA['maintenance_mode']) && $CFG_ZENTRA['maintenance_mode']) {
             Toolbox::logInFile('cron', __('Maintenance mode enabled, running tasks is disabled') . "\n");
             return false;
         }
@@ -844,7 +844,7 @@ class CronTask extends CommonDBTM
             // If cron is launched in command line, and if memory is insufficient,
             // display a warning in the logs
             if (Toolbox::checkMemoryLimit() === 2) {
-                Toolbox::logInFile('cron', __('A minimum of 64 Mio is commonly required for GLPI.') . "\n");
+                Toolbox::logInFile('cron', __('A minimum of 64 Mio is commonly required for ZENTRA.') . "\n");
             }
             // If no task in CLI mode, call cron.php from command line is not really usefull ;)
             if (!countElementsInTable(self::getTable(), ['mode' => abs($mode)])) {
@@ -864,10 +864,10 @@ class CronTask extends CommonDBTM
                     $i
                 );
                 if ($crontask->getNeedToRun($mode, $name)) {
-                    $_SESSION["glpicronuserrunning"] = "cron_" . $crontask->fields['name'];
+                    $_SESSION["zentracronuserrunning"] = "cron_" . $crontask->fields['name'];
                     Session::loadEntity(0, true);
-                    $_SESSION["glpigroups"]          = [];
-                    $_SESSION["glpiname"]            = "cron";
+                    $_SESSION["zentragroups"]          = [];
+                    $_SESSION["zentraname"]            = "cron";
 
                     $function = sprintf('%s::cron%s', $crontask->fields['itemtype'], $crontask->fields['name']);
 
@@ -896,7 +896,7 @@ class CronTask extends CommonDBTM
                                         sprintf(
                                             __('Error during %s execution. Check in "%s" for more details.') . "\n",
                                             $crontask->fields['name'],
-                                            GLPI_LOG_DIR . '/php-errors.log'
+                                            ZENTRA_LOG_DIR . '/php-errors.log'
                                         )
                                     )
                                 );
@@ -989,7 +989,7 @@ class CronTask extends CommonDBTM
             }
         }
         if (
-            GLPI_SYSTEM_CRON
+            ZENTRA_SYSTEM_CRON
             && ($input['allowmode'] & self::MODE_EXTERNAL)
             && !isset($input['mode'])
         ) {
@@ -1000,7 +1000,7 @@ class CronTask extends CommonDBTM
     }
 
     /**
-     * Unregister tasks for a plugin (call by glpi after uninstall)
+     * Unregister tasks for a plugin (call by zentra after uninstall)
      *
      * @param string $plugin Name of the plugin
      *
@@ -1021,7 +1021,7 @@ class CronTask extends CommonDBTM
             'WHERE'  => [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plugin) . '%']],
-                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plugin) . '%']],
+                    ['itemtype' => ['LIKE', sprintf('ZentraPlugin\\\\%s\\\\', $plugin) . '%']],
                 ],
             ],
         ]);
@@ -1045,19 +1045,19 @@ class CronTask extends CommonDBTM
         global $DB;
 
         $nbstart = countElementsInTable(
-            'glpi_crontasklogs',
+            'zentra_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
                 'state'        => CronTaskLog::STATE_START,
             ]
         );
         $nbstop  = countElementsInTable(
-            'glpi_crontasklogs',
+            'zentra_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
                 'state'        => CronTaskLog::STATE_STOP,
             ]
         );
         $nberror = countElementsInTable(
-            'glpi_crontasklogs',
+            'zentra_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
                 'state'        => CronTaskLog::STATE_ERROR,
             ]
@@ -1144,14 +1144,14 @@ class CronTask extends CommonDBTM
         $start = (int) ($_GET["start"] ?? 0);
 
         $criteria = [
-            'FROM'   => 'glpi_crontasklogs',
+            'FROM'   => 'zentra_crontasklogs',
             'WHERE'  => [
                 'crontasks_id' => $this->fields['id'],
                 'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
             ],
             'ORDER'  => 'id DESC',
             'START'  => $start,
-            'LIMIT'  => (int) $_SESSION['glpilist_limit'],
+            'LIMIT'  => (int) $_SESSION['zentralist_limit'],
         ];
         $iterator = $DB->request($criteria);
         $count_criteria = $criteria;
@@ -1177,7 +1177,7 @@ class CronTask extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
@@ -1219,7 +1219,7 @@ TWIG, ['msg' => __('Last run list')]);
 
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_crontasklogs',
+            'FROM'   => 'zentra_crontasklogs',
             'WHERE'  => [
                 'OR' => [
                     'id'              => $logid,
@@ -1535,7 +1535,7 @@ TWIG, ['msg' => __('Last run list')]);
             $maxlifetime = WEEK_TIMESTAMP;
         }
         $nb = 0;
-        foreach (glob(GLPI_SESSION_DIR . "/sess_*") as $filename) {
+        foreach (glob(ZENTRA_SESSION_DIR . "/sess_*") as $filename) {
             if ((filemtime($filename) + $maxlifetime) < time()) {
                 // Delete session file if not delete before
                 try {
@@ -1585,10 +1585,10 @@ TWIG, ['msg' => __('Last run list')]);
         $firstdate = date("Ymd", time() - ($task->fields['param'] * DAY_TIMESTAMP)); // compute current date - param as days and format it like YYYYMMDD
 
         // first look for bak to delete
-        $dir       = GLPI_LOG_DIR . "/*.bak";
+        $dir       = ZENTRA_LOG_DIR . "/*.bak";
         $findfiles = glob($dir);
         foreach ($findfiles as $file) {
-            $shortfile = str_replace(GLPI_LOG_DIR . '/', '', $file);
+            $shortfile = str_replace(ZENTRA_LOG_DIR . '/', '', $file);
             // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
             $match = null;
             if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
@@ -1607,13 +1607,13 @@ TWIG, ['msg' => __('Last run list')]);
         }
 
         // second look for log to archive
-        $dir       = GLPI_LOG_DIR . "/*.log";
+        $dir       = ZENTRA_LOG_DIR . "/*.log";
         $findfiles = glob($dir);
         foreach ($findfiles as $file) {
-            $shortfile    = str_replace(GLPI_LOG_DIR . '/', '', $file);
+            $shortfile    = str_replace(ZENTRA_LOG_DIR . '/', '', $file);
             // rename the file
             $newfilename  = $file . "." . date("Ymd", time()) . ".bak"; // will add to filename a string with format YYYYMMDD (= current date)
-            $shortnewfile = str_replace(GLPI_LOG_DIR . '/', '', $newfilename);
+            $shortnewfile = str_replace(ZENTRA_LOG_DIR . '/', '', $newfilename);
 
             $task->addVolume(1);
             if (!file_exists($newfilename) && rename($file, $newfilename)) { // @phpstan-ignore theCodingMachineSafe.function
@@ -1648,8 +1648,8 @@ TWIG, ['msg' => __('Last run list')]);
         // max time to keep the file session
         $maxlifetime = HOUR_TIMESTAMP;
         $nb          = 0;
-        foreach (glob(GLPI_GRAPH_DIR . "/*") as $filename) {
-            if (basename($filename) === "remove.txt" && is_dir(GLPI_ROOT . '/.git')) {
+        foreach (glob(ZENTRA_GRAPH_DIR . "/*") as $filename) {
+            if (basename($filename) === "remove.txt" && is_dir(ZENTRA_ROOT . '/.git')) {
                 continue;
             }
             if ((filemtime($filename) + $maxlifetime) < time()) {
@@ -1693,7 +1693,7 @@ TWIG, ['msg' => __('Last run list')]);
         $maxlifetime = HOUR_TIMESTAMP;
         $nb          = 0;
 
-        $dir = new RecursiveDirectoryIterator(GLPI_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS);
+        $dir = new RecursiveDirectoryIterator(ZENTRA_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new RecursiveIteratorIterator(
             $dir,
             RecursiveIteratorIterator::CHILD_FIRST
@@ -1887,10 +1887,10 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function callCronForce()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (self::mustRunWebTasks()) {
-            $path = htmlescape($CFG_GLPI['root_doc'] . "/front/cron.php");
+            $path = htmlescape($CFG_ZENTRA['root_doc'] . "/front/cron.php");
             echo "<div style=\"background-image: url('$path');\"></div>";
         }
 
@@ -1905,7 +1905,7 @@ TWIG, ['msg' => __('Last run list')]);
     public static function mustRunWebTasks(): bool
     {
         $web_tasks_count = countElementsInTable(self::getTable(), [
-            'mode'  => self::MODE_INTERNAL, // "GLPI" mode
+            'mode'  => self::MODE_INTERNAL, // "ZENTRA" mode
             'state' => self::STATE_WAITING,
         ]);
 
@@ -1919,17 +1919,17 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function callCron()
     {
-        if (isset($_SESSION["glpicrontimer"])) {
+        if (isset($_SESSION["zentracrontimer"])) {
             // call static function callcron() every 5min
-            if ((time() - $_SESSION["glpicrontimer"]) > 300) {
+            if ((time() - $_SESSION["zentracrontimer"]) > 300) {
                 if (self::callCronForce()) {
                     // Restart timer
-                    $_SESSION["glpicrontimer"] = time();
+                    $_SESSION["zentracrontimer"] = time();
                 }
             }
         } else {
             // Start timer
-            $_SESSION["glpicrontimer"] = time();
+            $_SESSION["zentracrontimer"] = time();
         }
     }
 
@@ -1944,17 +1944,17 @@ TWIG, ['msg' => __('Last run list')]);
      */
     public static function showSearchStatusArea()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $crontask = new self();
         $warnings = [];
         if ($crontask->getNeedToRun(self::MODE_INTERNAL)) {
-            $warnings[] = __("You have at least one automatic action configured in GLPI mode, we advise you to switch to CLI mode.");
+            $warnings[] = __("You have at least one automatic action configured in ZENTRA mode, we advise you to switch to CLI mode.");
         }
 
         if (
-            $CFG_GLPI['cron_limit'] < countElementsInTable(
-                'glpi_crontasks',
+            $CFG_ZENTRA['cron_limit'] < countElementsInTable(
+                'zentra_crontasks',
                 ['frequency' => MINUTE_TIMESTAMP]
             )
         ) {

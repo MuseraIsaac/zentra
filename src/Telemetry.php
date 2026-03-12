@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
@@ -48,7 +48,7 @@ use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
-class Telemetry extends CommonGLPI
+class Telemetry extends CommonZENTRA
 {
     public static function getTypeName($nb = 0)
     {
@@ -63,7 +63,7 @@ class Telemetry extends CommonGLPI
     public static function getTelemetryInfos(bool $hide_sensitive_data = false)
     {
         $data = [
-            'glpi'   => self::grabGlpiInfos($hide_sensitive_data),
+            'zentra'   => self::grabZentraInfos($hide_sensitive_data),
             'system' => [
                 'db'           => self::grabDbInfos($hide_sensitive_data),
                 'web_server'   => self::grabWebserverInfos($hide_sensitive_data),
@@ -76,20 +76,20 @@ class Telemetry extends CommonGLPI
     }
 
     /**
-     * Grab GLPI part information
+     * Grab ZENTRA part information
      *
      * @return array
      */
-    public static function grabGlpiInfos(bool $hide_sensitive_data = false)
+    public static function grabZentraInfos(bool $hide_sensitive_data = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $glpi = [
+        $zentra = [
             'uuid'               => $hide_sensitive_data ? '********' : self::getInstanceUuid(),
-            'version'            => $hide_sensitive_data ? 'x.y.z' : GLPI_VERSION,
+            'version'            => $hide_sensitive_data ? 'x.y.z' : ZENTRA_VERSION,
             'plugins'            => [],
-            'default_language'   => $CFG_GLPI['language'],
-            'install_mode'       => GLPI_INSTALL_MODE,
+            'default_language'   => $CFG_ZENTRA['language'],
+            'install_mode'       => ZENTRA_INSTALL_MODE,
             'usage'              => [
                 'avg_entities'          => self::getAverage(Entity::class),
                 'avg_computers'         => self::getAverage(Computer::class),
@@ -108,21 +108,21 @@ class Telemetry extends CommonGLPI
 
         $plugins = new Plugin();
         foreach ($plugins->getList(['directory', 'version']) as $plugin) {
-            $glpi['plugins'][] = [
+            $zentra['plugins'][] = [
                 'key'       => $plugin['directory'],
                 'version'   => $hide_sensitive_data ? 'x.y.z' : $plugin['version'],
             ];
         }
 
-        if ($CFG_GLPI['use_notifications']) {
+        if ($CFG_ZENTRA['use_notifications']) {
             foreach (array_keys(Notification_NotificationTemplate::getModes()) as $mode) {
-                if ($CFG_GLPI['notifications_' . $mode]) {
-                    $glpi['usage']['notifications'][] = $mode;
+                if ($CFG_ZENTRA['notifications_' . $mode]) {
+                    $zentra['usage']['notifications'][] = $mode;
                 }
             }
         }
 
-        return $glpi;
+        return $zentra;
     }
 
     /**
@@ -160,27 +160,27 @@ class Telemetry extends CommonGLPI
 
     /**
      * Grab web server part information.
-     * As we cannot rely on `$_SERVER` information on CLI context, we have to get to do a request to the GLPI webserver
+     * As we cannot rely on `$_SERVER` information on CLI context, we have to get to do a request to the ZENTRA webserver
      * and get the information from its response, if it is available.
      *
      * @return array
      */
     public static function grabWebserverInfos(bool $hide_sensitive_data = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $server = [
             'engine'  => '',
             'version' => '',
         ];
 
-        if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
+        if (!filter_var(gethostbyname(parse_url($CFG_ZENTRA['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
             // Do not try to get headers if hostname cannot be resolved
             return $server;
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $CFG_GLPI['url_base']);
+        curl_setopt($ch, CURLOPT_URL, $CFG_ZENTRA['url_base']);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -304,17 +304,17 @@ class Telemetry extends CommonGLPI
      */
     public static function cronTelemetry($task): ?int
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $data = self::getTelemetryInfos();
         $infos = json_encode(['data' => $data]);
 
-        $url = GLPI_TELEMETRY_URI . '/telemetry';
+        $url = ZENTRA_TELEMETRY_URI . '/telemetry';
         $opts = [
             CURLOPT_POSTFIELDS      => $infos,
             CURLOPT_HTTPHEADER      => ['Content-Type:application/json'],
         ];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+        if (in_array(ZENTRANetwork::class, $CFG_ZENTRA['proxy_exclusions'])) {
             $opts['proxy_excluded'] = true;
         }
 
@@ -382,16 +382,16 @@ class Telemetry extends CommonGLPI
      */
     public static function getViewLink()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $out = "<a id='view_telemetry' href='" . htmlescape($CFG_GLPI['root_doc']) . "/ajax/telemetry.php' class='btn btn-sm btn-info'>
+        $out = "<a id='view_telemetry' href='" . htmlescape($CFG_ZENTRA['root_doc']) . "/ajax/telemetry.php' class='btn btn-sm btn-info'>
          " . __s('See what would be sent...') . "
       </a>";
         $out .= Html::scriptBlock("
          $('#view_telemetry').on('click', function(e) {
             e.preventDefault();
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                title: _.escape('" . jsescape(__('Telemetry data')) . "'),
                url: $('#view_telemetry').attr('href'),
                dialogclass: 'modal-lg'
@@ -409,7 +409,7 @@ class Telemetry extends CommonGLPI
     {
         global $DB;
         $DB->update(
-            'glpi_crontasks',
+            'zentra_crontasks',
             ['state' => 1],
             ['name' => 'telemetry']
         );
@@ -424,7 +424,7 @@ class Telemetry extends CommonGLPI
     {
         global $DB;
         $DB->update(
-            'glpi_crontasks',
+            'zentra_crontasks',
             ['state' => 0],
             ['name' => 'telemetry']
         );
@@ -440,7 +440,7 @@ class Telemetry extends CommonGLPI
         global $DB;
         $iterator = $DB->request([
             'SELECT' => ['state'],
-            'FROM'   => 'glpi_crontasks',
+            'FROM'   => 'zentra_crontasks',
             'WHERE'  => [
                 'name'   => 'telemetry',
                 'state' => 1,
@@ -464,10 +464,10 @@ class Telemetry extends CommonGLPI
             " . __s('Send "usage statistics"') . "
          </label>
       </div>";
-        $out .= "<strong>" . __s("We need your help to improve GLPI and the plugins ecosystem!") . "</strong><br><br>";
-        $out .= __s("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . "<br>";
-        $out .= __s("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "<br><br>";
-        $out .= __s("Let us know your usage to improve future versions of GLPI and its plugins!") . "<br>";
+        $out .= "<strong>" . __s("We need your help to improve ZENTRA and the plugins ecosystem!") . "</strong><br><br>";
+        $out .= __s("Since ZENTRA 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . "<br>";
+        $out .= __s("Once sent, usage statistics are aggregated and made available to a broad range of ZENTRA developers.") . "<br><br>";
+        $out .= __s("Let us know your usage to improve future versions of ZENTRA and its plugins!") . "<br>";
 
         $out .= '<span class="mt-2">' . self::getViewLink() . '</span>';
         return $out;
@@ -480,12 +480,12 @@ class Telemetry extends CommonGLPI
      */
     public static function showReference()
     {
-        $out = "<h3>" . __s('Reference your GLPI') . "</h3>";
+        $out = "<h3>" . __s('Reference your ZENTRA') . "</h3>";
         $out .= sprintf(
-            __s("Besides, if you appreciate GLPI and its community, please take a minute to reference your organization by filling %1\$s"),
+            __s("Besides, if you appreciate ZENTRA and its community, please take a minute to reference your organization by filling %1\$s"),
             sprintf(
                 "
-                    <a href='" . htmlescape(GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" . self::getRegistrationUuid()) . "'
+                    <a href='" . htmlescape(ZENTRA_TELEMETRY_URI . "/reference?showmodal&uuid=" . self::getRegistrationUuid()) . "'
                        class='btn btn-sm btn-info' target='_blank'>
                         <i class='ti ti-writing-sign me-1'></i>
                         %s

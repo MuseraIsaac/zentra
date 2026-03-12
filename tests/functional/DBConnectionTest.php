@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use Glpi\Tests\GLPITestCase;
+use Zentra\Tests\ZENTRATestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DBConnectionTest extends GLPITestCase
+class DBConnectionTest extends ZENTRATestCase
 {
     public static function setConnectionCharsetProvider()
     {
@@ -81,9 +81,9 @@ class DBConnectionTest extends GLPITestCase
         return [
             [
                 'host'                     => 'localhost',
-                'user'                     => 'glpi',
+                'user'                     => 'zentra',
                 'password'                 => 'secret',
-                'name'                     => 'glpi_db',
+                'name'                     => 'zentra_db',
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => false,
@@ -93,9 +93,9 @@ class DBConnectionTest extends GLPITestCase
 <?php
 class DB extends DBmysql {
    public $dbhost = 'localhost';
-   public $dbuser = 'glpi';
+   public $dbuser = 'zentra';
    public $dbpassword = 'secret';
-   public $dbdefault = 'glpi_db';
+   public $dbdefault = 'zentra_db';
 }
 
 PHP,
@@ -189,9 +189,9 @@ PHP,
         return [
             [
                 'host'                     => 'slave.db.domain.org',
-                'user'                     => 'glpi',
+                'user'                     => 'zentra',
                 'password'                 => 'secret',
-                'name'                     => 'glpi_db',
+                'name'                     => 'zentra_db',
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => false,
@@ -202,9 +202,9 @@ PHP,
 class DBSlave extends DBmysql {
    public $slave = true;
    public $dbhost = 'slave.db.domain.org';
-   public $dbuser = 'glpi';
+   public $dbuser = 'zentra';
    public $dbpassword = 'secret';
-   public $dbdefault = 'glpi_db';
+   public $dbdefault = 'zentra_db';
 }
 
 PHP,
@@ -308,8 +308,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$prop        = ['e'];
    public \$version     = 9.4;
 }
@@ -326,8 +326,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$prop        = array (
   0 => 'a',
   1 => 'b',
@@ -345,8 +345,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'foobar';
 }
 PHP,
@@ -354,8 +354,8 @@ PHP,
 <?php
 class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'foobar';
 }
 PHP,
@@ -371,8 +371,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'barfoo';
    public \$use_utf8mb4 = false;
    public \$version = 10.2;
@@ -386,8 +386,8 @@ PHP,
 <?php
 class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'barfoo';
    public \$use_utf8mb4 = false;
    public \$version = 10.2;
@@ -405,8 +405,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'foobar';
 }
 PHP,
@@ -414,8 +414,8 @@ PHP,
 <?php
 class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'foobar';
 }
 PHP,
@@ -429,8 +429,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'barfoo';
    public \$version = 10.2;
 }
@@ -439,8 +439,8 @@ PHP,
 <?php
 class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
+   public \$dbuser      = 'zentra';
+   public \$dbdefault   = 'zentra';
    public \$test        = 'foobar';
 }
 PHP,

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@
          'full': true,
          'users': [],
       },
-      'entities_id': session('glpiactive_entity'),
+      'entities_id': session('zentraactive_entity'),
       'uploads': [],
       'rows': 3,
       'readonly': false,
@@ -443,7 +443,7 @@
             If `options` is not iterable, it means that this macro was used
             with its previous signature (name, value, label, options = {}).
             We get the `options` value from the extra positional arguments (available in `varargs`).
-            @TODO Add a deprecation in GLPI 11.1.
+            @TODO Add a deprecation in ZENTRA 11.1.
          #}
         {% set options = varargs[0]|default({}) %}
     {% endif %}
@@ -452,7 +452,7 @@
 {% endmacro %}
 
 {% macro csrfField() %}
-    {{ _self.hiddenField('_glpi_csrf_token', csrf_token()) }}
+    {{ _self.hiddenField('_zentra_csrf_token', csrf_token()) }}
 {% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
@@ -922,7 +922,7 @@
 
    {% if options.full_width %}
       {% set options = options|merge({
-         field_class: 'col-12 glpi-full-width',
+         field_class: 'col-12 zentra-full-width',
       }) %}
    {% endif %}
 
@@ -1027,8 +1027,8 @@
     }|merge(options)) }}
     <script>
         $(() => {
-            const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.GLPI.Monaco.getSingleLineEditorOptions() : {};
-            window.GLPI.Monaco.createEditor('{{ code_container_id|e('js') }}', '{{ options.language|e('js') }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
+            const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.ZENTRA.Monaco.getSingleLineEditorOptions() : {};
+            window.ZENTRA.Monaco.createEditor('{{ code_container_id|e('js') }}', '{{ options.language|e('js') }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
                 $('#{{ code_container_id|e('css')|e('js') }}').closest('form').on('formdata', (e) => {
                     const editors = window.monaco.editor.getEditors().filter((editor) => {
                         return editor._domElement.id === '{{ code_container_id|e('js') }}';
@@ -1049,7 +1049,7 @@
         backdrop: true,
     }|merge(options) %}
     {% set custom_icon_prefix = constant(
-        'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
+        'Zentra\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
     ) %}
     {% set field %}
         {% set container_id = "container-" ~ random() %}
@@ -1059,7 +1059,7 @@
                 name="{{ name }}"
                 type="hidden"
                 value="{{ value }}"
-                data-glpi-icon-picker-value
+                data-zentra-icon-picker-value
             >
 
             {# Display the illustration, trigger the modal on click #}
@@ -1070,15 +1070,15 @@
                 aria-label="{{ __("Select an illustration") }}"
                 data-bs-toggle="modal"
                 data-bs-target="#{{ modal_id }}"
-                data-glpi-icon-picker-value-preview
+                data-zentra-icon-picker-value-preview
             >
                 <div class="card-body aspect-ratio-1">
                     {% set is_custom_file = value starts with custom_icon_prefix %}
                     <div
                         {% if is_custom_file %}
-                            data-glpi-icon-picker-value-preview-custom
+                            data-zentra-icon-picker-value-preview-custom
                         {% else %}
-                            data-glpi-icon-picker-value-preview-native
+                            data-zentra-icon-picker-value-preview-native
                         {% endif %}
                     >
                         {{ render_illustration(value, 100) }}
@@ -1090,14 +1090,14 @@
                     {% if is_custom_file %}
                         <div
                             class="d-none"
-                            data-glpi-icon-picker-value-preview-native
+                            data-zentra-icon-picker-value-preview-native
                         >
                            {{ render_illustration('', 100) }}
                         </div>
                     {% else %}
                         <div
                             class="d-none"
-                            data-glpi-icon-picker-value-preview-custom
+                            data-zentra-icon-picker-value-preview-custom
                         >
                            {{ render_illustration(custom_icon_prefix, 100) }}
                         </div>
@@ -1117,7 +1117,7 @@
                     const module = await import(
                         "/js/modules/IllustrationPicker/Controller.js"
                     );
-                    new module.GlpiIllustrationPickerController(
+                    new module.ZentraIllustrationPickerController(
                         document.getElementById('{{ container_id|e('js') }}'),
                         document.getElementById('{{ modal_id|e('js') }}'),
                         "{{ custom_icon_prefix|e('js') }}",

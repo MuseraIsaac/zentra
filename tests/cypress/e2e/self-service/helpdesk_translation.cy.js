@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ function addHelpdeskTranslations(tile_title, tile_description) {
 
     // Find row index in helpdeskTranslationsRows where the category is the tile title
     cy.get('@helpdeskTranslationsRows').each((row, index) => {
-        if (row.find('td[aria-label="Category"]').text().trim() === `GLPI page: ${tile_title}`) {
+        if (row.find('td[aria-label="Category"]').text().trim() === `ZENTRA page: ${tile_title}`) {
             cy.wrap(index).as('helpdeskTileRowIndex');
         }
     });
@@ -96,15 +96,15 @@ describe('Edit helpdesk translations', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
 
-        cy.createWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', {
+        cy.createWithAPI('Zentra\\Helpdesk\\Tile\\ZentraPageTile', {
             'title': tile_title,
             'description': tile_description,
             'page': 'faq',
         }).as('tileId').then((tile_id) => {
-            cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+            cy.createWithAPI('Zentra\\Helpdesk\\Tile\\Item_Tile', {
                 'itemtype_item': 'Entity',
                 'items_id_item': 1,
-                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                'itemtype_tile': 'Zentra\\Helpdesk\\Tile\\ZentraPageTile',
                 'items_id_tile': tile_id,
             });
         });
@@ -141,7 +141,7 @@ describe('Edit helpdesk translations', () => {
 
         // Remove the created tile
         cy.get('@tileId').then((tile_id) => {
-            cy.deleteWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile_id);
+            cy.deleteWithAPI('Zentra\\Helpdesk\\Tile\\ZentraPageTile', tile_id);
         });
     });
 
@@ -167,12 +167,12 @@ describe('Edit helpdesk translations', () => {
         cy.get('@modal').should('not.exist');
 
         // Check columns values
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(0).contains('Français');
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(1).findByRole('progressbar').contains('0 %');
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(2).invoke('text').then((text) => {
+        cy.get('#zentra-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(0).contains('Français');
+        cy.get('#zentra-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(1).findByRole('progressbar').contains('0 %');
+        cy.get('#zentra-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(2).invoke('text').then((text) => {
             expect(parseInt(text.trim())).to.be.greaterThan(0);
         });
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(3).invoke('text').then((text) => {
+        cy.get('#zentra-helpdesk-translations-languages').find('tbody:first>tr:first>td').eq(3).invoke('text').then((text) => {
             expect(text.trim()).to.equal('0');
         });
     });
@@ -197,7 +197,7 @@ describe('Edit helpdesk translations', () => {
         // Go to the helpdesk home page
         cy.visit('/');
 
-        // Check the translations with GLPI default language
+        // Check the translations with ZENTRA default language
         cy.findByTestId('quick-access').contains(tile_title);
     });
 
@@ -314,7 +314,7 @@ describe('Edit helpdesk translations', () => {
 
         // Simulate changing a default value by updating a tile title
         cy.get('@tileId').then((tile_id) => {
-            cy.updateWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile_id, {
+            cy.updateWithAPI('Zentra\\Helpdesk\\Tile\\ZentraPageTile', tile_id, {
                 'title': 'Modified Helpdesk Tile Title'
             });
         });
@@ -323,7 +323,7 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/front/config.form.php');
 
         // Find french row
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr').each((row) => {
+        cy.get('#zentra-helpdesk-translations-languages').find('tbody:first>tr').each((row) => {
             cy.wrap(row).findByRole('button', { name: 'Edit translation' }).then((button) => {
                 if (button.text().trim() === 'Français') {
                     cy.wrap(row).as('frenchRow');
@@ -345,7 +345,7 @@ describe('Edit helpdesk translations', () => {
         // Go to the French translation page and check that the translation is marked as "to review"
         cy.get('@frenchRow').findByRole('button', { name: 'Edit translation' }).click();
         cy.get('@helpdeskTranslationsRows').each((row, index) => {
-            if (row.find('td[aria-label="Category"]').text().trim() === `GLPI page: ${tile_title}`) {
+            if (row.find('td[aria-label="Category"]').text().trim() === `ZENTRA page: ${tile_title}`) {
                 cy.wrap(index).as('helpdeskTileRowIndex');
             }
         });

@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,18 +36,18 @@ let oauth_token = null;
 /**
  * @memberof Cypress.Chainable.prototype
  * @method login
- * @description Login to GLPI. This command will also reuse the session for subsequent calls when possible rather than logging in again.
+ * @description Login to ZENTRA. This command will also reuse the session for subsequent calls when possible rather than logging in again.
  * @param {string} [username=e2e_tests] - Username
- * @param {string} [password=glpi] - Password
+ * @param {string} [password=zentra] - Password
  * @returns Chainable
  */
-Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
+Cypress.Commands.add('login', (username = 'e2e_tests', password = 'zentra') => {
     cy.clearAllCookies();
     cy.request('index.php').its('body').then((body) => {
         const $html = Cypress.$(body);
 
         // Parse page
-        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        const csrf = $html.find('input[name=_zentra_csrf_token]').val();
         const username_input = $html.find('#login_name').prop('name');
         const password_input = $html.find('#login_password').prop('name');
 
@@ -59,7 +59,7 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             body: {
                 [username_input]: username,
                 [password_input]: password,
-                _glpi_csrf_token: csrf,
+                _zentra_csrf_token: csrf,
             }
         });
     });
@@ -68,7 +68,7 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
 /**
  * @memberof Cypress.Chainable.prototype
  * @method logout
- * @description Logout of GLPI
+ * @description Logout of ZENTRA
  * @returns Chainable
  */
 Cypress.Commands.add('logout', () => {
@@ -80,7 +80,7 @@ Cypress.Commands.add('getCsrfToken', () => {
     return cy.request('/front/preference.php').its('body').then((body) => {
         // Parse page
         const $html = Cypress.$(body);
-        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        const csrf = $html.find('input[name=_zentra_csrf_token]').val();
         return csrf;
     });
 });
@@ -88,7 +88,7 @@ Cypress.Commands.add('getCsrfToken', () => {
 /**
  * @memberof Cypress.Chainable.prototype
  * @method changeProfile
- * @description Change the profile of the current user. Only supports the default GLPI profiles.
+ * @description Change the profile of the current user. Only supports the default ZENTRA profiles.
  * @param {string} profile - Profile to change to
  */
 Cypress.Commands.add('changeProfile', (profile) => {
@@ -112,7 +112,7 @@ Cypress.Commands.add('changeProfile', (profile) => {
             form: true,
             body: {
                 id: profile_id,
-                _glpi_csrf_token: token,
+                _zentra_csrf_token: token,
             }
         });
     });
@@ -121,7 +121,7 @@ Cypress.Commands.add('changeProfile', (profile) => {
 Cypress.Commands.add('changeEntity', (entity, is_recursive = false) => {
     cy.getCsrfToken().then((token) => {
         const params = {
-            _glpi_csrf_token: token,
+            _zentra_csrf_token: token,
         };
 
         if (entity == 'all') {
@@ -276,10 +276,10 @@ Cypress.Commands.add('selectDate', {
 
 /**
  * @memberof Cypress.Chainable.prototype
- * @method blockGLPIDashboards
+ * @method blockZENTRADashboards
  * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
  */
-Cypress.Commands.add('blockGLPIDashboards', () => {
+Cypress.Commands.add('blockZENTRADashboards', () => {
     // Intercepts need defined in reverse order
     // Intercept all other requests to /ajax/dashboard.php and respond with an empty string
     cy.intercept({path: '/ajax/dashboard.php**'}, { body: '' });
@@ -419,7 +419,7 @@ Cypress.Commands.add("initApi", () => {
     return cy.request({
         auth: {
             'user': 'e2e_tests',
-            'pass': 'glpi',
+            'pass': 'zentra',
         },
         method: 'POST',
         url: '/apirest.php/initSession',
@@ -454,7 +454,7 @@ Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoi
 /**
  * @memberof Cypress.Chainable.prototype
  * @method enableDebugMode
- * @description Enable debug mode in GLPI
+ * @description Enable debug mode in ZENTRA
  */
 Cypress.Commands.add('enableDebugMode', () => {
     if (Cypress.$('#debug-toolbar-applet').length > 0) {
@@ -468,7 +468,7 @@ Cypress.Commands.add('enableDebugMode', () => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': csrf,
+                'X-Zentra-Csrf-Token': csrf,
             },
             body: {
                 'debug': 'on',
@@ -482,7 +482,7 @@ Cypress.Commands.add('enableDebugMode', () => {
 /**
  * @memberof Cypress.Chainable.prototype
  * @method disableDebugMode
- * @description Disable debug mode in GLPI
+ * @description Disable debug mode in ZENTRA
  */
 Cypress.Commands.add('disableDebugMode', () => {
     if (Cypress.$('#debug-toolbar-applet').length === 0) {
@@ -496,7 +496,7 @@ Cypress.Commands.add('disableDebugMode', () => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': csrf,
+                'X-Zentra-Csrf-Token': csrf,
             },
             body: {
                 'debug': 'off',
@@ -523,7 +523,7 @@ Cypress.Commands.add('openEntitySelector', () => {
 // It would be better to trigger real events like mousedown/mousemove/moveup or
 // drag/dragstart/drop but I was no able to get it working with the html5sortable lib.
 //
-// Note: this also require to manually add `data-glpi-draggable-item` to draggable
+// Note: this also require to manually add `data-zentra-draggable-item` to draggable
 // items as the lib doesn't give us any way to find the draggable container afaik.
 Cypress.Commands.add('startToDrag', {prevSubject: true}, (subject) => {
     cy.wrap(subject).find(`[draggable=true]`).as('drag_source');
@@ -532,8 +532,8 @@ Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
     cy.wrap(subject).find(`[draggable=true]`).as('drag_destination');
     cy.getMany(["@drag_source", "@drag_destination"]).then(([$source, $destination]) => {
         // move manually
-        $source.closest('[data-glpi-draggable-item]').detach().insertAfter(
-            $destination.closest('[data-glpi-draggable-item]')
+        $source.closest('[data-zentra-draggable-item]').detach().insertAfter(
+            $destination.closest('[data-zentra-draggable-item]')
         );
     });
 });
@@ -609,14 +609,14 @@ Cypress.Commands.add('getRowCells', {prevSubject: true}, (subject) => {
     });
 });
 
-Cypress.Commands.add('glpiAPIRequest', ({
+Cypress.Commands.add('zentraAPIRequest', ({
     method = 'GET',
     endpoint = '',
     headers = {},
     body = null,
     allow_failure = false,
     username = 'e2e_tests',
-    password = 'glpi',
+    password = 'zentra',
 }) => {
     function getRequestOptions() {
         return {

@@ -1,10 +1,10 @@
-Return-Path: normal@glpi-project.org
-Received: from mail.glpi-project.org (localhost [127.0.0.1])
-    by mail.glpi-project.org (Postfix) with ESMTP id B74527E805E8
-    for <unittests@glpi-project.org>; Wed,  3 Apr 2019 11:48:35 +0200 (CEST)
+Return-Path: normal@zentra-project.org
+Received: from mail.zentra-project.org (localhost [127.0.0.1])
+    by mail.zentra-project.org (Postfix) with ESMTP id B74527E805E8
+    for <unittests@zentra-project.org>; Wed,  3 Apr 2019 11:48:35 +0200 (CEST)
 Date: Thu, 22 Jan 2021 15:26:54 +0100 (CET)
-From: "Normal User" <normal@glpi-project.org>
-To: unittests@glpi-project.org
+From: "Normal User" <normal@zentra-project.org>
+To: unittests@zentra-project.org
 Message-ID: <50BFB6E5-3040-4535-9A10-3164C726A37B@FRY09565>
 Subject: 25 - Test attachment with invalid chars for OS
 MIME-Version: 1.0

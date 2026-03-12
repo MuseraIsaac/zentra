@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/ruledictionnarysoftwarecollection.class.php */
 
@@ -113,14 +113,14 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $this->assertSame(
             0,
             countElementsInTable(
-                'glpi_softwarelicenses',
+                'zentra_softwarelicenses',
                 ['softwares_id' => $old_software->getID()]
             )
         );
         $this->assertSame(
             5,
             countElementsInTable(
-                'glpi_softwarelicenses',
+                'zentra_softwarelicenses',
                 ['softwares_id' => $new_software->getID()]
             )
         );
@@ -164,25 +164,25 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         //Softwares newly put in trash
         $this->assertSame(
             1,
-            countElementsInTable('glpi_softwares', ['name' => 'Soft1', 'is_deleted' => 1])
+            countElementsInTable('zentra_softwares', ['name' => 'Soft1', 'is_deleted' => 1])
         );
         $this->assertSame(
             1,
-            countElementsInTable('glpi_softwares', ['name' => 'Soft2', 'is_deleted' => 1])
+            countElementsInTable('zentra_softwares', ['name' => 'Soft2', 'is_deleted' => 1])
         );
         $this->assertSame(
             1,
-            countElementsInTable('glpi_softwares', ['name' => 'Soft4', 'is_deleted' => 1])
+            countElementsInTable('zentra_softwares', ['name' => 'Soft4', 'is_deleted' => 1])
         );
 
         //Software not affected
         $this->assertSame(
             0,
-            countElementsInTable('glpi_softwares', ['name' => '_test_soft', 'is_deleted' => 1])
+            countElementsInTable('zentra_softwares', ['name' => '_test_soft', 'is_deleted' => 1])
         );
         $this->assertSame(
             0,
-            countElementsInTable('glpi_softwares', ['name' => 'Soft5', 'is_deleted' => 0])
+            countElementsInTable('zentra_softwares', ['name' => 'Soft5', 'is_deleted' => 0])
         );
     }
 

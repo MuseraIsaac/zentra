@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * NetworkName Class
@@ -130,7 +130,7 @@ class NetworkName extends FQDNLabel
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_fqdns',
+            'table'              => 'zentra_fqdns',
             'field'              => 'fqdn',
             'name'               => FQDN::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -138,7 +138,7 @@ class NetworkName extends FQDNLabel
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_ipaddresses',
+            'table'              => 'zentra_ipaddresses',
             'field'              => 'name',
             'name'               => IPAddress::getTypeName(1),
             'joinparams'         => [
@@ -180,7 +180,7 @@ class NetworkName extends FQDNLabel
     {
         $tab[] = [
             'id'                  => '126',
-            'table'               => 'glpi_ipaddresses',
+            'table'               => 'zentra_ipaddresses',
             'field'               => 'name',
             'name'                => __('IP'),
             'forcegroupby'        => true,
@@ -196,7 +196,7 @@ class NetworkName extends FQDNLabel
 
         $tab[] = [
             'id'                  => '127',
-            'table'               => 'glpi_networknames',
+            'table'               => 'zentra_networknames',
             'field'               => 'name',
             'name'                => self::getTypeName(Session::getPluralNumber()),
             'forcegroupby'        => true,
@@ -206,7 +206,7 @@ class NetworkName extends FQDNLabel
 
         $tab[] = [
             'id'                  => '128',
-            'table'               => 'glpi_networkaliases',
+            'table'               => 'zentra_networkaliases',
             'field'               => 'name',
             'name'                => NetworkAlias::getTypeName(Session::getPluralNumber()),
             'forcegroupby'        => true,
@@ -214,7 +214,7 @@ class NetworkName extends FQDNLabel
             'joinparams'          => [
                 'jointype'   => 'child',
                 'beforejoin' => [
-                    'table'      => 'glpi_networknames',
+                    'table'      => 'zentra_networknames',
                     'joinparams' => $joinparams,
                 ],
             ],
@@ -279,7 +279,7 @@ class NetworkName extends FQDNLabel
                 // Update IPAddress
                 foreach (
                     $DB->request([
-                        'FROM' => 'glpi_ipaddresses',
+                        'FROM' => 'zentra_ipaddresses',
                         'WHERE' => [
                             'itemtype' => NetworkName::class,
                             'items_id' => $this->getID(),
@@ -524,37 +524,37 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
                         case 'ip':
                             $criteria['LEFT JOIN'] = [
-                                'glpi_ipaddresses'   => [
-                                    'glpi_ipaddresses'   => 'items_id',
+                                'zentra_ipaddresses'   => [
+                                    'zentra_ipaddresses'   => 'items_id',
                                     $table               => 'id', [
                                         'AND' => [
-                                            'glpi_ipaddresses.itemtype'   => self::class,
-                                            'glpi_ipaddresses.is_deleted' => 0,
+                                            'zentra_ipaddresses.itemtype'   => self::class,
+                                            'zentra_ipaddresses.is_deleted' => 0,
                                         ],
                                     ],
                                 ],
                             ];
                             $criteria['ORDERBY'] = [
-                                new QueryExpression("ISNULL (" . $DB::quoteName('glpi_ipaddresses.id') . ")"),
-                                'glpi_ipaddresses.binary_3',
-                                'glpi_ipaddresses.binary_2',
-                                'glpi_ipaddresses.binary_1',
-                                'glpi_ipaddresses.binary_0',
+                                new QueryExpression("ISNULL (" . $DB::quoteName('zentra_ipaddresses.id') . ")"),
+                                'zentra_ipaddresses.binary_3',
+                                'zentra_ipaddresses.binary_2',
+                                'zentra_ipaddresses.binary_1',
+                                'zentra_ipaddresses.binary_0',
                             ];
                             break;
 
                         case 'alias':
                             $criteria['LEFT JOIN'] = [
-                                'glpi_networkaliases'   => [
+                                'zentra_networkaliases'   => [
                                     'ON'  => [
-                                        'glpi_networkaliases'   => 'networknames_id',
+                                        'zentra_networkaliases'   => 'networknames_id',
                                         $table                  => 'id',
                                     ],
                                 ],
                             ];
                             $criteria['ORDERBY'] = [
-                                new QueryExpression("ISNULL (" . $DB::quoteName('glpi_networkaliases.name') . ")"),
-                                'glpi_networkaliases.name',
+                                new QueryExpression("ISNULL (" . $DB::quoteName('zentra_networkaliases.name') . ")"),
+                                'zentra_networkaliases.name',
                             ];
                             break;
                     }
@@ -576,9 +576,9 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
             case NetworkEquipment::class:
                 $criteria['INNER JOIN'] = [
-                    'glpi_networkports'  => [
+                    'zentra_networkports'  => [
                         'ON'  => [
-                            'glpi_networkports'  => 'id',
+                            'zentra_networkports'  => 'id',
                             $table               => 'items_id', [
                                 'AND' => [
                                     "$table.itemtype"    => 'NetworkPort',
@@ -589,8 +589,8 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                     ],
                 ];
                 $criteria['WHERE'] = [
-                    'glpi_networkports.itemtype'  => NetworkEquipment::class,
-                    'glpi_networkports.items_id'  => $item->getID(),
+                    'zentra_networkports.itemtype'  => NetworkEquipment::class,
+                    'zentra_networkports.items_id'  => $item->getID(),
                 ];
                 break;
         }
@@ -697,7 +697,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                         <div class="d-flex">
                             <input type="hidden" name="items_id" value="{{ item.getID() }}">
                             <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('NetworkName', 'addressID', 0, null, {
                                 no_label: true,
                                 condition: {
@@ -744,7 +744,7 @@ TWIG, $twig_params);
             }
 
             $table_options['SQL_options']  = [
-                'LIMIT'  => $_SESSION['glpilist_limit'],
+                'LIMIT'  => $_SESSION['zentralist_limit'],
                 'START'  => $start,
             ];
 
@@ -770,7 +770,7 @@ TWIG, $twig_params);
         self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
         if ($table->getNumberOfRows() > 0) {
-            $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
+            $number = min($_SESSION['zentralist_limit'], $table->getNumberOfRows());
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
             Session::initNavigateListItems(
                 self::class,
@@ -785,7 +785,7 @@ TWIG, $twig_params);
             if ($canedit && $number) {
                 Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams = [
-                    'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+                    'num_displayed'    => min($_SESSION['zentralist_limit'], $number),
                     'container'        => 'mass' . self::class . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
@@ -811,7 +811,7 @@ TWIG, $twig_params);
         }
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case NetworkPort::class:
@@ -834,7 +834,7 @@ TWIG, $twig_params);
         switch ($item::class) {
             case FQDN::class:
                 return countElementsInTable(
-                    'glpi_networknames',
+                    'zentra_networknames',
                     ['fqdns_id'   => $item->fields["id"],
                         'is_deleted' => 0,
                     ]
@@ -842,7 +842,7 @@ TWIG, $twig_params);
 
             case NetworkPort::class:
                 return countElementsInTable(
-                    'glpi_networknames',
+                    'zentra_networknames',
                     ['itemtype'   => $item->getType(),
                         'items_id'   => $item->getID(),
                         'is_deleted' => 0,
@@ -851,25 +851,25 @@ TWIG, $twig_params);
 
             case NetworkEquipment::class:
                 $result = $DB->request([
-                    'SELECT'          => ['COUNT DISTINCT' => 'glpi_networknames.id AS cpt'],
-                    'FROM'            => 'glpi_networknames',
+                    'SELECT'          => ['COUNT DISTINCT' => 'zentra_networknames.id AS cpt'],
+                    'FROM'            => 'zentra_networknames',
                     'INNER JOIN'       => [
-                        'glpi_networkports'  => [
+                        'zentra_networkports'  => [
                             'ON' => [
-                                'glpi_networknames'  => 'items_id',
-                                'glpi_networkports'  => 'id', [
+                                'zentra_networknames'  => 'items_id',
+                                'zentra_networkports'  => 'id', [
                                     'AND' => [
-                                        'glpi_networknames.itemtype' => 'NetworkPort',
+                                        'zentra_networknames.itemtype' => 'NetworkPort',
                                     ],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE'           => [
-                        'glpi_networkports.itemtype'     => $item->getType(),
-                        'glpi_networkports.items_id'     => $item->getID(),
-                        'glpi_networkports.is_deleted'   => 0,
-                        'glpi_networknames.is_deleted'   => 0,
+                        'zentra_networkports.itemtype'     => $item->getType(),
+                        'zentra_networkports.items_id'     => $item->getID(),
+                        'zentra_networkports.is_deleted'   => 0,
+                        'zentra_networknames.is_deleted'   => 0,
                     ],
                 ])->current();
 
@@ -878,7 +878,7 @@ TWIG, $twig_params);
         return 0;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)
@@ -886,7 +886,7 @@ TWIG, $twig_params);
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);

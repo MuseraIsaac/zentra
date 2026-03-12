@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasOperatingSystemCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Item_OperatingSystem;
 use Toolbox;
 
@@ -45,13 +45,13 @@ class Item_OperatingSystemTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasOperatingSystemCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['operatingsystem_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['operatingsystem_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -64,11 +64,11 @@ class Item_OperatingSystemTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasOperatingSystemCapacity::class)]);
 
-        foreach ($CFG_GLPI['operatingsystem_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['operatingsystem_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -140,7 +140,7 @@ class Item_OperatingSystemTest extends DbTestCase
             Item_OperatingSystem::countForItem($computer)
         );
 
-        $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
+        $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(zentra_items_operatingsystems\.)?unicity'/";
         $this->expectExceptionMessageMatches($expected_error);
         $this->assertFalse($ios->add($input));
 

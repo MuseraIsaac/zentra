@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Calendar;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Holiday;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -81,7 +81,7 @@ class Calendar_HolidayTest extends DbTestCase
     #[Group('cache')]
     public function testHolidaysCache()
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $holiday = new Holiday();
         $calendar_holiday = new \Calendar_Holiday();
@@ -90,7 +90,7 @@ class Calendar_HolidayTest extends DbTestCase
         $cache_key = sprintf('calendar-%s-holidays', $default_calendar_id);
 
         // No default cache (cache is set on reading operations)
-        $this->assertFalse($GLPI_CACHE->has($cache_key));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key));
 
         // Validate that cache is set on reading
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
@@ -101,34 +101,34 @@ class Calendar_HolidayTest extends DbTestCase
         $DB = null; // Setting $DB to null will result in an error if something tries to request DB
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
         $DB = $db_back;
-        $this->assertEquals($holidays, $GLPI_CACHE->get($cache_key));
+        $this->assertEquals($holidays, $ZENTRA_CACHE->get($cache_key));
 
         // Validate that cache is invalidated when holidays are added
-        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($ZENTRA_CACHE->has($cache_key));
         $this->addHolidaysToCalendar($default_calendar_id);
-        $this->assertFalse($GLPI_CACHE->has($cache_key));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
         // Validate that cache is invalidated when holidays are updated
         $holiday_id = getItemByTypeName('Holiday', 'Spring holidays', true);
-        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($ZENTRA_CACHE->has($cache_key));
         $holiday->update(['id' => $holiday_id, 'begin_date' => '2020-03-01']);
-        $this->assertFalse($GLPI_CACHE->has($cache_key));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
         // Validate that cache is invalidated when calendar_holiday is deleted
         $holiday_id = getItemByTypeName('Holiday', 'Spring holidays', true);
         $this->assertTrue($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]));
-        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($ZENTRA_CACHE->has($cache_key));
         $this->assertTrue($calendar_holiday->delete(['id' => $calendar_holiday->fields['id']]));
-        $this->assertFalse($GLPI_CACHE->has($cache_key));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
         // Validate that cache is invalidated when holiday is deleted
         $holiday_id = getItemByTypeName('Holiday', 'Summer holidays', true);
-        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($ZENTRA_CACHE->has($cache_key));
         $this->assertTrue($holiday->delete(['id' => $holiday_id, true]));
-        $this->assertFalse($GLPI_CACHE->has($cache_key));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
         // Validate that cache is invalidated when calendar_holiday is updated
@@ -147,8 +147,8 @@ class Calendar_HolidayTest extends DbTestCase
         $this->assertTrue(
           $calendar_holiday->update(['id' => $calendar_holiday->fields['id'], 'calendars_id' => $calendar_id])
         );
-        $this->assertFalse($GLPI_CACHE->has($cache_key)); // Previously associated calendar cache is invalidated
-        $this->assertFalse($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)));
+        $this->assertFalse($ZENTRA_CACHE->has($cache_key)); // Previously associated calendar cache is invalidated
+        $this->assertFalse($ZENTRA_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)));
         */
     }
 
@@ -250,13 +250,13 @@ class Calendar_HolidayTest extends DbTestCase
      */
     private function validateHolidayCacheMatchesMethodResult(int $calendar_id): void
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $calendar_holiday = new \Calendar_Holiday();
         $cache_key = sprintf('calendar-%s-holidays', $calendar_id);
 
         $holidays = $calendar_holiday->getHolidaysForCalendar($calendar_id);
-        $this->assertTrue($GLPI_CACHE->has($cache_key));
-        $this->assertEquals($holidays, $GLPI_CACHE->get($cache_key));
+        $this->assertTrue($ZENTRA_CACHE->has($cache_key));
+        $this->assertEquals($holidays, $ZENTRA_CACHE->get($cache_key));
     }
 }

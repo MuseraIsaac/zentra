@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
 
 /// Class Domain
 class Domain extends CommonDBTM implements AssignableItemInterface
@@ -132,7 +132,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => 'glpi_domaintypes',
+            'table'              => 'zentra_domaintypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -140,7 +140,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -173,7 +173,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => 'glpi_domains_items',
+            'table'              => 'zentra_domains_items',
             'field'              => 'items_id',
             'nosearch'           => true,
             'massiveaction'      => false,
@@ -186,14 +186,14 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'name',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -249,7 +249,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -414,7 +414,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         $rand = mt_rand();
 
         $where = [
-            'glpi_domains.is_deleted'  => 0,
+            'zentra_domains.is_deleted'  => 0,
         ] + getEntitiesRestrictCriteria(self::getTable(), '', $p['entity'], true);
 
         if (count($p['used'])) {
@@ -453,7 +453,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-        if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+        if ($_SESSION['zentraactiveprofile']['interface'] == 'central') {
             if ($isadmin) {
                 $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = "<i class='ti ti-link'></i>" . _sx('button', 'Associate');
                 $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate');
@@ -691,9 +691,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      */
     public static function cronDomainsAlert($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0; // Nothing to do
         }
 
@@ -716,22 +716,22 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                 $query      = $event_specs['query'];
                 $alert_type = $event_specs['alert_type'];
 
-                $query['SELECT']    = ['glpi_domains.id'];
+                $query['SELECT']    = ['zentra_domains.id'];
                 $query['LEFT JOIN'] = [
-                    'glpi_alerts' => [
+                    'zentra_alerts' => [
                         'FKEY'   => [
-                            'glpi_alerts'  => 'items_id',
-                            'glpi_domains' => 'id',
+                            'zentra_alerts'  => 'items_id',
+                            'zentra_domains' => 'id',
                             [
                                 'AND' => [
-                                    'glpi_alerts.itemtype' => self::class,
-                                    'glpi_alerts.type'     => $alert_type,
+                                    'zentra_alerts.itemtype' => self::class,
+                                    'zentra_alerts.type'     => $alert_type,
                                 ],
                             ],
                         ],
                     ],
                 ];
-                $query['WHERE'][]   = ['glpi_alerts.date' => null];
+                $query['WHERE'][]   = ['zentra_alerts.date' => null];
 
                 $iterator = $DB->request($query);
 
@@ -747,7 +747,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                     if (NotificationEvent::raiseEvent($event, $domain)) {
                         $msg = sprintf(
                             __('%1$s: %2$s'),
-                            Dropdown::getDropdownName('glpi_entities', $entity),
+                            Dropdown::getDropdownName('zentra_entities', $entity),
                             sprintf(
                                 $event === 'DomainsWhichExpire' ? __('Domain %1$s expires on %2$s') : __('Domain %1$s expired on %2$s'),
                                 $domain->fields['name'],
@@ -777,7 +777,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
                         $msg = sprintf(
                             __('Domains alerts sending failed for entity %1$s'),
-                            Dropdown::getDropdownName("glpi_entities", $entity)
+                            Dropdown::getDropdownName("zentra_entities", $entity)
                         );
                         if ($task) {
                             $task->log($msg);
@@ -801,9 +801,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      */
     public static function getTypes($all = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $types = $CFG_GLPI['domain_types'];
+        $types = $CFG_ZENTRA['domain_types'];
         if ($all) {
             return $types;
         }
@@ -865,7 +865,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      */
     public static function canManageRecords()
     {
-        return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
+        return static::canView() && count($_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
     }
 
     public static function getAdditionalMenuLinks()

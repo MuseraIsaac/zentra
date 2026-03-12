@@ -29,7 +29,7 @@
                     "id": 31,
                     "uuid": "2793d35b-62af-437b-a39e-3eca75fa9087",
                     "name": "My comment",
-                    "description": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "description": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "vertical_rank": 0,
                     "horizontal_rank": null,
                     "section_id": 168,
@@ -53,7 +53,7 @@
                     "id": 212,
                     "uuid": "9cc1828e-97d1-4e2b-8f15-9cab6222fe47",
                     "name": "My item question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeItem",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -74,7 +74,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -88,7 +88,7 @@
             "destinations": [
                 {
                     "id": 172,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

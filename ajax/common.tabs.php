@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,20 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Debug\Profiler;
+use Zentra\Debug\Profiler;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-// Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
+// Session check is disabled for this script (see `\Zentra\Http\Firewall::computeStrategyForCoreLegacyScript()`)
 // to be able to adapt the checks depending on the request.
-if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
+if (!($CFG_ZENTRA["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
     Session::checkLoginUser();
 }
 
-if (!isset($_GET['_glpi_tab'])) {
+if (!isset($_GET['_zentra_tab'])) {
     return;
 }
 
@@ -91,9 +91,9 @@ if (isset($_GET['_target'])) {
     $_GET['_target'] = Toolbox::cleanTarget($_GET['_target']);
 }
 
-Session::setActiveTab($_GET['_itemtype'], $_GET['_glpi_tab']);
+Session::setActiveTab($_GET['_itemtype'], $_GET['_zentra_tab']);
 
-$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
+$notvalidoptions = ['_zentra_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
 $options         = $_GET;
 foreach ($notvalidoptions as $key) {
     if (isset($options[$key])) {
@@ -104,6 +104,6 @@ if (isset($options['locked'])) {
     ObjectLock::setReadOnlyProfile();
 }
 
-Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
-CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int) $_GET["withtemplate"], $options);
-Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');
+Profiler::getInstance()->start('CommonZENTRA::displayStandardTab');
+CommonZENTRA::displayStandardTab($item, $_GET['_zentra_tab'], (int) $_GET["withtemplate"], $options);
+Profiler::getInstance()->stop('CommonZENTRA::displayStandardTab');

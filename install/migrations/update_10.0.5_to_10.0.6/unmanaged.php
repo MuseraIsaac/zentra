@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,16 +39,16 @@
 $migration->addConfig(['import_unmanaged' => 1], 'inventory');
 
 //add last_inventory_update field
-$migration->addField('glpi_unmanageds', 'last_inventory_update', 'timestamp');
-$migration->addField("glpi_unmanageds", "groups_id_tech", "fkey", ["after" => "states_id"]);
-$migration->addKey('glpi_unmanageds', 'groups_id_tech');
+$migration->addField('zentra_unmanageds', 'last_inventory_update', 'timestamp');
+$migration->addField("zentra_unmanageds", "groups_id_tech", "fkey", ["after" => "states_id"]);
+$migration->addKey('zentra_unmanageds', 'groups_id_tech');
 
 // add default rules for unmanaged device if RuleImportAsset already added
 if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 0) {
     $migration->createRule(
         [
             'name'      => 'Unmanaged update (by name)',
-            'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
+            'uuid'      => 'zentra_rule_import_asset_unmanaged_update_name',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
             'is_active' => 1,
@@ -82,7 +82,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
     $migration->createRule(
         [
             'name'      => 'Unmanaged import (by name)',
-            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
+            'uuid'      => 'zentra_rule_import_asset_unmanaged_import_name',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
             'is_active' => 1,
@@ -111,7 +111,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
     $migration->createRule(
         [
             'name'      => 'Unmanaged import denied',
-            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
+            'uuid'      => 'zentra_rule_import_asset_unmanaged_import_denied',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
             'is_active' => 1,

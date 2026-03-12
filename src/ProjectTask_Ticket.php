@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
 
 /**
  * ProjectTask_Ticket Class
@@ -82,19 +82,19 @@ class ProjectTask_Ticket extends CommonDBRelation
         return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (static::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case ProjectTask::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case Ticket::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -103,7 +103,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case ProjectTask::class:
@@ -130,16 +130,16 @@ class ProjectTask_Ticket extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: 'zentra_tickets.actiontime',
                     alias: 'duration'
                 ),
             ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
-                'glpi_tickets' => [
+                'zentra_tickets' => [
                     'FKEY'   => [
                         self::getTable()  => 'tickets_id',
-                        'glpi_tickets'    => 'id',
+                        'zentra_tickets'    => 'id',
                     ],
                 ],
             ],
@@ -177,7 +177,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         if ($canedit) {
             $condition = [
                 'NOT' => [
-                    'glpi_tickets.status'    => array_merge(
+                    'zentra_tickets.status'    => array_merge(
                         Ticket::getSolvedStatusArray(),
                         Ticket::getClosedStatusArray()
                     ),
@@ -234,7 +234,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      **/
     public static function showForTicket(Ticket $ticket)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID = $ticket->getField('id');
         if (!$ticket->can($ID, READ)) {
@@ -281,11 +281,11 @@ class ProjectTask_Ticket extends CommonDBRelation
             ];
 
             $project_conditions = [
-                'glpi_projects.is_template' => 0,
+                'zentra_projects.is_template' => 0,
             ];
 
             if (count($finished_states_ids)) {
-                $project_conditions['glpi_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
+                $project_conditions['zentra_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
             }
 
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -308,7 +308,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                         "itemtype" => ProjectTask::class,
                         "params" => [],
                     ],
-                    'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
+                    'url' => $CFG_ZENTRA["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
                     'params' => $p,
                 ],
                 'create_link' => false,
@@ -347,51 +347,51 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_projecttasks.*',
-                'glpi_projecttasktypes.name AS tname',
-                'glpi_projectstates.name AS sname',
-                'glpi_projectstates.color',
+                'zentra_projecttasks.*',
+                'zentra_projecttasktypes.name AS tname',
+                'zentra_projectstates.name AS sname',
+                'zentra_projectstates.color',
                 'father.name AS fname',
                 'father.id AS fID',
-                'glpi_projects.name AS projectname',
-                'glpi_projects.content AS projectcontent',
-                'glpi_projecttasks_tickets.id AS linkid',
+                'zentra_projects.name AS projectname',
+                'zentra_projects.content AS projectcontent',
+                'zentra_projecttasks_tickets.id AS linkid',
             ],
-            'FROM'      => 'glpi_projecttasks',
+            'FROM'      => 'zentra_projecttasks',
             'LEFT JOIN' => [
-                'glpi_projecttasktypes' => [
+                'zentra_projecttasktypes' => [
                     'ON' => [
-                        'glpi_projecttasktypes' => 'id',
-                        'glpi_projecttasks'     => 'projecttasktypes_id',
+                        'zentra_projecttasktypes' => 'id',
+                        'zentra_projecttasks'     => 'projecttasktypes_id',
                     ],
                 ],
-                'glpi_projectstates'    => [
+                'zentra_projectstates'    => [
                     'ON' => [
-                        'glpi_projectstates' => 'id',
-                        'glpi_projecttasks'  => 'projectstates_id',
+                        'zentra_projectstates' => 'id',
+                        'zentra_projecttasks'  => 'projectstates_id',
                     ],
                 ],
-                'glpi_projecttasks AS father' => [
+                'zentra_projecttasks AS father' => [
                     'ON' => [
                         'father'             => 'id',
-                        'glpi_projecttasks'  => 'projecttasks_id',
+                        'zentra_projecttasks'  => 'projecttasks_id',
                     ],
                 ],
-                'glpi_projecttasks_tickets'   => [
+                'zentra_projecttasks_tickets'   => [
                     'ON' => [
-                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                        'glpi_projecttasks'           => 'id',
+                        'zentra_projecttasks_tickets'   => 'projecttasks_id',
+                        'zentra_projecttasks'           => 'id',
                     ],
                 ],
-                'glpi_projects'               => [
+                'zentra_projects'               => [
                     'ON' => [
-                        'glpi_projecttasks'  => 'projects_id',
-                        'glpi_projects'      => 'id',
+                        'zentra_projecttasks'  => 'projects_id',
+                        'zentra_projects'      => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_projecttasks_tickets.tickets_id' => $ID,
+                'zentra_projecttasks_tickets.tickets_id' => $ID,
             ],
             'ORDERBY'   => [
                 "$sort $order",
@@ -407,7 +407,7 @@ class ProjectTask_Ticket extends CommonDBRelation
 
             $father = '';
             if ($data['projecttasks_id'] > 0) {
-                $father_name = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+                $father_name = Dropdown::getDropdownName('zentra_projecttasks', $data['projecttasks_id']);
                 $father = sprintf(
                     '<a href="%s">%s</a>',
                     htmlescape(ProjectTask::getFormURLWithID($data['projecttasks_id'])),

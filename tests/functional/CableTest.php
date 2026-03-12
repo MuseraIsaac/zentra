@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Socket;
-use Glpi\SocketModel;
-use Glpi\Tests\DbTestCase;
+use Zentra\Socket;
+use Zentra\SocketModel;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
@@ -51,7 +51,7 @@ class CableTest extends DbTestCase
         $networkport = new \NetworkPort();
 
         // Be sure added
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $new_id = $networkport->add([
             'items_id'           => $computer1->getID(),
             'itemtype'           => 'Computer',
@@ -63,17 +63,17 @@ class CableTest extends DbTestCase
             'name'               => 'eth1',
         ]);
         $this->assertGreaterThan(0, $new_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //Second step add socket
         //add socket model
         $socketModel = new SocketModel();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $socketModel_id = $socketModel->add([
             'name' => 'socketModel1',
         ]);
         $this->assertGreaterThan(0, $socketModel_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         $socket = new Socket();
         $socket_id = $socket->add([
@@ -90,7 +90,7 @@ class CableTest extends DbTestCase
         $this->assertGreaterThan(0, $socket_id);
 
         // check data in db
-        $all_sockets = getAllDataFromTable('glpi_sockets', ['ORDER' => 'id']);
+        $all_sockets = getAllDataFromTable('zentra_sockets', ['ORDER' => 'id']);
         $current_socket = end($all_sockets);
         unset($current_socket['id']);
         unset($current_socket['date_mod']);
@@ -122,15 +122,15 @@ class CableTest extends DbTestCase
         //Second step add socket
         //add socket model
         $socketModel = new SocketModel();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $socketModel_id = $socketModel->add([
             'name' => 'socketModel1',
         ]);
         $this->assertGreaterThan(0, $socketModel_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         $socket = new Socket();
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $socket_id = $socket->add([
             'name'               => 'socket1',
             'wiring_side'        => Socket::FRONT, //default is REAR
@@ -140,7 +140,7 @@ class CableTest extends DbTestCase
             'comment'            => 'comment',
         ]);
         $this->assertGreaterThan(0, $socket_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //Second step add networkport
         // Do some installations
@@ -148,7 +148,7 @@ class CableTest extends DbTestCase
         $networkport = new \NetworkPort();
 
         // Be sure added
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $new_id = $networkport->add([
             'items_id'                    => $computer1->getID(),
             'itemtype'                    => 'Computer',
@@ -170,10 +170,10 @@ class CableTest extends DbTestCase
             '_create_children'            => true, // automatically add instancation, networkname and ipadresses
         ]);
         $this->assertGreaterThan(0, $new_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         // retrieve NetworkPortEthernet automatically created
-        $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
+        $all_netportethernets = getAllDataFromTable('zentra_networkportethernets', ['ORDER' => 'id']);
         $networkportethernet = end($all_netportethernets);
         $networkPortethernet_id = $networkportethernet['id'];
         unset($networkportethernet['date_mod']);
@@ -203,7 +203,7 @@ class CableTest extends DbTestCase
         $networkport1 = new \NetworkPort();
 
         // Be sure added
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $new1_id = $networkport1->add([
             'items_id'           => $computer1->getID(),
             'itemtype'           => 'Computer',
@@ -215,16 +215,16 @@ class CableTest extends DbTestCase
             'name'               => 'eth1',
         ]);
         $this->assertGreaterThan(0, $new1_id);
-        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('zentra_logs'));
 
         //add socket model
         $socketModel1 = new SocketModel();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $socketModel1_id = $socketModel1->add([
             'name' => 'socketModel1',
         ]);
         $this->assertGreaterThan(0, $socketModel1_id);
-        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('zentra_logs'));
 
         //add socket
         $socket1 = new Socket();
@@ -242,7 +242,7 @@ class CableTest extends DbTestCase
         $this->assertGreaterThan(0, $socket1_id);
 
         // check data in db
-        $all_sockets = getAllDataFromTable('glpi_sockets', ['ORDER' => 'id']);
+        $all_sockets = getAllDataFromTable('zentra_sockets', ['ORDER' => 'id']);
         $current_socket = end($all_sockets);
         unset($current_socket['id']);
         unset($current_socket['date_mod']);
@@ -267,7 +267,7 @@ class CableTest extends DbTestCase
         $networkport = new \NetworkPort();
 
         // Be sure added
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $new2_id = $networkport->add([
             'items_id'           => $computer2->getID(),
             'itemtype'           => 'Computer',
@@ -279,16 +279,16 @@ class CableTest extends DbTestCase
             'name'               => 'eth1',
         ]);
         $this->assertGreaterThan(0, $new2_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //add socket model
         $socketModel2 = new SocketModel();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $socketModel2_id = $socketModel2->add([
             'name' => 'socketModel2',
         ]);
         $this->assertGreaterThan(0, $socketModel2_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //add socket
         $socket2 = new Socket();
@@ -306,7 +306,7 @@ class CableTest extends DbTestCase
         $this->assertGreaterThan(0, $socket2_id);
 
         // check data in db
-        $all_sockets = getAllDataFromTable('glpi_sockets', ['ORDER' => 'id']);
+        $all_sockets = getAllDataFromTable('zentra_sockets', ['ORDER' => 'id']);
         $current_socket = end($all_sockets);
         unset($current_socket['id']);
         unset($current_socket['date_mod']);
@@ -327,31 +327,31 @@ class CableTest extends DbTestCase
 
         //add CableStradn
         $cableStrand = new \CableStrand();
-        $nb_log = (int) countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('zentra_logs');
         $cableStrand_id = $cableStrand->add([
             'name' => 'cable_strand',
         ]);
         $this->assertGreaterThan(0, $cableStrand_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //add State
         $cableState = new \State();
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $cableState_id = $cableState->add([
             'name' => 'cable_state',
             'is_visible_cable' => true,
         ]);
         $this->assertGreaterThan(0, $cableState_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //add Cabletype
         $cableType = new \CableType();
-        $nb_log = countElementsInTable('glpi_logs');
+        $nb_log = countElementsInTable('zentra_logs');
         $cableType_id = $cableType->add([
             'name' => 'cable_type',
         ]);
         $this->assertGreaterThan(0, $cableType_id);
-        $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, countElementsInTable('zentra_logs'));
 
         //add cable
         $cable = new \Cable();
@@ -379,7 +379,7 @@ class CableTest extends DbTestCase
         $this->assertGreaterThan(0, $cable_id);
 
         // check data in db
-        $all_cables = getAllDataFromTable('glpi_cables', ['ORDER' => 'id']);
+        $all_cables = getAllDataFromTable('zentra_cables', ['ORDER' => 'id']);
         $current_cable = end($all_cables);
         unset($current_cable['date_mod']);
         unset($current_cable['date_creation']);

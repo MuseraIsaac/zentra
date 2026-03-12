@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ use function Safe\unlink;
 /**
  *  Database class for Mysql
  **/
-class DBConnection extends CommonGLPI
+class DBConnection extends CommonZENTRA
 {
     /**
      * "Use timezones" property name.
@@ -85,7 +85,7 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * Create GLPI main configuration file
+     * Create ZENTRA main configuration file
      *
      * @since 9.1
      *
@@ -112,7 +112,7 @@ class DBConnection extends CommonGLPI
         bool $use_utf8mb4 = false,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
+        string $config_dir = ZENTRA_CONFIG_DIR
     ): bool {
 
         $properties = [
@@ -167,7 +167,7 @@ class DBConnection extends CommonGLPI
      *
      * @since 10.0.0
      */
-    public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
+    public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = ZENTRA_CONFIG_DIR): bool
     {
         return self::updateConfigProperties([$name => $value], $update_slave, $config_dir);
     }
@@ -184,7 +184,7 @@ class DBConnection extends CommonGLPI
      *
      * @since 10.0.0
      */
-    public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
+    public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = ZENTRA_CONFIG_DIR): bool
     {
         $main_config_file = 'config_db.php';
         $slave_config_file = 'config_db_slave.php';
@@ -261,7 +261,7 @@ class DBConnection extends CommonGLPI
         bool $use_utf8mb4 = false,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
+        string $config_dir = ZENTRA_CONFIG_DIR
     ): bool {
 
         // Explode host into array (multiple values separated by a space char)
@@ -310,7 +310,7 @@ class DBConnection extends CommonGLPI
      **/
     public static function isDBSlaveActive()
     {
-        return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        return file_exists(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
     }
 
 
@@ -325,7 +325,7 @@ class DBConnection extends CommonGLPI
     {
 
         if (self::isDBSlaveActive()) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
             return new DBSlave($choice);
         }
     }
@@ -341,9 +341,9 @@ class DBConnection extends CommonGLPI
         global $DB;
         self::createSlaveConnectionFile(
             "localhost",
-            "glpi",
-            "glpi",
-            "glpi",
+            "zentra",
+            "zentra",
+            "zentra",
             $DB->use_timezones,
             $DB->log_deprecation_warnings,
             $DB->use_utf8mb4,
@@ -387,7 +387,7 @@ class DBConnection extends CommonGLPI
      */
     public static function deleteDBSlaveConfig()
     {
-        unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        unlink(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
     }
 
 
@@ -401,7 +401,7 @@ class DBConnection extends CommonGLPI
         global $DB;
 
         if (self::isDBSlaveActive()) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
             $DB = new DBSlave();
             return $DB->connected;
         }
@@ -431,14 +431,14 @@ class DBConnection extends CommonGLPI
      **/
     public static function getReadConnection()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (
-            $CFG_GLPI['use_slave_for_search']
+            $CFG_ZENTRA['use_slave_for_search']
             && !$DB->isSlave()
             && self::isDBSlaveActive()
         ) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
             $DBread = new DBSlave();
 
             if ($DBread->connected) {
@@ -447,7 +447,7 @@ class DBConnection extends CommonGLPI
                     'FROM'   => Log::getTable(),
                 ];
 
-                switch ($CFG_GLPI['use_slave_for_search']) {
+                switch ($CFG_ZENTRA['use_slave_for_search']) {
                     case 3: // If synced or read-only account
                         if (Session::isReadOnlyAccount()) {
                             return $DBread;
@@ -468,14 +468,14 @@ class DBConnection extends CommonGLPI
                         break;
 
                     case 2: // If synced (current user changes or profile in read only)
-                        if (!isset($_SESSION['glpi_maxhistory'])) {
+                        if (!isset($_SESSION['zentra_maxhistory'])) {
                             // No change yet
                             return $DBread;
                         }
                         $slave  = $DBread->request($sql)->current();
                         if (
                             isset($slave['maxid'])
-                            && ($slave['maxid'] >= $_SESSION['glpi_maxhistory'])
+                            && ($slave['maxid'] >= $_SESSION['zentra_maxhistory'])
                         ) {
                             // Latest current user change avaiable on Slave
                             return $DBread;
@@ -558,7 +558,7 @@ class DBConnection extends CommonGLPI
     public static function getReplicateDelay($choice = null)
     {
 
-        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        include_once(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
         return (int) (self::getHistoryMaxDate(new DB())
                     - self::getHistoryMaxDate(new DBSlave($choice)));
     }
@@ -574,7 +574,7 @@ class DBConnection extends CommonGLPI
         $data = [];
 
         // Get source status
-        include_once(GLPI_CONFIG_DIR . "/config_db.php");
+        include_once(ZENTRA_CONFIG_DIR . "/config_db.php");
         $db_main = new DB();
         if ($db_main->connected) {
             $global_vars = $db_main->getGlobalVariables([
@@ -600,7 +600,7 @@ class DBConnection extends CommonGLPI
         }
 
         // Get replica status
-        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        include_once(ZENTRA_CONFIG_DIR . "/config_db_slave.php");
         $db_replica_config = new DBSlave();
 
         $hosts = is_array($db_replica_config->dbhost) ? $db_replica_config->dbhost : [$db_replica_config->dbhost];
@@ -637,7 +637,7 @@ class DBConnection extends CommonGLPI
     }
 
     /**
-     *  Get history max date of a GLPI DB
+     *  Get history max date of a ZENTRA DB
      *
      * @param DBmysql $DBconnection DB connection used
      *
@@ -648,7 +648,7 @@ class DBConnection extends CommonGLPI
 
         if ($DBconnection->connected) {
             /** @var mysqli_result $result */
-            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date FROM `glpi_logs`");
+            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date FROM `zentra_logs`");
             if ($DBconnection->numrows($result) > 0) {
                 return $DBconnection->result($result, 0, "max_date");
             }

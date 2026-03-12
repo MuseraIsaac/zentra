@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Class KnowbaseItem_Revision
@@ -54,7 +54,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         return 'ti ti-history';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             !($item instanceof CommonDBTM)
@@ -64,7 +64,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         }
 
         $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
+        if ($_SESSION['zentrashow_count_on_tabs']) {
             $where = [];
             if ($item instanceof KnowbaseItem) {
                 $where = [
@@ -79,14 +79,14 @@ class KnowbaseItem_Revision extends CommonDBTM
             }
 
             $nb = countElementsInTable(
-                'glpi_knowbaseitems_revisions',
+                'zentra_knowbaseitems_revisions',
                 $where
             );
         }
         return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -128,7 +128,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         // Total Number of revisions
         $number = countElementsInTable(
-            'glpi_knowbaseitems_revisions',
+            'zentra_knowbaseitems_revisions',
             $where
         );
 
@@ -148,7 +148,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                 'users_id',
                 'date',
             ],
-            'FROM' => 'glpi_knowbaseitems_revisions',
+            'FROM' => 'zentra_knowbaseitems_revisions',
             'WHERE' => $where,
             'ORDER' => 'id DESC',
         ]);
@@ -170,8 +170,8 @@ class KnowbaseItem_Revision extends CommonDBTM
         $restore_msg = __s('restore');
         foreach ($revisions as $revision) {
             if (!isset($author_cache[$revision['users_id']])) {
-                // Before GLPI 9.3.1, author was not stored in revision.
-                // See https://github.com/glpi-project/glpi/issues/4377.
+                // Before ZENTRA 9.3.1, author was not stored in revision.
+                // See https://github.com/zentra-project/zentra/issues/4377.
                 $hasRevUser = $user->getFromDB($revision['users_id']);
                 $author_cache[$revision['users_id']] = $hasRevUser ? $user->getLink() : __s('Unknown user');
             }
@@ -214,7 +214,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         echo Html::script('js/modules/Knowbase.js', ['type' => 'module']);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
@@ -274,7 +274,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $result = $DB->request([
             'SELECT' => ['MAX' => 'revision AS revision'],
-            'FROM'   => 'glpi_knowbaseitems_revisions',
+            'FROM'   => 'zentra_knowbaseitems_revisions',
             'WHERE'  => [
                 'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
                 'language'           => $this->fields['language'],

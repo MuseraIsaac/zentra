@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
 
 /* global sortable, hasUnsavedChanges, setHasUnsavedChanges */
 
-import { GlpiFormQuestionTypeSelectable } from '/js/modules/Forms/QuestionSelectable.js';
+import { ZentraFormQuestionTypeSelectable } from '/js/modules/Forms/QuestionSelectable.js';
 
-export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
+export class ZentraFormQuestionTypeDropdown extends ZentraFormQuestionTypeSelectable {
 
     /**
-     * Create a new GlpiFormQuestionTypeSelectable instance.
+     * Create a new ZentraFormQuestionTypeSelectable instance.
      *
      * @param {string} inputType
      * @param {JQuery<HTMLElement>} container
@@ -46,16 +46,16 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
     constructor(inputType = null, container = null, is_from_template = false) {
         super(inputType, container, is_from_template);
 
-        this._container.closest('[data-glpi-form-editor-question-details]')
-            .find('div[data-glpi-form-editor-specific-question-options]')
-            .find('input[data-glpi-form-editor-original-name=is_multiple_dropdown]')
+        this._container.closest('[data-zentra-form-editor-question-details]')
+            .find('div[data-zentra-form-editor-specific-question-options]')
+            .find('input[data-zentra-form-editor-original-name=is_multiple_dropdown]')
             .on('change', (event) => {
                 this.#updateInputType(event.target.checked ? 'checkbox' : 'radio');
                 this.#updateDropdownOptions();
             });
 
-        this._container.closest('[data-glpi-form-editor-question-type-specific]')
-            .find('[data-glpi-form-editor-preview-dropdown] select')
+        this._container.closest('[data-zentra-form-editor-question-type-specific]')
+            .find('[data-zentra-form-editor-preview-dropdown] select')
             .on('change', (event, data) => {
                 // Skip the update if the event is triggered by the dropdown itself
                 if (data && data.skip_update) {
@@ -87,14 +87,14 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
      */
     #updateInputType(inputType) {
         this._inputType = inputType;
-        this._container.closest('[data-glpi-form-editor-question-type-specific]')
+        this._container.closest('[data-zentra-form-editor-question-type-specific]')
             .find('input[type="checkbox"], input[type="radio"]').each((index, element) => {
                 $(element).attr('type', inputType);
             });
 
         // Make visible the right preview dropdown
-        this._container.closest('[data-glpi-form-editor-question-type-specific]')
-            .find('[data-glpi-form-editor-preview-dropdown]')
+        this._container.closest('[data-zentra-form-editor-question-type-specific]')
+            .find('[data-zentra-form-editor-preview-dropdown]')
             .children().toggleClass('d-none')
             .find('select').prop('disabled', function() {
                 return !$(this).prop('disabled');
@@ -111,8 +111,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
     }
 
     #updateDropdownOptions() {
-        const dropdown = this._container.closest('[data-glpi-form-editor-question-type-specific]')
-            .find('[data-glpi-form-editor-preview-dropdown] select');
+        const dropdown = this._container.closest('[data-zentra-form-editor-question-type-specific]')
+            .find('[data-zentra-form-editor-preview-dropdown] select');
 
         const has_changes = window.hasUnsavedChanges();
 

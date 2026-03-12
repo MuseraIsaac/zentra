@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @since 10.0.0
@@ -58,17 +58,17 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         $count = 0;
         if (
-            $_SESSION['glpishow_count_on_tabs']
+            $_SESSION['zentrashow_count_on_tabs']
             && ($item instanceof CommonDBTM)
             && !$item->isNewItem()
         ) {
             $count += countElementsInTable(
-                'glpi_manuallinks',
+                'zentra_manuallinks',
                 [
                     'itemtype'  => $item->getType(),
                     'items_id'  => $item->fields[$item->getIndexName()],
@@ -76,18 +76,18 @@ class ManualLink extends CommonDBChild
             );
             if (Link::canView()) {
                 $count += countElementsInTable(
-                    ['glpi_links_itemtypes', 'glpi_links'],
+                    ['zentra_links_itemtypes', 'zentra_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
-                    ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
+                        'zentra_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('zentra_links.id')),
+                        'zentra_links_itemtypes.itemtype'  => $item->getType(),
+                    ] + getEntitiesRestrictCriteria('zentra_links', '', '', false)
                 );
             }
         }
         return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -157,7 +157,7 @@ class ManualLink extends CommonDBChild
     {
         global $DB;
         $iterator = $DB->request([
-            'FROM'         => 'glpi_manuallinks',
+            'FROM'         => 'zentra_manuallinks',
             'WHERE'        => [
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->fields[$item->getIndexName()],

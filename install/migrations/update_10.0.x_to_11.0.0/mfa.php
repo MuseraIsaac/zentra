@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,28 +36,28 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists('glpi_users', '2fa')) {
-    $migration->addField('glpi_users', '2fa', 'text');
+if (!$DB->fieldExists('zentra_users', '2fa')) {
+    $migration->addField('zentra_users', '2fa', 'text');
 }
-if (!$DB->fieldExists('glpi_users', '2fa_unenforced')) {
-    $migration->addField('glpi_users', '2fa_unenforced', 'bool');
+if (!$DB->fieldExists('zentra_users', '2fa_unenforced')) {
+    $migration->addField('zentra_users', '2fa_unenforced', 'bool');
 }
-if (!$DB->fieldExists('glpi_entities', '2fa_enforcement_strategy')) {
-    $migration->addField('glpi_entities', '2fa_enforcement_strategy', 'tinyint NOT NULL DEFAULT -2');
+if (!$DB->fieldExists('zentra_entities', '2fa_enforcement_strategy')) {
+    $migration->addField('zentra_entities', '2fa_enforcement_strategy', 'tinyint NOT NULL DEFAULT -2');
     // Root entity should have this set to 0 by default
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_entities',
+            'zentra_entities',
             ['2fa_enforcement_strategy' => 0],
             ['id' => 0]
         )
     );
 }
-if (!$DB->fieldExists('glpi_profiles', '2fa_enforced')) {
-    $migration->addField('glpi_profiles', '2fa_enforced', 'bool');
+if (!$DB->fieldExists('zentra_profiles', '2fa_enforced')) {
+    $migration->addField('zentra_profiles', '2fa_enforced', 'bool');
 }
-if (!$DB->fieldExists('glpi_groups', '2fa_enforced')) {
-    $migration->addField('glpi_groups', '2fa_enforced', 'bool');
+if (!$DB->fieldExists('zentra_groups', '2fa_enforced')) {
+    $migration->addField('zentra_groups', '2fa_enforced', 'bool');
 }
 $migration->addConfig([
     '2fa_enforced' => 0,

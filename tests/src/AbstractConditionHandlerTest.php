@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,18 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\Engine;
-use Glpi\Form\Condition\EngineInput;
-use Glpi\Form\Condition\LogicOperator;
-use Glpi\Form\Condition\Type;
-use Glpi\Form\Condition\ValueOperator;
-use Glpi\Form\Condition\VisibilityStrategy;
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Zentra\DBAL\JsonFieldInterface;
+use Zentra\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Zentra\Form\Condition\Engine;
+use Zentra\Form\Condition\EngineInput;
+use Zentra\Form\Condition\LogicOperator;
+use Zentra\Form\Condition\Type;
+use Zentra\Form\Condition\ValueOperator;
+use Zentra\Form\Condition\VisibilityStrategy;
+use Zentra\Form\Form;
+use Zentra\Form\QuestionType\QuestionTypeShortText;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractConditionHandlerTest extends DbTestCase

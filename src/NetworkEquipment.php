@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\DCBreadcrumbInterface;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\StateInterface;
-use Glpi\Socket;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\DCBreadcrumb;
+use Zentra\Features\DCBreadcrumbInterface;
+use Zentra\Features\Inventoriable;
+use Zentra\Features\StateInterface;
+use Zentra\Socket;
 
 /**
  * Network equipment Class
@@ -53,7 +53,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
@@ -198,7 +198,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
         if (!parent::canUnrecurs()) {
             return false;
         }
-        $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+        $entities = getAncestorsOf("zentra_entities", $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
 
         // RELATION : networking -> _port -> _wire -> _port -> device
@@ -218,19 +218,19 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
                         alias: 'ids'
                     ),
                 ],
-                'FROM'         => 'glpi_networkports_networkports',
+                'FROM'         => 'zentra_networkports_networkports',
                 'INNER JOIN'   => [
-                    'glpi_networkports'  => [
+                    'zentra_networkports'  => [
                         'ON'  => [
-                            'glpi_networkports_networkports' => $endb,
-                            'glpi_networkports'              => 'id',
+                            'zentra_networkports_networkports' => $endb,
+                            'zentra_networkports'              => 'id',
                         ],
                     ],
                 ],
                 'WHERE'        => [
-                    'glpi_networkports_networkports.' . $enda   => new QuerySubQuery([
+                    'zentra_networkports_networkports.' . $enda   => new QuerySubQuery([
                         'SELECT' => 'id',
-                        'FROM'   => 'glpi_networkports',
+                        'FROM'   => 'zentra_networkports',
                         'WHERE'  => [
                             'itemtype'  => $this->getType(),
                             'items_id'  => $ID,
@@ -302,7 +302,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_networkequipmenttypes',
+            'table'              => 'zentra_networkequipmenttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -310,7 +310,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '40',
-            'table'              => 'glpi_networkequipmentmodels',
+            'table'              => 'zentra_networkequipmentmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -359,7 +359,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -368,13 +368,13 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -388,7 +388,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '72',
-            'table'              => 'glpi_autoupdatesystems',
+            'table'              => 'zentra_autoupdatesystems',
             'field'              => 'name',
             'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -396,7 +396,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '73',
-            'table'              => 'glpi_snmpcredentials',
+            'table'              => 'zentra_snmpcredentials',
             'field'              => 'name',
             'name'               => SNMPCredential::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -430,7 +430,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => 'glpi_devicefirmwares',
+            'table'              => 'zentra_devicefirmwares',
             'field'              => 'version',
             'name'               => _n('Firmware', 'Firmware', 1),
             'forcegroupby'       => true,
@@ -439,7 +439,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicefirmwares',
+                    'table'              => 'zentra_items_devicefirmwares',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'specific_itemtype'  => 'NetworkEquipment',
@@ -466,7 +466,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_networks',
+            'table'              => 'zentra_networks',
             'field'              => 'name',
             'name'               => _n('Network', 'Networks', 1),
             'datatype'           => 'dropdown',
@@ -474,7 +474,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -482,7 +482,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -492,14 +492,14 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -524,7 +524,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,

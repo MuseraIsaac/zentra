@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
 
 /* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
-/* global glpi_ajax_dialog, glpi_close_all_dialogs */
+/* global zentra_ajax_dialog, zentra_close_all_dialogs */
 
-window.GLPI = window.GLPI || {};
-window.GLPI.Dashboard = {
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.Dashboard = {
     /**
-     * @var {Object<string, GLPIDashboard>} dashboards
+     * @var {Object<string, ZENTRADashboard>} dashboards
      */
     dashboards: {},
 
     /**
-     * @return {GLPIDashboard}
+     * @return {ZENTRADashboard}
      */
     getActiveDashboard: function () {
         let current_dashboard_index = "";
@@ -60,7 +60,7 @@ window.GLPI.Dashboard = {
 };
 
 /**
- * @typedef GLPIDashboardParams
+ * @typedef ZENTRADashboardParams
  * @property {number} [cols] Number of columns
  * @property {number} [rows] Number of rows
  * @property {number} [cell_length] Length of a cell
@@ -75,9 +75,9 @@ window.GLPI.Dashboard = {
  * @property {string} [current] Current dashboard
  */
 
-class GLPIDashboard {
+class ZENTRADashboard {
     /**
-     * @param {GLPIDashboardParams|undefined} params
+     * @param {ZENTRADashboardParams|undefined} params
      */
     constructor(params) {
         this.grid = null;
@@ -109,7 +109,7 @@ class GLPIDashboard {
 
         // get passed options and merge it with default ones
         let options = (typeof params !== 'undefined') ? params: {};
-        /** @type {GLPIDashboardParams} */
+        /** @type {ZENTRADashboardParams} */
         const default_options = {
             cols:        24,
             rows:        24,
@@ -206,7 +206,7 @@ class GLPIDashboard {
         $(document).on('submit', '.display-add-dashboard-form', (e) => {
             e.preventDefault();
 
-            glpi_close_all_dialogs();
+            zentra_close_all_dialogs();
             const button    = $(e.currentTarget);
             const form_data = {};
             $.each(button.closest('.display-add-dashboard-form').serializeArray(), function() {
@@ -228,9 +228,9 @@ class GLPIDashboard {
 
         // embed mode toggle
         $(`${this.elem_id} .toolbar .open-embed`).click(() => {
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 title: __("Share or embed this dashboard"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 params: {
                     action:  'display_embed_form',
                     dashboard: this.current_name
@@ -279,7 +279,7 @@ class GLPIDashboard {
             const active = target.hasClass('active');
 
             if (active) {
-                let minutes = parseInt(CFG_GLPI.refresh_views);
+                let minutes = parseInt(CFG_ZENTRA.refresh_views);
                 if (minutes === 0 || Number.isNaN(minutes)) {
                     minutes = 30;
                 }
@@ -310,7 +310,7 @@ class GLPIDashboard {
 
         // publish rights
         $(document).on('click', '.display-rights-form .save_rights', (e) => {
-            glpi_close_all_dialogs();
+            zentra_close_all_dialogs();
 
             const button    = $(e.target);
             const form_data = {};
@@ -329,7 +329,7 @@ class GLPIDashboard {
             const is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
 
             $.post({
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 data: {
                     action:     'save_rights',
                     dashboard:  this.current_name,
@@ -377,9 +377,9 @@ class GLPIDashboard {
             const item      = edit_ctrl.parent().parent('.grid-stack-item');
             const card_opt  = item.data('card-options');
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 title: __("Edit this card"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 params: {
                     action:       'display_edit_widget',
                     dashboard:    this.current_name,
@@ -397,9 +397,9 @@ class GLPIDashboard {
             // add new widget form
             const add_ctrl = $(e.target);
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 title: __("Add a card"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 params: {
                     action: 'display_add_widget',
                     dashboard: this.current_name,
@@ -410,14 +410,14 @@ class GLPIDashboard {
             });
         }).on("click", '.filters_toolbar .add-filter', () => {
             // add new filter
-            glpi_close_all_dialogs();
+            zentra_close_all_dialogs();
 
             const filters = this.getFiltersFromDB();
             const filter_names    = Object.keys(filters);
 
-            glpi_ajax_dialog({
+            zentra_ajax_dialog({
                 title: __("Add a filter"),
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 params: {
                     action: 'display_add_filter',
                     dashboard: this.current_name,
@@ -528,7 +528,7 @@ class GLPIDashboard {
         });
 
         // Keep track of instance
-        window.GLPI.Dashboard.dashboards[this.rand] = this;
+        window.ZENTRA.Dashboard.dashboards[this.rand] = this;
     }
 
     /**
@@ -549,7 +549,7 @@ class GLPIDashboard {
      * @return {boolean}
      */
     setWidgetFromForm(form) {
-        glpi_close_all_dialogs();
+        zentra_close_all_dialogs();
         const form_data  = {};
 
         $.each(form.serializeArray(), function() {
@@ -609,7 +609,7 @@ class GLPIDashboard {
 
         // get the html of the new card and save dashboard
         $.get({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 action:    'get_card',
                 dashboard: this.current_name,
@@ -661,7 +661,7 @@ class GLPIDashboard {
     }
 
     setFilterFromForm(form) {
-        glpi_close_all_dialogs();
+        zentra_close_all_dialogs();
         const form_data  = {};
 
         $.each(form.serializeArray(), function() {
@@ -670,7 +670,7 @@ class GLPIDashboard {
 
         // get the html of the new card and save dashboard
         $.get({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 action:    'get_filter',
                 filter_id: form_data.filter_id,
@@ -697,7 +697,7 @@ class GLPIDashboard {
         }
 
         $.get({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: data
         }).then((html) => {
             gridstack.prepend(html);
@@ -706,7 +706,7 @@ class GLPIDashboard {
             });
             this.getCardsAjax();
 
-            const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
+            const is_placeholder = CFG_ZENTRA['is_demo_dashboards'] === "1";
             if (is_placeholder) {
                 // Hide filters toolbar and show the placeholder info
                 $(this.elem_id).find('.filters_toolbar').addClass('d-none');
@@ -721,11 +721,11 @@ class GLPIDashboard {
 
     setLastDashboard() {
         $.post({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 dashboard: this.current_name,
                 page: (location.origin+location.pathname)
-                    .replace(CFG_GLPI.url_base, ''),
+                    .replace(CFG_ZENTRA.url_base, ''),
                 action: 'set_last_dashboard',
             }
         });
@@ -779,7 +779,7 @@ class GLPIDashboard {
         });
 
         $.post({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 action: 'save_items',
                 dashboard: this.current_name,
@@ -1009,7 +1009,7 @@ class GLPIDashboard {
      */
     clone() {
         $.post({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 dashboard: this.current_name,
                 action: 'clone_dashboard',
@@ -1028,7 +1028,7 @@ class GLPIDashboard {
             .replace('%s', this.current_name);
         if (window.confirm(confirm_msg, __("Delete this dashboard"))) {
             $.post({
-                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 data: {
                     action: 'delete_dashboard',
                     dashboard: this.current_name,
@@ -1047,9 +1047,9 @@ class GLPIDashboard {
      * Display form to add a new dashboard
      */
     addForm() {
-        glpi_ajax_dialog({
+        zentra_ajax_dialog({
             title: __("Add a dashboard"),
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             params: {
                 action: 'add_new',
             }
@@ -1058,7 +1058,7 @@ class GLPIDashboard {
 
     addNew(form_data) {
         $.post({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 action: 'save_new_dashboard',
                 title: form_data.title,
@@ -1139,7 +1139,7 @@ class GLPIDashboard {
                     data.is_recursive = this.is_recursive;
                 }
 
-                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
+                promises.push($.get(CFG_ZENTRA.root_doc+"/ajax/dashboard.php", data).then((html) => {
                     card.children('.grid-stack-item-content').html(html);
 
                     this.fitNumbers(card);
@@ -1167,7 +1167,7 @@ class GLPIDashboard {
             }
 
             return $.ajax({
-                url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                url:CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
                 method: 'POST',
                 data: data
             }).then((results) => {
@@ -1217,7 +1217,7 @@ class GLPIDashboard {
 
         // get html of provided filters
         $.get({
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 "action": "get_dashboard_filters",
                 "filters": filters,
@@ -1226,7 +1226,7 @@ class GLPIDashboard {
         }).then((html) => {
             $(this.filters_selector).html(html);
             // we must  emit an event to all filters to say them dashboard is ready
-            $(document).trigger("glpiDasbhoardInitFilter");
+            $(document).trigger("zentraDasbhoardInitFilter");
 
             // start sortable on filter but disable it by default,
             // we will enable it when edit mode will be toggled on
@@ -1262,7 +1262,7 @@ class GLPIDashboard {
         let filters;
         $.ajax({
             method: 'GET',
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             async: false,
             data: {
                 action:    'get_filter_data',
@@ -1288,7 +1288,7 @@ class GLPIDashboard {
         }
         $.ajax({
             method: 'POST',
-            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            url: CFG_ZENTRA.root_doc+"/ajax/dashboard.php",
             data: {
                 action:    'save_filter_data',
                 dashboard: this.current_name,
@@ -1329,8 +1329,8 @@ class GLPIDashboard {
         select.dispatchEvent(new Event('change'));
     }
 }
-window.GLPI.Dashboard.GLPIDashboard = GLPIDashboard;
+window.ZENTRA.Dashboard.ZENTRADashboard = ZENTRADashboard;
 // Legacy reference
-window.GLPIDashboard = GLPIDashboard;
-export default GLPIDashboard;
-export {GLPIDashboard};
+window.ZENTRADashboard = ZENTRADashboard;
+export default ZENTRADashboard;
+export {ZENTRADashboard};

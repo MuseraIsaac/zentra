@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ class PluginTesterNotificationEventTestmode implements NotificationEventInterfac
     public static function send(array $data)
     {}
 
-    public static function raise($event, CommonGLPI $item, array $options, $label, array $data, NotificationTarget $notificationtarget, NotificationTemplate $template, $notify_me, $emitter = null, ?CommonDBTM $trigger = null)
+    public static function raise($event, CommonZENTRA $item, array $options, $label, array $data, NotificationTarget $notificationtarget, NotificationTemplate $template, $notify_me, $emitter = null, ?CommonDBTM $trigger = null)
     {}
 
 }

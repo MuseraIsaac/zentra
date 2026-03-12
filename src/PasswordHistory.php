@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
  * change
  *
  * Implemented temporarily as a singleton, should become some kind of service
- * once GLPI support depencency injection.
+ * once ZENTRA support depencency injection.
  */
 final class PasswordHistory
 {
@@ -179,21 +179,21 @@ final class PasswordHistory
     private function __construct() {}
 
     /**
-     * Get the number of passwords stored in glpi_users.password_history that
+     * Get the number of passwords stored in zentra_users.password_history that
      * must be verified according to the configuration
      *
-     * $CFG_GLPI['non_reusable_passwords_count'] indicate the total number of
-     * passwords that must be checked, which include glpi_users.password_history
-     * (previous passwords) AND glpi_users.password (current password)
+     * $CFG_ZENTRA['non_reusable_passwords_count'] indicate the total number of
+     * passwords that must be checked, which include zentra_users.password_history
+     * (previous passwords) AND zentra_users.password (current password)
      *
-     * This means the number of password to be checked in glpi_users.password_history
-     * is always $CFG_GLPI['non_reusable_passwords_count'] - 1
+     * This means the number of password to be checked in zentra_users.password_history
+     * is always $CFG_ZENTRA['non_reusable_passwords_count'] - 1
      *
      * @return int
      */
     private function getPasswordHistoryLengthToValidate(): int
     {
-        global $CFG_GLPI;
-        return ($CFG_GLPI['non_reusable_passwords_count'] ?? 1) - 1;
+        global $CFG_ZENTRA;
+        return ($CFG_ZENTRA['non_reusable_passwords_count'] ?? 1) - 1;
     }
 }

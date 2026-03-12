@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Dashboard\Grid;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Event;
-use Glpi\Features\Clonable;
-use Glpi\Form\Form;
-use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Inventory\Conf;
-use Glpi\Toolbox\ArrayNormalizer;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\Dashboard\Grid;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Event;
+use Zentra\Features\Clonable;
+use Zentra\Form\Form;
+use Zentra\Helpdesk\Tile\LinkableToTilesInterface;
+use Zentra\Helpdesk\Tile\TilesManager;
+use Zentra\Inventory\Conf;
+use Zentra\Toolbox\ArrayNormalizer;
 
 /**
  * Profile class
@@ -178,7 +178,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -206,7 +206,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $item->cleanProfile();
@@ -274,15 +274,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         // To avoid log out and login when rights change (very useful in debug mode)
         if (
-            isset($_SESSION['glpiactiveprofile']['id'])
-            && $_SESSION['glpiactiveprofile']['id'] === $this->input['id']
+            isset($_SESSION['zentraactiveprofile']['id'])
+            && $_SESSION['zentraactiveprofile']['id'] === $this->input['id']
         ) {
             if (in_array('helpdesk_item_type', $this->updates, true)) {
-                $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = importArrayFromDB($this->input['helpdesk_item_type']);
+                $_SESSION['zentraactiveprofile']['helpdesk_item_type'] = importArrayFromDB($this->input['helpdesk_item_type']);
             }
 
             if (in_array('managed_domainrecordtypes', $this->updates, true)) {
-                $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
+                $_SESSION['zentraactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
             }
 
             ///TODO other needed fields
@@ -349,7 +349,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function prepareInputForUpdate($input)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($input["helpdesk_item_type"])) {
             $input["helpdesk_item_type"] = exportArrayToDB(
@@ -473,7 +473,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         if (
             isset($input['interface'])
             && $input['interface'] === "helpdesk"
-            && $this->fields['id'] === (int) $CFG_GLPI['lock_lockprofile_id']
+            && $this->fields['id'] === (int) $CFG_ZENTRA['lock_lockprofile_id']
         ) {
             Session::addMessageAfterRedirect(
                 __s("This profile can't be moved to the simplified interface as it is used for locking items."),
@@ -521,7 +521,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         if (
             ($this->fields['profile'] & DELETE)
             && (countElementsInTable(
-                "glpi_profilerights",
+                "zentra_profilerights",
                 ['name' => 'profile', 'rights' => ['&', DELETE]]
             ))
         ) {
@@ -680,7 +680,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         global $DB;
 
         // Not logged -> no profile to see
-        if (!isset($_SESSION['glpiactiveprofile'])) {
+        if (!isset($_SESSION['zentraactiveprofile'])) {
             return [new QueryExpression('false')];
         }
 
@@ -689,12 +689,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return [new QueryExpression('true')];
         }
 
-        $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];
+        $criteria = ['zentra_profiles.interface' => Session::getCurrentInterface()];
 
         // First, get all possible rights
         $right_subqueries = [];
         foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
-            $val = $_SESSION['glpiactiveprofile'][$key] ?? 0;
+            $val = $_SESSION['zentraactiveprofile'][$key] ?? 0;
 
             if (
                 !is_array($val) // Do not include entities field added by login
@@ -702,19 +702,19 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                  || in_array($key, self::$helpdesk_rights, true))
             ) {
                 $right_subqueries[] = [
-                    'glpi_profilerights.name'     => $key,
+                    'zentra_profilerights.name'     => $key,
                     'RAW'                         => [
-                        '(' . $DB::quoteName('glpi_profilerights.rights') . ' | ' . $DB::quoteValue($val) . ')' => $val,
+                        '(' . $DB::quoteName('zentra_profilerights.rights') . ' | ' . $DB::quoteValue($val) . ')' => $val,
                     ],
                 ];
             }
         }
 
         $sub_query = new QuerySubQuery([
-            'FROM'   => 'glpi_profilerights',
+            'FROM'   => 'zentra_profilerights',
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'glpi_profilerights.profiles_id' => new QueryExpression($DB::quoteName('glpi_profiles.id')),
+                'zentra_profilerights.profiles_id' => new QueryExpression($DB::quoteName('zentra_profiles.id')),
                 'OR'                             => $right_subqueries,
             ],
         ]);
@@ -723,7 +723,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         if (Session::getCurrentInterface() === 'central') {
             return [
                 'OR'  => [
-                    'glpi_profiles.interface' => 'helpdesk',
+                    'zentra_profiles.interface' => 'helpdesk',
                     $criteria,
                 ],
             ];
@@ -751,9 +751,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
         if (count($IDs) === 0) {
             // Check all profiles (means more right than all possible profiles)
-            return (countElementsInTable('glpi_profiles')
+            return (countElementsInTable('zentra_profiles')
                      === countElementsInTable(
-                         'glpi_profiles',
+                         'zentra_profiles',
                          self::getUnderActiveProfileRestrictCriteria()
                      ));
         }
@@ -817,7 +817,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * Get all rights to display for a specific form and interface.
      *
-     * This is only used for GLPI core rights and not rights added by plugins.
+     * This is only used for ZENTRA core rights and not rights added by plugins.
      *
      * @param string $form The tab/form name
      * @phpstan-param non-empty-string $form
@@ -1565,7 +1565,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Computer', 'Computers', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1579,7 +1579,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '21',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Monitor', 'Monitors', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1593,7 +1593,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '22',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Software', 'Software', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1607,7 +1607,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Network', 'Networks', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1621,7 +1621,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Printer', 'Printers', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1635,7 +1635,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '25',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Peripheral::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1649,7 +1649,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '26',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1663,7 +1663,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '27',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1677,7 +1677,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '28',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Phone::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1691,7 +1691,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '129',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Internet'),
             'datatype'           => 'right',
@@ -1705,7 +1705,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '130',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Simcard PIN/PUK'),
             'datatype'           => 'right',
@@ -1724,7 +1724,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '30',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Contact::getTypeName(1) . " / " . Supplier::getTypeName(1),
             'datatype'           => 'right',
@@ -1738,7 +1738,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Document::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1752,7 +1752,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Contract', 'Contracts', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1766,7 +1766,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '33',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Financial and administratives information'),
             'datatype'           => 'right',
@@ -1780,7 +1780,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '101',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Budget::getTypeName(1),
             'datatype'           => 'right',
@@ -1794,7 +1794,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '142',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => SoftwareLicense::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1808,7 +1808,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '143',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / "
                 . _n('Supplier', 'Suppliers', Session::getPluralNumber()),
@@ -1823,7 +1823,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '144',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Line::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1837,7 +1837,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '145',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Certificate::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1851,7 +1851,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '146',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Datacenter::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1865,7 +1865,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '147',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Cluster::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1879,7 +1879,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '148',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Domain::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1893,7 +1893,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '149',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Appliance::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1907,7 +1907,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '150',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => DatabaseInstance::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1921,7 +1921,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '151',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Cable::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1940,7 +1940,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '34',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Knowledge base'),
             'datatype'           => 'right',
@@ -1954,7 +1954,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '36',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Reservation', 'Reservations', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1968,7 +1968,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '38',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Report', 'Reports', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1983,7 +1983,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '140',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Project::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -1997,7 +1997,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '141',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ProjectTask::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2016,7 +2016,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '42',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2030,7 +2030,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '44',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Component', 'Components', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2045,7 +2045,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '106',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Notification', 'Notifications', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2059,7 +2059,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '45',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => DocumentType::getTypeName(1),
             'datatype'           => 'right',
@@ -2073,7 +2073,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '46',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('External link', 'External links', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2087,7 +2087,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '47',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('General setup'),
             'datatype'           => 'right',
@@ -2102,7 +2102,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '109',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Personalization'),
             'datatype'           => 'right',
@@ -2117,7 +2117,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '52',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Search result user display'),
             'datatype'           => 'right',
@@ -2132,7 +2132,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '107',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Calendar', 'Calendars', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2146,7 +2146,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '162',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('All dashboards'),
             'datatype'           => 'right',
@@ -2160,7 +2160,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '163',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Location::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2174,7 +2174,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '164',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ITILCategory::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2188,7 +2188,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '165',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2202,7 +2202,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '166',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => TaskCategory::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2216,7 +2216,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '167',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => State::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2230,7 +2230,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '168',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ITILFollowupTemplate::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2244,7 +2244,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '169',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => SolutionTemplate::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2258,7 +2258,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '173',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ITILValidationTemplate::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2272,7 +2272,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '170',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('SLM'),
             'datatype'           => 'right',
@@ -2286,7 +2286,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '171',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => LineOperator::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2300,7 +2300,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '174',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => OAuthClient::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2314,7 +2314,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '176',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => DefaultFilter::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2328,7 +2328,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '177',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => TaskTemplate::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2347,7 +2347,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '48',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Business rules for tickets'),
             'datatype'           => 'right',
@@ -2362,7 +2362,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '172',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Business rules for changes'),
             'datatype'           => 'right',
@@ -2377,7 +2377,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '175',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Business rules for problems'),
             'datatype'           => 'right',
@@ -2392,7 +2392,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '105',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Rules for assigning a ticket created through a mails receiver'),
             'datatype'           => 'right',
@@ -2406,7 +2406,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Rules for assigning a computer to an entity'),
             'datatype'           => 'right',
@@ -2420,7 +2420,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '50',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Authorizations assignment rules'),
             'datatype'           => 'right',
@@ -2434,7 +2434,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '51',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Rules for assigning a category to a software'),
             'datatype'           => 'right',
@@ -2448,7 +2448,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '159',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => RuleLocation::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2462,7 +2462,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '160',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => RuleAsset::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2476,7 +2476,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '90',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Software dictionary'),
             'datatype'           => 'right',
@@ -2490,7 +2490,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '91',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Dropdowns dictionary'),
             'datatype'           => 'right',
@@ -2504,7 +2504,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '161',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => RuleDictionnaryPrinter::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2518,7 +2518,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '55',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => self::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2532,7 +2532,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '56',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => User::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2546,7 +2546,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '58',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Group::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2560,7 +2560,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '59',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Entity::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2574,7 +2574,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '60',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Transfer'),
             'datatype'           => 'right',
@@ -2588,7 +2588,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '61',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Log', 'Logs', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2603,7 +2603,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '62',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('System logs'),
             'datatype'           => 'right',
@@ -2618,7 +2618,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '152',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => QueuedNotification::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2632,7 +2632,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '153',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Inventory'),
             'datatype'           => 'right',
@@ -2646,7 +2646,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '154',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Lockedfield::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2660,7 +2660,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '155',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => SNMPCredential::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2674,7 +2674,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '156',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => RefusedEquipment::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2688,7 +2688,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '157',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Unmanaged::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2702,7 +2702,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '158',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Agent::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2721,7 +2721,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '102',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Create a ticket'),
             'datatype'           => 'right',
@@ -2735,7 +2735,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $newtab = [
             'id'                 => '108',
-            'table'              => 'glpi_tickettemplates',
+            'table'              => 'zentra_tickettemplates',
             'field'              => 'name',
             'name'               => __('Default ticket template'),
             'datatype'           => 'dropdown',
@@ -2749,7 +2749,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '103',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2763,7 +2763,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Planning'),
             'datatype'           => 'right',
@@ -2777,7 +2777,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '85',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Statistics'),
             'datatype'           => 'right',
@@ -2791,7 +2791,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '119',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Ticket cost', 'Ticket costs', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2832,7 +2832,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '89',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('See hardware of my groups'),
             'datatype'           => 'bool',
@@ -2864,7 +2864,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '112',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Problem::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2888,7 +2888,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '115',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Change::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2902,7 +2902,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ITILFollowup::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2916,7 +2916,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '132',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => TicketTask::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2930,7 +2930,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '133',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => TicketValidation::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2944,7 +2944,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '134',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Template', 'Templates', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2958,7 +2958,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '135',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => PendingReason::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2972,7 +2972,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '136',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => TicketRecurrent::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -2986,7 +2986,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '137',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3000,7 +3000,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '138',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => ChangeValidation::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3014,7 +3014,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '139',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => RecurrentChange::getTypeName(Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3033,7 +3033,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => __('Update own password'),
             'datatype'           => 'bool',
@@ -3045,7 +3045,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '63',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3059,7 +3059,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '64',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Public saved search', 'Public saved searches', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3073,7 +3073,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '120',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
             'datatype'           => 'right',
@@ -3087,7 +3087,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => '122',
-            'table'              => 'glpi_profilerights',
+            'table'              => 'zentra_profilerights',
             'field'              => 'rights',
             'name'               => Form::getTypeName(1),
             'datatype'           => 'right',
@@ -3105,7 +3105,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $asset = $definition->getAssetClassName();
             $tab[] = [
                 'id'                 => $custom_assets_right_offset + $definition->getID(),
-                'table'              => 'glpi_profilerights',
+                'table'              => 'zentra_profilerights',
                 'field'              => 'rights',
                 'name'               => $asset::getTypeName(1),
                 'datatype'           => 'right',
@@ -3389,14 +3389,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function getHelpdeskItemtypes()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $values = [];
-        foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
+        foreach ($CFG_ZENTRA["ticket_types"] as $key => $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                 $values[$itemtype] = $item::getTypeName();
             } else {
-                unset($CFG_GLPI["ticket_types"][$key]);
+                unset($CFG_ZENTRA["ticket_types"][$key]);
             }
         }
         return $values;
@@ -3471,28 +3471,28 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $result = $DB->request(
             [
                 'COUNT'      => 'cpt',
-                'FROM'       => 'glpi_profilerights',
+                'FROM'       => 'zentra_profilerights',
                 'INNER JOIN' => [
-                    'glpi_profiles' => [
+                    'zentra_profiles' => [
                         'FKEY' => [
-                            'glpi_profilerights' => 'profiles_id',
-                            'glpi_profiles'      => 'id',
+                            'zentra_profilerights' => 'profiles_id',
+                            'zentra_profiles'      => 'id',
                         ],
                     ],
-                    'glpi_profiles_users' => [
+                    'zentra_profiles_users' => [
                         'FKEY' => [
-                            'glpi_profiles_users' => 'profiles_id',
-                            'glpi_profiles'       => 'id',
+                            'zentra_profiles_users' => 'profiles_id',
+                            'zentra_profiles'       => 'id',
                             [
-                                'AND' => ['glpi_profiles_users.users_id' => $user_id],
+                                'AND' => ['zentra_profiles_users.users_id' => $user_id],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'      => [
-                    'glpi_profilerights.name'   => $rightname,
-                    'glpi_profilerights.rights' => ['&',  $rightvalue],
-                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_id, true),
+                    'zentra_profilerights.name'   => $rightname,
+                    'zentra_profilerights.rights' => ['&',  $rightvalue],
+                ] + getEntitiesRestrictCriteria('zentra_profiles_users', '', $entity_id, true),
             ]
         );
 

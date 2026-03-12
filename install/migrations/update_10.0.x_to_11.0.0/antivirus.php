@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,13 +38,13 @@
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if ($DB->tableExists('glpi_computerantiviruses')) {
-    $migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
+if ($DB->tableExists('zentra_computerantiviruses')) {
+    $migration->renameTable('zentra_computerantiviruses', 'zentra_itemantiviruses');
 }
 
-if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
+if (!$DB->fieldExists('zentra_itemantiviruses', 'itemtype')) {
     $migration->addField(
-        'glpi_itemantiviruses',
+        'zentra_itemantiviruses',
         'itemtype',
         'string',
         [
@@ -52,13 +52,13 @@ if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
             'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
         ]
     );
-    $migration->migrationOneTable('glpi_itemantiviruses');
+    $migration->migrationOneTable('zentra_itemantiviruses');
 }
 
-if (!$DB->fieldExists('glpi_itemantiviruses', 'items_id')) {
-    $migration->dropKey('glpi_itemantiviruses', 'computers_id');
+if (!$DB->fieldExists('zentra_itemantiviruses', 'items_id')) {
+    $migration->dropKey('zentra_itemantiviruses', 'computers_id');
     $migration->changeField(
-        'glpi_itemantiviruses',
+        'zentra_itemantiviruses',
         'computers_id',
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
@@ -66,7 +66,7 @@ if (!$DB->fieldExists('glpi_itemantiviruses', 'items_id')) {
             'after' => 'itemtype',
         ]
     );
-    $migration->migrationOneTable('glpi_itemantiviruses');
+    $migration->migrationOneTable('zentra_itemantiviruses');
 }
 
-$migration->addKey('glpi_itemantiviruses', ['itemtype', 'items_id'], 'item');
+$migration->addKey('zentra_itemantiviruses', ['itemtype', 'items_id'], 'item');

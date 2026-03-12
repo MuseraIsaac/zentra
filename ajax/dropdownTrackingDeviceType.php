@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
+use Zentra\Exception\Http\BadRequestHttpException;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -96,7 +96,7 @@ if ($isValidItemtype) {
     echo Html::jsAjaxDropdown(
         $_POST['myname'],
         $field_id,
-        $CFG_GLPI['root_doc'] . "/ajax/getDropdownFindNum.php",
+        $CFG_ZENTRA['root_doc'] . "/ajax/getDropdownFindNum.php",
         $p
     );
 
@@ -107,7 +107,7 @@ if ($isValidItemtype) {
         Ajax::updateItemOnSelectEvent(
             $field_id,
             "item_ticket_selection_information{$myname}_{$rand}",
-            $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/ticketiteminformation.php",
             [
                 'items_id' => '__VALUE__',
                 'itemtype' => $_POST['itemtype'],

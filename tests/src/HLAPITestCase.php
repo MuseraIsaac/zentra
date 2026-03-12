@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,21 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use Auth;
 use CommonDBTM;
-use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Controller\CoreController;
-use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
-use Glpi\Api\HL\Route;
-use Glpi\Api\HL\RoutePath;
-use Glpi\Api\HL\Router;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
+use Zentra\Api\HL\Controller\AbstractController;
+use Zentra\Api\HL\Controller\CoreController;
+use Zentra\Api\HL\Doc as Doc;
+use Zentra\Api\HL\Middleware\InternalAuthMiddleware;
+use Zentra\Api\HL\Middleware\ResultFormatterMiddleware;
+use Zentra\Api\HL\Route;
+use Zentra\Api\HL\RoutePath;
+use Zentra\Api\HL\Router;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Http\Request;
+use Zentra\Http\Response;
 use Group_Item;
 use Session;
 
@@ -59,9 +59,9 @@ class HLAPITestCase extends DbTestCase
 
     public function setUp(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         parent::setUp();
-        $CFG_GLPI['enable_hlapi'] = 1;
+        $CFG_ZENTRA['enable_hlapi'] = 1;
     }
     public function tearDown(): void
     {
@@ -297,7 +297,7 @@ final class HLAPIHelper
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
         }
-        $request = $request->withHeader('GLPI-API-Version', $this->api_version);
+        $request = $request->withHeader('ZENTRA-API-Version', $this->api_version);
         $response = $this->router->handleRequest($request);
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
@@ -556,22 +556,22 @@ final class HLAPIHelper
         $item = getItemForItemtype($itemtype);
 
         $deny_read ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
         };
         $deny_create ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~CREATE;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~CREATE;
         };
         $deny_update ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
         };
         $deny_delete ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE;
         };
         $deny_purge ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~PURGE;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~PURGE;
         };
         $deny_restore ??= static function () use ($itemtype) {
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE & ~UPDATE;
+            $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE & ~UPDATE;
         };
 
         $deny_read();
@@ -813,7 +813,7 @@ final class HLAPIHelper
     {
         $this->test->loginWeb();
         $this->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
-        $_SESSION['glpigroups'] = [99];
+        $_SESSION['zentragroups'] = [99];
 
         $create_request = new Request('POST', $endpoint);
         $create_request->setParameter('name', 'autoTestAssignableItem' . random_int(0, 10000));
@@ -833,7 +833,7 @@ final class HLAPIHelper
 
         global $DB;
 
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $this->call(new Request('GET', $new_location), function ($call) {
             $call->response->isNotFoundError();
         }, false);
@@ -841,7 +841,7 @@ final class HLAPIHelper
         // Test READ_OWNED when set as the User
         $DB->update(
             $itemtype::getTable(),
-            ['users_id' => $_SESSION['glpiID']],
+            ['users_id' => $_SESSION['zentraID']],
             ['id' => $new_items_id]
         );
         $this->call(new Request('GET', $new_location), function ($call) {
@@ -850,14 +850,14 @@ final class HLAPIHelper
         // Test READ_OWNED when User is set, but not to the current user
         $DB->update(
             $itemtype::getTable(),
-            ['users_id' => $_SESSION['glpiID'] + 1],
+            ['users_id' => $_SESSION['zentraID'] + 1],
             ['id' => $new_items_id]
         );
         $this->call(new Request('GET', $new_location), function ($call) {
             $call->response->isNotFoundError();
         }, false);
         // Test READ_OWNED when the Group is set to one of the current user's groups
-        $DB->insert('glpi_groups_items', [
+        $DB->insert('zentra_groups_items', [
             'itemtype' => $itemtype,
             'items_id' => $new_items_id,
             'groups_id' => 99,
@@ -868,7 +868,7 @@ final class HLAPIHelper
         }, false);
 
         $DB->delete(
-            'glpi_groups_items',
+            'zentra_groups_items',
             [
                 'itemtype' => $itemtype,
                 'items_id' => $new_items_id,
@@ -877,7 +877,7 @@ final class HLAPIHelper
         );
         $DB->update(
             $itemtype::getTable(),
-            ['users_id_tech' => $_SESSION['glpiID']],
+            ['users_id_tech' => $_SESSION['zentraID']],
             ['id' => $new_items_id]
         );
         // Test READ_OWNED when the User is set as a technician instead of regular user
@@ -885,21 +885,21 @@ final class HLAPIHelper
             $call->response->isNotFoundError();
         }, false);
         // Test READ_ASSIGNED when the User is set as a technician
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $_SESSION['zentraactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->call(new Request('GET', $new_location), function ($call) {
             $call->response->isOK();
         }, false);
         // Test READ_ASSIGNED when a Technician user is set, but not to the current user
         $DB->update(
             $itemtype::getTable(),
-            ['users_id_tech' => $_SESSION['glpiID'] + 1],
+            ['users_id_tech' => $_SESSION['zentraID'] + 1],
             ['id' => $new_items_id]
         );
         $this->call(new Request('GET', $new_location), function ($call) {
             $call->response->isNotFoundError();
         }, false);
         // Test READ_ASSIGNED when the technician Group is set to one of the current user's groups
-        $DB->insert('glpi_groups_items', [
+        $DB->insert('zentra_groups_items', [
             'itemtype' => $itemtype,
             'items_id' => $new_items_id,
             'groups_id' => 99,
@@ -932,7 +932,7 @@ final class HLAPICallAsserter
         return match ($name) {
             'originalRequest' => new HLAPIRequestAsserter($this, $this->router->getOriginalRequest()),
             'finalRequest' => new HLAPIRequestAsserter($this, $this->router->getFinalRequest()),
-            'response' => new HLAPIResponseAsserter($this, $this->response, $this->router->getOriginalRequest()->getHeaderLine('GLPI-API-Version') ?: $this->router::API_VERSION),
+            'response' => new HLAPIResponseAsserter($this, $this->response, $this->router->getOriginalRequest()->getHeaderLine('ZENTRA-API-Version') ?: $this->router::API_VERSION),
             'route' => new HLAPIRouteAsserter($this, $this->router->getLastInvokedRoute()),
             default => null,
         };

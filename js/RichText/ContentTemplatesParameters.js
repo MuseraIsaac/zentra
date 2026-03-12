@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
 
 /* global tinymce */
 
-window.GLPI = window.GLPI || {};
-window.GLPI.RichText = window.GLPI.RichText || {};
+window.ZENTRA = window.ZENTRA || {};
+window.ZENTRA.RichText = window.ZENTRA.RichText || {};
 
 /**
  * User templates parameters autocompleter.
  *
  * @since 10.0.0
  */
-window.GLPI.RichText.ContentTemplatesParameters = class {
+window.ZENTRA.RichText.ContentTemplatesParameters = class {
 
     /**
     * @param {Editor} editor

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/notification_notificationtemplate.class.php */
 
@@ -56,7 +56,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $notif = new \Notification();
         $this->assertTrue($notif->getFromDB($n_nt->getField('notifications_id')));
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
 
         //not logged => no ACLs
         $name = $n_nt->getTabNameForItem($notif);
@@ -66,7 +66,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $name = $n_nt->getTabNameForItem($notif);
         $this->assertSame("Templates 1", strip_tags($name));
 
-        $_SESSION['glpishow_count_on_tabs'] = 0;
+        $_SESSION['zentrashow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
         $this->assertSame("Templates", strip_tags($name));
 
@@ -75,7 +75,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $toadd['mode'] = \Notification_NotificationTemplate::MODE_XMPP;
         $this->assertGreaterThan(0, (int) $n_nt->add($toadd));
 
-        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $_SESSION['zentrashow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
         $this->assertSame("Templates 2", strip_tags($name));
     }
@@ -197,10 +197,10 @@ class Notification_NotificationTemplateTest extends DbTestCase
 
     public function testHasActiveMode()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $this->assertFalse(\Notification_NotificationTemplate::hasActiveMode());
-        $CFG_GLPI['notifications_ajax'] = 1;
+        $CFG_ZENTRA['notifications_ajax'] = 1;
         $this->assertTrue(\Notification_NotificationTemplate::hasActiveMode());
-        $CFG_GLPI['notifications_ajax'] = 0;
+        $CFG_ZENTRA['notifications_ajax'] = 0;
     }
 }

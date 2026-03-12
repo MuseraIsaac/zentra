@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ function changeUserLanguage(language) {
 
 describe('Edit form translations', () => {
     beforeEach(() => {
-        cy.createWithAPI('Glpi\\Form\\Form', {
+        cy.createWithAPI('Zentra\\Form\\Form', {
             'name': 'Tests form translations',
             'header': 'This form is used to test form translations',
         }).as('form_id');
@@ -92,7 +92,7 @@ describe('Edit form translations', () => {
         cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\FormTranslation$1';
+            const tab = 'Zentra\\Form\\FormTranslation$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
 
@@ -128,12 +128,12 @@ describe('Edit form translations', () => {
         cy.get('@modal').should('not.exist');
 
         // Check columns values
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr:first>td').eq(0).contains('Français');
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr:first>td').eq(1).findByRole('progressbar').contains('0 %');
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr:first>td').eq(2).invoke('text').then((text) => {
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr:first>td').eq(0).contains('Français');
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr:first>td').eq(1).findByRole('progressbar').contains('0 %');
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr:first>td').eq(2).invoke('text').then((text) => {
             expect(text.trim()).to.equal('2');
         });
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr:first>td').eq(3).invoke('text').then((text) => {
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr:first>td').eq(3).invoke('text').then((text) => {
             expect(text.trim()).to.equal('0');
         });
     });
@@ -169,7 +169,7 @@ describe('Edit form translations', () => {
             cy.visit(`/Form/Render/${form_id}`);
         });
 
-        // Check the translations with GLPI default language same as E2E user defined language
+        // Check the translations with ZENTRA default language same as E2E user defined language
         checkTranslations('Tests form translations', 'This form is used to test form translations');
     });
 
@@ -256,7 +256,7 @@ describe('Edit form translations', () => {
 
         // Go back to the form translations page
         cy.get('@form_id').then((form_id) => {
-            cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=Glpi\\Form\\FormTranslation$1`);
+            cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=Zentra\\Form\\FormTranslation$1`);
         });
 
         // Check stats
@@ -279,22 +279,22 @@ describe('Edit form translations', () => {
 
         // Modify the default values of the form
         cy.get('@form_id').then((form_id) => {
-            cy.updateWithAPI('Glpi\\Form\\Form', form_id, {
+            cy.updateWithAPI('Zentra\\Form\\Form', form_id, {
                 'name': 'Tests form translations updated',
             });
         });
 
         // Reload the translation page
         cy.get('@form_id').then((form_id) => {
-            const tab = 'Glpi\\Form\\FormTranslation$1';
+            const tab = 'Zentra\\Form\\FormTranslation$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
 
         // Check stats
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr').eq(0).find('td').eq(-1).invoke('text').then((text) => {
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr').eq(0).find('td').eq(-1).invoke('text').then((text) => {
             expect(text.trim()).to.equal('1');
         });
-        cy.get('#glpi-form-translations-languages').find('tbody:first>tr').eq(1).find('td').eq(-1).invoke('text').then((text) => {
+        cy.get('#zentra-form-translations-languages').find('tbody:first>tr').eq(1).find('td').eq(-1).invoke('text').then((text) => {
             expect(text.trim()).to.equal('0');
         });
 

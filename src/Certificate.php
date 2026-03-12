@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\StateInterface;
 
 use function Safe\strtotime;
 
@@ -50,7 +50,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 {
     /** @use Clonable<static> */
     use Clonable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         post_updateItem as post_updateItemAssignableItem;
@@ -149,7 +149,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_certificatetypes',
+            'table'              => 'zentra_certificatetypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -205,7 +205,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_certificates_items',
+            'table'              => 'zentra_certificates_items',
             'field'              => 'items_id',
             'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
             'nosearch'           => true,
@@ -257,7 +257,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -265,7 +265,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -284,14 +284,14 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -316,7 +316,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -325,13 +325,13 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -345,7 +345,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '72',
-            'table'              => 'glpi_certificates_items',
+            'table'              => 'zentra_certificates_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of associated items'),
             'forcegroupby'       => true,
@@ -359,7 +359,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -550,7 +550,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
         if (!$this->isNewItem()) {
             //use send_certificates_alert_before_delay to compute color
-            if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
+            if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['zentraactive_entity'])) {
                 if ($this->fields['date_expiration'] < date('Y-m-d')) {
                     $class = 'expired';
                 } elseif ($this->fields['date_expiration'] < date('Y-m-d', strtotime("+$before days"))) {
@@ -689,9 +689,9 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      **/
     public static function getTypes($all = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $types = $CFG_GLPI['certificate_types'];
+        $types = $CFG_ZENTRA['certificate_types'];
         foreach ($types as $key => $type) {
             if (!class_exists($type)) {
                 continue;
@@ -725,9 +725,9 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      */
     public static function cronCertificate($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI['use_notifications']) {
+        if (!$CFG_ZENTRA['use_notifications']) {
             return 0; // Nothing to do
         }
 
@@ -740,9 +740,9 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
             if ($repeat > 0) {
                 $where_date = [
                     'OR' => [
-                        ['glpi_alerts.date' => null],
+                        ['zentra_alerts.date' => null],
                         [
-                            'glpi_alerts.date' => ['<',
+                            'zentra_alerts.date' => ['<',
                                 QueryFunction::dateSub(
                                     date: QueryFunction::now(),
                                     interval: $repeat,
@@ -753,23 +753,23 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                     ],
                 ];
             } else {
-                $where_date = ['glpi_alerts.date' => null];
+                $where_date = ['zentra_alerts.date' => null];
             }
             $iterator = $DB->request(
                 [
                     'SELECT'    => [
-                        'glpi_certificates.id',
+                        'zentra_certificates.id',
                     ],
                     'FROM'      => self::getTable(),
                     'LEFT JOIN' => [
-                        'glpi_alerts' => [
+                        'zentra_alerts' => [
                             'FKEY'   => [
-                                'glpi_alerts'       => 'items_id',
-                                'glpi_certificates' => 'id',
+                                'zentra_alerts'       => 'items_id',
+                                'zentra_certificates' => 'id',
                                 [
                                     'AND' => [
-                                        'glpi_alerts.itemtype' => self::class,
-                                        'glpi_alerts.type'     => Alert::END,
+                                        'zentra_alerts.itemtype' => self::class,
+                                        'zentra_alerts.type'     => Alert::END,
                                     ],
                                 ],
                             ],
@@ -777,17 +777,17 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                     ],
                     'WHERE'     => [
                         $where_date,
-                        'glpi_certificates.is_deleted'  => 0,
-                        'glpi_certificates.is_template' => 0,
+                        'zentra_certificates.is_deleted'  => 0,
+                        'zentra_certificates.is_template' => 0,
                         [
-                            'NOT' => ['glpi_certificates.date_expiration' => null],
+                            'NOT' => ['zentra_certificates.date_expiration' => null],
                         ],
                         [
                             'RAW' => [
-                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
+                                'DATEDIFF(' . DBmysql::quoteName('zentra_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
                             ],
                         ],
-                        'glpi_certificates.entities_id' => $entity,
+                        'zentra_certificates.entities_id' => $entity,
                     ],
                 ]
             );
@@ -804,7 +804,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                 if (NotificationEvent::raiseEvent('alert', $certificate)) {
                     $msg = sprintf(
                         __('%1$s: %2$s'),
-                        Dropdown::getDropdownName('glpi_entities', $entity),
+                        Dropdown::getDropdownName('zentra_entities', $entity),
                         sprintf(
                             __('Certificate %1$s expired on %2$s'),
                             $certificate->fields['name'] . (!empty($certificate->fields['serial']) ? ' - ' . $certificate->fields['serial'] : ''),
@@ -834,7 +834,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
                     $msg = sprintf(
                         __('Certificate alerts sending failed for entity %1$s'),
-                        Dropdown::getDropdownName("glpi_entities", $entity)
+                        Dropdown::getDropdownName("zentra_entities", $entity)
                     );
                     if ($task) {
                         $task->log($msg);

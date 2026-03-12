@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Auth;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use User;
 
@@ -48,7 +48,7 @@ final class PasswordHistoryTest extends DbTestCase
      */
     protected function testValidatePasswordProvider(): iterable
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Tests users
         $new_user = new User();
@@ -84,7 +84,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 1 (most recent) with no history enabled
-        $CFG_GLPI['non_reusable_passwords_count'] = 1;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 1;
         yield [
             'user'     => $tu_user,
             'password' => "old password 1",
@@ -92,7 +92,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 1 with history enabled (length = 2)
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         yield [
             'user'     => $tu_user,
             'password' => "old password 1",
@@ -100,7 +100,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 2 with history enabled (length = 2)
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         yield [
             'user'     => $tu_user,
             'password' => "old password 2",
@@ -108,7 +108,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 3 with history enabled (length = 2)
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         yield [
             'user'     => $tu_user,
             'password' => "old password 3",
@@ -116,7 +116,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 3 with history enabled (length = 4)
-        $CFG_GLPI['non_reusable_passwords_count'] = 5;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 5;
         yield [
             'user'     => $tu_user,
             'password' => "old password 3",
@@ -124,7 +124,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Try to reuse current old password 7 with history enabled (length = 4)
-        $CFG_GLPI['non_reusable_passwords_count'] = 5;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 5;
         yield [
             'user'     => $tu_user,
             'password' => "old password 7",
@@ -157,7 +157,7 @@ final class PasswordHistoryTest extends DbTestCase
      */
     protected function testUpdatePasswordHistoryProvider(): iterable
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Test subject
         $user = getItemByTypeName('User', TU_USER);
@@ -170,7 +170,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Update password with history disabled
-        $CFG_GLPI['non_reusable_passwords_count'] = 1;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 1;
         $previous_password_1 = Auth::getPasswordHash("previous password 1");
         yield [
             'user' => $user,
@@ -179,7 +179,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Update password with history enabled
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         $previous_password_2 = Auth::getPasswordHash("previous password 2");
         yield [
             'user' => $user,
@@ -188,7 +188,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Update password with history enabled
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         $previous_password_3 = Auth::getPasswordHash("previous password 3");
         yield [
             'user' => $user,
@@ -197,7 +197,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Update password with history enabled
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         $previous_password_4 = Auth::getPasswordHash("previous password 4");
         yield [
             'user' => $user,
@@ -206,7 +206,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Update password with history enabled (going over the max limit of stored data, older password is removed from history)
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         $previous_password_5 = Auth::getPasswordHash("previous password 5");
         yield [
             'user' => $user,
@@ -215,7 +215,7 @@ final class PasswordHistoryTest extends DbTestCase
         ];
 
         // Send an invalid password
-        $CFG_GLPI['non_reusable_passwords_count'] = 3;
+        $CFG_ZENTRA['non_reusable_passwords_count'] = 3;
         $unhashed_password = "unhashed_password";
         yield [
             'user'     => $user,

@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@
  #}
 
 {# @var string                                         icon #}
-{# @var \Glpi\Form\Desination\FormDestinationInterface default_destination_object #}
-{# @var \Glpi\Form\Form                                form #}
-{# @var \Glpi\Form\Desination\FormDestination          destinations #}
+{# @var \Zentra\Form\Desination\FormDestinationInterface default_destination_object #}
+{# @var \Zentra\Form\Form                                form #}
+{# @var \Zentra\Form\Desination\FormDestination          destinations #}
 {# @var int|null                                       active_destination #}
 {# @var boolean                                        can_update #}
 
@@ -59,7 +59,7 @@
                 action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}"
             >
                 <input type="hidden" name="name" value="{{ label }}"/>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" name="add" value=""/>
             </form>
         {% endfor %}
@@ -84,7 +84,7 @@
             {{ __("No items will be created for this form.") }}
         </p>
     {% else %}
-        <section class="accordion mt-4 pe-none" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
+        <section class="accordion mt-4 pe-none" id="zentra-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
                 {% set is_expanded = active_destination == destination.getID() %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
@@ -99,24 +99,24 @@
                             role="button"
                             tabindex="0"
                             data-bs-toggle="collapse"
-                            data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
+                            data-bs-target="#zentra-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
-                            data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
+                            data-zentra-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
                             <i class="{{ concrete_destination ? concrete_destination.getIcon() : 'ti ti-unlink text-white' }}"></i>
                             <span
-                                class="m-0 lh-base fw-normal glpi-form-destination-name {{ not concrete_destination ? 'text-white' : '' }}"
+                                class="m-0 lh-base fw-normal zentra-form-destination-name {{ not concrete_destination ? 'text-white' : '' }}"
                             >
                                 {{ destination.getName() }}
                             </span>
-                            <div data-glpi-editor-destination-badges-container>
+                            <div data-zentra-editor-destination-badges-container>
                                 {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
-                                {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
+                                {% for strategy in enum_cases('Zentra\\Form\\Condition\\CreationStrategy') %}
                                     {% set is_visible = selected_strategy == strategy %}
                                     {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
                                     <span
                                         class="{{ display_class }} badge bg-secondary-lt d-flex align-items-center ms-2"
-                                        data-glpi-editor-condition-badge="{{ strategy.value }}"
+                                        data-zentra-editor-condition-badge="{{ strategy.value }}"
                                     >
                                         <i class="{{ strategy.getIcon() }} me-1 {{ not concrete_destination ? 'text-white' : '' }}"></i>
                                         <span class="{{ not concrete_destination ? 'text-white' : '' }}">{{ strategy.getLabel() }}</span>
@@ -129,7 +129,7 @@
                                 name="name"
                                 form="form-destination-{{ destination.getID() }}"
                                 value="{{ destination.getName() }}"
-                                class="form-control me-4 fw-normal glpi-form-destination-name"
+                                class="form-control me-4 fw-normal zentra-form-destination-name"
                                 style="font-weight: inherit;"
                                 {# Fake collaspe needed to avoid triggering the parent accordion when clicking inside #}
                                 data-bs-toggle="collapse"
@@ -138,9 +138,9 @@
                         </div>
                     </div>
                     <div
-                        id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
+                        id="zentra-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                         class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
-                        data-bs-parent="#glpi-destinations-accordion"
+                        data-bs-parent="#zentra-destinations-accordion"
                         data-form="{{ form.getID() }}"
                         data-form-destination="{{ destination.getID() }}"
                     >
@@ -163,7 +163,7 @@
 
 <script>
     import("/js/modules/Forms/DestinationAccordionController.js").then(function (module) {
-        const accordionController = new module.GlpiFormDestinationAccordionController();
+        const accordionController = new module.ZentraFormDestinationAccordionController();
 
         {% if active_destination %}
             accordionController.triggerWatchers();

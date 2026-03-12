@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
-use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\PlanningEvent;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Zentra\CalDAV\Traits\VobjectConverterTrait;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\PlanningEvent;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -306,17 +306,17 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
         $condition = [
             'OR' => [
-                self::getTableField('users_id') => $_SESSION['glpiID'],
+                self::getTableField('users_id') => $_SESSION['zentraID'],
                 QueryFunction::jsonContains(
                     self::getTableField('users_id_guests'),
-                    new QueryExpression($DB::quoteValue((int) $_SESSION['glpiID'])),
+                    new QueryExpression($DB::quoteValue((int) $_SESSION['zentraID'])),
                     '$'
                 ),
             ],
         ];
 
         if (Session::haveRight(Planning::$rightname, Planning::READGROUP)) {
-            $groups = $_SESSION['glpigroups'];
+            $groups = $_SESSION['zentragroups'];
             if (count($groups)) {
                 $users = Group_User::getGroupUsers($groups);
                 $users_id = [];

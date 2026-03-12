@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ class SavedSearch_User extends CommonDBRelation
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'savedsearches_id',
-            'FROM'   => 'glpi_savedsearches_users',
+            'FROM'   => 'zentra_savedsearches_users',
             'WHERE'  => ['users_id' => $users_id,
                 'itemtype' => $itemtype,
             ],

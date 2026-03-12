@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Add pending reason table
-if (!$DB->tableExists('glpi_pendingreasons')) {
-    $query = "CREATE TABLE `glpi_pendingreasons` (
+if (!$DB->tableExists('zentra_pendingreasons')) {
+    $query = "CREATE TABLE `zentra_pendingreasons` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -63,8 +63,8 @@ if (!$DB->tableExists('glpi_pendingreasons')) {
 }
 
 // Add pending reason items table
-if (!$DB->tableExists('glpi_pendingreasons_items')) {
-    $query = "CREATE TABLE `glpi_pendingreasons_items` (
+if (!$DB->tableExists('zentra_pendingreasons_items')) {
+    $query = "CREATE TABLE `zentra_pendingreasons_items` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `pendingreasons_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -89,7 +89,7 @@ $config = Config::getConfigurationValues('core');
 if (empty($config['system_user'])) {
     $user = new User();
 
-    $system_user_name = 'glpi-system';
+    $system_user_name = 'zentra-system';
     if ($user->getFromDBbyName($system_user_name)) {
         $system_user_name .= '-' . Toolbox::getRandomString(8);
     }
@@ -99,7 +99,7 @@ if (empty($config['system_user'])) {
         'password'      => '',
         'authtype'      => 1,
     ];
-    $DB->insert('glpi_users', $system_user_params);
+    $DB->insert('zentra_users', $system_user_params);
 
     $migration->addConfig(['system_user' => $DB->insertId()], 'core');
 }
@@ -115,18 +115,18 @@ $migration->addCrontask(
 );
 
 // Name change, might be needed for a few user who used the feature before release
-if ($DB->fieldExists('glpi_pendingreasons_items', 'auto_bump')) {
-    $migration->changeField('glpi_pendingreasons_items', 'auto_bump', 'followup_frequency', 'int');
+if ($DB->fieldExists('zentra_pendingreasons_items', 'auto_bump')) {
+    $migration->changeField('zentra_pendingreasons_items', 'auto_bump', 'followup_frequency', 'int');
 }
 
-if ($DB->fieldExists('glpi_pendingreasons_items', 'auto_solve')) {
-    $migration->changeField('glpi_pendingreasons_items', 'auto_solve', 'followups_before_resolution', 'int');
+if ($DB->fieldExists('zentra_pendingreasons_items', 'auto_solve')) {
+    $migration->changeField('zentra_pendingreasons_items', 'auto_solve', 'followups_before_resolution', 'int');
 }
 
-if ($DB->fieldExists('glpi_pendingreasons', 'auto_bump')) {
-    $migration->changeField('glpi_pendingreasons', 'auto_bump', 'followup_frequency', 'int');
+if ($DB->fieldExists('zentra_pendingreasons', 'auto_bump')) {
+    $migration->changeField('zentra_pendingreasons', 'auto_bump', 'followup_frequency', 'int');
 }
 
-if ($DB->fieldExists('glpi_pendingreasons', 'auto_solve')) {
-    $migration->changeField('glpi_pendingreasons', 'auto_solve', 'followups_before_resolution', 'int');
+if ($DB->fieldExists('zentra_pendingreasons', 'auto_solve')) {
+    $migration->changeField('zentra_pendingreasons', 'auto_solve', 'followups_before_resolution', 'int');
 }

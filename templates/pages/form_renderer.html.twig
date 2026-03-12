@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
     {% set is_single_section_form = form.getSections()|length == 1 %}
 
     {# Check render layout to determine display behavior #}
-    {% set is_single_page_layout = form.fields.render_layout == constant('Glpi\\Form\\RenderLayout::SINGLE_PAGE').value %}
+    {% set is_single_page_layout = form.fields.render_layout == constant('Zentra\\Form\\RenderLayout::SINGLE_PAGE').value %}
     {% set use_step_by_step = not is_single_page_layout and not is_single_section_form %}
 
     <form
@@ -51,14 +51,14 @@
         action="{{ path("/Form/SubmitAnswers") }}"
         {# The pointer-events-none class will be removed by the JS controller once it is loaded #}
         class="pointer-events-none"
-        data-glpi-form-render-layout="{{ form.fields.render_layout }}"
+        data-zentra-form-render-layout="{{ form.fields.render_layout }}"
     >
         <div class="form-renderer mt-n5">
 
             {# Form header: title and description #}
             <div
                 class="mb-4"
-                data-glpi-form-renderer-form-header
+                data-zentra-form-renderer-form-header
             >
                 <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}" data-testid="form-title">
                     {{ translate_form_item_key(form, constant('TRANSLATION_KEY_NAME', form)) }}
@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <div data-glpi-form-renderer-delegation-container>
+            <div data-zentra-form-renderer-delegation-container>
                 {% include "components/helpdesk_forms/delegation_alert.html.twig" %}
             </div>
 
@@ -79,11 +79,11 @@
 
                 <div
                     class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }}"
-                    data-glpi-form-renderer-section="{{ section_index }}"
-                    data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
-                    data-glpi-form-renderer-id="{{ section.fields.id }}"
+                    data-zentra-form-renderer-section="{{ section_index }}"
+                    data-zentra-form-renderer-uuid="{{ section.fields.uuid }}"
+                    data-zentra-form-renderer-id="{{ section.fields.id }}"
                     {% if not visibility_engine_output.isSectionVisible(section.getID()) %}
-                        data-glpi-form-renderer-hidden-by-condition
+                        data-zentra-form-renderer-hidden-by-condition
                     {% endif %}
                 >
                     {% if not is_single_section_form %}
@@ -112,7 +112,7 @@
                                     {% set form_group_blocks = [form_group_blocks] %}
                                 {% endif %}
 
-                                <section data-glpi-form-renderer-horizontal-blocks>
+                                <section data-zentra-form-renderer-horizontal-blocks>
                                     {% set previous_index = -1 %}
                                     {% for form_block in form_group_blocks %}
                                         {% if form_block.fields.horizontal_rank > previous_index + 1 %}
@@ -122,7 +122,7 @@
                                         {% endif %}
                                         {% set previous_index = form_block.fields.horizontal_rank %}
 
-                                        {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                        {% if form_block is instanceof('Zentra\\Form\\Question') %}
                                             {% set question_type = form_block.getQuestionType() %}
                                             {{ form_block.setDefaultValueFromParameters(params) }}
                                         {% endif %}
@@ -130,12 +130,12 @@
                                         {% set skip_question = false %}
 
                                         {# Skip unknown types (may be a disabled plugin) #}
-                                        {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
+                                        {% if form_block is instanceof('Zentra\\Form\\Question') and question_type is null %}
                                             {% set skip_question = true %}
                                         {% endif %}
 
                                         {# Skip questions not allowed for anonymous forms #}
-                                        {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                                        {% if not skip_question and form_block is instanceof('Zentra\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
                                             {% set skip_question = true %}
                                         {% endif %}
 
@@ -144,28 +144,28 @@
                                                 aria-label="{{ form_block.fields.name }}"
                                                 class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }} mb-3"
                                                 style="flex: 1;"
-                                                data-glpi-form-renderer-parent-section="{{ section_index }}"
-                                                data-glpi-form-renderer-id="{{ form_block.fields.id }}"
-                                                data-glpi-form-renderer-uuid="{{ form_block.fields.uuid }}"
+                                                data-zentra-form-renderer-parent-section="{{ section_index }}"
+                                                data-zentra-form-renderer-id="{{ form_block.fields.id }}"
+                                                data-zentra-form-renderer-uuid="{{ form_block.fields.uuid }}"
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                                    data-glpi-form-renderer-question
+                                                {% if form_block is instanceof('Zentra\\Form\\Question') %}
+                                                    data-zentra-form-renderer-question
 
                                                     {% if form_block.getQuestionType().isHiddenInput() %}
-                                                        data-glpi-form-renderer-hidden-input
+                                                        data-zentra-form-renderer-hidden-input
                                                     {% endif %}
-                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
-                                                    data-glpi-form-renderer-comment
+                                                {% elseif form_block is instanceof('Zentra\\Form\\Comment') %}
+                                                    data-zentra-form-renderer-comment
                                                 {% endif %}
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\Condition\\UsedAsCriteriaInterface') %}
-                                                    data-glpi-form-renderer-criteria
+                                                {% if form_block is instanceof('Zentra\\Form\\Question') and form_block.getQuestionType() is instanceof('Zentra\\Form\\Condition\\UsedAsCriteriaInterface') %}
+                                                    data-zentra-form-renderer-criteria
                                                 {% endif %}
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') and not visibility_engine_output.isQuestionVisible(form_block.getID()) %}
-                                                    data-glpi-form-renderer-hidden-by-condition
-                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') and not visibility_engine_output.isCommentVisible(form_block.getID()) %}
-                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% if form_block is instanceof('Zentra\\Form\\Question') and not visibility_engine_output.isQuestionVisible(form_block.getID()) %}
+                                                    data-zentra-form-renderer-hidden-by-condition
+                                                {% elseif form_block is instanceof('Zentra\\Form\\Comment') and not visibility_engine_output.isCommentVisible(form_block.getID()) %}
+                                                    data-zentra-form-renderer-hidden-by-condition
                                                 {% endif %}
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
@@ -179,7 +179,7 @@
                                                     {{ translate_form_item_key(form_block, constant('TRANSLATION_KEY_DESCRIPTION', form_block))|safe_html }}
                                                 </div>
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                {% if form_block is instanceof('Zentra\\Form\\Question') %}
                                                     {{ question_type.renderEndUserTemplate(form_block)|raw }}
                                                 {% endif %}
                                             </section>
@@ -196,7 +196,7 @@
             {# Form reference #}
             <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
 
-            <div class="d-flex justify-content-end mb-3" data-glpi-form-renderer-actions>
+            <div class="d-flex justify-content-end mb-3" data-zentra-form-renderer-actions>
                 {# Altcha #}
                 {% if unauthenticated_user %}
                     {{ include(
@@ -208,12 +208,12 @@
             </div>
 
             {# Actions #}
-            <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>
+            <div class="d-flex justify-content-end" data-zentra-form-renderer-actions>
                 {% if use_step_by_step and not is_single_section_form %}
                     {# Navigation buttons for step-by-step mode #}
                     <button
                         type="button"
-                        data-glpi-form-renderer-action="previous-section"
+                        data-zentra-form-renderer-action="previous-section"
                         class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
                     >
                         <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
@@ -222,7 +222,7 @@
 
                     <button
                         type="button"
-                        data-glpi-form-renderer-action="next-section"
+                        data-zentra-form-renderer-action="next-section"
                         class="btn btn-primary pointer-events-none d-flex align-items-end"
                     >
                         <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
@@ -232,12 +232,12 @@
 
                 <button
                     type="button"
-                    data-glpi-form-renderer-action="submit"
+                    data-zentra-form-renderer-action="submit"
                     class="btn btn-primary pointer-events-none d-flex align-items-end {{ use_step_by_step ? 'd-none' : '' }}"
                     aria-label="{{ __("Submit") }}"
                     disabled
                     {% if not visibility_engine_output.isFormVisible() %}
-                        data-glpi-form-renderer-hidden-by-condition
+                        data-zentra-form-renderer-hidden-by-condition
                     {% endif %}
                 >
                     <i class="ti ti-check me-2"></i>
@@ -248,7 +248,7 @@
             {# Final "success" confirmation #}
             <div
                 class="empty d-none mt-5"
-                data-glpi-form-renderer-success
+                data-zentra-form-renderer-success
             >
                 <div class="empty-title d-flex align-items-center">
                     <svg
@@ -297,7 +297,7 @@
 
     <script>(async () => {
         const mod = await import("/js/modules/Forms/RendererController.js");
-        new mod.GlpiFormRendererController(
+        new mod.ZentraFormRendererController(
             '#forms_form_answers',
             {{ form.getID() }}
         );

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
 Session::checkCentralAccess();
 
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
         "notificationtemplates",
         4,
         "notification",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        sprintf(__('%1$s adds the item %2$s'), $_SESSION["zentraname"], $_POST["name"])
     );
 
     $url      = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation', true);
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
         4,
         "notification",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s purges an item'), $_SESSION["zentraname"])
     );
     $notificationtemplate->redirectToList();
 } elseif (isset($_POST["update"])) {
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
         4,
         "notification",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
     Html::back();
 } else {

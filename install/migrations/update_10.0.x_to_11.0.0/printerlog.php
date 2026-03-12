@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
 /**
  * @var Migration $migration
  */
-$migration->addField('glpi_printerlogs', 'itemtype', 'varchar(100) NOT NULL', ['after' => 'id']);
-$migration->changeField('glpi_printerlogs', 'printers_id', 'items_id', 'fkey');
-$migration->dropKey('glpi_printerlogs', 'unicity');
-$migration->migrationOneTable('glpi_printerlogs');
-$migration->addKey('glpi_printerlogs', ['itemtype', 'items_id', 'date'], 'unicity', 'UNIQUE');
+$migration->addField('zentra_printerlogs', 'itemtype', 'varchar(100) NOT NULL', ['after' => 'id']);
+$migration->changeField('zentra_printerlogs', 'printers_id', 'items_id', 'fkey');
+$migration->dropKey('zentra_printerlogs', 'unicity');
+$migration->migrationOneTable('zentra_printerlogs');
+$migration->addKey('zentra_printerlogs', ['itemtype', 'items_id', 'date'], 'unicity', 'UNIQUE');

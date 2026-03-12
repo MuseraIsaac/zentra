@@ -30,14 +30,14 @@
                     "id": 66,
                     "uuid": "f2a16cd4-a71f-42ce-8904-bc4d12bea549",
                     "name": "Your favorite hammer",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeItem",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
                     "description": "",
                     "default_value": null,
                     "extra_data": {
-                        "itemtype": "Glpi\\CustomAsset\\HammerAsset",
+                        "itemtype": "Zentra\\CustomAsset\\HammerAsset",
                         "root_items_id": 0,
                         "subtree_depth": 0,
                         "selectable_tree_root": false
@@ -51,7 +51,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -65,7 +65,7 @@
             "destinations": [
                 {
                     "id": 84,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",
@@ -81,7 +81,7 @@
             ],
             "custom_types_requirements": [
                 {
-                    "itemtype": "Glpi\\CustomAsset\\HammerAsset"
+                    "itemtype": "Zentra\\CustomAsset\\HammerAsset"
                 }
             ]
         }

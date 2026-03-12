@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,25 +33,25 @@
 
 .sidebar,
 .topbar {
-    background-color: var(--glpi-mainmenu-bg);
-    color: var(--glpi-mainmenu-fg);
+    background-color: var(--zentra-mainmenu-bg);
+    color: var(--zentra-mainmenu-fg);
     z-index: $zindex-fixed + 1; // +1 to be above breadcrumbs
 
     .navbar-toggler {
-        color: var(--glpi-mainmenu-fg);
+        color: var(--zentra-mainmenu-fg);
     }
 
     .btn-ghost-secondary {
-        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+        color: rgba($color: var(--zentra-mainmenu-fg), $alpha: 80%);
     }
 
     .btn-outline-secondary {
-        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
-        border-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+        color: rgba($color: var(--zentra-mainmenu-fg), $alpha: 80%);
+        border-color: rgba($color: var(--zentra-mainmenu-fg), $alpha: 80%);
 
         &:hover {
-            background-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
-            color: rgba($color: var(--glpi-mainmenu-bg), $alpha: 80%);
+            background-color: rgba($color: var(--zentra-mainmenu-fg), $alpha: 80%);
+            color: rgba($color: var(--zentra-mainmenu-bg), $alpha: 80%);
             border-color: transparent;
         }
     }
@@ -61,7 +61,7 @@
     #navbar-menu {
         .nav-item {
             a.nav-link {
-                color: var(--glpi-mainmenu-fg);
+                color: var(--zentra-mainmenu-fg);
 
                 &:hover {
                     opacity: 1 !important;
@@ -115,7 +115,7 @@
         .nav-item {
             .nav-link {
                 padding: 0 1.5rem !important;
-                color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+                color: rgba($color: var(--zentra-mainmenu-fg), $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
 
@@ -199,8 +199,8 @@
             margin: 0 calc(-1 * var(--tblr-gutter-x, 1.5rem)) 0.5rem;
             width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
 
-            .glpi-logo {
-                background: var(--glpi-logo-reduced) no-repeat;
+            .zentra-logo {
+                background: var(--zentra-logo-reduced) no-repeat;
                 background-size: contain;
                 width: 40px;
                 height: 40px;
@@ -260,11 +260,11 @@
                                 background: transparent;
                             }
 
-                            background-color: var(--glpi-mainmenu-fg);
-                            color: var(--glpi-mainmenu-bg);
+                            background-color: var(--zentra-mainmenu-fg);
+                            color: var(--zentra-mainmenu-bg);
                             top: 0;
                             left: calc(100% + 1px);
-                            border: 1px solid var(--glpi-mainmenu-bg);
+                            border: 1px solid var(--zentra-mainmenu-bg);
                             position: absolute;
                             z-index: 1050;
 
@@ -276,7 +276,7 @@
                                 border-left: 3px solid transparent;
 
                                 &.active {
-                                    background-color: var(--glpi-mainmenu-active-bg);
+                                    background-color: var(--zentra-mainmenu-active-bg);
                                     border-left-color: var(--tblr-primary);
                                 }
                             }
@@ -298,7 +298,7 @@
                     }
 
                     &.active {
-                        background-color: color-mix(in srgb, var(--glpi-mainmenu-bg), white 5%);
+                        background-color: color-mix(in srgb, var(--zentra-mainmenu-bg), white 5%);
                     }
                 }
             }
@@ -326,7 +326,7 @@
 
     // fix z-index issues on responsive menu
     .sidebar {
-        z-index: var(--glpi-zindex-fixed);
+        z-index: var(--zentra-zindex-fixed);
 
         & ~ .navbar {
             z-index: inherit;

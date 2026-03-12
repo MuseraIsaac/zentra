@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/notificationsettingconfig.class.php */
 
@@ -82,7 +82,7 @@ class NotificationSettingConfigTest extends DbTestCase
 
     public function testShowForm()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $settingconfig = new \NotificationSettingConfig();
         $options = ['display' => false];
@@ -98,7 +98,7 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertStringContainsString('Notifications configuration', $content);
         $this->assertStringNotContainsString('Notification templates', $content);
 
-        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_ZENTRA['use_notifications'] = 1;
 
         ob_start();
         $settingconfig->showConfigForm();
@@ -106,7 +106,7 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertStringContainsString('Notifications configuration', $content);
         $this->assertStringNotContainsString('Notification templates', $content);
 
-        $CFG_GLPI['notifications_ajax'] = 1;
+        $CFG_ZENTRA['notifications_ajax'] = 1;
 
         ob_start();
         $settingconfig->showConfigForm();
@@ -116,7 +116,7 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertStringContainsString('Browser notifications configuration', $content);
         $this->assertStringNotContainsString('Email notifications configuration', $content);
 
-        $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_ZENTRA['notifications_mailing'] = 1;
 
         ob_start();
         $settingconfig->showConfigForm();
@@ -127,8 +127,8 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertStringContainsString('Email notifications configuration', $content);
 
         //reset
-        $CFG_GLPI['use_notifications'] = 0;
-        $CFG_GLPI['notifications_mailing'] = 0;
-        $CFG_GLPI['notifications_ajax'] = 0;
+        $CFG_ZENTRA['use_notifications'] = 0;
+        $CFG_ZENTRA['notifications_mailing'] = 0;
+        $CFG_ZENTRA['notifications_ajax'] = 0;
     }
 }

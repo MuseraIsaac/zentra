@@ -3,9 +3,9 @@
 #
 # ---------------------------------------------------------------------
 #
-# GLPI - Gestionnaire Libre de Parc Informatique
+# ZENTRA - Gestionnaire Libre de Parc Informatique
 #
-# http://glpi-project.org
+# http://zentra-project.org
 #
 # @copyright 2015-2026 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
 #
 # LICENSE
 #
-# This file is part of GLPI.
+# This file is part of ZENTRA.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -183,12 +183,12 @@ fi
 
 # Define variables (some may be defined in .env file)
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
-[[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
+[[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t zentra-tests-home-XXXXXXXXXX)
 [[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mariadb:10.11
 [[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php-apache:8.3
 
 # Backup configuration files
-BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
+BACKUP_DIR=$(mktemp -d -t zentra-tests-backup-XXXXXXXXXX)
 find "$APPLICATION_ROOT/tests/config" -mindepth 1 ! -iname ".gitignore" -exec mv {} $BACKUP_DIR \;
 
 # Export variables to env (required for docker compose) and start containers
@@ -377,7 +377,7 @@ if [[ "$INTERACTIVE" = false ]]; then
   METHODS=$SELECTED_METHODS
   run_tests
 else
-  echo "GLPI Tests (Interactive mode)"
+  echo "ZENTRA Tests (Interactive mode)"
   echo "" #empty line
 fi
 
@@ -388,7 +388,7 @@ if [[ "$INTERACTIVE" = true ]]; then
     SCOPE=$SELECTED_SCOPE
     METHODS=$SELECTED_METHODS
     show_info
-    read -e -r -p "GLPI Tests > " CHOICE
+    read -e -r -p "ZENTRA Tests > " CHOICE
     if [[ "$CHOICE" = run* ]]; then
       # If actions were specified after the run choice, use them instead of the ones selected
       if [[ "$CHOICE" != "run" ]]; then

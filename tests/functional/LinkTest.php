@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -59,7 +59,7 @@ class LinkTest extends DbTestCase
             yield [
                 'link'     => '{{ LOCATION }} > {{ SERIAL }}/{{ MODEL }} ({{ USER }})',
                 'safe_url' => $safe_url,
-                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6/_test_computermodel_1 (glpi)'],
+                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6/_test_computermodel_1 (zentra)'],
             ];
 
             // Link that is actually a long text (it is a normal usage!)
@@ -84,7 +84,7 @@ serial:   ABC0004E6/X0000015
 model:    _test_computermodel_1
 location: _location01 (1)
 domain:   domain1.tld (LAN)
-owner:    glpi/_test_group_1
+owner:    zentra/_test_group_1
 TEXT,
                 ],
             ];
@@ -147,11 +147,11 @@ TEXT,
                 'serial'            => 'ABC0004E6',
                 'otherserial'       => 'X0000015',
                 'uuid'              => 'c938f085-4192-4473-a566-46734bbaf6ad',
-                'entities_id'       => $_SESSION['glpiactive_entity'],
+                'entities_id'       => $_SESSION['zentraactive_entity'],
                 'groups_id'         => getItemByTypeName(\Group::class, '_test_group_1', true),
                 'locations_id'      => getItemByTypeName(\Location::class, '_location01', true),
                 'networks_id'       => $network->getID(),
-                'users_id'          => getItemByTypeName(\User::class, 'glpi', true),
+                'users_id'          => getItemByTypeName(\User::class, 'zentra', true),
                 'computermodels_id' => getItemByTypeName(\ComputerModel::class, '_test_computermodel_1', true),
             ],
             ['groups_id']
@@ -162,7 +162,7 @@ TEXT,
             \Domain::class,
             [
                 'name'        => 'domain1.tld',
-                'entities_id' => $_SESSION['glpiactive_entity'],
+                'entities_id' => $_SESSION['zentraactive_entity'],
             ]
         );
         $this->createItem(
@@ -177,7 +177,7 @@ TEXT,
             \Domain::class,
             [
                 'name'        => 'domain2.tld',
-                'entities_id' => $_SESSION['glpiactive_entity'],
+                'entities_id' => $_SESSION['zentraactive_entity'],
             ]
         );
         $this->createItem(
@@ -254,7 +254,7 @@ TEXT,
             \Computer::class,
             [
                 'name'         => 'Test computer 2',
-                'entities_id'  => $_SESSION['glpiactive_entity'],
+                'entities_id'  => $_SESSION['zentraactive_entity'],
             ]
         );
 
@@ -306,7 +306,7 @@ TEXT,
         $output = ob_get_clean();
         $crawler = new Crawler($output);
         $this->assertEquals(2, $crawler->filter('a.btn')->count());
-        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $_SESSION['zentraactiveprofile']['computer'] = READ;
         ob_start();
         \Link::showAllLinksForItem(getItemByTypeName(\Computer::class, '_test_pc01'));
         $output = ob_get_clean();

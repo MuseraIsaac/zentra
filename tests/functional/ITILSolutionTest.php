@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */
@@ -388,7 +388,7 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename);
 
         $instance->add($input);
         $this->assertFalse($instance->isNewItem());
@@ -399,7 +399,7 @@ HTML,
         // Test uploads for item update
         $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/bar.png'));
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', ZENTRA_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => <<<HTML

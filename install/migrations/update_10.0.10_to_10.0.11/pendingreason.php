@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-/* Add `previous_status` to glpi_pendingreasons_items */
-if (!$DB->fieldExists('glpi_pendingreasons_items', 'previous_status')) {
-    $migration->addField('glpi_pendingreasons_items', 'previous_status', "int DEFAULT NULL");
+/* Add `previous_status` to zentra_pendingreasons_items */
+if (!$DB->fieldExists('zentra_pendingreasons_items', 'previous_status')) {
+    $migration->addField('zentra_pendingreasons_items', 'previous_status', "int DEFAULT NULL");
 }

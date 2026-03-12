@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use AbstractITILChildTemplate;
-use Glpi\Tests\AbstractITILChildTemplateTest;
+use Zentra\Tests\AbstractITILChildTemplateTest;
 use TaskTemplate;
 use Ticket;
 use TicketTask;
@@ -162,13 +162,13 @@ class TaskTemplateTest extends AbstractITILChildTemplateTest
         )->getID();
 
         $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', -1);
-        $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 1)', $condition);
+        $this->assertEquals(' AND (`zentra_tasktemplates`.`use_current_user` = 1)', $condition);
 
         $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', $specific_user_id);
-        $this->assertEquals(" AND (`glpi_tasktemplates`.`use_current_user` = 0 AND `glpi_tasktemplates`.`users_id_tech` = $specific_user_id)", $condition);
+        $this->assertEquals(" AND (`zentra_tasktemplates`.`use_current_user` = 0 AND `zentra_tasktemplates`.`users_id_tech` = $specific_user_id)", $condition);
 
         $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', 0);
-        $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 0 AND `glpi_tasktemplates`.`users_id_tech` = 0)', $condition);
+        $this->assertEquals(' AND (`zentra_tasktemplates`.`use_current_user` = 0 AND `zentra_tasktemplates`.`users_id_tech` = 0)', $condition);
     }
 
     public function testTemplateWithCurrentUserAsAuthor(): void

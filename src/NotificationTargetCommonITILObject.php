@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
-use Glpi\Toolbox\URL;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Toolbox\URL;
 
 /**
  * @template T of CommonITILObject
@@ -108,7 +108,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         ));
 
         if (empty($perso_tag)) {
-            $perso_tag = 'GLPI';
+            $perso_tag = 'ZENTRA';
         }
 
         return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
@@ -151,7 +151,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedUserByType($type)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $userlinktable = getTableForItemType($this->obj->userlinkclass);
         $fkfield       = $this->obj->getForeignKeyField();
@@ -193,7 +193,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $author_email = $data['altemail'];
                 }
                 if (empty($author_lang)) {
-                    $author_lang = $CFG_GLPI["language"];
+                    $author_lang = $CFG_ZENTRA["language"];
                 }
                 if (empty($author_id)) {
                     $author_id = -1;
@@ -226,7 +226,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
                     $this->addToRecipientsList([
                         'email'    => $data['alternative_email'],
-                        'language' => $CFG_GLPI["language"],
+                        'language' => $CFG_ZENTRA["language"],
                         'users_id' => -1,
                     ]);
                 }
@@ -341,7 +341,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addOldAssignTechnician()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (
             isset($this->options['_old_user'])
@@ -363,7 +363,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $author_email = $this->options['_old_user']['alternative_email'];
             }
             if (empty($author_lang)) {
-                $author_lang = $CFG_GLPI["language"];
+                $author_lang = $CFG_ZENTRA["language"];
             }
             if (empty($author_id)) {
                 $author_id = -1;
@@ -409,16 +409,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $iterator = $DB->request([
                 'SELECT'          => [
-                    'glpi_suppliers.email AS email',
-                    'glpi_suppliers.name AS name',
+                    'zentra_suppliers.email AS email',
+                    'zentra_suppliers.name AS name',
                 ],
                 'DISTINCT'        => true,
                 'FROM'            => $supplierlinktable,
                 'LEFT JOIN'       => [
-                    'glpi_suppliers'  => [
+                    'zentra_suppliers'  => [
                         'ON' => [
                             $supplierlinktable   => 'suppliers_id',
-                            'glpi_suppliers'     => 'id',
+                            'zentra_suppliers'     => 'id',
                         ],
                     ],
                 ],
@@ -771,9 +771,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $iterator = $DB->request([
                 'FROM'   => $tasktable,
                 'INNER JOIN'   => [
-                    'glpi_groups'  => [
+                    'zentra_groups'  => [
                         'ON'  => [
-                            'glpi_groups'  => 'id',
+                            'zentra_groups'  => 'id',
                             $tasktable     => 'groups_id_tech',
                         ],
                     ],
@@ -800,7 +800,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => ['profiles_id'],
-            'FROM'   => 'glpi_profilerights',
+            'FROM'   => 'zentra_profilerights',
             'WHERE'  => [
                 'name'   => 'followup',
                 'rights' => ['&', ITILFollowup::SEEPRIVATE],
@@ -849,11 +849,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_profiles_users',
+            'FROM'   => 'zentra_profiles_users',
             'WHERE'  => [
                 'users_id'     => $data['users_id'],
                 'profiles_id'  => $this->private_profiles,
-            ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true),
+            ] + getEntitiesRestrictCriteria('zentra_profiles_users', 'entities_id', $this->getEntity(), true),
         ])->current();
 
         if ($result['cpt']) {
@@ -1220,7 +1220,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;
         $are_names_anonymized = $is_self_service
@@ -1283,7 +1283,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if ($item->getField('itilcategories_id')) {
             $data["##$objettype.category##"]
                               = Dropdown::getDropdownName(
-                                  'glpi_itilcategories',
+                                  'zentra_itilcategories',
                                   $item->getField('itilcategories_id')
                               );
         }
@@ -1387,7 +1387,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $group = new Group();
                 if ($gid > 0 && $group->getFromDB($gid)) {
-                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $groups[$gid] = Dropdown::getDropdownName('zentra_groups', $gid);
                     $data['actors'][] = self::getActorData($group, CommonITILActor::REQUESTER, 'actor');
                 }
             }
@@ -1402,7 +1402,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $group = new Group();
                 if ($gid > 0 && $group->getFromDB($gid)) {
-                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $groups[$gid] = Dropdown::getDropdownName('zentra_groups', $gid);
                     $data['actors'][] = self::getActorData($group, CommonITILActor::OBSERVER, 'actor');
                 }
             }
@@ -1437,7 +1437,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $group = new Group();
                 if ($gid > 0 && $group->getFromDB($gid)) {
-                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $groups[$gid] = Dropdown::getDropdownName('zentra_groups', $gid);
                     $data['actors'][] = self::getActorData($group, CommonITILActor::ASSIGN, 'actor');
                 }
             }
@@ -1462,7 +1462,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.solution.type##"] = '';
             if ($itilsolution->getField('solutiontypes_id')) {
                 $data["##$objettype.solution.type##"] = Dropdown::getDropdownName(
-                    'glpi_solutiontypes',
+                    'zentra_solutiontypes',
                     $itilsolution->getField('solutiontypes_id')
                 );
             }
@@ -1555,7 +1555,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             //Followup infos
             $followups          = getAllDataFromTable(
-                'glpi_itilfollowups',
+                'zentra_itilfollowups',
                 [
                     'WHERE'  => $followup_restrict,
                     'ORDER'  => ['date_mod DESC', 'id DESC'],
@@ -1585,7 +1585,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmp['##followup.requesttype##'] = '';
                 if ($followup['requesttypes_id']) {
                     $tmp['##followup.requesttype##'] = Dropdown::getDropdownName(
-                        'glpi_requesttypes',
+                        'zentra_requesttypes',
                         $followup['requesttypes_id']
                     );
                 }
@@ -1599,7 +1599,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $data['log'] = [];
             // Use list_limit_max or load the full history ?
-            $log_data = Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']);
+            $log_data = Log::getHistoryData($item, 0, $CFG_ZENTRA['list_limit_max']);
             foreach ($log_data as $log) {
                 $tmp                               = [];
                 $tmp["##$objettype.log.date##"]    = Html::convDateTime($log['date_mod']);
@@ -1644,13 +1644,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             // Document
             $iterator = $DB->request([
-                'SELECT'    => 'glpi_documents.*',
-                'FROM'      => 'glpi_documents',
+                'SELECT'    => 'zentra_documents.*',
+                'FROM'      => 'zentra_documents',
                 'LEFT JOIN' => [
-                    'glpi_documents_items'  => [
+                    'zentra_documents_items'  => [
                         'ON' => [
-                            'glpi_documents_items'  => 'documents_id',
-                            'glpi_documents'        => 'id',
+                            'zentra_documents_items'  => 'documents_id',
+                            'zentra_documents'        => 'id',
                         ],
                     ],
                 ],
@@ -1687,7 +1687,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if ($row['documentcategories_id']) {
                     $tmp['##document.heading##']
                                          = Dropdown::getDropdownName(
-                                             'glpi_documentcategories',
+                                             'zentra_documentcategories',
                                              $row['documentcategories_id']
                                          );
                 }
@@ -1742,7 +1742,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 );
                 $tmp['##cost.budget##']       = '';
                 if ($cost['budgets_id']) {
-                    $tmp['##cost.budget##'] = Dropdown::getDropdownName('glpi_budgets', $cost['budgets_id']);
+                    $tmp['##cost.budget##'] = Dropdown::getDropdownName('zentra_budgets', $cost['budgets_id']);
                 }
                 $data['costs'][]             = $tmp;
             }
@@ -1777,11 +1777,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $tmp['##task.categoryid##']      = $task['taskcategories_id'];
                 $tmp['##task.category##']        = Dropdown::getDropdownName(
-                    'glpi_taskcategories',
+                    'zentra_taskcategories',
                     $task['taskcategories_id'],
                 );
                 $tmp['##task.categorycomment##'] = Dropdown::getDropdownComments(
-                    'glpi_taskcategories',
+                    'zentra_taskcategories',
                     $task['taskcategories_id'],
                     tooltip: false
                 );
@@ -1794,7 +1794,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmp['##task.user##']         = getUserName($task['users_id_tech']);
                 $tmp['##task.group##'] = '';
                 if ($task['groups_id_tech']) {
-                    $tmp['##task.group##'] = Dropdown::getDropdownName("glpi_groups", $task['groups_id_tech']);
+                    $tmp['##task.group##'] = Dropdown::getDropdownName("zentra_groups", $task['groups_id_tech']);
                 }
                 $tmp['##task.begin##']        = "";
                 $tmp['##task.end##']          = "";
@@ -1921,7 +1921,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $location = new Location();
                 if ($actor->fields['locations_id'] > 0 && $location->getFromDB($actor->fields['locations_id'])) {
                     $data[sprintf('##%s.location##', $key_prefix)] = Dropdown::getDropdownName(
-                        'glpi_locations',
+                        'zentra_locations',
                         $actor->fields['locations_id']
                     );
                     $data[sprintf('##%s.address##', $key_prefix)]  = $location->getField('address');
@@ -1931,14 +1931,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 if ($actor->fields['usertitles_id'] > 0) {
                     $data[sprintf('##%s.usertitle##', $key_prefix)] = Dropdown::getDropdownName(
-                        'glpi_usertitles',
+                        'zentra_usertitles',
                         $actor->fields['usertitles_id']
                     );
                 }
 
                 if ($actor->fields['usercategories_id'] > 0) {
                     $data[sprintf('##%s.usercategory##', $key_prefix)] = Dropdown::getDropdownName(
-                        'glpi_usercategories',
+                        'zentra_usercategories',
                         $actor->fields['usercategories_id']
                     );
                 }
@@ -1949,7 +1949,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.phone2##', $key_prefix)]     = $actor->getField('phone2');
                 break;
             case Group::class:
-                $data[sprintf('##%s.name##', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
+                $data[sprintf('##%s.name##', $key_prefix)]       = Dropdown::getDropdownName('zentra_groups', $actor->getID());
                 break;
             case Supplier::class:
                 $data[sprintf('##%s.name##', $key_prefix)]       = $actor->getName();
@@ -1969,12 +1969,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if ($actor->getField('suppliertypes_id')) {
                     $data[sprintf('##%s.type##', $key_prefix)]
                                = Dropdown::getDropdownName(
-                                   'glpi_suppliertypes',
+                                   'zentra_suppliertypes',
                                    $actor->getField('suppliertypes_id')
                                );
                     $data[sprintf('##%s.suppliertype##', $key_prefix)]
                                = Dropdown::getDropdownName(
-                                   'glpi_suppliertypes',
+                                   'zentra_suppliertypes',
                                    $actor->getField('suppliertypes_id')
                                );
                 }

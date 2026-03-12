@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,22 +63,22 @@ class SlaLevel_Ticket extends CommonDBTM
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
             'LEFT JOIN'   => [
-                'glpi_slalevels' => [
+                'zentra_slalevels' => [
                     'FKEY'   => [
                         static::getTable()   => 'slalevels_id',
-                        'glpi_slalevels'     => 'id',
+                        'zentra_slalevels'     => 'id',
                     ],
                 ],
-                'glpi_slas'       => [
+                'zentra_slas'       => [
                     'FKEY'   => [
-                        'glpi_slalevels'     => 'slas_id',
-                        'glpi_slas'          => 'id',
+                        'zentra_slalevels'     => 'slas_id',
+                        'zentra_slas'          => 'id',
                     ],
                 ],
             ],
             'WHERE'        => [
                 static::getTable() . '.tickets_id'  => $ID,
-                'glpi_slas.type'                    => $slaType,
+                'zentra_slas.type'                    => $slaType,
             ],
             'LIMIT'        => 1,
         ]);
@@ -104,25 +104,25 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_slalevels_tickets.id',
-            'FROM'      => 'glpi_slalevels_tickets',
+            'SELECT'    => 'zentra_slalevels_tickets.id',
+            'FROM'      => 'zentra_slalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_slalevels'  => [
+                'zentra_slalevels'  => [
                     'ON' => [
-                        'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id',
+                        'zentra_slalevels_tickets'   => 'slalevels_id',
+                        'zentra_slalevels'           => 'id',
                     ],
                 ],
-                'glpi_slas'       => [
+                'zentra_slas'       => [
                     'ON' => [
-                        'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id',
+                        'zentra_slalevels'  => 'slas_id',
+                        'zentra_slas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_slas.type'                    => $slaType,
+                'zentra_slalevels_tickets.tickets_id' => $tickets_id,
+                'zentra_slas.type'                    => $slaType,
             ],
         ]);
 
@@ -165,26 +165,26 @@ class SlaLevel_Ticket extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_slalevels_tickets.*',
-                'glpi_slas.type AS type',
+                'zentra_slalevels_tickets.*',
+                'zentra_slas.type AS type',
             ],
-            'FROM'      => 'glpi_slalevels_tickets',
+            'FROM'      => 'zentra_slalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_slalevels'  => [
+                'zentra_slalevels'  => [
                     'ON' => [
-                        'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id',
+                        'zentra_slalevels_tickets'   => 'slalevels_id',
+                        'zentra_slalevels'           => 'id',
                     ],
                 ],
-                'glpi_slas'       => [
+                'zentra_slas'       => [
                     'ON' => [
-                        'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id',
+                        'zentra_slalevels'  => 'slas_id',
+                        'zentra_slas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date' => ['<', $now],
+                'zentra_slalevels_tickets.date' => ['<', $now],
             ],
         ]);
 
@@ -329,26 +329,26 @@ class SlaLevel_Ticket extends CommonDBTM
         $now = Session::getCurrentTime();
 
         $criteria = [
-            'SELECT'    => 'glpi_slalevels_tickets.*',
-            'FROM'      => 'glpi_slalevels_tickets',
+            'SELECT'    => 'zentra_slalevels_tickets.*',
+            'FROM'      => 'zentra_slalevels_tickets',
             'LEFT JOIN' => [
-                'glpi_slalevels'  => [
+                'zentra_slalevels'  => [
                     'ON' => [
-                        'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id',
+                        'zentra_slalevels_tickets'   => 'slalevels_id',
+                        'zentra_slalevels'           => 'id',
                     ],
                 ],
-                'glpi_slas'       => [
+                'zentra_slas'       => [
                     'ON' => [
-                        'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id',
+                        'zentra_slalevels'  => 'slas_id',
+                        'zentra_slas'       => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date'       => ['<', $now],
-                'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_slas.type'                    => $slaType,
+                'zentra_slalevels_tickets.date'       => ['<', $now],
+                'zentra_slalevels_tickets.tickets_id' => $tickets_id,
+                'zentra_slas.type'                    => $slaType,
             ],
         ];
 

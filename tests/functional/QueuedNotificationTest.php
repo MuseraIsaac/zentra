@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Notification_NotificationTemplate;
 use Project;
 
@@ -61,8 +61,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $project_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $project_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 1',
                 'body_text'                => 'Text of notification 1',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -78,8 +78,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $project_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $project_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 2',
                 'body_text'                => 'Text of notification 2',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -97,8 +97,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $project_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $project_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'another-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'another-user@zentra-project.org',
                 'name'                     => 'Test notification 3',
                 'body_text'                => 'Text of notification 3',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -118,8 +118,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $project_id_2,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $project_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 4',
                 'body_text'                => 'Text of notification 4',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -154,8 +154,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $ticket_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $ticket_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 1',
                 'body_text'                => 'Text of notification 1',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -171,8 +171,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $ticket_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $ticket_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 2',
                 'body_text'                => 'Text of notification 2',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -190,8 +190,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $ticket_id_1,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $ticket_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'another-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'another-user@zentra-project.org',
                 'name'                     => 'Test notification 3',
                 'body_text'                => 'Text of notification 3',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -211,8 +211,8 @@ class QueuedNotificationTest extends DbTestCase
                 'items_id'                 => $ticket_id_2,
                 'entities_id'              => $root_entity_id,
                 'notificationtemplates_id' => $ticket_notification_id,
-                'sender'                   => 'mailer@glpi-project.org',
-                'recipient'                => 'test-user@glpi-project.org',
+                'sender'                   => 'mailer@zentra-project.org',
+                'recipient'                => 'test-user@zentra-project.org',
                 'name'                     => 'Test notification 4',
                 'body_text'                => 'Text of notification 4',
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,

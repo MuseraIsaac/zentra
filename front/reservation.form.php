@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
 use function Safe\parse_url;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 $rr = new Reservation();
 
@@ -103,7 +103,7 @@ if (isset($_POST["update"])) {
             //TRANS: %s is the user login
             sprintf(
                 __('%1$s updates the reservation for item %2$s'),
-                $_SESSION["glpiname"],
+                $_SESSION["zentraname"],
                 $_POST['_item']
             )
         );
@@ -122,7 +122,7 @@ if (isset($_POST["update"])) {
             //TRANS: %s is the user login
             sprintf(
                 __('%1$s purges the reservation for item %2$s'),
-                $_SESSION["glpiname"],
+                $_SESSION["zentraname"],
                 $reservationitems_id
             )
         );

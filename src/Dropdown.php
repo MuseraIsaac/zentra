@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Features\AssignableItem;
-use Glpi\Form\Category;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\Provider\SQLProvider;
-use Glpi\SocketModel;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Dropdown\DropdownDefinitionManager;
+use Zentra\Features\AssignableItem;
+use Zentra\Form\Category;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\Provider\SQLProvider;
+use Zentra\SocketModel;
 
 use function Safe\json_encode;
 use function Safe\opendir;
@@ -119,7 +119,7 @@ class Dropdown
      **/
     public static function show($itemtype, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!($item = getItemForItemtype($itemtype))) {
             return false;
@@ -128,7 +128,7 @@ class Dropdown
         $table = $item->getTable();
 
         $params['name']                 = $item->getForeignKeyField();
-        $params['value']                = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');
+        $params['value']                = (($itemtype == 'Entity') ? $_SESSION['zentraactive_entity'] : '');
         $params['comments']             = true;
         $params['entity']               = -1;
         $params['entity_sons']          = false;
@@ -151,7 +151,7 @@ class Dropdown
         $params['addicon']              = true;
         $params['specific_tags']        = [];
         $params['class']                = "form-select";
-        $params['url']                  = $CFG_GLPI['root_doc'] . "/ajax/getDropdownValue.php";
+        $params['url']                  = $CFG_ZENTRA['root_doc'] . "/ajax/getDropdownValue.php";
         $params['display_dc_position']  = false;
         $params['hide_if_no_elements']  = false;
         $params['readonly']             = false;
@@ -257,7 +257,7 @@ class Dropdown
                 // translation not needed - only for debug
                 $output .= "entity_sons options is not available with entity option as array";
             } else {
-                $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
+                $params['entity'] = getSonsOf('zentra_entities', $params['entity']);
             }
         }
         if ($params['entity'] !== null) {
@@ -400,7 +400,7 @@ class Dropdown
                 $comment_icon = Ajax::updateItemOnSelectEvent(
                     $field_id,
                     $comment_id,
-                    $CFG_GLPI["root_doc"] . "/ajax/comments.php",
+                    $CFG_ZENTRA["root_doc"] . "/ajax/comments.php",
                     $paramscomment,
                     false
                 );
@@ -461,7 +461,7 @@ class Dropdown
                     $kb_link_icon .= Ajax::updateItemOnSelectEvent(
                         $field_id,
                         $kblink_id,
-                        $CFG_GLPI["root_doc"] . "/ajax/kblink.php",
+                        $CFG_ZENTRA["root_doc"] . "/ajax/kblink.php",
                         $paramskblinks,
                         false
                     );
@@ -525,7 +525,7 @@ class Dropdown
     public static function addNewCondition(array $condition)
     {
         $sha1 = sha1(serialize($condition));
-        $_SESSION['glpicondition'][$sha1] = $condition;
+        $_SESSION['zentracondition'][$sha1] = $condition;
         return $sha1;
     }
 
@@ -575,13 +575,13 @@ class Dropdown
                 $SELECTNAME = 'namet.value AS transname';
                 $JOIN = [
                     'LEFT JOIN' => [
-                        'glpi_dropdowntranslations AS namet' => [
+                        'zentra_dropdowntranslations AS namet' => [
                             'ON' => [
                                 'namet'  => 'items_id',
                                 $table   => 'id', [
                                     'AND' => [
                                         'namet.itemtype'  => getItemTypeForTable($table),
-                                        'namet.language'  => $_SESSION['glpilanguage'],
+                                        'namet.language'  => $_SESSION['zentralanguage'],
                                         'namet.field'     => 'name',
                                     ],
                                 ],
@@ -610,23 +610,23 @@ class Dropdown
                 }
 
                 switch ($table) {
-                    case "glpi_computers":
+                    case "zentra_computers":
                         if (empty($name)) {
                             $name = "($id)";
                         }
                         break;
 
-                    case "glpi_contacts":
+                    case "zentra_contacts":
                         //TRANS: %1$s is the name, %2$s is the firstname
                         $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
                         break;
 
-                    case "glpi_sockets":
+                    case "zentra_sockets":
                         $name = sprintf(
                             __('%1$s (%2$s)'),
                             $name,
                             self::getDropdownName(
-                                "glpi_locations",
+                                "zentra_locations",
                                 $data["locations_id"],
                                 false,
                                 $translate
@@ -686,14 +686,14 @@ class Dropdown
             && Session::haveTranslations($itemtype, 'comment')
         ) {
             $criteria['SELECT'][] = 'comment_translations.value AS translated_comment';
-            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS comment_translations'] = [
+            $criteria['LEFT JOIN']['zentra_dropdowntranslations AS comment_translations'] = [
                 'ON' => [
                     'comment_translations'  => 'items_id',
                     $table                  => 'id',
                     [
                         'AND' => [
                             'comment_translations.itemtype' => $itemtype,
-                            'comment_translations.language' => $_SESSION['glpilanguage'],
+                            'comment_translations.language' => $_SESSION['zentralanguage'],
                             'comment_translations.field'    => 'comment',
                         ],
                     ],
@@ -709,14 +709,14 @@ class Dropdown
             && Session::haveTranslations($itemtype, 'completename')
         ) {
             $criteria['SELECT'][] = 'completename_translations.value AS translated_completename';
-            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS completename_translations'] = [
+            $criteria['LEFT JOIN']['zentra_dropdowntranslations AS completename_translations'] = [
                 'ON' => [
                     'completename_translations'  => 'items_id',
                     $table                       => 'id',
                     [
                         'AND' => [
                             'completename_translations.itemtype' => $itemtype,
-                            'completename_translations.language' => $_SESSION['glpilanguage'],
+                            'completename_translations.language' => $_SESSION['zentralanguage'],
                             'completename_translations.field'    => 'completename',
                         ],
                     ],
@@ -775,14 +775,14 @@ class Dropdown
                 case Budget::class:
                     if (!empty($data['locations_id'])) {
                         $extra_rows[Location::getTypeName(1)] = self::getDropdownName(
-                            'glpi_locations',
+                            'zentra_locations',
                             $data['locations_id'],
                             translate: $translate
                         );
                     }
                     if (!empty($data['budgettypes_id'])) {
                         $extra_rows[_n('Type', 'Types', 1)] = self::getDropdownName(
-                            'glpi_budgettypes',
+                            'zentra_budgettypes',
                             $data['budgettypes_id'],
                             translate: $translate
                         );
@@ -987,7 +987,7 @@ class Dropdown
         if (!empty($store_path)) {
             Toolbox::deprecated('The store_path parameter is no longer used.');
         }
-        $icon_path = GLPI_ROOT . '/public/pics/icones';
+        $icon_path = ZENTRA_ROOT . '/public/pics/icones';
         if ($dh = @opendir($icon_path)) {
             $files = [];
 
@@ -1020,7 +1020,7 @@ class Dropdown
                 )
             );
 
-            global $CFG_GLPI;
+            global $CFG_ZENTRA;
 
             // templates for select2 dropdown
             $js = '
@@ -1029,7 +1029,7 @@ class Dropdown
                         if (!icon.id || icon.id == "0") {
                             return icon.text;
                         }
-                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\' + _.escape(icon.id) + \'" />\';
+                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_ZENTRA['typedoc_icon_dir'])) . '/\' + _.escape(icon.id) + \'" />\';
                         var label = \'<span>\' + _.escape(icon.text) + \'</span>\';
                         return $(img+\'&nbsp;\'+label);
                     };
@@ -1198,7 +1198,7 @@ HTML;
      **/
     public static function getDeviceItemTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
+        //TODO After ZENTRA 11.0, make this always return grouped values
         if (!Session::haveRight('device', READ)) {
             return [];
         }
@@ -1566,11 +1566,11 @@ HTML;
      */
     public static function getLanguages()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $languages = [];
-        foreach ($CFG_GLPI["languages"] as $key => $val) {
-            if (isset($val[1]) && is_file(GLPI_ROOT . "/locales/" . $val[1])) {
+        foreach ($CFG_ZENTRA["languages"] as $key => $val) {
+            if (isset($val[1]) && is_file(ZENTRA_ROOT . "/locales/" . $val[1])) {
                 $languages[$key] = $val[0];
             }
         }
@@ -1588,8 +1588,8 @@ HTML;
      **/
     public static function getLanguageName($value)
     {
-        global $CFG_GLPI;
-        return $CFG_GLPI["languages"][$value][0] ?? $value;
+        global $CFG_ZENTRA;
+        return $CFG_ZENTRA["languages"][$value][0] ?? $value;
     }
 
 
@@ -1604,7 +1604,7 @@ HTML;
      *     - limit_planning     limit planning to the configuration range (default false)
      *     - display   boolean  if false get string
      *     - width              specific width needed (default auto adaptive)
-     *     - step               step time (defaut config GLPI)
+     *     - step               step time (defaut config ZENTRA)
      *
      * @since 0.85 update prototype
      *
@@ -1614,13 +1614,13 @@ HTML;
      **/
     public static function showHours($name, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p['value']          = '';
         $p['limit_planning'] = false;
         $p['display']        = true;
         $p['width']          = '';
-        $p['step']           = $CFG_GLPI["time_step"];
+        $p['step']           = $CFG_ZENTRA["time_step"];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1645,8 +1645,8 @@ HTML;
         }
 
         if ($p['limit_planning']) {
-            $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
-            $plan_end   = explode(":", $CFG_GLPI["planning_end"]);
+            $plan_begin = explode(":", $CFG_ZENTRA["planning_begin"]);
+            $plan_end   = explode(":", $CFG_ZENTRA["planning_end"]);
             $begin      = (int) $plan_begin[0];
             $end        = (int) $plan_end[0];
         }
@@ -1701,7 +1701,7 @@ HTML;
      **/
     public static function showItemType($types = '', $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params['name']                = 'itemtype';
         $params['value']               = '';
@@ -1730,7 +1730,7 @@ HTML;
         }
 
         if (!is_array($types)) {
-            $types = $CFG_GLPI["state_types"];
+            $types = $CFG_ZENTRA["state_types"];
         }
         $options = self::buildItemtypesDropdownOptions($types, $params['checkright']);
 
@@ -1804,7 +1804,7 @@ HTML;
      *   - itemtype_name        : the name of the field containing the itemtype (default 'itemtype')
      *   - items_id_name        : the name of the field containing the id of the selected item
      *                            (default 'items_id')
-     *   - itemtypes            : all possible types to search for (default: $CFG_GLPI["state_types"])
+     *   - itemtypes            : all possible types to search for (default: $CFG_ZENTRA["state_types"])
      *   - default_itemtype     : the default itemtype to select (don't define if you don't
      *                            need a default) (defaut 0)
      *    - entity_restrict     : restrict entity in searching items (default -1)
@@ -1821,7 +1821,7 @@ HTML;
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params = [
             'itemtype_name'                         => 'itemtype',
@@ -1836,7 +1836,7 @@ HTML;
             'emptylabel'                            => self::EMPTY_VALUE,
             'display_emptychoice'                   => true,
             'used'                                  => [],
-            'ajax_page'                             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'ajax_page'                             => $CFG_ZENTRA["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                               => true,
             'rand'                                  => mt_rand(),
             'itemtype_track_changes'                => false,
@@ -1967,7 +1967,7 @@ HTML;
      */
     public static function showNumber($myname, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'value'           => 0,
@@ -2024,7 +2024,7 @@ HTML;
         $out   = Html::jsAjaxDropdown(
             $myname,
             $field_id,
-            $CFG_GLPI['root_doc'] . "/ajax/getDropdownNumber.php",
+            $CFG_ZENTRA['root_doc'] . "/ajax/getDropdownNumber.php",
             $param
         );
 
@@ -2125,13 +2125,13 @@ HTML;
      */
     public static function showTimeStamp($myname, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $params['value']               = 0;
         $params['rand']                = mt_rand();
         $params['min']                 = 0;
         $params['max']                 = DAY_TIMESTAMP;
-        $params['step']                = $CFG_GLPI["time_step"] * MINUTE_TIMESTAMP;
+        $params['step']                = $CFG_ZENTRA["time_step"] * MINUTE_TIMESTAMP;
         $params['emptylabel']          = self::EMPTY_VALUE;
         $params['addfirstminutes']     = false;
         $params['toadd']               = [];
@@ -2784,7 +2784,7 @@ HTML;
      */
     public static function showOutputFormat($itemtype = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
         $values[Search::PDF_OUTPUT_PORTRAIT]      = __('Current page in portrait PDF');
@@ -2820,12 +2820,12 @@ HTML;
      */
     public static function showListLimit($onchange = '', $display = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (isset($_SESSION['glpilist_limit'])) {
-            $list_limit = $_SESSION['glpilist_limit'];
+        if (isset($_SESSION['zentralist_limit'])) {
+            $list_limit = $_SESSION['zentralist_limit'];
         } else {
-            $list_limit = $CFG_GLPI['list_limit'];
+            $list_limit = $CFG_ZENTRA['list_limit'];
         }
 
         $values = [];
@@ -2856,7 +2856,7 @@ HTML;
         }
         ksort($values);
         return self::showFromArray(
-            'glpilist_limit',
+            'zentralist_limit',
             $values,
             ['on_change' => $onchange,
                 'value'     => $list_limit,
@@ -2875,7 +2875,7 @@ HTML;
      */
     public static function getDropdownValue($post, $json = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // check if asked itemtype is the one originally requested by the form
         if (!Session::validateIDOR($post)) {
@@ -2883,7 +2883,7 @@ HTML;
         }
 
         if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
-            $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
+            $post['entity_restrict'] = $_SESSION['zentraactiveentities'];
         } elseif (
             isset($post["entity_restrict"])
             && !is_array($post["entity_restrict"])
@@ -2945,7 +2945,7 @@ HTML;
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         $start = intval(($post['page'] - 1) * $post['page_limit']);
@@ -2970,8 +2970,8 @@ HTML;
         if (!empty($post['condition']) && !is_array($post['condition'])) {
             // Retrieve conditions from SESSION using its key
             $key = $post['condition'];
-            if (isset($_SESSION['glpicondition'][$key])) {
-                $post['condition'] = $_SESSION['glpicondition'][$key];
+            if (isset($_SESSION['zentracondition'][$key])) {
+                $post['condition'] = $_SESSION['zentracondition'][$key];
             } else {
                 $post['condition'] = [];
             }
@@ -2992,7 +2992,7 @@ HTML;
                     if (is_array($value) && isset($value['WHERE'])) {
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
-                        // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
+                        // Ensure condition contains table name to prevent ambiguity with fields from `zentra_entities` table
                         $where["$table.$key"] = $value;
                     } elseif (is_numeric($key) || in_array($key, ['AND', 'OR', 'NOT'])) {
                         // Prevent overriding criteria groups sharing the same key
@@ -3045,7 +3045,7 @@ HTML;
                     }
 
                     if (
-                        $_SESSION['glpiis_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
+                        $_SESSION['zentrais_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
                     ) {
                         $swhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
                     }
@@ -3091,7 +3091,7 @@ HTML;
                     if (!$item->maybePrivate()) {
                         $where += getEntitiesRestrictCriteria($table, '', '', $recur);
 
-                        if (count($_SESSION['glpiactiveentities']) > 1) {
+                        if (count($_SESSION['zentraactiveentities']) > 1) {
                             $multi = true;
                         }
                     } else {
@@ -3110,26 +3110,26 @@ HTML;
                 }
 
                 if ($multi) {
-                    $ljoin['glpi_entities'] = [
+                    $ljoin['zentra_entities'] = [
                         'ON' => [
-                            'glpi_entities' => 'id',
+                            'zentra_entities' => 'id',
                             $table          => 'entities_id',
                         ],
                     ];
-                    array_unshift($order, "glpi_entities.completename");
+                    array_unshift($order, "zentra_entities.completename");
                 }
             }
 
             $addselect = [];
             if (Session::haveTranslations($post['itemtype'], 'completename')) {
                 $addselect[] = "namet.value AS transcompletename";
-                $ljoin['glpi_dropdowntranslations AS namet'] = [
+                $ljoin['zentra_dropdowntranslations AS namet'] = [
                     'ON' => [
                         'namet'  => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => $_SESSION['zentralanguage'],
                                 'namet.field'     => 'completename',
                             ],
                         ],
@@ -3138,13 +3138,13 @@ HTML;
             }
             if (Session::haveTranslations($post['itemtype'], 'name')) {
                 $addselect[] = "namet2.value AS transname";
-                $ljoin['glpi_dropdowntranslations AS namet2'] = [
+                $ljoin['zentra_dropdowntranslations AS namet2'] = [
                     'ON' => [
                         'namet2' => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namet2.itemtype' => $post['itemtype'],
-                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.language' => $_SESSION['zentralanguage'],
                                 'namet2.field'    => 'name',
                             ],
                         ],
@@ -3153,13 +3153,13 @@ HTML;
             }
             if (Session::haveTranslations($post['itemtype'], 'comment')) {
                 $addselect[] = "commentt.value AS transcomment";
-                $ljoin['glpi_dropdowntranslations AS commentt'] = [
+                $ljoin['zentra_dropdowntranslations AS commentt'] = [
                     'ON' => [
                         'commentt'  => 'items_id',
                         $table      => 'id', [
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
-                                'commentt.language'  => $_SESSION['glpilanguage'],
+                                'commentt.language'  => $_SESSION['zentralanguage'],
                                 'commentt.field'     => 'comment',
                             ],
                         ],
@@ -3236,7 +3236,7 @@ HTML;
                             if ($prev >= 0) {
                                 if (count($datastoadd)) {
                                     $datas[] = [
-                                        'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                        'text'     => Dropdown::getDropdownName("zentra_entities", $prev),
                                         'children' => $datastoadd,
                                         'itemtype' => "Entity",
                                     ];
@@ -3251,7 +3251,7 @@ HTML;
                         $datastoadd = [];
                     }
 
-                    if ($_SESSION['glpiuse_flat_dropdowntree']) {
+                    if ($_SESSION['zentrause_flat_dropdowntree']) {
                         if (isset($data['transcompletename']) && !empty($data['transcompletename'])) {
                             $outputval = $data['transcompletename'];
                         } else {
@@ -3285,7 +3285,7 @@ HTML;
                                                     $ID,
                                                     $post['itemtype'],
                                                     'comment',
-                                                    $_SESSION['glpilanguage'],
+                                                    $_SESSION['zentralanguage'],
                                                     $item->fields['comment']
                                                 );
                                                 $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
@@ -3294,7 +3294,7 @@ HTML;
                                                 $item->fields['id'],
                                                 $post['itemtype'],
                                                 'name',
-                                                $_SESSION['glpilanguage'],
+                                                $_SESSION['zentralanguage'],
                                                 $item->fields['name']
                                             );
 
@@ -3333,7 +3333,7 @@ HTML;
                     // Do not do for first item for next page load
                     if (!$firstitem) {
                         if (
-                            $_SESSION["glpiis_ids_visible"]
+                            $_SESSION["zentrais_ids_visible"]
                             || (Toolbox::strlen($outputval) == 0)
                         ) {
                             $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
@@ -3384,7 +3384,7 @@ HTML;
                         $datas = array_merge($datas, $datastoadd);
                     } else {
                         $datas[] = [
-                            'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                            'text' => Dropdown::getDropdownName("zentra_entities", $prev),
                             'children' => $datastoadd,
                             'itemtype' => "Entity",
                         ];
@@ -3417,7 +3417,7 @@ HTML;
                     if (!$item->maybePrivate()) {
                         $where += getEntitiesRestrictCriteria($table, '', '', $multi);
 
-                        if (count($_SESSION['glpiactiveentities']) > 1) {
+                        if (count($_SESSION['zentraactiveentities']) > 1) {
                             $multi = true;
                         }
                     } else {
@@ -3438,7 +3438,7 @@ HTML;
                 $orwhere = ["$table.$field" => ['LIKE', $search]];
 
                 if (
-                    $_SESSION['glpiis_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
+                    $_SESSION['zentrais_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
                 ) {
                     $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
@@ -3451,7 +3451,7 @@ HTML;
                     $orwhere['namet.value'] = ['LIKE', $search];
                 }
                 if ($post['itemtype'] == "SoftwareLicense") {
-                    $orwhere['glpi_softwares.name'] = ['LIKE', $search];
+                    $orwhere['zentra_softwares.name'] = ['LIKE', $search];
                 }
 
                 // search also in displaywith columns
@@ -3467,13 +3467,13 @@ HTML;
 
             if (Session::haveTranslations($post['itemtype'], $field)) {
                 $addselect[] = "namet.value AS transname";
-                $ljoin['glpi_dropdowntranslations AS namet'] = [
+                $ljoin['zentra_dropdowntranslations AS namet'] = [
                     'ON' => [
                         'namet'  => 'items_id',
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => $_SESSION['zentralanguage'],
                                 'namet.field'     => $field,
                             ],
                         ],
@@ -3482,13 +3482,13 @@ HTML;
             }
             if (Session::haveTranslations($post['itemtype'], 'comment')) {
                 $addselect[] = "commentt.value AS transcomment";
-                $ljoin['glpi_dropdowntranslations AS commentt'] = [
+                $ljoin['zentra_dropdowntranslations AS commentt'] = [
                     'ON' => [
                         'commentt'  => 'items_id',
                         $table      => 'id', [
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
-                                'commentt.language'  => $_SESSION['glpilanguage'],
+                                'commentt.language'  => $_SESSION['zentralanguage'],
                                 'commentt.field'     => 'comment',
                             ],
                         ],
@@ -3522,16 +3522,16 @@ HTML;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                params: ['zentra_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'zentra_softwarelicenses.name'],
                                 alias: $field
                             ),
                         ],
                         'FROM'   => $table,
                         'LEFT JOIN' => [
-                            'glpi_softwares'  => [
+                            'zentra_softwares'  => [
                                 'ON' => [
-                                    'glpi_softwarelicenses' => 'softwares_id',
-                                    'glpi_softwares'        => 'id',
+                                    'zentra_softwarelicenses' => 'softwares_id',
+                                    'zentra_softwares'        => 'id',
                                 ],
                             ],
                         ],
@@ -3544,9 +3544,9 @@ HTML;
                         'DISTINCT'        => true,
                         'FROM'            => $table,
                         'LEFT JOIN'       => [
-                            'glpi_profilerights' => [
+                            'zentra_profilerights' => [
                                 'ON' => [
-                                    'glpi_profilerights' => 'profiles_id',
+                                    'zentra_profilerights' => 'profiles_id',
                                     $table               => 'id',
                                 ],
                             ],
@@ -3673,7 +3673,7 @@ HTML;
                         if ($prev >= 0) {
                             if (count($datastoadd)) {
                                 $datas[] = [
-                                    'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                    'text'     => Dropdown::getDropdownName("zentra_entities", $prev),
                                     'children' => $datastoadd,
                                     'itemtype' => "Entity",
                                 ];
@@ -3711,7 +3711,7 @@ HTML;
                         $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                     }
                     if (
-                        $_SESSION["glpiis_ids_visible"]
+                        $_SESSION["zentrais_ids_visible"]
                         || (strlen($outputval) == 0)
                     ) {
                         //TRANS: %1$s is the name, %2$s the ID
@@ -3743,7 +3743,7 @@ HTML;
                 if ($multi) {
                     if (count($datastoadd)) {
                         $datas[] = [
-                            'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                            'text'     => Dropdown::getDropdownName("zentra_entities", $prev),
                             'children' => $datastoadd,
                             'itemtype' => "Entity",
                         ];
@@ -3793,7 +3793,7 @@ HTML;
      */
     public static function getDropdownConnect($post, $json = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
@@ -3852,15 +3852,15 @@ HTML;
                 $multi = true;
             }
         } else {
-            $where += getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
-            if (count($_SESSION['glpiactiveentities']) > 1) {
+            $where += getEntitiesRestrictCriteria($table, '', $_SESSION['zentraactiveentities'], $multi);
+            if (count($_SESSION['zentraactiveentities']) > 1) {
                 $multi = true;
             }
         }
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         $start = intval(($post['page'] - 1) * $post['page_limit']);
@@ -3934,7 +3934,7 @@ HTML;
                 if ($multi && ($data["entities_id"] != $prev)) {
                     if (count($datatoadd)) {
                         $results[] = [
-                            'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                            'text' => Dropdown::getDropdownName("zentra_entities", $prev),
                             'children' => $datatoadd,
                         ];
                     }
@@ -3946,7 +3946,7 @@ HTML;
                 $ID     = $data['id'];
 
                 if (
-                    $_SESSION["glpiis_ids_visible"]
+                    $_SESSION["zentrais_ids_visible"]
                     || empty($output)
                 ) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
@@ -3966,7 +3966,7 @@ HTML;
             if ($multi) {
                 if (count($datatoadd)) {
                     $results[] = [
-                        'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                        'text' => Dropdown::getDropdownName("zentra_entities", $prev),
                         'children' => $datatoadd,
                     ];
                 }
@@ -3991,7 +3991,7 @@ HTML;
      */
     public static function getDropdownFindNum($post, $json = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Security
         if (!$DB->tableExists($post['table'])) {
@@ -4054,7 +4054,7 @@ HTML;
         }
 
         // If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
-        $filterHelpdesk = in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"]);
+        $filterHelpdesk = in_array($post['itemtype'], $CFG_ZENTRA["helpdesk_visible_types"]);
 
         if (
             isset($post['context'])
@@ -4082,7 +4082,7 @@ HTML;
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         $start = (int) (($post['page'] - 1) * $post['page_limit']);
@@ -4122,7 +4122,7 @@ HTML;
 
                 if (
                     empty($output)
-                    || $_SESSION['glpiis_ids_visible']
+                    || $_SESSION['zentrais_ids_visible']
                 ) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
@@ -4151,7 +4151,7 @@ HTML;
      */
     public static function getDropdownMyDevices($post, $json = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         // Basic security check - ensure user is logged in
         Session::checkLoginUser();
@@ -4162,7 +4162,7 @@ HTML;
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         $start = intval(($post['page'] - 1) * $post['page_limit']);
@@ -4180,7 +4180,7 @@ HTML;
         }
 
         // Check helpdesk hardware permission
-        if (!($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & 2 ** Ticket::HELPDESK_MY_HARDWARE)) {
+        if (!($_SESSION["zentraactiveprofile"]["helpdesk_hardware"] & 2 ** Ticket::HELPDESK_MY_HARDWARE)) {
             $ret['count']   = $count;
             $ret['results'] = $results;
             return ($json === true) ? json_encode($ret) : $ret;
@@ -4190,7 +4190,7 @@ HTML;
         $found_items = [];
 
         // My items
-        foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["linkuser_types"] as $itemtype) {
             if (
                 ($item = getItemForItemtype($itemtype))
                 && Ticket::isPossibleToAssignType($itemtype)
@@ -4212,7 +4212,7 @@ HTML;
                 if ($item->maybeTemplate()) {
                     $criteria['WHERE']['is_template'] = 0;
                 }
-                if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
+                if (in_array($itemtype, $CFG_ZENTRA["helpdesk_visible_types"])) {
                     $criteria['WHERE']['is_helpdesk_visible'] = 1;
                 }
 
@@ -4241,7 +4241,7 @@ HTML;
                 foreach ($iterator as $data) {
                     if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
                         $output = $data[$item->getNameField()];
-                        if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                        if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                             $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                         }
 
@@ -4278,32 +4278,32 @@ HTML;
         if (Session::haveRight("show_group_hardware", 1)) {
             $iterator = $DB->request([
                 'SELECT'    => [
-                    'glpi_groups_users.groups_id',
-                    'glpi_groups.name',
+                    'zentra_groups_users.groups_id',
+                    'zentra_groups.name',
                 ],
-                'FROM'      => 'glpi_groups_users',
+                'FROM'      => 'zentra_groups_users',
                 'LEFT JOIN' => [
-                    'glpi_groups'  => [
+                    'zentra_groups'  => [
                         'ON' => [
-                            'glpi_groups_users'  => 'groups_id',
-                            'glpi_groups'        => 'id',
+                            'zentra_groups_users'  => 'groups_id',
+                            'zentra_groups'        => 'id',
                         ],
                     ],
                 ],
                 'WHERE'     => [
-                    'glpi_groups_users.users_id'  => $userID,
-                ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true),
+                    'zentra_groups_users.users_id'  => $userID,
+                ] + getEntitiesRestrictCriteria('zentra_groups', '', $entity_restrict, true),
             ]);
 
             $groups = [];
             if (count($iterator)) {
                 foreach ($iterator as $data) {
-                    $a_groups = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                    $a_groups = getAncestorsOf("zentra_groups", $data["groups_id"]);
                     $a_groups[$data["groups_id"]] = $data["groups_id"];
                     $groups = array_merge($groups, $a_groups);
                 }
 
-                foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+                foreach ($CFG_ZENTRA["linkgroup_types"] as $itemtype) {
                     if (
                         ($item = getItemForItemtype($itemtype))
                         && Ticket::isPossibleToAssignType($itemtype)
@@ -4373,7 +4373,7 @@ HTML;
                                     if (isset($data["name"])) {
                                         $output = $data["name"];
                                     }
-                                    if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                    if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                                         $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                                     }
 
@@ -4407,12 +4407,12 @@ HTML;
         }
 
         // Get software linked to all owned items
-        if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
+        if (in_array('Software', $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])) {
+            $software_helpdesk_types = array_intersect($CFG_ZENTRA['software_types'], $_SESSION["zentraactiveprofile"]["helpdesk_item_type"]);
 
             // First, collect all user's items to find software linked to them
             $user_items = [];
-            foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+            foreach ($CFG_ZENTRA["linkuser_types"] as $itemtype) {
                 if (
                     ($item = getItemForItemtype($itemtype))
                     && Ticket::isPossibleToAssignType($itemtype)
@@ -4448,43 +4448,43 @@ HTML;
                 if (isset($user_items[$itemtype]) && count($user_items[$itemtype])) {
                     $criteria = [
                         'SELECT'          => [
-                            'glpi_softwareversions.name AS version',
-                            'glpi_softwares.name AS name',
-                            'glpi_softwares.id',
+                            'zentra_softwareversions.name AS version',
+                            'zentra_softwares.name AS name',
+                            'zentra_softwares.id',
                         ],
                         'DISTINCT'        => true,
-                        'FROM'            => 'glpi_items_softwareversions',
+                        'FROM'            => 'zentra_items_softwareversions',
                         'LEFT JOIN'       => [
-                            'glpi_softwareversions'  => [
+                            'zentra_softwareversions'  => [
                                 'ON' => [
-                                    'glpi_items_softwareversions' => 'softwareversions_id',
-                                    'glpi_softwareversions'       => 'id',
+                                    'zentra_items_softwareversions' => 'softwareversions_id',
+                                    'zentra_softwareversions'       => 'id',
                                 ],
                             ],
-                            'glpi_softwares'        => [
+                            'zentra_softwares'        => [
                                 'ON' => [
-                                    'glpi_softwareversions' => 'softwares_id',
-                                    'glpi_softwares'        => 'id',
+                                    'zentra_softwareversions' => 'softwares_id',
+                                    'zentra_softwares'        => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'        => [
-                            'glpi_items_softwareversions.items_id' => $user_items[$itemtype],
-                            'glpi_items_softwareversions.itemtype' => $itemtype,
-                            'glpi_softwares.is_helpdesk_visible'   => 1,
-                        ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                        'ORDERBY'      => 'glpi_softwares.name',
+                            'zentra_items_softwareversions.items_id' => $user_items[$itemtype],
+                            'zentra_items_softwareversions.itemtype' => $itemtype,
+                            'zentra_softwares.is_helpdesk_visible'   => 1,
+                        ] + getEntitiesRestrictCriteria('zentra_softwares', '', $entity_restrict),
+                        'ORDERBY'      => 'zentra_softwares.name',
                     ];
 
                     // Add search criteria
                     if (isset($post['searchText']) && !empty($post['searchText'])) {
                         $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
                         $orwhere = [
-                            'glpi_softwares.name' => $search,
-                            'glpi_softwareversions.name' => $search,
+                            'zentra_softwares.name' => $search,
+                            'zentra_softwareversions.name' => $search,
                         ];
                         if (is_numeric($post['searchText'])) {
-                            $orwhere['glpi_softwares.id'] = $post['searchText'];
+                            $orwhere['zentra_softwares.id'] = $post['searchText'];
                         }
                         $criteria['WHERE'][] = ['OR' => $orwhere];
                     }
@@ -4504,7 +4504,7 @@ HTML;
                                         $data["version"]
                                     )
                                 );
-                                if ($_SESSION["glpiis_ids_visible"]) {
+                                if ($_SESSION["zentrais_ids_visible"]) {
                                     $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
                                 }
 
@@ -4531,7 +4531,7 @@ HTML;
 
         // Get linked items to computers
         $computer_items = [];
-        foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+        foreach ($CFG_ZENTRA["linkuser_types"] as $itemtype) {
             if ($itemtype == 'Computer') {
                 $itemtable = getTableForItemType($itemtype);
                 $criteria = [
@@ -4565,26 +4565,26 @@ HTML;
             $connected_types = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
             foreach ($connected_types as $itemtype) {
                 if (
-                    in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                    in_array($itemtype, $_SESSION["zentraactiveprofile"]["helpdesk_item_type"])
                     && ($item = getItemForItemtype($itemtype))
                 ) {
                     $itemtable = getTableForItemType($itemtype);
                     $criteria = [
                         'SELECT'          => "$itemtable.*",
                         'DISTINCT'        => true,
-                        'FROM'            => 'glpi_assets_assets_peripheralassets',
+                        'FROM'            => 'zentra_assets_assets_peripheralassets',
                         'LEFT JOIN'       => [
                             $itemtable  => [
                                 'ON' => [
-                                    'glpi_assets_assets_peripheralassets' => 'items_id_peripheral',
+                                    'zentra_assets_assets_peripheralassets' => 'items_id_peripheral',
                                     $itemtable                            => 'id',
                                 ],
                             ],
                         ],
                         'WHERE'           => [
-                            'glpi_assets_assets_peripheralassets.itemtype_peripheral' => $itemtype,
-                            'glpi_assets_assets_peripheralassets.itemtype_asset'      => Computer::class,
-                            'glpi_assets_assets_peripheralassets.items_id_asset'      => $computer_items,
+                            'zentra_assets_assets_peripheralassets.itemtype_peripheral' => $itemtype,
+                            'zentra_assets_assets_peripheralassets.itemtype_asset'      => Computer::class,
+                            'zentra_assets_assets_peripheralassets.items_id_asset'      => $computer_items,
                         ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
                         'ORDERBY'         => "$itemtable.name",
                     ];
@@ -4622,7 +4622,7 @@ HTML;
                         foreach ($iterator as $data) {
                             if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
                                 $output = $data["name"];
-                                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                if (empty($output) || $_SESSION["zentrais_ids_visible"]) {
                                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                                 }
 
@@ -4706,7 +4706,7 @@ HTML;
      */
     public static function getDropdownNumber($post, $json = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $used = [];
 
@@ -4720,7 +4720,7 @@ HTML;
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         if (isset($post['toadd'])) {
@@ -4755,7 +4755,7 @@ HTML;
 
         if (!isset($post['max'])) {
             //limit max entries to avoid loop issues
-            $post['max'] = $CFG_GLPI['dropdown_max'] * $post['step'];
+            $post['max'] = $CFG_ZENTRA['dropdown_max'] * $post['step'];
         }
 
         for ($i = $post['min']; $i <= $post['max']; $i += $post['step']) {
@@ -4818,7 +4818,7 @@ HTML;
      */
     public static function getDropdownUsers($post, $json = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post + ['itemtype' => User::class, 'right' => ($post['right'] ?? "")])) {
@@ -4850,7 +4850,7 @@ HTML;
 
         if (!isset($post['page'])) {
             $post['page']       = 1;
-            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+            $post['page_limit'] = $CFG_ZENTRA['dropdown_max'];
         }
 
         if (isset($post['_one_id']) && $post['_one_id'] > 0) {
@@ -4949,7 +4949,7 @@ HTML;
      */
     public static function getDropdownActors($post, $json = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Session::validateIDOR($post)) {
             return false;
@@ -4966,7 +4966,7 @@ HTML;
             'itiltemplate_class' => 'TicketTemplate',
             'itiltemplates_id'   => 0,
             'returned_itemtypes' => ['User', 'Group', 'Supplier'],
-            'page_limit'         => $CFG_GLPI['dropdown_max'],
+            'page_limit'         => $CFG_ZENTRA['dropdown_max'],
         ];
         $post = array_merge($defaults, $post);
 

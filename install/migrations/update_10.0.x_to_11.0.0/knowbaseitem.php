@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
  */
 $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
 
-$table = 'glpi_knowbaseitems';
+$table = 'zentra_knowbaseitems';
 
 $field_to_add = 'entities_id';
 if (!$DB->fieldExists($table, $field_to_add)) {
@@ -69,10 +69,10 @@ if (!$DB->fieldExists($table, $field_to_add)) {
 }
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
-$migration->addField('glpi_knowbaseitems', 'forms_categories_id', "int {$default_key_sign} NOT NULL DEFAULT 0", ['after' => 'entities_id']);
-$migration->addField('glpi_knowbaseitems', 'description', 'longtext DEFAULT NULL', ['after' => 'view']);
-$migration->addField('glpi_knowbaseitems', 'illustration', 'varchar(255) DEFAULT NULL', ['after' => 'view']);
-$migration->addField('glpi_knowbaseitems', 'is_pinned', 'tinyint NOT NULL DEFAULT 0', ['after' => 'view']);
-$migration->addField('glpi_knowbaseitems', 'show_in_service_catalog', 'tinyint NOT NULL DEFAULT 0', ['after' => 'view']);
+$migration->addField('zentra_knowbaseitems', 'forms_categories_id', "int {$default_key_sign} NOT NULL DEFAULT 0", ['after' => 'entities_id']);
+$migration->addField('zentra_knowbaseitems', 'description', 'longtext DEFAULT NULL', ['after' => 'view']);
+$migration->addField('zentra_knowbaseitems', 'illustration', 'varchar(255) DEFAULT NULL', ['after' => 'view']);
+$migration->addField('zentra_knowbaseitems', 'is_pinned', 'tinyint NOT NULL DEFAULT 0', ['after' => 'view']);
+$migration->addField('zentra_knowbaseitems', 'show_in_service_catalog', 'tinyint NOT NULL DEFAULT 0', ['after' => 'view']);
 
-$migration->addKey('glpi_knowbaseitems', 'forms_categories_id');
+$migration->addKey('zentra_knowbaseitems', 'forms_categories_id');

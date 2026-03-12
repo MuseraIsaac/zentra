@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,19 +67,19 @@ function update942to943()
 
     $itil_mappings = [
         'Change' => [
-            'itil_table' => 'glpi_changes',
+            'itil_table' => 'zentra_changes',
             'itil_fkey'  => 'changes_id',
-            'task_table' => 'glpi_changetasks',
+            'task_table' => 'zentra_changetasks',
         ],
         'Problem' => [
-            'itil_table' => 'glpi_problems',
+            'itil_table' => 'zentra_problems',
             'itil_fkey'  => 'problems_id',
-            'task_table' => 'glpi_problemtasks',
+            'task_table' => 'zentra_problemtasks',
         ],
         'Ticket' => [
-            'itil_table' => 'glpi_tickets',
+            'itil_table' => 'zentra_tickets',
             'itil_fkey'  => 'tickets_id',
-            'task_table' => 'glpi_tickettasks',
+            'task_table' => 'zentra_tickettasks',
         ],
     ];
 
@@ -96,7 +96,7 @@ function update942to943()
         $task_table = $itil_specs['task_table'];
 
         // Fix followups and solutions
-        foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
+        foreach (['zentra_itilfollowups', 'zentra_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
                     'SELECT'    => ['id', 'items_id', 'content'],
@@ -131,10 +131,10 @@ function update942to943()
     /** /Fix URL of images inside ITIL objects contents */
 
     // add is_private field to change and problems
-    $migration->addField('glpi_changetasks', 'is_private', 'bool');
-    $migration->addField('glpi_problemtasks', 'is_private', 'bool');
-    $migration->addKey('glpi_changetasks', 'is_private');
-    $migration->addKey('glpi_problemtasks', 'is_private');
+    $migration->addField('zentra_changetasks', 'is_private', 'bool');
+    $migration->addField('zentra_problemtasks', 'is_private', 'bool');
+    $migration->addKey('zentra_changetasks', 'is_private');
+    $migration->addKey('zentra_problemtasks', 'is_private');
 
     /** Crontask missing from fresh install */
     $migration->addCrontask(

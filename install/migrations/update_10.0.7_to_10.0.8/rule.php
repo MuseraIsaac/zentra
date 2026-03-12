@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,21 +49,21 @@ $sub_types = [
     'os_name' => 'RuleDictionnaryOperatingSystem',
 ];
 
-//Get all glpi_rulecrtiteria with 'name' criteria for OS Dictionnary
+//Get all zentra_rulecrtiteria with 'name' criteria for OS Dictionnary
 foreach ($sub_types as $criteria => $sub_type) {
     $migration->addPostQuery(
         $DB->buildUpdate(
-            'glpi_rulecriterias',
+            'zentra_rulecriterias',
             ['criteria' => 'name'],
             ['criteria' => $criteria],
             [
                 'INNER JOIN' => [
-                    'glpi_rules' => [
+                    'zentra_rules' => [
                         'FKEY' => [
-                            'glpi_rulecriterias' => 'rules_id',
-                            'glpi_rules' => 'id',
+                            'zentra_rulecriterias' => 'rules_id',
+                            'zentra_rules' => 'id',
                             [
-                                'AND' => ['glpi_rules.sub_type' => $sub_type],
+                                'AND' => ['zentra_rules.sub_type' => $sub_type],
                             ],
                         ],
                     ],

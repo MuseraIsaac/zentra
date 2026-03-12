@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Socket;
+use Zentra\Socket;
 
 /**
  *  Class CableStrand
@@ -66,7 +66,7 @@ class CableStrand extends CommonDropdown
         Rule::cleanForItemCriteria($this, '_cablestrands_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -74,7 +74,7 @@ class CableStrand extends CommonDropdown
             switch ($item->getType()) {
                 case self::class:
                     /** @var CableStrand $item */
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             Cable::getTable(),
                             ['cablestrands_id' => $item->getID()]
@@ -86,7 +86,7 @@ class CableStrand extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof self) {
             return $item->showItems();
@@ -126,7 +126,7 @@ class CableStrand extends CommonDropdown
 
         $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
         $criteria['START'] = $start;
-        $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = $_SESSION['zentralist_limit'];
 
         $iterator = $DB->request($criteria);
 
@@ -160,7 +160,7 @@ class CableStrand extends CommonDropdown
                 }
 
                 echo "<tr class='tab_bg_1'><td>" . htmlescape($cable->getTypeName()) . "</td>";
-                echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $cable->getEntityID())) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName("zentra_entities", $cable->getEntityID())) . "</td>";
                 echo "<td>" . $cable->getLink() . "</td>";
                 echo "<td>" . (isset($cable->fields["otherserial"]) ? htmlescape($cable->fields["otherserial"]) : "-") . "</td>";
                 echo "<td>";

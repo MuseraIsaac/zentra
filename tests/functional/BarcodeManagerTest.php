@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace tests\units;
 use BarcodeManager;
 use Com\Tecnick\Barcode\Type\Square\QrCode;
 use Computer;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use Software;
 
 class BarcodeManagerTest extends DbTestCase
@@ -52,13 +52,13 @@ class BarcodeManagerTest extends DbTestCase
 
     public function testValidQrCodeGeneration()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $computer = $this->getNewComputer();
         $barcode_manager = new BarcodeManager();
         $qrcode = $barcode_manager->generateQRCode($computer);
         $this->assertInstanceOf(QrCode::class, $qrcode);
         $qrcodeInfos = $qrcode->getArray();
-        $this->assertEquals($qrcodeInfos["code"], $CFG_GLPI["url_base"] . $computer->getLinkURL());
+        $this->assertEquals($qrcodeInfos["code"], $CFG_ZENTRA["url_base"] . $computer->getLinkURL());
     }
 
     public function testInvalidQrCodeGeneration()

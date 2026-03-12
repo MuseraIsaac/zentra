@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,15 +36,15 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists('glpi_groups_users', 'is_userdelegate')) {
+if (!$DB->fieldExists('zentra_groups_users', 'is_userdelegate')) {
     $migration->addField(
-        'glpi_groups_users',
+        'zentra_groups_users',
         'is_userdelegate',
         "tinyint NOT NULL DEFAULT '0'",
         ['after' => 'is_manager']
     );
     $migration->addKey(
-        'glpi_groups_users',
+        'zentra_groups_users',
         'is_userdelegate'
     );
 }

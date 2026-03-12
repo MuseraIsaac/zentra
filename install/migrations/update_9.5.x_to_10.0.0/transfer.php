@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@
  * @var Migration $migration
  */
 // Add certificate entry for transfers.
-$migration->addField('glpi_transfers', 'keep_certificate', "int NOT NULL DEFAULT '0'", [
+$migration->addField('zentra_transfers', 'keep_certificate', "int NOT NULL DEFAULT '0'", [
     'update' => "'1'",
 ]);
-$migration->addField('glpi_transfers', 'clean_certificate', "int NOT NULL DEFAULT '0'", [
+$migration->addField('zentra_transfers', 'clean_certificate', "int NOT NULL DEFAULT '0'", [
     'update' => "'1'",
 ]);

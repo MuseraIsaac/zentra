@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,28 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QueryParam;
-use Glpi\Debug\Profiler;
-use Glpi\Event;
-use Glpi\Exception\Database\StatementException;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Exception\TooManyResultsException;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\CacheableListInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\DCBreadcrumbInterface;
-use Glpi\Plugin\Hooks;
-use Glpi\RichText\RichText;
-use Glpi\RichText\UserMention;
-use Glpi\Search\FilterableInterface;
-use Glpi\Search\SearchOption;
-use Glpi\Socket;
-use Glpi\Toolbox\UuidStore;
-use Glpi\UI\IllustrationManager;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Asset\Asset_PeripheralAsset;
+use Zentra\DBAL\QueryFunction;
+use Zentra\DBAL\QueryParam;
+use Zentra\Debug\Profiler;
+use Zentra\Event;
+use Zentra\Exception\Database\StatementException;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Exception\TooManyResultsException;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\CacheableListInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\DCBreadcrumbInterface;
+use Zentra\Plugin\Hooks;
+use Zentra\RichText\RichText;
+use Zentra\RichText\UserMention;
+use Zentra\Search\FilterableInterface;
+use Zentra\Search\SearchOption;
+use Zentra\Socket;
+use Zentra\Toolbox\UuidStore;
+use Zentra\UI\IllustrationManager;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;
@@ -65,7 +65,7 @@ use function Safe\unlink;
 /**
  * Common DataBase Table Manager Class - Persistent Object
  */
-class CommonDBTM extends CommonGLPI
+class CommonDBTM extends CommonZENTRA
 {
     /**
      * Data fields of the Item.
@@ -540,12 +540,12 @@ class CommonDBTM extends CommonGLPI
      */
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initForm($ID, $options);
         $new_item = static::isNewID($ID);
         $in_modal = (bool) ($_GET['_in_modal'] ?? false);
-        $cluster = !$new_item && in_array(static::class, $CFG_GLPI['cluster_types'], true)
+        $cluster = !$new_item && in_array(static::class, $CFG_ZENTRA['cluster_types'], true)
             ? Cluster::getClusterByItem($this)
             : null;
         TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
@@ -675,9 +675,9 @@ class CommonDBTM extends CommonGLPI
 
         if (
             array_key_exists('entities_id', $this->fields)
-            && isset($_SESSION["glpiactive_entity"])
+            && isset($_SESSION["zentraactive_entity"])
         ) {
-            $this->fields['entities_id'] = $_SESSION["glpiactive_entity"];
+            $this->fields['entities_id'] = $_SESSION["zentraactive_entity"];
         }
 
         $this->post_getEmpty();
@@ -806,7 +806,7 @@ class CommonDBTM extends CommonGLPI
             $params = ['is_deleted' => 0];
             // Auto set date_mod if exsist
             if (isset($this->fields['date_mod'])) {
-                $params['date_mod'] = $_SESSION["glpi_currenttime"];
+                $params['date_mod'] = $_SESSION["zentra_currenttime"];
             }
 
             if ($DB->update(static::getTable(), $params, ['id' => $this->fields['id']])) {
@@ -859,7 +859,7 @@ class CommonDBTM extends CommonGLPI
             // Auto set date_mod if exsist
             $toadd = [];
             if (isset($this->fields['date_mod'])) {
-                $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
+                $toadd['date_mod'] = $_SESSION["zentra_currenttime"];
             }
 
             $DB->update(
@@ -889,7 +889,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->dohistory) {
             $DB->delete(
-                'glpi_logs',
+                'zentra_logs',
                 [
                     'itemtype'  => static::getType(),
                     'items_id'  => $this->fields['id'],
@@ -937,7 +937,7 @@ class CommonDBTM extends CommonGLPI
                     if (is_array($field)) {
                         // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
                         if (is_a($itemtype, IPAddress::class, true) && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
-                            // glpi_ipaddresses relationship that does not respect naming conventions
+                            // zentra_ipaddresses relationship that does not respect naming conventions
                             $itemtype_field = 'mainitemtype';
                             $items_id_field = 'mainitems_id';
                         } else {
@@ -1065,9 +1065,9 @@ class CommonDBTM extends CommonGLPI
      */
     public function cleanRelationTable()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (in_array(static::class, $CFG_GLPI['assignable_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['assignable_types'], true)) {
             $group_item = new Group_Item();
             $group_item->deleteByCriteria(
                 [
@@ -1078,19 +1078,19 @@ class CommonDBTM extends CommonGLPI
             );
         }
 
-        if (in_array(static::class, $CFG_GLPI['agent_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['agent_types'], true)) {
             // Agent does not extend CommonDBConnexity
             $agent = new Agent();
             $agent->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()]);
         }
 
-        if (in_array(static::class, $CFG_GLPI['databaseinstance_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['databaseinstance_types'], true)) {
             // DatabaseInstance does not extends CommonDBConnexity
             $dbinstance = new DatabaseInstance();
             $dbinstance->deleteByCriteria(['itemtype' => $this->getType(), 'items_id' => $this->getID()], true);
         }
 
-        if (in_array(static::class, $CFG_GLPI['itemdevices_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['itemdevices_types'], true)) {
             Item_Devices::cleanItemDeviceDBOnItemDelete(
                 static::class,
                 $this->getID(),
@@ -1104,13 +1104,13 @@ class CommonDBTM extends CommonGLPI
             $note->cleanDBonItemDelete(static::class, $this->fields['id']);
         }
 
-        if (in_array(static::class, $CFG_GLPI['ticket_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['ticket_types'], true)) {
             // Clean ticket open against the item
             $job         = new Ticket();
             $itemsticket = new Item_Ticket();
 
             $iterator = $DB->request([
-                'FROM'   => 'glpi_items_tickets',
+                'FROM'   => 'zentra_items_tickets',
                 'WHERE'  => [
                     'items_id'  => $this->getID(),
                     'itemtype'  => static::class,
@@ -1118,15 +1118,15 @@ class CommonDBTM extends CommonGLPI
             ]);
 
             foreach ($iterator as $data) {
-                $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
+                $cnt = countElementsInTable('zentra_items_tickets', ['tickets_id' => $data['tickets_id']]);
                 $itemsticket->delete(["id" => $data["id"]]);
-                if ($cnt === 1 && !$CFG_GLPI["keep_tickets_on_delete"]) {
+                if ($cnt === 1 && !$CFG_ZENTRA["keep_tickets_on_delete"]) {
                     $job->delete(["id" => $data["tickets_id"]]);
                 }
             }
         }
 
-        if (in_array(static::class, $CFG_GLPI['line_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['line_types'], true)) {
             $this->deleteChildrenAndRelationsFromDb([
                 Item_Line::class,
             ]);
@@ -1139,32 +1139,32 @@ class CommonDBTM extends CommonGLPI
 
         // Delete relation items and child items from DB
         $polymorphic_types_mapping = [
-            Appliance_Item::class          => $CFG_GLPI['appliance_types'],
-            Appliance_Item_Relation::class => $CFG_GLPI['appliance_relation_types'],
-            Certificate_Item::class        => $CFG_GLPI['certificate_types'],
-            Change_Item::class             => $CFG_GLPI['ticket_types'],
-            Asset_PeripheralAsset::class   => $CFG_GLPI['directconnect_types'],
-            Consumable::class              => $CFG_GLPI['consumables_types'],
-            Contract_Item::class           => $CFG_GLPI['contract_types'],
+            Appliance_Item::class          => $CFG_ZENTRA['appliance_types'],
+            Appliance_Item_Relation::class => $CFG_ZENTRA['appliance_relation_types'],
+            Certificate_Item::class        => $CFG_ZENTRA['certificate_types'],
+            Change_Item::class             => $CFG_ZENTRA['ticket_types'],
+            Asset_PeripheralAsset::class   => $CFG_ZENTRA['directconnect_types'],
+            Consumable::class              => $CFG_ZENTRA['consumables_types'],
+            Contract_Item::class           => $CFG_ZENTRA['contract_types'],
             Document_Item::class           => Document::getItemtypesThatCanHave(),
-            Domain_Item::class             => $CFG_GLPI['domain_types'],
+            Domain_Item::class             => $CFG_ZENTRA['domain_types'],
             Infocom::class                 => Infocom::getItemtypesThatCanHave(),
-            Item_Cluster::class            => $CFG_GLPI['cluster_types'],
-            Item_Disk::class               => $CFG_GLPI['disk_types'],
-            Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
-            Item_Kanban::class             => $CFG_GLPI['kanban_types'],
-            Item_OperatingSystem::class    => $CFG_GLPI['operatingsystem_types'],
-            Item_Problem::class            => $CFG_GLPI['ticket_types'],
-            Item_Project::class            => $CFG_GLPI['project_asset_types'],
-            Item_Rack::class               => $CFG_GLPI['rackable_types'],
-            Item_SoftwareLicense::class    => $CFG_GLPI['software_types'],
-            Item_SoftwareVersion::class    => $CFG_GLPI['software_types'],
-            // specific case, see above Item_Ticket::class             => $CFG_GLPI['ticket_types'],
-            KnowbaseItem_Item::class       => $CFG_GLPI['kb_types'],
-            NetworkPort::class             => $CFG_GLPI['networkport_types'],
-            ReservationItem::class         => $CFG_GLPI['reservation_types'],
-            Socket::class                   => $CFG_GLPI['socket_types'],
-            VObject::class                 => $CFG_GLPI['planning_types'],
+            Item_Cluster::class            => $CFG_ZENTRA['cluster_types'],
+            Item_Disk::class               => $CFG_ZENTRA['disk_types'],
+            Item_Enclosure::class          => $CFG_ZENTRA['rackable_types'],
+            Item_Kanban::class             => $CFG_ZENTRA['kanban_types'],
+            Item_OperatingSystem::class    => $CFG_ZENTRA['operatingsystem_types'],
+            Item_Problem::class            => $CFG_ZENTRA['ticket_types'],
+            Item_Project::class            => $CFG_ZENTRA['project_asset_types'],
+            Item_Rack::class               => $CFG_ZENTRA['rackable_types'],
+            Item_SoftwareLicense::class    => $CFG_ZENTRA['software_types'],
+            Item_SoftwareVersion::class    => $CFG_ZENTRA['software_types'],
+            // specific case, see above Item_Ticket::class             => $CFG_ZENTRA['ticket_types'],
+            KnowbaseItem_Item::class       => $CFG_ZENTRA['kb_types'],
+            NetworkPort::class             => $CFG_ZENTRA['networkport_types'],
+            ReservationItem::class         => $CFG_ZENTRA['reservation_types'],
+            Socket::class                   => $CFG_ZENTRA['socket_types'],
+            VObject::class                 => $CFG_ZENTRA['planning_types'],
         ];
 
         $to_delete = [];
@@ -1285,7 +1285,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function add(array $input, $options = [], $history = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if ($DB->isSlave()) {
             return false;
@@ -1370,12 +1370,12 @@ class CommonDBTM extends CommonGLPI
 
             // Auto set date_creation if exist
             if (isset($table_fields['date_creation']) && !isset($this->input['date_creation'])) {
-                $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
+                $this->fields['date_creation'] = $_SESSION["zentra_currenttime"];
             }
 
             // Auto set date_mod if exist
             if (isset($table_fields['date_mod']) && !isset($this->input['date_mod'])) {
-                $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                $this->fields['date_mod'] = $_SESSION["zentra_currenttime"];
             }
 
             if ($this->checkUnicity(true, $options)) {
@@ -1404,7 +1404,7 @@ class CommonDBTM extends CommonGLPI
                     // Auto create infocoms
                     if (
                         ($options['disable_infocom_creation'] ?? false) !== true
-                        && isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                        && isset($CFG_ZENTRA["auto_create_infocoms"]) && $CFG_ZENTRA["auto_create_infocoms"]
                         && (!isset($input['clone']) || !$input['clone'])
                         && Infocom::canApplyOn($this)
                     ) {
@@ -1748,7 +1748,7 @@ class CommonDBTM extends CommonGLPI
                     if (array_key_exists('date_mod', $this->fields)) {
                         // is a non blacklist field exists
                         if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
-                            $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                            $this->fields['date_mod'] = $_SESSION["zentra_currenttime"];
                             $this->updates[$x++]      = 'date_mod';
                         }
                     }
@@ -1897,7 +1897,7 @@ class CommonDBTM extends CommonGLPI
                     [
                         'itemtype'        => $this->getType(),
                         'items_id'        => $this->fields['id'],
-                        'date_creation'   => $_SESSION["glpi_currenttime"],
+                        'date_creation'   => $_SESSION["zentra_currenttime"],
                         'field'           => new QueryParam(),
                     ]
                 )
@@ -2610,7 +2610,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID  = $this->fields['id'];
         if (
@@ -2620,7 +2620,7 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        $entities = getAncestorsOf('glpi_entities', $this->fields['entities_id']);
+        $entities = getAncestorsOf('zentra_entities', $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
         $RELATION  = getDbRelations();
 
@@ -2646,7 +2646,7 @@ class CommonDBTM extends CommonGLPI
                         if (is_array($field)) {
                             // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
                             if ($tablename === IPAddress::getTable() && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
-                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                // zentra_ipaddresses relationship that does not respect naming conventions
                                 $itemtype_field = 'mainitemtype';
                                 $items_id_field = 'mainitems_id';
                             } else {
@@ -2694,7 +2694,7 @@ class CommonDBTM extends CommonGLPI
                                         if (is_array($otherfield)) {
                                             // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
                                             if ($tablename === IPAddress::getTable() && in_array('mainitemtype', $otherfield) && in_array('mainitems_id', $otherfield)) {
-                                                // glpi_ipaddresses relationship that does not respect naming conventions
+                                                // zentra_ipaddresses relationship that does not respect naming conventions
                                                 $otheritemtype_field = 'mainitemtype';
                                                 $otheritems_id_field = 'mainitems_id';
                                             } else {
@@ -2741,11 +2741,11 @@ class CommonDBTM extends CommonGLPI
         // Doc links to this item
         if (
             countElementsInTable(
-                ['glpi_documents_items', 'glpi_documents'],
-                ['glpi_documents_items.items_id' => $ID,
-                    'glpi_documents_items.itemtype' => $this->getType(),
-                    'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
-                    'NOT'  => ['glpi_documents.entities_id' => $entities],
+                ['zentra_documents_items', 'zentra_documents'],
+                ['zentra_documents_items.items_id' => $ID,
+                    'zentra_documents_items.itemtype' => $this->getType(),
+                    'FKEY' => ['zentra_documents_items' => 'documents_id','zentra_documents' => 'id'],
+                    'NOT'  => ['zentra_documents.entities_id' => $entities],
                 ]
             ) > '0'
         ) {
@@ -2756,7 +2756,7 @@ class CommonDBTM extends CommonGLPI
         // check connections between assets
         if (
             in_array($this->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
-            || in_array($this->getType(), $CFG_GLPI["directconnect_types"])
+            || in_array($this->getType(), $CFG_ZENTRA["directconnect_types"])
         ) {
             return Asset_PeripheralAsset::canUnrecursSpecif($this, $entities);
         }
@@ -2852,7 +2852,7 @@ class CommonDBTM extends CommonGLPI
 
             // If entity assign force current entity to manage recursive templates
             if ($this->isEntityAssign()) {
-                $input['entities_id'] = $_SESSION['glpiactive_entity'];
+                $input['entities_id'] = $_SESSION['zentraactive_entity'];
             }
 
             // Check create right
@@ -2913,7 +2913,7 @@ class CommonDBTM extends CommonGLPI
             ($params['withtemplate'] == 2)
             && $this->isEntityAssign()
         ) {
-            $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
+            $this->fields['entities_id']  = $_SESSION['zentraactive_entity'];
         }
 
         $header_toolbar = $params['header_toolbar'];
@@ -3115,7 +3115,7 @@ class CommonDBTM extends CommonGLPI
             && $this->fields['is_recursive']
             && in_array(
                 $this->getEntityID(),
-                getAncestorsOf("glpi_entities", $entities_ids),
+                getAncestorsOf("zentra_entities", $entities_ids),
             )
         ) {
             return true;
@@ -3519,7 +3519,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($this->isField('states_id') && $this->getType() != 'State') {
-            $name = Dropdown::getDropdownName('glpi_states', $this->fields['states_id']);
+            $name = Dropdown::getDropdownName('zentra_states', $this->fields['states_id']);
             if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => __s('Status'),
@@ -3529,7 +3529,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($this->isField('locations_id') && $this->getType() != 'Location') {
-            $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
+            $name = Dropdown::getDropdownName("zentra_locations", $this->fields['locations_id']);
             if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(Location::getTypeName(1)),
@@ -3554,7 +3554,7 @@ class CommonDBTM extends CommonGLPI
                 $groups = [$groups];
             }
             foreach ($groups as $group) {
-                $name = Dropdown::getDropdownName("glpi_groups", $group);
+                $name = Dropdown::getDropdownName("zentra_groups", $group);
                 if ((string) $name !== '') {
                     $toadd[] = [
                         'name'  => htmlescape(Group::getTypeName(1)),
@@ -3787,8 +3787,8 @@ class CommonDBTM extends CommonGLPI
         if (
             $p['forceid']
             || (
-                isset($_SESSION['glpiis_ids_visible'])
-                && $_SESSION['glpiis_ids_visible']
+                isset($_SESSION['zentrais_ids_visible'])
+                && $_SESSION['zentrais_ids_visible']
             )
         ) {
             $name = $this->getName($p);
@@ -3807,7 +3807,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array an *indexed* array of search options
      *
-     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
+     * @see https://zentra-developer-documentation.rtfd.io/en/master/devapi/search.html
      **/
     final public function searchOptions()
     {
@@ -3821,7 +3821,7 @@ class CommonDBTM extends CommonGLPI
         $self = new static();
 
         foreach ($self->rawSearchOptions() as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME In ZENTRA 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
             if (!isset($opt['id'])) {
@@ -3874,11 +3874,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array<array<string, mixed>> a *not indexed* array of search options
      *
-     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
+     * @see https://zentra-developer-documentation.rtfd.io/en/master/devapi/search.html
      */
     public function rawSearchOptions()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $tab = [];
 
@@ -3913,7 +3913,7 @@ class CommonDBTM extends CommonGLPI
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         // Add project for assets
-        $projects_itemtypes = $CFG_GLPI["project_asset_types"] ?? [];
+        $projects_itemtypes = $CFG_ZENTRA["project_asset_types"] ?? [];
         if (in_array(static::class, $projects_itemtypes)) {
             $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
         }
@@ -3945,7 +3945,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         foreach ($classname::$method_name($itemtype) as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME In ZENTRA 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
                 throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
@@ -4096,11 +4096,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getWhitelistedSingleMassiveActions()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $actions = ['MassiveAction:add_transfer_list'];
 
-        if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+        if (in_array(static::getType(), $CFG_ZENTRA['rackable_types'])) {
             $actions[] = 'Item_Rack:delete';
         }
 
@@ -4122,7 +4122,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $actions = [];
         // test if current profile has rights to unlock current item type
@@ -4141,7 +4141,7 @@ class CommonDBTM extends CommonGLPI
                 = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
-            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+            if (in_array(static::getType(), $CFG_ZENTRA['rackable_types'])) {
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                 = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
@@ -4493,7 +4493,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function checkUnicity($add = false, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $p = [
             'unicity_error_message'  => true,
@@ -4523,7 +4523,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         //Get all checks for this itemtype and this entity
-        if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+        if (in_array(get_class($this), $CFG_ZENTRA["unicity_types"])) {
             // Get input entities if set / else get object one
             if ($this instanceof User) {
                 $entities_id = 0; // Exception: user does not belong to an entity
@@ -4571,7 +4571,7 @@ class CommonDBTM extends CommonGLPI
                     ) {
                         $entities = $fields['entities_id'];
                         if ($fields['is_recursive']) {
-                            $entities = getSonsOf('glpi_entities', $fields['entities_id']);
+                            $entities = getSonsOf('zentra_entities', $fields['entities_id']);
                         }
                         $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
 
@@ -4619,7 +4619,7 @@ class CommonDBTM extends CommonGLPI
                                         //TRANS: %1$s is the user login, %2$s the message
                                         sprintf(
                                             __('%1$s trying to add an item that already exists: %2$s'),
-                                            $_SESSION["glpiname"],
+                                            $_SESSION["zentraname"],
                                             $message_text
                                         )
                                     );
@@ -4634,7 +4634,7 @@ class CommonDBTM extends CommonGLPI
                                     'action_user' => getUserName(Session::getLoginUserID()),
                                     'entities_id' => $entities_id,
                                     'itemtype'    => get_class($this),
-                                    'date'        => $_SESSION['glpi_currenttime'],
+                                    'date'        => $_SESSION['zentra_currenttime'],
                                     'refuse'      => $fields['action_refuse'],
                                     'label'       => $message,
                                     'field'       => $fields,
@@ -4743,7 +4743,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $param = [
             'comments' => false,
@@ -4807,7 +4807,7 @@ class CommonDBTM extends CommonGLPI
 
                     case "decimal":
                         if ($options['html']) {
-                            return htmlescape(Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]));
+                            return htmlescape(Dropdown::getValueWithUnit($value, $unit, $CFG_ZENTRA["decimal_number"]));
                         }
                         return htmlescape($value);
 
@@ -4879,8 +4879,8 @@ class CommonDBTM extends CommonGLPI
                             // strip begin of link
                             $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                             $link = preg_replace('/\/$/', '', $link);
-                            if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
-                                $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
+                            if (Toolbox::strlen($link) > $CFG_ZENTRA["url_maxlength"]) {
+                                $link = Toolbox::substr($link, 0, $CFG_ZENTRA["url_maxlength"]) . "...";
                             }
                             return "<a href=\"" . htmlescape(Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>"
                                 . htmlescape($link)
@@ -4911,7 +4911,7 @@ class CommonDBTM extends CommonGLPI
                         }
 
                         $user = new User();
-                        if ($searchoptions['table'] == 'glpi_users') {
+                        if ($searchoptions['table'] == 'zentra_users') {
                             if (!$user->getFromDB($value)) {
                                 return '';
                             }
@@ -4940,8 +4940,8 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
-                            return htmlescape($CFG_GLPI['languages'][$value][0]);
+                        if (isset($CFG_ZENTRA['languages'][$value ?? ''])) {
+                            return htmlescape($CFG_ZENTRA['languages'][$value][0]);
                         }
                         return __s('Default value');
                 }
@@ -4995,7 +4995,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $param = [
             'comments' => false,
@@ -5173,7 +5173,7 @@ class CommonDBTM extends CommonGLPI
                         }
                     }
                     if (!isset($options['entity'])) {
-                        $options['entity'] = $_SESSION['glpiactiveentities'];
+                        $options['entity'] = $_SESSION['zentraactiveentities'];
                     }
                     $itemtype = $searchoptions['itemtype'] ?? getItemTypeForTable($searchoptions['table']);
 
@@ -5191,7 +5191,7 @@ class CommonDBTM extends CommonGLPI
 
                 case "itemtypename":
                     if (isset($searchoptions['itemtype_list'])) {
-                        $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
+                        $options['types'] = $CFG_ZENTRA[$searchoptions['itemtype_list']];
                     }
                     $copytooption     = ['types'];
                     $options['value'] = $value;
@@ -5279,7 +5279,7 @@ class CommonDBTM extends CommonGLPI
             $request['WHERE'] += getEntitiesRestrictCriteria(
                 $item::getTable(),
                 'entities_id',
-                $_SESSION['glpiactiveentities'],
+                $_SESSION['zentraactiveentities'],
                 $item->maybeRecursive()
             );
         }
@@ -5307,7 +5307,7 @@ class CommonDBTM extends CommonGLPI
                 'id' => $data['id'],
             ];
             $templname = $data["template_name"];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
+            if ($_SESSION["zentrais_ids_visible"] || empty($data["template_name"])) {
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
             if (!$add && $item::canCreate()) {
@@ -5317,9 +5317,9 @@ class CommonDBTM extends CommonGLPI
                 $entry['name'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
                 if (Session::isMultiEntitiesMode()) {
                     if (!isset($entity_cache[$data['entities_id']])) {
-                        $entity_cache[$data['entities_id']] = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
+                        $entity_cache[$data['entities_id']] = Dropdown::getDropdownName('zentra_entities', $data['entities_id']);
                     }
-                    $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
+                    $entity = Dropdown::getDropdownName('zentra_entities', $data['entities_id']);
                     $entry['entity'] = $entity;
                 }
                 $entry['can_delete'] = $item::canPurge() && $item->can($data['id'], PURGE);
@@ -5457,7 +5457,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addFiles(array $input, $options = [])
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $default_options = [
             'force_update'  => false,
@@ -5485,7 +5485,7 @@ class CommonDBTM extends CommonGLPI
             $doc      = new Document();
             $docitem  = new Document_Item();
             $docID    = 0;
-            $filename = GLPI_TMP_DIR . "/" . $file;
+            $filename = ZENTRA_TMP_DIR . "/" . $file;
             $input2   = [];
 
             //If file tag is present
@@ -5515,7 +5515,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             //retrieve entity
-            $entities_id = $_SESSION['glpiactive_entity'] ?? 0;
+            $entities_id = $_SESSION['zentraactive_entity'] ?? 0;
             if (isset($this->fields["entities_id"])) {
                 $entities_id = $this->fields["entities_id"];
             } elseif (isset($input['entities_id'])) {
@@ -5631,7 +5631,7 @@ class CommonDBTM extends CommonGLPI
                     'items_id'      => $this->getID(),
                 ];
                 // Set date, needed if it differs from the creation date
-                $toadd['date'] = $options['date'] ?? $_SESSION['glpi_currenttime'];
+                $toadd['date'] = $options['date'] ?? $_SESSION['zentra_currenttime'];
 
                 if (isset($input['users_id'])) {
                     $toadd['users_id'] = $input['users_id'];
@@ -5729,7 +5729,7 @@ class CommonDBTM extends CommonGLPI
      */
     private function assetBusinessRules(int $condition): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($this->input === false) {
             return;
@@ -5740,7 +5740,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         // Only process itemtype that are assets
-        if (in_array(static::class, $CFG_GLPI['asset_types'], true)) {
+        if (in_array(static::class, $CFG_ZENTRA['asset_types'], true)) {
             $ruleasset          = new RuleAssetCollection();
             $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
@@ -6227,7 +6227,7 @@ class CommonDBTM extends CommonGLPI
         foreach ($urls as $url) {
             if (!empty($url)) {
                 $resolved_url = Toolbox::getPictureUrl($url);
-                $src_file = GLPI_PICTURE_DIR . '/' . $url;
+                $src_file = ZENTRA_PICTURE_DIR . '/' . $url;
                 if (file_exists($src_file)) {
                     $size = getimagesize($src_file);
                     $pictures[] = [
@@ -6484,7 +6484,7 @@ class CommonDBTM extends CommonGLPI
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
      * @param null|array  $menus   Menu path used to load specific JS file and
-     *                             show breadcrumbs, see $CFG_GLPI['javascript']
+     *                             show breadcrumbs, see $CFG_ZENTRA['javascript']
      *                             and Html::includeHeader()
      *                             Three possible formats:
      *                             - [menu 1, menu 2, menu 3]

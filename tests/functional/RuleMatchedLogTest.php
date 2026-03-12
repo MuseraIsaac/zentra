@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Inventory\Converter;
-use Glpi\Inventory\Inventory;
-use Glpi\Tests\DbTestCase;
+use Zentra\Inventory\Converter;
+use Zentra\Inventory\Inventory;
+use Zentra\Tests\DbTestCase;
 use Printer;
 use RuleMatchedLog as GlobalRuleMatchedLog;
 
@@ -100,7 +100,7 @@ class RuleMatchedLogTest extends DbTestCase
         $json = json_decode($data);
 
         $inventory = new Inventory($json);
-        $date_add = $_SESSION['glpi_currenttime'];
+        $date_add = $_SESSION['zentra_currenttime'];
 
         if ($inventory->inError()) {
             dump($inventory->getErrors());
@@ -121,7 +121,7 @@ class RuleMatchedLogTest extends DbTestCase
         ));
         $input = $rulematchedlog->fields['input'];
         $this->assertNotEmpty($input);
-        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","osname":"","entities_id":"0"}', $input);
+        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"ZENTRA Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","osname":"","entities_id":"0"}', $input);
 
         // Update test
         $xmlupdate = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -151,7 +151,7 @@ class RuleMatchedLogTest extends DbTestCase
         $dataupdate = $converter->convert($xmlupdate);
         $jsonupdate = json_decode($dataupdate);
         $inventoryupdate = new Inventory($jsonupdate);
-        $date_update = $_SESSION['glpi_currenttime'];
+        $date_update = $_SESSION['zentra_currenttime'];
         if ($inventoryupdate->inError()) {
             dump($inventoryupdate->getErrors());
         }
@@ -174,6 +174,6 @@ class RuleMatchedLogTest extends DbTestCase
         $update_result = reset($result);
         $input = $update_result['input'];
         $this->assertNotEmpty($input);
-        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","osname":"","entities_id":"0"}', $input);
+        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"ZENTRA Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","osname":"","entities_id":"0"}', $input);
     }
 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,9 +47,9 @@ $res = new ReservationItem();
 $res->display($_GET);
 
 if (isset($_POST['submit'])) {
-    $_SESSION['glpi_saved']['ReservationItem'] = $_POST;
+    $_SESSION['zentra_saved']['ReservationItem'] = $_POST;
 } else {
-    unset($_SESSION['glpi_saved']['ReservationItem']);
+    unset($_SESSION['zentra_saved']['ReservationItem']);
 }
 
 if (Session::getCurrentInterface() == "helpdesk") {

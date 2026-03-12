@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@
                                 {% endif %}
                             </li>
                             <li>
-                                <span class="text-secondary" id="glpi_delay_{{ replica_num }}">{{ __('GLPI history delay:') }}</span>
+                                <span class="text-secondary" id="zentra_delay_{{ replica_num }}">{{ __('ZENTRA history delay:') }}</span>
                                 {% if replication_delay[replica_num] is defined %}
                                     {% if replication_delay[replica_num] > 0 %}
                                         <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
@@ -200,7 +200,7 @@
                                     <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                                 {% do call('Html::showToolTip', [
-                                    __('This indicates the delay between the source and the replica for GLPI history (table: glpi_logs, column: date_mod).')
+                                    __('This indicates the delay between the source and the replica for ZENTRA history (table: zentra_logs, column: date_mod).')
                                 ]) %}
                             </li>
                             <li>

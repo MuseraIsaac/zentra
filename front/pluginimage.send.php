@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +44,13 @@ require_once(__DIR__ . '/_check_webserver_config.php');
  *  - clean : delete the image after send it
  */
 
-use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\AccessDeniedHttpException;
 
 use function Safe\readfile;
 use function Safe\realpath;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive($_GET["plugin"])) {
     Event::log(
@@ -59,12 +59,12 @@ if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive(
         2,
         "security",
         //TRANS: %s is user name
-        sprintf(__('%s makes a bad usage.'), $_SESSION["glpiname"])
+        sprintf(__('%s makes a bad usage.'), $_SESSION["zentraname"])
     );
     throw new AccessDeniedHttpException();
 }
 
-$dir = GLPI_PLUGIN_DOC_DIR . "/" . $_GET["plugin"] . "/";
+$dir = ZENTRA_PLUGIN_DOC_DIR . "/" . $_GET["plugin"] . "/";
 if (isset($_GET["folder"])) {
     $dir .= $_GET["folder"] . "/";
 }
@@ -73,7 +73,7 @@ $filepath = $dir . $_GET["name"];
 if (
     (basename($_GET["name"]) != $_GET["name"])
     || (basename($_GET["plugin"]) != $_GET["plugin"])
-    || !str_starts_with(realpath($filepath), realpath(GLPI_PLUGIN_DOC_DIR))
+    || !str_starts_with(realpath($filepath), realpath(ZENTRA_PLUGIN_DOC_DIR))
     || !Document::isImage($filepath)
 ) {
     Event::log(
@@ -81,7 +81,7 @@ if (
         "system",
         1,
         "security",
-        sprintf(__('%s tries to use a non standard path.'), $_SESSION["glpiname"])
+        sprintf(__('%s tries to use a non standard path.'), $_SESSION["zentraname"])
     );
     throw new AccessDeniedHttpException();
 }
@@ -97,5 +97,5 @@ if (file_exists($filepath)) {
     readfile($filepath);
 } else {
     header("Content-type: image/png");
-    readfile($CFG_GLPI['root_doc'] . "/pics/warning.png");
+    readfile($CFG_ZENTRA['root_doc'] . "/pics/warning.png");
 }

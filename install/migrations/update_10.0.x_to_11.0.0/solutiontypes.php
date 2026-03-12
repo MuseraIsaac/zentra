@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,19 +36,19 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-if (!$DB->fieldExists("glpi_solutiontypes", "is_incident")) {
-    $migration->addField('glpi_solutiontypes', 'is_incident', 'bool', ['value' => 1]);
-    $migration->addKey('glpi_solutiontypes', 'is_incident');
+if (!$DB->fieldExists("zentra_solutiontypes", "is_incident")) {
+    $migration->addField('zentra_solutiontypes', 'is_incident', 'bool', ['value' => 1]);
+    $migration->addKey('zentra_solutiontypes', 'is_incident');
 }
-if (!$DB->fieldExists("glpi_solutiontypes", "is_request")) {
-    $migration->addField('glpi_solutiontypes', 'is_request', 'bool', ['value' => 1]);
-    $migration->addKey('glpi_solutiontypes', 'is_request');
+if (!$DB->fieldExists("zentra_solutiontypes", "is_request")) {
+    $migration->addField('zentra_solutiontypes', 'is_request', 'bool', ['value' => 1]);
+    $migration->addKey('zentra_solutiontypes', 'is_request');
 }
-if (!$DB->fieldExists("glpi_solutiontypes", "is_change")) {
-    $migration->addField('glpi_solutiontypes', 'is_change', 'bool', ['value' => 1]);
-    $migration->addKey('glpi_solutiontypes', 'is_change');
+if (!$DB->fieldExists("zentra_solutiontypes", "is_change")) {
+    $migration->addField('zentra_solutiontypes', 'is_change', 'bool', ['value' => 1]);
+    $migration->addKey('zentra_solutiontypes', 'is_change');
 }
-if (!$DB->fieldExists("glpi_solutiontypes", "is_problem")) {
-    $migration->addField('glpi_solutiontypes', 'is_problem', 'bool', ['value' => 1]);
-    $migration->addKey('glpi_solutiontypes', 'is_problem');
+if (!$DB->fieldExists("zentra_solutiontypes", "is_problem")) {
+    $migration->addField('zentra_solutiontypes', 'is_problem', 'bool', ['value' => 1]);
+    $migration->addKey('zentra_solutiontypes', 'is_problem');
 }

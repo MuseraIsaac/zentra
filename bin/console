@@ -4,9 +4,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ if (isset($_SERVER['argv'])) {
    }
 
    // Alias of previous locales compile command
-   // FIXME: remove in a later GLPI version
+   // FIXME: remove in a later ZENTRA version
    if (count($_SERVER['argv']) > 1 && $_SERVER['argv'][1] === 'locales:compile') {
        $_SERVER['argv'][1] = 'tools:locales:compile';
    }
@@ -96,10 +96,10 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
 // Check the resources state before trying to instanciate the Kernel.
 // It must be done here as this check must be done even when the Kernel
 // cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+require_once dirname(__DIR__) . '/src/Zentra/Application/ResourcesChecker.php';
+(new \Zentra\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-// If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
+// If "config-dir" option is used in command line, defines ZENTRA_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
    echo "\n" . 'Usage of the `--config-dir` option is deprecated. Please use the `--env` option instead.' . "\n\n";
 
@@ -114,11 +114,11 @@ if (array_key_exists('config-dir', $options)) {
       exit(1);
    }
 
-   define('GLPI_CONFIG_DIR', realpath($config_dir));
+   define('ZENTRA_CONFIG_DIR', realpath($config_dir));
 }
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel($options['env'] ?? null);
-$application = new \Glpi\Console\Application($kernel);
+$kernel = new \Zentra\Kernel\Kernel($options['env'] ?? null);
+$application = new \Zentra\Console\Application($kernel);
 $application->run();

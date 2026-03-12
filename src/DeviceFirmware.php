@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_devicefirmwaremodels',
+            'table'              => 'zentra_devicefirmwaremodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -93,7 +93,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicefirmwaretypes',
+            'table'              => 'zentra_devicefirmwaretypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -101,7 +101,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_devicefirmwares',
+            'table'              => 'zentra_devicefirmwares',
             'field'              => 'version',
             'name'               => _n('Version', 'Versions', 1),
         ];
@@ -118,10 +118,10 @@ class DeviceFirmware extends CommonDevice
     {
         $tab = [];
 
-        //SO defined from glpi_devicefirmwares table
+        //SO defined from zentra_devicefirmwares table
         $tab[] = [
             'id'                 => '1313',
-            'table'              => 'glpi_devicefirmwares',
+            'table'              => 'zentra_devicefirmwares',
             'field'              => 'designation',
             'name'               => self::getTypeName(1),
             'forcegroupby'       => true,
@@ -130,7 +130,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicefirmwares',
+                    'table'              => 'zentra_items_devicefirmwares',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -138,7 +138,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '1314',
-            'table'              => 'glpi_devicefirmwares',
+            'table'              => 'zentra_devicefirmwares',
             'field'              => 'version',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Version', 'Versions', 1)),
             'forcegroupby'       => true,
@@ -147,7 +147,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicefirmwares',
+                    'table'              => 'zentra_items_devicefirmwares',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -155,7 +155,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '1315',
-            'table'              => 'glpi_devicefirmwaretypes',
+            'table'              => 'zentra_devicefirmwaretypes',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
             'massiveaction'      => false,
@@ -175,7 +175,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '1316',
-            'table'              => 'glpi_devicefirmwaremodels',
+            'table'              => 'zentra_devicefirmwaremodels',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Model', 'Models', 1)),
             'massiveaction'      => false,
@@ -195,7 +195,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '1317',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), Manufacturer::getTypeName(1)),
             'massiveaction'      => false,
@@ -213,10 +213,10 @@ class DeviceFirmware extends CommonDevice
             ],
         ];
 
-        //SO defined from relation (glpi_items_devicefirmwares) table
+        //SO defined from relation (zentra_items_devicefirmwares) table
         $tab[] = [
             'id'                 => '1318',
-            'table'              => 'glpi_items_devicefirmwares',
+            'table'              => 'zentra_items_devicefirmwares',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -228,7 +228,7 @@ class DeviceFirmware extends CommonDevice
 
         $tab[] = [
             'id'                 => '1319',
-            'table'              => 'glpi_items_devicefirmwares',
+            'table'              => 'zentra_items_devicefirmwares',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,
@@ -248,14 +248,14 @@ class DeviceFirmware extends CommonDevice
         ?HTMLTableHeader $father = null,
         array $options = []
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
+        if (in_array($itemtype, $CFG_ZENTRA['itemdevicefirmware_types'])) {
             Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
             $base->addHeader('devicefirmware_type', _sn('Type', 'Types', 1), $super, $father);
             $base->addHeader('version', _sn('Version', 'Versions', 1), $super, $father);
@@ -269,20 +269,20 @@ class DeviceFirmware extends CommonDevice
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        if (in_array($item::class, $CFG_GLPI['itemdevicefirmware_types'], true)) {
+        if (in_array($item::class, $CFG_ZENTRA['itemdevicefirmware_types'], true)) {
             Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
             if ($this->fields["devicefirmwaretypes_id"]) {
                 $row->addCell(
                     $row->getHeaderByName('devicefirmware_type'),
-                    htmlescape(Dropdown::getDropdownName("glpi_devicefirmwaretypes", $this->fields["devicefirmwaretypes_id"])),
+                    htmlescape(Dropdown::getDropdownName("zentra_devicefirmwaretypes", $this->fields["devicefirmwaretypes_id"])),
                     $father
                 );
             }

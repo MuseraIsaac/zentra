@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,22 +30,22 @@
  * ---------------------------------------------------------------------
  */
 
-import { GlpiFormDestinationAutoConfigController } from "/js/modules/Forms/DestinationAutoConfigController.js";
-import { GlpiFormDestinationConditionController } from "/js/modules/Forms/DestinationConditionController.js";
+import { ZentraFormDestinationAutoConfigController } from "/js/modules/Forms/DestinationAutoConfigController.js";
+import { ZentraFormDestinationConditionController } from "/js/modules/Forms/DestinationConditionController.js";
 
-export class GlpiFormDestinationAccordionController
+export class ZentraFormDestinationAccordionController
 {
     constructor() {
         this.#watchForAccordionToggle();
     }
 
     triggerWatchers() {
-        new GlpiFormDestinationAutoConfigController();
-        new GlpiFormDestinationConditionController();
+        new ZentraFormDestinationAutoConfigController();
+        new ZentraFormDestinationConditionController();
     }
 
     #watchForAccordionToggle() {
-        const accordionWrapper = document.querySelector('#glpi-destinations-accordion');
+        const accordionWrapper = document.querySelector('#zentra-destinations-accordion');
 
         accordionWrapper.addEventListener('show.bs.collapse', async (e) => {
             const accordionItem = e.target;
@@ -57,7 +57,7 @@ export class GlpiFormDestinationAccordionController
             accordionItemContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary mb-3" role="status"></div></div>';
 
             const content = await $.ajax({
-                url: `${CFG_GLPI.root_doc}/Form/${accordionItem.dataset.form}/Destinations/${accordionItem.dataset.formDestination}`,
+                url: `${CFG_ZENTRA.root_doc}/Form/${accordionItem.dataset.form}/Destinations/${accordionItem.dataset.formDestination}`,
                 method: 'GET',
             });
 

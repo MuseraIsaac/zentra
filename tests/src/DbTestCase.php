@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -40,11 +40,11 @@ use Auth;
 use CommonDBTM;
 use Document;
 use Entity;
-use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\CapacityConfig;
-use Glpi\Dropdown\DropdownDefinition;
+use Zentra\Asset\AssetDefinition;
+use Zentra\Asset\AssetDefinitionManager;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\CapacityConfig;
+use Zentra\Dropdown\DropdownDefinition;
 use Profile;
 use ProfileRight;
 use Ramsey\Uuid\Uuid;
@@ -57,7 +57,7 @@ use RuleCriteria;
 use Session;
 use User;
 
-class DbTestCase extends GLPITestCase
+class DbTestCase extends ZENTRATestCase
 {
     /**
      * Indicates whether the custom assets autoloader is registered.
@@ -219,7 +219,7 @@ class DbTestCase extends GLPITestCase
     protected static function getClasses($function = false, array $excludes = [])
     {
         $files_iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
+            new RecursiveDirectoryIterator(ZENTRA_ROOT . '/src'),
             RecursiveIteratorIterator::SELF_FIRST
         );
 
@@ -572,10 +572,10 @@ class DbTestCase extends GLPITestCase
     protected function createTxtDocument(): Document
     {
         $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
-        $filename = uniqid('glpitest_', true) . '.txt';
+        $filename = uniqid('zentratest_', true) . '.txt';
         $contents = random_bytes(1024);
 
-        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
+        $written_bytes = file_put_contents(ZENTRA_TMP_DIR . '/' . $filename, $contents);
         $this->assertEquals(strlen($contents), $written_bytes);
 
         return $this->createItem(
@@ -758,7 +758,7 @@ class DbTestCase extends GLPITestCase
         $this->login();
 
         $prefix = uniqid(more_entropy: true);
-        file_put_contents(GLPI_TMP_DIR . '/' . "$prefix" . $name, $content);
+        file_put_contents(ZENTRA_TMP_DIR . '/' . "$prefix" . $name, $content);
         return $this->createItem(Document::class, [
             'documentcategories_id' => 0,
             '_filename'             => ["$prefix" . $name],

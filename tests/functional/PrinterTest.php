@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 
 /* Test for inc/printer.class.php */
 
@@ -137,7 +137,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         ;
         $this->assertEquals(0, $obj->isDeleted());
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('zentra_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
         // DeleteByCriteria without history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 0));
@@ -145,7 +145,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('zentra_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
         $this->assertSame($nb_after, $nb_after);
 
         // Restore
@@ -154,7 +154,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         $this->assertEquals(0, $obj->isDeleted());
 
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('zentra_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
         // DeleteByCriteria with history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 1));
@@ -162,13 +162,13 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('zentra_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
         $this->assertSame($nb_before + 1, $nb_after);
     }
 
     public function testCloneFromTemplateWithInfocoms()
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -232,7 +232,7 @@ class PrinterTest extends DbTestCase
             ],
             ['id' => $entity_id]
         );
-        $GLPI_CACHE->clear();
+        $ZENTRA_CACHE->clear();
         $this->assertTrue($entity->getFromDB($entity_id));
         $this->assertEquals($state_param, $entity->getField('autofill_delivery_date'));
         $this->assertEquals(\Infocom::COPY_DELIVERY_DATE, $entity->getField('autofill_warranty_date'));

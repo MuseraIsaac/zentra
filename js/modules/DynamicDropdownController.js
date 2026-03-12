@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
  * on a dropdown value.
  *
  * The item must define two data attributes:
- * - data-glpi-parent-dropdown: the name of the parent dropdown
- * - data-glpi-parent-dropdown-condition: the value that the parent dropdown
+ * - data-zentra-parent-dropdown: the name of the parent dropdown
+ * - data-zentra-parent-dropdown-condition: the value that the parent dropdown
  *  must have for this item to be displayed
  */
 export class DynamicDropdownController
@@ -56,12 +56,12 @@ export class DynamicDropdownController
 
     #updateItemsVisiblity(select) {
         const name = $.escapeSelector(select.prop("name"));
-        const items = $(`[data-glpi-parent-dropdown="${CSS.escape(name)}"]`);
+        const items = $(`[data-zentra-parent-dropdown="${CSS.escape(name)}"]`);
         const value = select.val();
 
         items.each((i, dropdown) => {
             const expected_value = $(dropdown).data(
-                'glpi-parent-dropdown-condition'
+                'zentra-parent-dropdown-condition'
             );
             $(dropdown).toggleClass('d-none', expected_value !== value);
         });

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
  *
  * @since 0.84
  **/
-class Knowbase extends CommonGLPI
+class Knowbase extends CommonZENTRA
 {
     public static function getTypeName($nb = 0)
     {
@@ -55,7 +55,7 @@ class Knowbase extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs[1] = self::createTabEntry(_x('button', 'Search'), icon: 'ti ti-search');
@@ -66,7 +66,7 @@ class Knowbase extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {
@@ -89,11 +89,11 @@ class Knowbase extends CommonGLPI
      */
     public static function showSearchView()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Search a solution
         if (isset($_GET["itemtype"], $_GET["items_id"]) && !isset($_GET["contains"])) {
-            if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types'], true) && $item = getItemForItemtype($_GET["itemtype"])) {
+            if (in_array($_GET["item_itemtype"], $CFG_ZENTRA['kb_types'], true) && $item = getItemForItemtype($_GET["itemtype"])) {
                 if ($item->can($_GET["item_items_id"], READ)) {
                     $_GET["contains"] = $item->getField('name');
                 }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,23 +45,23 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
 
         $criterias['name']['field'] = 'name';
         $criterias['name']['name']  = OperatingSystem::getTypeName(1);
-        $criterias['name']['table'] = 'glpi_operatingsystems';
+        $criterias['name']['table'] = 'zentra_operatingsystems';
 
         $criterias['os_version_name']['field'] = 'name';
         $criterias['os_version_name']['name']  = OperatingSystemVersion::getTypeName(1);
-        $criterias['os_version_name']['table'] = 'glpi_operatingsystemversions';
+        $criterias['os_version_name']['table'] = 'zentra_operatingsystemversions';
 
         $criterias['arch_name']['field'] = 'name';
         $criterias['arch_name']['name']  = OperatingSystemArchitecture::getTypeName(1);
-        $criterias['arch_name']['table'] = 'glpi_operatingsystemarchitectures';
+        $criterias['arch_name']['table'] = 'zentra_operatingsystemarchitectures';
 
         $criterias['servicepack_name']['field'] = 'name';
         $criterias['servicepack_name']['name']  = OperatingSystemServicePack::getTypeName(1);
-        $criterias['servicepack_name']['table'] = 'glpi_operatingsystemservicepacks';
+        $criterias['servicepack_name']['table'] = 'zentra_operatingsystemservicepacks';
 
         $criterias['os_edition']['field'] = 'name';
         $criterias['os_edition']['name']  = OperatingSystemEdition::getTypeName(1);
-        $criterias['os_edition']['table'] = 'glpi_operatingsystemeditions';
+        $criterias['os_edition']['table'] = 'zentra_operatingsystemeditions';
 
         return $criterias;
     }

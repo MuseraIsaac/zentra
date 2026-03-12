@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiPlugin\Tester\Form;
+namespace ZentraPlugin\Tester\Form;
 
 use Computer;
-use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
-use Glpi\UI\IllustrationManager;
+use Zentra\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Zentra\UI\IllustrationManager;
 use Override;
 
 // Example of how a core class can be enabled for the service catalog without

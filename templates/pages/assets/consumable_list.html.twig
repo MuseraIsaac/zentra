@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@
                                         label_class: 'col-xxl-1',
                                     }
                                 ) }}
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
                             {% endif %}
                         </div>
                     </div>
@@ -107,7 +107,7 @@
     {% if count_unused > 0 %}
         <div class="unused-consumables mb-4">
             <h3>{{ __("%s New consumables"|format(count_unused)) }}</h3>
-            {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
+            {% do call('\\Zentra\\Search\\SearchEngine::show', [itemtype, {
                 'criteria'          : criteria_unused,
                 'push_history'      : false,
                 'showmassiveactions': can_edit,
@@ -120,7 +120,7 @@
     {% if count_used > 0 %}
         <div class="used-consumables mb-4">
             <h3> {{ __("%s Used consumables"|format(count_used)) }} </h3>
-            {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
+            {% do call('\\Zentra\\Search\\SearchEngine::show', [itemtype, {
                 'criteria'          : criteria_used,
                 'push_history'      : false,
                 'showmassiveactions': can_edit,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 use function Safe\preg_match;
 
@@ -179,7 +179,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     public function addSpecificParamsForPreview($params)
     {
         if (!isset($params["entities_id"])) {
-            $params["entities_id"] = $_SESSION["glpiactive_entity"];
+            $params["entities_id"] = $_SESSION["zentraactive_entity"];
         }
         return $params;
     }
@@ -194,7 +194,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             }
         }
         if (!$entity_as_criteria) {
-            echo "<input type='hidden' name='entities_id' value='" . ((int) $_SESSION["glpiactive_entity"]) . "'>";
+            echo "<input type='hidden' name='entities_id' value='" . ((int) $_SESSION["zentraactive_entity"]) . "'>";
         }
     }
 
@@ -688,86 +688,86 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $criterias['date']['linkfield']                       = 'date';
         $criterias['date']['type']                            = 'datetime';
 
-        $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
+        $criterias['itilcategories_id']['table']              = 'zentra_itilcategories';
         $criterias['itilcategories_id']['field']              = 'completename';
         $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1);
         $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
         $criterias['itilcategories_id']['type']               = 'dropdown';
         $criterias['itilcategories_id']['linked_criteria']    = 'itilcategories_id_code';
 
-        $criterias['itilcategories_id_code']['table']           = 'glpi_itilcategories';
+        $criterias['itilcategories_id_code']['table']           = 'zentra_itilcategories';
         $criterias['itilcategories_id_code']['field']           = 'code';
         $criterias['itilcategories_id_code']['name']            = __('Code representing the ITIL category');
 
-        $criterias['users_id_recipient']['table']             = 'glpi_users';
+        $criterias['users_id_recipient']['table']             = 'zentra_users';
         $criterias['users_id_recipient']['field']             = 'name';
         $criterias['users_id_recipient']['name']              = __('Writer');
         $criterias['users_id_recipient']['linkfield']         = 'users_id_recipient';
         $criterias['users_id_recipient']['type']              = 'dropdown_users';
 
-        $criterias['_users_id_requester']['table']            = 'glpi_users';
+        $criterias['_users_id_requester']['table']            = 'zentra_users';
         $criterias['_users_id_requester']['field']            = 'name';
         $criterias['_users_id_requester']['name']             = _n('Requester', 'Requesters', 1);
         $criterias['_users_id_requester']['linkfield']        = '_users_id_requester';
         $criterias['_users_id_requester']['type']             = 'dropdown_users';
         $criterias['_users_id_requester']['linked_criteria']  = '_groups_id_of_requester';
 
-        $criterias['_groups_id_of_requester']['table']        = 'glpi_groups';
+        $criterias['_groups_id_of_requester']['table']        = 'zentra_groups';
         $criterias['_groups_id_of_requester']['field']        = 'completename';
         $criterias['_groups_id_of_requester']['name']         = __('Requester in group');
         $criterias['_groups_id_of_requester']['linkfield']    = '_groups_id_of_requester';
         $criterias['_groups_id_of_requester']['type']         = 'dropdown';
 
-        $criterias['_groups_id_of_item']['table']             = 'glpi_groups';
+        $criterias['_groups_id_of_item']['table']             = 'zentra_groups';
         $criterias['_groups_id_of_item']['field']             = 'completename';
         $criterias['_groups_id_of_item']['name']              = __('Item group');
         $criterias['_groups_id_of_item']['linkfield']         = '_groups_id_of_item';
         $criterias['_groups_id_of_item']['type']              = 'dropdown';
 
-        $criterias['_states_id_of_item']['table']             = 'glpi_states';
+        $criterias['_states_id_of_item']['table']             = 'zentra_states';
         $criterias['_states_id_of_item']['field']             = 'completename';
         $criterias['_states_id_of_item']['name']              = __('Item state');
         $criterias['_states_id_of_item']['linkfield']         = '_states_id_of_item';
         $criterias['_states_id_of_item']['type']              = 'dropdown';
 
-        $criterias['_groups_id_requester']['table']           = 'glpi_groups';
+        $criterias['_groups_id_requester']['table']           = 'zentra_groups';
         $criterias['_groups_id_requester']['field']           = 'completename';
         $criterias['_groups_id_requester']['name']            = _n('Requester group', 'Requester groups', 1);
         $criterias['_groups_id_requester']['linkfield']       = '_groups_id_requester';
         $criterias['_groups_id_requester']['type']            = 'dropdown';
 
-        $criterias['_users_id_assign']['table']               = 'glpi_users';
+        $criterias['_users_id_assign']['table']               = 'zentra_users';
         $criterias['_users_id_assign']['field']               = 'name';
         $criterias['_users_id_assign']['name']                = __('Technician');
         $criterias['_users_id_assign']['linkfield']           = '_users_id_assign';
         $criterias['_users_id_assign']['type']                = 'dropdown_users';
 
-        $criterias['_groups_id_assign']['table']              = 'glpi_groups';
+        $criterias['_groups_id_assign']['table']              = 'zentra_groups';
         $criterias['_groups_id_assign']['field']              = 'completename';
         $criterias['_groups_id_assign']['name']               = __('Technician group');
         $criterias['_groups_id_assign']['linkfield']          = '_groups_id_assign';
         $criterias['_groups_id_assign']['type']               = 'dropdown';
         $criterias['_groups_id_assign']['condition']          = ['is_assign' => 1];
 
-        $criterias['_suppliers_id_assign']['table']           = 'glpi_suppliers';
+        $criterias['_suppliers_id_assign']['table']           = 'zentra_suppliers';
         $criterias['_suppliers_id_assign']['field']           = 'name';
         $criterias['_suppliers_id_assign']['name']            = __('Assigned to a supplier');
         $criterias['_suppliers_id_assign']['linkfield']       = '_suppliers_id_assign';
         $criterias['_suppliers_id_assign']['type']            = 'dropdown';
 
-        $criterias['_users_id_observer']['table']             = 'glpi_users';
+        $criterias['_users_id_observer']['table']             = 'zentra_users';
         $criterias['_users_id_observer']['field']             = 'name';
         $criterias['_users_id_observer']['name']              = _n('Observer', 'Observers', 1);
         $criterias['_users_id_observer']['linkfield']         = '_users_id_observer';
         $criterias['_users_id_observer']['type']              = 'dropdown_users';
 
-        $criterias['_groups_id_observer']['table']            = 'glpi_groups';
+        $criterias['_groups_id_observer']['table']            = 'zentra_groups';
         $criterias['_groups_id_observer']['field']            = 'completename';
         $criterias['_groups_id_observer']['name']             = _n('Observer group', 'Observer groups', 1);
         $criterias['_groups_id_observer']['linkfield']        = '_groups_id_observer';
         $criterias['_groups_id_observer']['type']             = 'dropdown';
 
-        $criterias['requesttypes_id']['table']                = 'glpi_requesttypes';
+        $criterias['requesttypes_id']['table']                = 'zentra_requesttypes';
         $criterias['requesttypes_id']['field']                = 'name';
         $criterias['requesttypes_id']['name']                 = RequestType::getTypeName(1);
         $criterias['requesttypes_id']['linkfield']            = 'requesttypes_id';
@@ -779,13 +779,13 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $criterias['itemtype']['linkfield']                   = 'itemtype';
         $criterias['itemtype']['type']                        = 'dropdown_tracking_itemtype';
 
-        $criterias['entities_id']['table']                    = 'glpi_entities';
+        $criterias['entities_id']['table']                    = 'zentra_entities';
         $criterias['entities_id']['field']                    = 'name';
         $criterias['entities_id']['name']                     = Entity::getTypeName(1);
         $criterias['entities_id']['linkfield']                = 'entities_id';
         $criterias['entities_id']['type']                     = 'dropdown';
 
-        $criterias['profiles_id']['table']                    = 'glpi_profiles';
+        $criterias['profiles_id']['table']                    = 'zentra_profiles';
         $criterias['profiles_id']['field']                    = 'name';
         $criterias['profiles_id']['name']                     = __('Default profile');
         $criterias['profiles_id']['linkfield']                = 'profiles_id';
@@ -841,13 +841,13 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // set a category
         $actions['itilcategories_id']['name']                       = _n('Category', 'Categories', 1);
         $actions['itilcategories_id']['type']                       = 'dropdown';
-        $actions['itilcategories_id']['table']                      = 'glpi_itilcategories';
+        $actions['itilcategories_id']['table']                      = 'zentra_itilcategories';
         $actions['itilcategories_id']['force_actions']              = ['assign', 'regex_result'];
 
         // set a category from regexp
         $actions['_itilcategories_id_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), _n('Category', 'Categories', 1), __('by completename'));
         $actions['_itilcategories_id_by_completename']['type']                 = 'dropdown';
-        $actions['_itilcategories_id_by_completename']['table']                = 'glpi_itilcategories';
+        $actions['_itilcategories_id_by_completename']['table']                = 'zentra_itilcategories';
         $actions['_itilcategories_id_by_completename']['force_actions']        = ['regex_result'];
 
         // set a category from code regexp
@@ -867,7 +867,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // set a requester group
         $actions['_groups_id_requester']['name']                    = _n('Requester group', 'Requester groups', 1);
         $actions['_groups_id_requester']['type']                    = 'dropdown';
-        $actions['_groups_id_requester']['table']                   = 'glpi_groups';
+        $actions['_groups_id_requester']['table']                   = 'zentra_groups';
         $actions['_groups_id_requester']['condition']               = ['is_requester' => 1];
         $actions['_groups_id_requester']['force_actions']           = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_requester']['permitseveral']           = ['append'];
@@ -876,7 +876,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // set a requester group from regexp
         $actions['_groups_id_requester_by_completename']['name']              = sprintf(__('%1$s (%2$s)'), _n('Requester group', 'Requester groups', 1), __('by completename'));
         $actions['_groups_id_requester_by_completename']['type']              = 'dropdown';
-        $actions['_groups_id_requester_by_completename']['table']             = 'glpi_groups';
+        $actions['_groups_id_requester_by_completename']['table']             = 'zentra_groups';
         $actions['_groups_id_requester_by_completename']['condition']         = ['is_requester' => 1];
         $actions['_groups_id_requester_by_completename']['force_actions']     = ['regex_result'];
         $actions['_groups_id_requester_by_completename']['permitseveral']     = ['append'];
@@ -892,7 +892,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_assign']['appendtoarrayfield']          = 'users_id';
 
         // set a technician group
-        $actions['_groups_id_assign']['table']                      = 'glpi_groups';
+        $actions['_groups_id_assign']['table']                      = 'zentra_groups';
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
         $actions['_groups_id_assign']['condition']                  = ['is_assign' => 1];
@@ -901,7 +901,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
 
         // set a technician group from regexp
-        $actions['_groups_id_assign_by_completename']['table']                = 'glpi_groups';
+        $actions['_groups_id_assign_by_completename']['table']                = 'zentra_groups';
         $actions['_groups_id_assign_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), __('Technician group'), __('by completename'));
         $actions['_groups_id_assign_by_completename']['type']                 = 'dropdown';
         $actions['_groups_id_assign_by_completename']['condition']            = ['is_assign' => 1];
@@ -910,7 +910,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_groups_id_assign_by_completename']['appendto']             = '_additional_groups_assigns';
 
         // set a supplier
-        $actions['_suppliers_id_assign']['table']                   = 'glpi_suppliers';
+        $actions['_suppliers_id_assign']['table']                   = 'zentra_suppliers';
         $actions['_suppliers_id_assign']['name']                    = __('Assigned to a supplier');
         $actions['_suppliers_id_assign']['type']                    = 'dropdown';
         $actions['_suppliers_id_assign']['force_actions']           = ['assign', 'append'];
@@ -929,7 +929,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
         // set an observer group
-        $actions['_groups_id_observer']['table']                    = 'glpi_groups';
+        $actions['_groups_id_observer']['table']                    = 'zentra_groups';
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
         $actions['_groups_id_observer']['condition']                = ['is_watcher' => 1];
@@ -938,7 +938,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
         // set an observer by regexp
-        $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
+        $actions['_groups_id_observer_by_completename']['table']              = 'zentra_groups';
         $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Observer group', 'Observer groups', 1), __('by completename'));
         $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
         $actions['_groups_id_observer_by_completename']['condition']          = ['is_watcher' => 1];
@@ -973,7 +973,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // assign an appliance
         $actions['assign_appliance']['name']                        = _n('Associated element', 'Associated elements', Session::getPluralNumber()) . " : " . Appliance::getTypeName(1);
         $actions['assign_appliance']['type']                        = 'dropdown';
-        $actions['assign_appliance']['table']                       = 'glpi_appliances';
+        $actions['assign_appliance']['table']                       = 'zentra_appliances';
         $actions['assign_appliance']['condition']                   = ['is_helpdesk_visible' => 1];
         $actions['assign_appliance']['permitseveral']               = ['append'];
         $actions['assign_appliance']['force_actions']               = ['assign','regex_result', 'append'];
@@ -1029,7 +1029,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             // choose approval (validation) step
             $actions['validationsteps_id']['name']                      = __('Set approval request step');
             $actions['validationsteps_id']['type']                      = 'dropdown';
-            $actions['validationsteps_id']['table']                     = 'glpi_validationsteps';
+            $actions['validationsteps_id']['table']                     = 'zentra_validationsteps';
             $actions['validationsteps_id']['force_actions']             = ['add_validation'];
 
             // choose approval (validation) threshold
@@ -1041,7 +1041,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // set request source
         $actions['requesttypes_id']['name']                         = RequestType::getTypeName(1);
         $actions['requesttypes_id']['type']                         = 'dropdown';
-        $actions['requesttypes_id']['table']                        = 'glpi_requesttypes';
+        $actions['requesttypes_id']['table']                        = 'zentra_requesttypes';
 
         // set takeintoaccount
         $actions['takeintoaccount_delay_stat']['name']              = __('Take into account delay');
@@ -1051,7 +1051,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // add a solution
         $actions['solution_template']['name']                       = _n('Solution template', 'Solution templates', 1);
         $actions['solution_template']['type']                       = 'dropdown';
-        $actions['solution_template']['table']                      = 'glpi_solutiontemplates';
+        $actions['solution_template']['table']                      = 'zentra_solutiontemplates';
         $actions['solution_template']['force_actions']              = ['assign'];
 
         // add a task

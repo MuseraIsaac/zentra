@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Mail\SMTP\OauthConfig;
+use Zentra\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Token\AccessToken;
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 if (!array_key_exists('cookie_refresh', $_GET)) {
     // Session cookie will not be accessible when user will be redirected from provider website
@@ -140,4 +140,4 @@ if (
     }
 }
 
-Html::redirect($CFG_GLPI['root_doc'] . '/front/notificationmailingsetting.form.php');
+Html::redirect($CFG_ZENTRA['root_doc'] . '/front/notificationmailingsetting.form.php');

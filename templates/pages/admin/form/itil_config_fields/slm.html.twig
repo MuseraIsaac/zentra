@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {# Additional fields configuration for SPECIFIC_VALUE strategy #}
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
+<div data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
     {{ fields.dropdownField(
         specific_value_extra_field.slm_class,
         specific_value_extra_field.input_name,
@@ -54,7 +54,7 @@
 </div>
 
 {# Additional fields configuration for SPECIFIC_DATE_ANSWER strategy #}
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_DATE_ANSWER }}">
+<div data-zentra-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_DATE_ANSWER }}">
     {# We need to redefine the random to avoid an ID conflict #}
     {% set options = options|merge({rand: random()}) %}
 
@@ -75,11 +75,11 @@
 </div>
 
 {# Additional fields configuration for COMPUTED_DATE_FROM_FORM_SUBMISSION strategy #}
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_FORM_SUBMISSION }}">
+<div data-zentra-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_FORM_SUBMISSION }}">
     {# We need to redefine the random to avoid an ID conflict #}
     {% set options = options|merge({rand: random()}) %}
 
-    <div class="d-flex w-full" data-glpi-itildestination-field-slm-computed-strategy-config>
+    <div class="d-flex w-full" data-zentra-itildestination-field-slm-computed-strategy-config>
         {{ fields.dropdownNumberField(
             time_offset_extra_field.input_name,
             time_offset_extra_field.value,
@@ -109,7 +109,7 @@
 </div>
 
 {# Additional fields configuration for COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER strategy #}
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER }}">
+<div data-zentra-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER }}">
     {# We need to redefine the random to avoid an ID conflict #}
     {% set options = options|merge({rand: random()}) %}
 
@@ -127,7 +127,7 @@
             aria_label: specific_date_answer_extra_field.empty_label,
         })
     ) }}
-    <div class="d-flex w-full" data-glpi-itildestination-field-slm-computed-strategy-config>
+    <div class="d-flex w-full" data-zentra-itildestination-field-slm-computed-strategy-config>
         {{ fields.dropdownNumberField(
             time_offset_extra_field.input_name,
             time_offset_extra_field.value,

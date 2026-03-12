@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
-<form action="{{ 'Glpi\\Socket'|itemtype_form_path }}" method="post" data-submit-once>
+<form action="{{ 'Zentra\\Socket'|itemtype_form_path }}" method="post" data-submit-once>
     <div>
         {% if _add_fromitem['_from_itemtype'] == 'Location' %}
             {{ inputs.hidden('locations_id', _add_fromitem['_from_items_id']) }}
@@ -40,7 +40,7 @@
             {{ inputs.hidden('items_id', _add_fromitem['_from_items_id']) }}
             {{ inputs.hidden('itemtype', _add_fromitem['_from_itemtype']) }}
         {% endif %}
-        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+        {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
         <div>
             {{ fields.sliderField('_add_multiple', 0, __('Add several sockets')) }}
             <script>
@@ -105,9 +105,9 @@
                 }) }}
             </div>
             <div class="common-inputs d-flex flex-wrap">
-                {{ fields.dropdownField('Glpi\\SocketModel', 'socketmodels_id', 0, 'Glpi\\SocketModel'|itemtype_name) }}
+                {{ fields.dropdownField('Zentra\\SocketModel', 'socketmodels_id', 0, 'Zentra\\SocketModel'|itemtype_name) }}
                 {% set wiring_side_field %}
-                    {% do call('Glpi\\Socket::dropdownWiringSide', ['wiring_side']) %}
+                    {% do call('Zentra\\Socket::dropdownWiringSide', ['wiring_side']) %}
                 {% endset %}
                 {{ fields.htmlField('', wiring_side_field, __('Wiring side')) }}
                 {% if _add_fromitem['_from_itemtype'] == 'Location' %}

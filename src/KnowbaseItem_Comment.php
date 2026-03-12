@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Class KnowbaseItem_Comment
@@ -116,14 +116,14 @@ class KnowbaseItem_Comment extends CommonDBTM
         return $kbitem->canComment();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!($item instanceof KnowbaseItem) || !$item->canComment()) {
             return '';
         }
 
         $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
+        if ($_SESSION['zentrashow_count_on_tabs']) {
             if ($item::class === KnowbaseItem::class) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
@@ -137,14 +137,14 @@ class KnowbaseItem_Comment extends CommonDBTM
             }
 
             $nb = countElementsInTable(
-                'glpi_knowbaseitems_comments',
+                'zentra_knowbaseitems_comments',
                 $where
             );
         }
         return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -198,7 +198,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         ];
 
         $db_comments = $DB->request([
-            'FROM' => 'glpi_knowbaseitems_comments',
+            'FROM' => 'zentra_knowbaseitems_comments',
             'WHERE' => $where,
             'ORDER' => 'id ASC',
         ]);

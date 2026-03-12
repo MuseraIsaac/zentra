@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
+ *
+ * http://zentra-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of ZENTRA.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Zentra\Session;
+
+use Zentra\Session\SessionInfo;
+use Zentra\Tests\ZENTRATestCase;
+
+final class SessionInfoTest extends ZENTRATestCase
+{
+    public function testGetUserId(): void
+    {
+        $session_info = new SessionInfo(
+            user_id: 500,
+        );
+        $this->assertEquals(500, $session_info->getUserId());
+    }
+
+    public function testGetGroupIds(): void
+    {
+        $session_info = new SessionInfo(
+            group_ids: [1, 2, 3],
+        );
+        $this->assertEquals([1, 2, 3], $session_info->getGroupIds());
+    }
+
+    public function testGetProfileId(): void
+    {
+        $session_info = new SessionInfo(
+            profile_id: 13,
+        );
+        $this->assertEquals(13, $session_info->getProfileId());
+    }
+}

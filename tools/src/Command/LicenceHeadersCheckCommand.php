@@ -3,19 +3,19 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
- * @link      https://github.com/glpi-project/tools
+ * @link      https://github.com/zentra-project/tools
  *
  * ---------------------------------------------------------------------
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
@@ -99,7 +99,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $project_dir = dirname(__DIR__, 3); // Root of GLPI
+        $project_dir = dirname(__DIR__, 3); // Root of ZENTRA
 
         if ($this->isPluginCommand()) {
             $project_dir = $this->getPluginDirectory();
@@ -763,8 +763,8 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
                 ]
             );
         } elseif (file_exists($directory . DIRECTORY_SEPARATOR . 'composer.json')
-                   && preg_match('/"name"\s*:\s*"glpi\/glpi"/', file_get_contents($directory . DIRECTORY_SEPARATOR . 'composer.json'))) {
-            // Directory is GLPI root directory
+                   && preg_match('/"name"\s*:\s*"zentra\/zentra"/', file_get_contents($directory . DIRECTORY_SEPARATOR . 'composer.json'))) {
+            // Directory is ZENTRA root directory
             $excluded_elements = array_merge(
                 $excluded_elements,
                 [
@@ -777,8 +777,8 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
                     'tests\/config',
                     'tests\/config_db\.php',
                     'tests\/files',
-                    'tests\/e2e\/glpi_config',
-                    'tests\/e2e\/glpi_files',
+                    'tests\/e2e\/zentra_config',
+                    'tests\/e2e\/zentra_files',
                 ]
             );
         }

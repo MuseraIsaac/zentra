@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Plugin\Hooks;
-use Glpi\Search\Output\Csv;
-use Glpi\Search\Output\HTMLSearchOutput;
-use Glpi\Search\Output\Pdf;
-use Glpi\Search\SearchEngine;
-use Glpi\Stat\StatData;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Plugin\Hooks;
+use Zentra\Search\Output\Csv;
+use Zentra\Search\Output\HTMLSearchOutput;
+use Zentra\Search\Output\Pdf;
+use Zentra\Search\SearchEngine;
+use Zentra\Stat\StatData;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\mktime;
@@ -50,7 +50,7 @@ use function Safe\strtotime;
 /**
  *  Stat class
  **/
-class Stat extends CommonGLPI
+class Stat extends CommonZENTRA
 {
     public static $rightname = 'statistic';
 
@@ -70,7 +70,7 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param class-string<CommonGLPI> $itemtype
+     * @param class-string<CommonZENTRA> $itemtype
      * @param string $date1
      * @param string $date2
      * @param string $type
@@ -138,14 +138,14 @@ class Stat extends CommonGLPI
                 $is_field = ($type === 'group_tree') ? 'is_requester' : 'is_assign';
                 $iterator = $DB->request([
                     'SELECT' => ['id', 'name'],
-                    'FROM'   => 'glpi_groups',
+                    'FROM'   => 'zentra_groups',
                     'WHERE'  => [
                         'OR'  => [
                             'id'        => $parent,
                             'groups_id' => $parent,
                         ],
                         $is_field   => 1,
-                    ] + getEntitiesRestrictCriteria("glpi_groups", '', '', true),
+                    ] + getEntitiesRestrictCriteria("zentra_groups", '', '', true),
                     'ORDER'  => 'completename',
                 ]);
 
@@ -164,12 +164,12 @@ class Stat extends CommonGLPI
                 // Get all ticket categories for tree merge management
                 $criteria = [
                     'SELECT'    => [
-                        'glpi_itilcategories.id',
-                        'glpi_itilcategories.' . ($is_tree ? 'name' : 'completename') . ' AS category',
+                        'zentra_itilcategories.id',
+                        'zentra_itilcategories.' . ($is_tree ? 'name' : 'completename') . ' AS category',
                     ],
                     'DISTINCT'  => true,
-                    'FROM'      => 'glpi_itilcategories',
-                    'WHERE'     => getEntitiesRestrictCriteria('glpi_itilcategories', '', '', true),
+                    'FROM'      => 'zentra_itilcategories',
+                    'WHERE'     => getEntitiesRestrictCriteria('zentra_itilcategories', '', '', true),
                     'ORDERBY'   => 'completename',
                 ];
 
@@ -197,12 +197,12 @@ class Stat extends CommonGLPI
                 // Get all locations for tree merge management
                 $criteria = [
                     'SELECT'    => [
-                        'glpi_locations.id',
-                        'glpi_locations.' . ($is_tree ? 'name' : 'completename') . ' AS location',
+                        'zentra_locations.id',
+                        'zentra_locations.' . ($is_tree ? 'name' : 'completename') . ' AS location',
                     ],
                     'DISTINCT'  => true,
-                    'FROM'      => 'glpi_locations',
-                    'WHERE'     => getEntitiesRestrictCriteria('glpi_locations', '', '', true),
+                    'FROM'      => 'zentra_locations',
+                    'WHERE'     => getEntitiesRestrictCriteria('zentra_locations', '', '', true),
                     'ORDERBY'   => 'completename',
                 ];
 
@@ -391,7 +391,7 @@ class Stat extends CommonGLPI
 
         $export_data = [];
 
-        $end_display = $start + $_SESSION['glpilist_limit'];
+        $end_display = $start + $_SESSION['zentralist_limit'];
         $numrows     = count($value);
 
         $fn_append_entry_values = static function (int $i, string $data_type, string $data_key) use ($itemtype, $date1, $date2, $type, $value, $value2, &$export_data) {
@@ -458,7 +458,7 @@ class Stat extends CommonGLPI
         $headers = [];
         $rows = [];
 
-        $end_display = $start + $_SESSION['glpilist_limit'];
+        $end_display = $start + $_SESSION['zentralist_limit'];
         if (isset($_GET['export_all'])) {
             $start       = 0;
             $end_display = $numrows;
@@ -475,9 +475,9 @@ class Stat extends CommonGLPI
             $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
         }
         $subname = match ($type) {
-            'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('glpi_groups', $value2),
-            'itilcategories_tree' => Dropdown::getDropdownName('glpi_itilcategories', $value2),
-            'locations_tree' => Dropdown::getDropdownName('glpi_locations', $value2),
+            'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('zentra_groups', $value2),
+            'itilcategories_tree' => Dropdown::getDropdownName('zentra_itilcategories', $value2),
+            'locations_tree' => Dropdown::getDropdownName('zentra_locations', $value2),
             default => '',
         };
 
@@ -947,7 +947,7 @@ class Stat extends CommonGLPI
         $value2 = "",
         array $add_criteria = []
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $DB = DBConnection::getReadConnection();
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -1036,25 +1036,25 @@ class Stat extends CommonGLPI
 
             case "usertitles_id":
                 $LEFTJOIN  = $LEFTJOINUSER;
-                $LEFTJOIN['glpi_users'] = [
+                $LEFTJOIN['zentra_users'] = [
                     'ON' => [
                         $userlinktable => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ];
-                $WHERE["glpi_users.usertitles_id"] = $value;
+                $WHERE["zentra_users.usertitles_id"] = $value;
                 $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
                 break;
 
             case "usercategories_id":
                 $LEFTJOIN  = $LEFTJOINUSER;
-                $LEFTJOIN['glpi_users'] = [
+                $LEFTJOIN['zentra_users'] = [
                     'ON' => [
                         $userlinktable => 'users_id',
-                        'glpi_users'   => 'id',
+                        'zentra_users'   => 'id',
                     ],
                 ];
-                $WHERE["glpi_users.usercategories_id"] = $value;
+                $WHERE["zentra_users.usercategories_id"] = $value;
                 $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
                 break;
 
@@ -1062,7 +1062,7 @@ class Stat extends CommonGLPI
                 if ($value == $value2) {
                     $categories = [$value];
                 } else {
-                    $categories = getSonsOf("glpi_itilcategories", (int) $value);
+                    $categories = getSonsOf("zentra_itilcategories", (int) $value);
                 }
                 $WHERE["$table.itilcategories_id"] = $categories;
                 break;
@@ -1071,7 +1071,7 @@ class Stat extends CommonGLPI
                 if ($value == $value2) {
                     $locations = [$value];
                 } else {
-                    $locations = getSonsOf('glpi_locations', (int) $value);
+                    $locations = getSonsOf('zentra_locations', (int) $value);
                 }
                 $WHERE["$table.locations_id"] = $locations;
                 break;
@@ -1083,7 +1083,7 @@ class Stat extends CommonGLPI
                 if ($value == $value2) {
                     $groups = [$value];
                 } else {
-                    $groups = getSonsOf("glpi_groups", (int) $value);
+                    $groups = getSonsOf("zentra_groups", (int) $value);
                 }
 
                 $LEFTJOIN  = $LEFTJOINGROUP;
@@ -1122,18 +1122,18 @@ class Stat extends CommonGLPI
 
             case "solutiontypes_id":
                 $LEFTJOIN = [
-                    'glpi_itilsolutions' => [
+                    'zentra_itilsolutions' => [
                         'ON' => [
-                            'glpi_itilsolutions'   => 'items_id',
-                            'glpi_tickets'               => 'id', [
+                            'zentra_itilsolutions'   => 'items_id',
+                            'zentra_tickets'               => 'id', [
                                 'AND' => [
-                                    'glpi_itilsolutions.itemtype' => Ticket::class,
+                                    'zentra_itilsolutions.itemtype' => Ticket::class,
                                 ],
                             ],
                         ],
                     ],
                 ];
-                $WHERE["glpi_itilsolutions.$param"] = $value;
+                $WHERE["zentra_itilsolutions.$param"] = $value;
                 break;
 
             case "device":
@@ -1141,7 +1141,7 @@ class Stat extends CommonGLPI
                 $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
                 //select computers IDs that are using this device;
                 $linkedtable = $table;
-                if (in_array($itemtype, $CFG_GLPI['itil_types'], true)) {
+                if (in_array($itemtype, $CFG_ZENTRA['itil_types'], true)) {
                     $linkedtable = $itemtype::getItemsTable();
                     $LEFTJOIN = [
                         $linkedtable => [
@@ -1157,15 +1157,15 @@ class Stat extends CommonGLPI
                     ];
                 }
                 $INNERJOIN = [
-                    'glpi_computers'  => [
+                    'zentra_computers'  => [
                         'ON' => [
-                            'glpi_computers'  => 'id',
+                            'zentra_computers'  => 'id',
                             $linkedtable      => 'items_id',
                         ],
                     ],
                     $devtable         => [
                         'ON' => [
-                            'glpi_computers'  => 'id',
+                            'zentra_computers'  => 'id',
                             $devtable         => 'items_id', [
                                 'AND' => [
                                     "$devtable.itemtype" => Computer::class,
@@ -1176,14 +1176,14 @@ class Stat extends CommonGLPI
                     ],
                 ];
 
-                $WHERE["glpi_computers.is_template"] = 0;
+                $WHERE["zentra_computers.is_template"] = 0;
                 break;
 
             case "comp_champ":
                 $ftable   = getTableForItemType($value2);
                 $champ    = getForeignKeyFieldForTable($ftable);
                 $linkedtable = $table;
-                if (in_array($itemtype, $CFG_GLPI['itil_types'], true)) {
+                if (in_array($itemtype, $CFG_ZENTRA['itil_types'], true)) {
                     $linkedtable = $itemtype::getItemsTable();
                     $LEFTJOIN = [
                         $linkedtable => [
@@ -1199,29 +1199,29 @@ class Stat extends CommonGLPI
                     ];
                 }
                 $INNERJOIN = [
-                    'glpi_computers' => [
+                    'zentra_computers' => [
                         'ON' => [
-                            'glpi_computers'  => 'id',
+                            'zentra_computers'  => 'id',
                             $linkedtable      => 'items_id',
                         ],
                     ],
                 ];
 
-                $WHERE["glpi_computers.is_template"] = 0;
+                $WHERE["zentra_computers.is_template"] = 0;
                 if (str_starts_with($champ, 'operatingsystem')) {
-                    $INNERJOIN['glpi_items_operatingsystems'] = [
+                    $INNERJOIN['zentra_items_operatingsystems'] = [
                         'ON' => [
-                            'glpi_computers'              => 'id',
-                            'glpi_items_operatingsystems' => 'items_id', [
+                            'zentra_computers'              => 'id',
+                            'zentra_items_operatingsystems' => 'items_id', [
                                 'AND' => [
-                                    "glpi_items_operatingsystems.itemtype" => 'Computer',
+                                    "zentra_items_operatingsystems.itemtype" => 'Computer',
                                 ],
                             ],
                         ],
                     ];
-                    $WHERE["glpi_items_operatingsystems.$champ"] = $value;
+                    $WHERE["zentra_items_operatingsystems.$champ"] = $value;
                 } else {
-                    $WHERE["glpi_computers.$champ"] = $value;
+                    $WHERE["zentra_computers.$champ"] = $value;
                 }
                 break;
         }
@@ -1410,9 +1410,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $INNERJOIN['glpi_ticketsatisfactions'] = [
+                $INNERJOIN['zentra_ticketsatisfactions'] = [
                     'ON' => [
-                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        'zentra_ticketsatisfactions' => 'tickets_id',
                         $table                     => 'id',
                     ],
                 ];
@@ -1433,14 +1433,14 @@ class Stat extends CommonGLPI
                 $WHERE["$table.status"] = $closed_status;
                 $WHERE[] = [
                     ['NOT' => ["$table.closedate" => null]],
-                    ['NOT' => ["glpi_ticketsatisfactions.date_answered"  => null]],
+                    ['NOT' => ["zentra_ticketsatisfactions.date_answered"  => null]],
                 ];
 
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $INNERJOIN['glpi_ticketsatisfactions'] = [
+                $INNERJOIN['zentra_ticketsatisfactions'] = [
                     'ON' => [
-                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        'zentra_ticketsatisfactions' => 'tickets_id',
                         $table                     => 'id',
                     ],
                 ];
@@ -1462,14 +1462,14 @@ class Stat extends CommonGLPI
                 $WHERE[] = [
                     'NOT' => [
                         "$table.closedate" => null,
-                        "glpi_ticketsatisfactions.date_answered" => null,
+                        "zentra_ticketsatisfactions.date_answered" => null,
                     ],
                 ];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $INNERJOIN['glpi_ticketsatisfactions'] = [
+                $INNERJOIN['zentra_ticketsatisfactions'] = [
                     'ON' => [
-                        'glpi_ticketsatisfactions' => 'tickets_id',
+                        'zentra_ticketsatisfactions' => 'tickets_id',
                         $table                     => 'id',
                     ],
                 ];
@@ -1477,7 +1477,7 @@ class Stat extends CommonGLPI
                 $criteria = [
                     'SELECT'    => [
                         $closedate_unix,
-                        'AVG'  => "glpi_ticketsatisfactions.satisfaction_scaled_to_5 AS total_visites",
+                        'AVG'  => "zentra_ticketsatisfactions.satisfaction_scaled_to_5 AS total_visites",
                     ],
                     'FROM'      => $table,
                     'WHERE'     => $WHERE,
@@ -1574,7 +1574,7 @@ class Stat extends CommonGLPI
         $data = [];
         $view_entities = Session::isMultiEntitiesMode();
         if ($view_entities) {
-            $entities = getAllDataFromTable('glpi_entities');
+            $entities = getAllDataFromTable('zentra_entities');
         }
 
         foreach ($iterator as $row) {
@@ -1648,7 +1648,7 @@ class Stat extends CommonGLPI
                 echo "<div class='text-center'>";
             }
 
-            $end_display = $start + $_SESSION['glpilist_limit'];
+            $end_display = $start + $_SESSION['zentralist_limit'];
             if (isset($_GET['export_all'])) {
                 $end_display = $numrows;
             }
@@ -1719,7 +1719,7 @@ class Stat extends CommonGLPI
      */
     public static function getAvailableStatistics()
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_ZENTRA, $PLUGIN_HOOKS;
 
         $opt_list["Ticket"]                             = __('Tickets');
 
@@ -1760,13 +1760,13 @@ class Stat extends CommonGLPI
             $stat_list["Change"]["Change_Item"]["file"]     = "stat.item.php?itemtype=Change";
         }
 
-        $values   = [$CFG_GLPI["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
+        $values   = [$CFG_ZENTRA["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
 
         foreach ($opt_list as $opt => $group) {
             foreach ($stat_list[$opt] as $data) {
                 $name    = $data['name'];
                 $file    = $data['file'];
-                $key                  = $CFG_GLPI["root_doc"] . "/front/" . $file;
+                $key                  = $CFG_ZENTRA["root_doc"] . "/front/" . $file;
                 $values[$group][$key] = $name;
             }
         }
@@ -1796,7 +1796,7 @@ class Stat extends CommonGLPI
             $group = $title;
             foreach ($names as $key => $val) {
                 if ($opt == $val["plug"]) {
-                    $file                  = $CFG_GLPI["root_doc"] . "/" . $key;
+                    $file                  = $CFG_ZENTRA["root_doc"] . "/" . $key;
                     $values[$group][$file] = $val["name"];
                 }
             }

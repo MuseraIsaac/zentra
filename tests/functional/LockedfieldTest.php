@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Computer;
-use Glpi\Inventory\Converter;
-use Glpi\Inventory\Inventory;
-use Glpi\Tests\DbTestCase;
+use Zentra\Inventory\Converter;
+use Zentra\Inventory\Inventory;
+use Zentra\Tests\DbTestCase;
 use Location;
 use Manufacturer;
 
@@ -256,7 +256,7 @@ class LockedfieldTest extends DbTestCase
         <UPTIME>14 days, 22:48:33.30</UPTIME>
       </INFO>
     </DEVICE>
-  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
+  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>zentraxps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
         $existing_locations = countElementsInTable(Location::getTable());
         $lockedfield = new \Lockedfield();
@@ -330,7 +330,7 @@ class LockedfieldTest extends DbTestCase
         <UPTIME>14 days, 22:48:33.30</UPTIME>
       </INFO>
     </DEVICE>
-  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
+  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>zentraxps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
 
         $converter = new Converter();
@@ -380,7 +380,7 @@ class LockedfieldTest extends DbTestCase
         <UPTIME>14 days, 22:48:33.30</UPTIME>
       </INFO>
     </DEVICE>
-  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
+  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>zentraxps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
 
         $existing_locations = countElementsInTable(Location::getTable());
@@ -705,7 +705,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         //keep only postgresql
-        $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
+        $json = json_decode(file_get_contents(ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/computer_2_partial_dbs.json'));
         $pgsql = $json->content->databases_services[1];
         $services = [$pgsql];
         $json->content->databases_services = $services;
@@ -742,7 +742,7 @@ class LockedfieldTest extends DbTestCase
         );
         $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($database->getType(), $database->fields['id']));
 
-        $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
+        $json = json_decode(file_get_contents(ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/computer_2_partial_dbs.json'));
         $pgsql = $json->content->databases_services[1];
         $services = [$pgsql];
         $json->content->databases_services = $services;
@@ -770,7 +770,7 @@ class LockedfieldTest extends DbTestCase
 
     public function testPurgeLockedField()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $computer = new Computer();
         $cid = (int) $computer->add([
@@ -817,7 +817,7 @@ class LockedfieldTest extends DbTestCase
         // check if massive action is displayed
         $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
 
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         // move back to root entity
         $this->assertTrue(\Session::changeActiveEntities(0));
@@ -838,7 +838,7 @@ class LockedfieldTest extends DbTestCase
 
     public function testCanCreateItem()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $instance = new \Lockedfield();
 
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -876,7 +876,7 @@ class LockedfieldTest extends DbTestCase
 
     public function testReplaceLockedField()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $location = new Location();
         $location_id = (int) $location->add([
@@ -931,12 +931,12 @@ class LockedfieldTest extends DbTestCase
 
     public function testCheckAllInventoryLockableObjects()
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         global $DB;
 
-        global $CFG_GLPI;
-        foreach ($CFG_GLPI['inventory_lockable_objects'] as $itemtype) {
+        global $CFG_ZENTRA;
+        foreach ($CFG_ZENTRA['inventory_lockable_objects'] as $itemtype) {
             $this->assertTrue($DB->fieldExists($itemtype::getTable(), 'is_dynamic'), "$itemtype does not have is_dynamic field");
         }
 
@@ -944,14 +944,14 @@ class LockedfieldTest extends DbTestCase
         // Excluded type with is_dynamic field but not in inventory_lockable_objects
         $excluded = [
             'UserEmail',
-            'Glpi\\Asset\\Asset', // only concrete classes are registered
+            'Zentra\\Asset\\Asset', // only concrete classes are registered
             'Group_User',
             'Profile_User',
         ];
 
         $global_inventory_type = array_merge(
-            $CFG_GLPI['inventory_lockable_objects'],
-            $CFG_GLPI['inventory_types']
+            $CFG_ZENTRA['inventory_lockable_objects'],
+            $CFG_ZENTRA['inventory_types']
         );
 
         $tables = $DB->listTables();

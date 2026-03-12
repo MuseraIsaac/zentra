@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,10 +48,10 @@ if ($_POST['softwares_id'] > 0) {
     // Make a select box
     $iterator = $DB->request([
         'DISTINCT'  => true,
-        'FROM'      => 'glpi_softwarelicenses',
+        'FROM'      => 'zentra_softwarelicenses',
         'WHERE'     => [
-            'glpi_softwarelicenses.softwares_id'   => (int) $_POST['softwares_id'],
-        ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', Session::getMatchingActiveEntities($_POST['entity_restrict']), true),
+            'zentra_softwarelicenses.softwares_id'   => (int) $_POST['softwares_id'],
+        ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', 'entities_id', Session::getMatchingActiveEntities($_POST['entity_restrict']), true),
         'ORDERBY'   => 'name',
     ]);
     $number = count($iterator);
@@ -62,7 +62,7 @@ if ($_POST['softwares_id'] > 0) {
             $ID     = $data['id'];
             $output = $data['name'];
 
-            if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+            if (empty($output) || $_SESSION['zentrais_ids_visible']) {
                 $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
             }
 

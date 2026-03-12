@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\Environment;
-use Glpi\Event;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\Inventory;
-use Glpi\Marketplace\Controller;
-use Glpi\RichText\UserMention;
-use Glpi\Socket;
+use Zentra\Application\Environment;
+use Zentra\Event;
+use Zentra\Form\AnswersSet;
+use Zentra\Form\Form;
+use Zentra\Inventory\Conf;
+use Zentra\Inventory\Inventory;
+use Zentra\Marketplace\Controller;
+use Zentra\RichText\UserMention;
+use Zentra\Socket;
 
 use function Safe\ini_get;
 use function Safe\json_encode;
@@ -66,7 +66,7 @@ $empty_data_builder = new class {
     /** @var int Read-only profile ID */
     public const PROFILE_READ_ONLY    = 8;
 
-    public const USER_GLPI            = 2;
+    public const USER_ZENTRA            = 2;
     public const USER_POST_ONLY       = 3;
     public const USER_TECH            = 4;
     public const USER_NORMAL          = 5;
@@ -95,7 +95,7 @@ $empty_data_builder = new class {
         $enable_api = $add_e2e_data ? "1" : "0";
         $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
 
-        $tables['glpi_apiclients'] = [
+        $tables['zentra_apiclients'] = [
             [
                 'id' => 1,
                 'entities_id' => 0,
@@ -110,7 +110,7 @@ $empty_data_builder = new class {
 
         if ($add_playwright_data) {
             // White list docker internal host
-            $tables['glpi_apiclients'][] = [
+            $tables['zentra_apiclients'][] = [
                 'id' => 2,
                 'entities_id' => 0,
                 'is_recursive' => 1,
@@ -124,7 +124,7 @@ $empty_data_builder = new class {
 
         foreach (Blacklist::getDefaults() as $type => $values) {
             foreach ($values as $value) {
-                $tables['glpi_blacklists'][] = [
+                $tables['zentra_blacklists'][] = [
                     'type' => $type,
                     'name' => $value['name'],
                     'value' => $value['value'],
@@ -133,7 +133,7 @@ $empty_data_builder = new class {
         }
 
 
-        $tables['glpi_calendars'] = [
+        $tables['zentra_calendars'] = [
             [
                 'id' => 1,
                 'name' => 'Default',
@@ -144,9 +144,9 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_calendarsegments'] = [];
+        $tables['zentra_calendarsegments'] = [];
         for ($i = 1; $i < 6; ++$i) {
-            $tables['glpi_calendarsegments'][] = [
+            $tables['zentra_calendarsegments'][] = [
                 'id' => $i,
                 'calendars_id' => 1,
                 'entities_id' => 0,
@@ -341,7 +341,7 @@ $empty_data_builder = new class {
             'notifications_ajax' => '0',
             'notifications_ajax_check_interval' => '5',
             'notifications_ajax_sound' => null,
-            'notifications_ajax_icon_url' => '/pics/glpi.png',
+            'notifications_ajax_icon_url' => '/pics/zentra.png',
             'notifications_ajax_expiration_delay' => '7',
             'dbversion' => 'FILLED AT INSTALL',
             'smtp_max_retries' => '5',
@@ -408,17 +408,17 @@ $empty_data_builder = new class {
             'projecttask_completed_states_id' => 0,
             'non_reusable_passwords_count' => 1,
             'plugins_execution_mode' => Plugin::EXECUTION_MODE_ON,
-            'glpinetwork_registration_key' => null,
+            'zentranetwork_registration_key' => null,
             'impact_assets_list' => '[]',
             'timezone' => '0',
-            'glpi_11_form_migration' => 0,
-            'glpi_11_assets_migration' => 0,
+            'zentra_11_form_migration' => 0,
+            'zentra_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
         ];
 
-        $tables['glpi_configs'] = [];
+        $tables['zentra_configs'] = [];
         foreach ($default_prefs as $name => $value) {
-            $tables['glpi_configs'][] = [
+            $tables['zentra_configs'][] = [
                 'context' => 'core',
                 'name' => $name,
                 'value' => $value,
@@ -426,14 +426,14 @@ $empty_data_builder = new class {
         }
 
         foreach (Conf::getDefaults() as $name => $value) {
-            $tables['glpi_configs'][] = [
+            $tables['zentra_configs'][] = [
                 'context' => 'inventory',
                 'name' => $name,
                 'value' => $value,
             ];
         }
 
-        $tables['glpi_crontasks'] = [
+        $tables['zentra_crontasks'] = [
             [
                 'id' => 2,
                 'itemtype' => 'CartridgeItem',
@@ -1014,20 +1014,20 @@ $empty_data_builder = new class {
         ];
 
         $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
-        $tables['glpi_dashboards_dashboards'] = [];
-        $tables['glpi_dashboards_items'] = [];
+        $tables['zentra_dashboards_dashboards'] = [];
+        $tables['zentra_dashboards_items'] = [];
         $i = $j = 1;
         foreach ($dashboards_data as $default_dashboard) {
             $translated_name = $default_dashboard['translated_name'];
             unset($default_dashboard['translated_name']);
             $items = $default_dashboard['_items'];
             unset($default_dashboard['_items']);
-            $tables['glpi_dashboards_dashboards'][] = array_merge([
+            $tables['zentra_dashboards_dashboards'][] = array_merge([
                 'id' => $i,
             ], $default_dashboard);
 
             foreach ($items as $item) {
-                $tables['glpi_dashboards_items'][] = array_merge([
+                $tables['zentra_dashboards_items'][] = array_merge([
                     'id' => $j,
                     'dashboards_dashboards_id' => $i,
                 ], $item);
@@ -1037,7 +1037,7 @@ $empty_data_builder = new class {
             $i++;
         }
 
-        $tables['glpi_devicememorytypes'] = [
+        $tables['zentra_devicememorytypes'] = [
             [
                 'id' => 1,
                 'name' => 'EDO',
@@ -1056,7 +1056,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_devicesimcardtypes'] = [
+        $tables['zentra_devicesimcardtypes'] = [
             [
                 'id' => 1,
                 'name' => 'Full SIM',
@@ -1075,7 +1075,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_displaypreferences'] = [
+        $tables['zentra_displaypreferences'] = [
             [
                 'itemtype' => 'Computer',
                 'num' => '4',
@@ -2065,8 +2065,8 @@ $empty_data_builder = new class {
         // Set interface to previously defined values.
         // TODO: the previous values should probably use $ADDTODISPLAYPREF to be
         // more maintainable...
-        foreach (array_keys($tables['glpi_displaypreferences']) as $index) {
-            $tables['glpi_displaypreferences'][$index]['interface'] = 'central';
+        foreach (array_keys($tables['zentra_displaypreferences']) as $index) {
+            $tables['zentra_displaypreferences'][$index]['interface'] = 'central';
         }
 
         $ADDTODISPLAYPREF[Form::class] = [1, 80, 86, 3, 4];
@@ -2098,7 +2098,7 @@ $empty_data_builder = new class {
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;
             foreach ($options as $newval) {
-                $tables['glpi_displaypreferences'][] = [
+                $tables['zentra_displaypreferences'][] = [
                     'itemtype' => $type,
                     'num' => $newval,
                     'rank' => $rank++,
@@ -2109,7 +2109,7 @@ $empty_data_builder = new class {
         foreach ($ADDTODISPLAYPREF_HELPDESK as $type => $options) {
             $rank = 1;
             foreach ($options as $newval) {
-                $tables['glpi_displaypreferences'][] = [
+                $tables['zentra_displaypreferences'][] = [
                     'itemtype' => $type,
                     'num' => $newval,
                     'rank' => $rank++,
@@ -2118,7 +2118,7 @@ $empty_data_builder = new class {
             }
         }
 
-        $tables['glpi_documenttypes'] = [
+        $tables['zentra_documenttypes'] = [
             [
                 'id' => 1,
                 'name' => 'JPEG',
@@ -2487,7 +2487,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_entities'] = [
+        $tables['zentra_entities'] = [
             [
                 'id' => 0,
                 'name' => __('Root entity'),
@@ -2576,7 +2576,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_filesystems'] = [
+        $tables['zentra_filesystems'] = [
             [
                 'id' => 1,
                 'name' => 'ext',
@@ -2663,7 +2663,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_interfacetypes'] = [
+        $tables['zentra_interfacetypes'] = [
             [
                 'id' => 1,
                 'name' => 'IDE',
@@ -2698,7 +2698,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_notifications'] = [
+        $tables['zentra_notifications'] = [
             [
                 'id' => 1,
                 'name' => 'Alert Tickets not closed',
@@ -3276,7 +3276,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_notifications_notificationtemplates'] = [
+        $tables['zentra_notifications_notificationtemplates'] = [
             [
                 'id' => 1,
                 'notifications_id' => '1',
@@ -3690,7 +3690,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_notificationtargets'] = [
+        $tables['zentra_notificationtargets'] = [
             [
                 'id' => '1',
                 'items_id' => '3',
@@ -4639,7 +4639,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_notificationtemplates'] = [
+        $tables['zentra_notificationtemplates'] = [
             [
                 'id' => '1',
                 'name' => 'MySQL Synchronization',
@@ -4771,7 +4771,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $tables['glpi_notificationtemplatetranslations'] = [
+        $tables['zentra_notificationtemplatetranslations'] = [
             [
                 'id' => '1',
                 'notificationtemplates_id' => '1',
@@ -5723,7 +5723,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_profilerights'] = [
+        $tables['zentra_profilerights'] = [
             [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'computer',
@@ -9003,7 +9003,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
 
-        $tables['glpi_profiles'] = [
+        $tables['zentra_profiles'] = [
             [
                 'id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'Self-Service',
@@ -9127,10 +9127,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_profiles_users'] = [
+        $tables['zentra_profiles_users'] = [
             [
                 'id' => '2',
-                'users_id' => self::USER_GLPI,
+                'users_id' => self::USER_ZENTRA,
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'entities_id' => '0',
                 'is_recursive' => '1',
@@ -9159,7 +9159,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_projectstates'] = [
+        $tables['zentra_projectstates'] = [
             [
                 'id' => '1',
                 'name' => 'New',
@@ -9178,7 +9178,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_requesttypes'] = [
+        $tables['zentra_requesttypes'] = [
             [
                 'id' => '1',
                 'name' => 'Helpdesk',
@@ -9224,7 +9224,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_rulerightparameters'] = [
+        $tables['zentra_rulerightparameters'] = [
             [
                 'id' => 1,
                 'name' => '(LDAP)Organization',
@@ -9280,7 +9280,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_softwarecategories'] = [
+        $tables['zentra_softwarecategories'] = [
             [
                 'id' => '1',
                 'name' => 'Inventoried',
@@ -9289,7 +9289,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_softwarelicensetypes'] = [
+        $tables['zentra_softwarelicensetypes'] = [
             [
                 'id' => 1,
                 'name' => 'OEM',
@@ -9298,7 +9298,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_ssovariables'] = [
+        $tables['zentra_ssovariables'] = [
             [
                 'id' => 1,
                 'name' => 'HTTP_AUTH_USER',
@@ -9320,8 +9320,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        // allowed_statuses is set using default value, @see install/mysql/glpi-empty.sql ( table `glpi_tickettemplates` )
-        $tables['glpi_tickettemplates'] = [
+        // allowed_statuses is set using default value, @see install/mysql/zentra-empty.sql ( table `zentra_tickettemplates` )
+        $tables['zentra_tickettemplates'] = [
             [
                 'id' => 1,
                 'name' => 'Default',
@@ -9330,7 +9330,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_changetemplates'] = [
+        $tables['zentra_changetemplates'] = [
             [
                 'id' => 1,
                 'name' => 'Default',
@@ -9339,7 +9339,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_problemtemplates'] = [
+        $tables['zentra_problemtemplates'] = [
             [
                 'id' => 1,
                 'name' => 'Default',
@@ -9348,7 +9348,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_tickettemplatemandatoryfields'] = [
+        $tables['zentra_tickettemplatemandatoryfields'] = [
             [
                 'id' => 1,
                 'tickettemplates_id' => 1,
@@ -9356,7 +9356,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_changetemplatemandatoryfields'] = [
+        $tables['zentra_changetemplatemandatoryfields'] = [
             [
                 'id' => 1,
                 'changetemplates_id' => 1,
@@ -9364,7 +9364,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_problemtemplatemandatoryfields'] = [
+        $tables['zentra_problemtemplatemandatoryfields'] = [
             [
                 'id' => 1,
                 'problemtemplates_id' => 1,
@@ -9372,7 +9372,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_transfers'] = [
+        $tables['zentra_transfers'] = [
             [
                 'id' => '1',
                 'name' => 'complete',
@@ -9411,12 +9411,12 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_users'] = [
+        $tables['zentra_users'] = [
             [
-                'id' => self::USER_GLPI,
+                'id' => self::USER_ZENTRA,
                 'name' => 'admin',
                 'realname' => null,
-                'password' => password_hash('glpi', PASSWORD_DEFAULT),
+                'password' => password_hash('zentra', PASSWORD_DEFAULT),
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9454,7 +9454,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'entities_id' => 0,
             ], [
                 'id' => self::USER_SYSTEM,
-                'name' => 'glpi-system',
+                'name' => 'zentra-system',
                 'realname' => 'Support',
                 'password' => '',
                 'language' => null,
@@ -9465,7 +9465,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
-        $tables['glpi_devicefirmwaretypes'] = [
+        $tables['zentra_devicefirmwaretypes'] = [
             [
                 'id' => '1',
                 'name' => 'BIOS',
@@ -9484,7 +9484,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
         $tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
 
-        $tables['glpi_agenttypes'] = [
+        $tables['zentra_agenttypes'] = [
             [
                 'id' => 1,
                 'name' => 'Core',
@@ -9507,7 +9507,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
         // Test environment data
-        $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
+        $root_entity = array_filter($tables['zentra_entities'], static fn($e) => $e['id'] === 0);
         $root_entity = current($root_entity);
 
         if ($add_cypress_data) {
@@ -9519,7 +9519,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'completename' => __('Root entity') . ' > E2ETestEntity',
                 'level' => 2,
             ]);
-            $tables['glpi_entities'][] = $e2e_entity;
+            $tables['zentra_entities'][] = $e2e_entity;
 
             // Sub entity 1
             $e2e_subentity1 = array_replace($root_entity, [
@@ -9529,7 +9529,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity1',
                 'level' => 3,
             ]);
-            $tables['glpi_entities'][] = $e2e_subentity1;
+            $tables['zentra_entities'][] = $e2e_subentity1;
 
             // Sub entity 2
             $e2e_subentity2 = array_replace($root_entity, [
@@ -9539,21 +9539,21 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity2',
                 'level' => 3,
             ]);
-            $tables['glpi_entities'][] = $e2e_subentity2;
+            $tables['zentra_entities'][] = $e2e_subentity2;
 
-            // New e2e super-admin user (login: e2e_tests, password: glpi)
-            $default_glpi_user = array_filter($tables['glpi_users'], static fn($u) => $u['id'] === self::USER_GLPI);
-            $e2e_user = array_shift($default_glpi_user);
+            // New e2e super-admin user (login: e2e_tests, password: zentra)
+            $default_zentra_user = array_filter($tables['zentra_users'], static fn($u) => $u['id'] === self::USER_ZENTRA);
+            $e2e_user = array_shift($default_zentra_user);
             $e2e_user = array_replace($e2e_user, [
                 'id' => 7,
                 'name' => 'e2e_tests',
                 'realname' => 'E2E Tests',
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
             ]);
-            $tables['glpi_users'][] = $e2e_user;
+            $tables['zentra_users'][] = $e2e_user;
 
             // Assign e2e user all default profiles on the e2e entity
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 6,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
@@ -9561,7 +9561,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 7,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
@@ -9569,7 +9569,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 8,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -9577,7 +9577,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 9,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -9585,7 +9585,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 10,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_HOTLINER,
@@ -9593,7 +9593,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 11,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_TECHNICIAN,
@@ -9601,7 +9601,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
-            $tables['glpi_profiles_users'][] = [
+            $tables['zentra_profiles_users'][] = [
                 'id' => 12,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_READ_ONLY,
@@ -9610,7 +9610,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_dynamic' => 0,
             ];
 
-            $tables['glpi_oauthclients'][] = [
+            $tables['zentra_oauthclients'][] = [
                 'name' => 'Test E2E OAuth Client',
                 'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
                 'grants' => json_encode(['authorization_code', 'password']),
@@ -9618,18 +9618,18 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
-                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
+                'secret' => (new ZENTRAKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
 
-            $tables['glpi_authldaps'][] = [
+            $tables['zentra_authldaps'][] = [
                 'name'            => '_e2e_ldap',
                 'host'            => 'openldap',
-                'basedn'          => 'dc=glpi,dc=org',
-                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'basedn'          => 'dc=zentra,dc=org',
+                'rootdn'          => 'cn=Manager,dc=zentra,dc=org',
                 'port'            => '3890',
                 'condition'       => '(objectclass=inetOrgPerson)',
                 'login_field'     => 'uid',
-                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
+                'rootdn_passwd'   => (new ZENTRAKey())->encrypt('insecure'),
                 'is_default'      => 1,
                 'is_active'       => 0,
                 'use_tls'         => 0,
@@ -9648,7 +9648,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         } elseif ($add_playwright_data) {
             // Main E2E test entity
             $e2e_parent_entity_id = max(
-                array_column($tables['glpi_entities'], 'id')
+                array_column($tables['zentra_entities'], 'id')
             ) + 1;
             $e2e_parent_entity_label = "E2E tests entity";
             $e2e_parent_entity = array_replace($root_entity, [
@@ -9658,7 +9658,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'completename' => __('Root entity') . " > $e2e_parent_entity_label",
                 'level'        => 2,
             ]);
-            $tables['glpi_entities'][] = $e2e_parent_entity;
+            $tables['zentra_entities'][] = $e2e_parent_entity;
 
             // Keep track of entities and users to create
             $sub_entities_to_create = [];
@@ -9676,7 +9676,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
             // Add one worker user and entity per worker
             $next_available_entity_id = max(
-                array_column($tables['glpi_entities'], 'id')
+                array_column($tables['zentra_entities'], 'id')
             );
             for ($i = 1; $i <= self::PLAYWRIGHT_MAX_WORKERS; $i++) {
                 $padded_i = str_pad((string) $i, 2, '0', STR_PAD_LEFT);
@@ -9699,7 +9699,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             // Create required entites
             foreach ($sub_entities_to_create as $entity) {
                 $next_available_entity_id = max(
-                    array_column($tables['glpi_entities'], 'id')
+                    array_column($tables['zentra_entities'], 'id')
                 ) + 1;
                 $subentity = array_replace($root_entity, [
                     'id'           => $next_available_entity_id,
@@ -9710,15 +9710,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                         . " > $entity",
                     'level'        => 3,
                 ]);
-                $tables['glpi_entities'][] = $subentity;
+                $tables['zentra_entities'][] = $subentity;
             }
 
             // // Create required users
-            $default_glpi_user = array_filter(
-                $tables['glpi_users'],
-                static fn($u) => $u['id'] === self::USER_GLPI
+            $default_zentra_user = array_filter(
+                $tables['zentra_users'],
+                static fn($u) => $u['id'] === self::USER_ZENTRA
             );
-            $default_glpi_user = array_shift($default_glpi_user);
+            $default_zentra_user = array_shift($default_zentra_user);
 
             $extra_profiles_to_add = [
                 self::PROFILE_SELF_SERVICE,
@@ -9732,9 +9732,9 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ];
             foreach ($users_to_create as $user_data) {
                 $next_available_user_id = max(
-                    array_column($tables['glpi_users'], 'id')
+                    array_column($tables['zentra_users'], 'id')
                 ) + 1;
-                $user = array_replace($default_glpi_user, [
+                $user = array_replace($default_zentra_user, [
                     'id'          => $next_available_user_id++,
                     'name'        => $user_data['login'],
                     'password'    => $user_data['password'],
@@ -9742,13 +9742,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                     'profiles_id' => self::PROFILE_SUPER_ADMIN,
                     'entities_id' => $user_data['entities_id'],
                 ]);
-                $tables['glpi_users'][] = $user;
+                $tables['zentra_users'][] = $user;
 
                 foreach ($extra_profiles_to_add as $profile_id) {
                     $next_available_profile_id = max(
-                        array_column($tables['glpi_profiles_users'], 'id')
+                        array_column($tables['zentra_profiles_users'], 'id')
                     ) + 1;
-                    $tables['glpi_profiles_users'][] = [
+                    $tables['zentra_profiles_users'][] = [
                         'id'           => $next_available_profile_id,
                         'users_id'     => $user['id'],
                         'profiles_id'  => $profile_id,

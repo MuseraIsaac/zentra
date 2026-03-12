@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-use Glpi\Features\Clonable;
-use Glpi\Socket;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryUnion;
+use Zentra\Features\Clonable;
+use Zentra\Socket;
 
 /// Location class
 class Location extends CommonTreeDropdown
@@ -147,7 +147,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'completename',
             'name'               => self::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -155,7 +155,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '101',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'address',
             'name'               => __('Address'),
             'massiveaction'      => false,
@@ -164,7 +164,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '102',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'massiveaction'      => false,
@@ -173,7 +173,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '103',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'town',
             'name'               => __('Town'),
             'massiveaction'      => false,
@@ -182,7 +182,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '104',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'state',
             'name'               => _x('location', 'State'),
             'massiveaction'      => false,
@@ -191,7 +191,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '105',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'country',
             'name'               => __('Country'),
             'massiveaction'      => false,
@@ -200,7 +200,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '106',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'code',
             'name'               => __('Location code'),
             'massiveaction'      => false,
@@ -209,7 +209,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '107',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'alias',
             'name'               => __('Location alias'),
             'massiveaction'      => false,
@@ -218,7 +218,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '91',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'building',
             'name'               => __('Building number'),
             'massiveaction'      => false,
@@ -227,7 +227,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '92',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'room',
             'name'               => __('Room number'),
             'massiveaction'      => false,
@@ -236,7 +236,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '93',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'comment',
             'name'               => __('Location comments'),
             'massiveaction'      => false,
@@ -245,7 +245,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '998',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'latitude',
             'name'               => __('Latitude'),
             'massiveaction'      => false,
@@ -254,7 +254,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '999',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'longitude',
             'name'               => __('Longitude'),
             'massiveaction'      => false,
@@ -270,7 +270,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'building',
             'name'               => __('Building number'),
             'datatype'           => 'text',
@@ -278,7 +278,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'room',
             'name'               => __('Room number'),
             'datatype'           => 'text',
@@ -286,7 +286,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'address',
             'name'               => __('Address'),
             'massiveaction'      => false,
@@ -295,7 +295,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'massiveaction'      => true,
@@ -304,7 +304,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'town',
             'name'               => __('Town'),
             'massiveaction'      => true,
@@ -313,7 +313,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '21',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'latitude',
             'name'               => __('Latitude'),
             'massiveaction'      => false,
@@ -322,7 +322,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'longitude',
             'name'               => __('Longitude'),
             'massiveaction'      => false,
@@ -331,7 +331,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '22',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'altitude',
             'name'               => __('Altitude'),
             'massiveaction'      => false,
@@ -340,7 +340,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '101',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'address',
             'name'               => __('Address'),
             'datatype'           => 'string',
@@ -348,7 +348,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '102',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'datatype'           => 'string',
@@ -356,7 +356,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '103',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'town',
             'name'               => __('Town'),
             'datatype'           => 'string',
@@ -364,7 +364,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '104',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'state',
             'name'               => _x('location', 'State'),
             'datatype'           => 'string',
@@ -372,7 +372,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '105',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'country',
             'name'               => __('Country'),
             'datatype'           => 'string',
@@ -380,7 +380,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '106',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'code',
             'name'               => __('Location code'),
             'datatype'           => 'string',
@@ -388,7 +388,7 @@ class Location extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '107',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'alias',
             'name'               => __('Location alias'),
             'datatype'           => 'string',
@@ -414,7 +414,7 @@ class Location extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_locations_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -428,7 +428,7 @@ class Location extends CommonTreeDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;
@@ -471,11 +471,11 @@ class Location extends CommonTreeDropdown
      **/
     public function showItems(): bool
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $locations_id = $this->fields['id'];
         $filters = $_GET['filters'] ?? [];
-        $location_types = $CFG_GLPI['location_types'];
+        $location_types = $CFG_ZENTRA['location_types'];
         $location_types = array_combine($location_types, array_map(static fn($itemtype) => $itemtype::getTypeName(1), $location_types));
         asort($location_types);
 
@@ -515,7 +515,7 @@ class Location extends CommonTreeDropdown
 
         $start  = (isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0);
         $criteria['START'] = $start;
-        $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = $_SESSION['zentralist_limit'];
 
         $iterator = $DB->request($criteria);
 
@@ -532,7 +532,7 @@ class Location extends CommonTreeDropdown
             $item->getFromDB($data['id']);
             if (!isset($entity_name_cache[$item->getEntityID()])) {
                 $entity_name_cache[$item->getEntityID()] = Dropdown::getDropdownName(
-                    "glpi_entities",
+                    "zentra_entities",
                     $item->getEntityID()
                 );
             }
@@ -547,7 +547,7 @@ class Location extends CommonTreeDropdown
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
+            'limit' => $_SESSION['zentralist_limit'],
             'is_tab' => true,
             'filters' => $filters,
             'nosort' => true,

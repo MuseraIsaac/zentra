@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@
 namespace tests\units;
 
 use Generator;
-use Glpi\Api\Deprecated\TicketFollowup;
-use Glpi\Features\Clonable;
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\Kanban;
-use Glpi\Features\PlanningEvent;
-use Glpi\Tests\DbTestCase;
+use Zentra\Api\Deprecated\TicketFollowup;
+use Zentra\Features\Clonable;
+use Zentra\Features\DCBreadcrumb;
+use Zentra\Features\Kanban;
+use Zentra\Features\PlanningEvent;
+use Zentra\Tests\DbTestCase;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -70,7 +70,7 @@ class ToolboxTest extends DbTestCase
                 'string'   => 'My - string èé  Ê À ß',
                 'expected' => 'my-string-ee-e-a-ss',
             ], [
-                //https://github.com/glpi-project/glpi/issues/2946
+                //https://github.com/zentra-project/zentra/issues/2946
                 'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
                 'expected' => 'ereuna-ikanopoieses-aitemata',
             ], [
@@ -173,16 +173,16 @@ class ToolboxTest extends DbTestCase
     public function testFormatOutputWebLink()
     {
         $this->assertSame(
-            'http://www.glpi-project.org/',
-            \Toolbox::formatOutputWebLink('www.glpi-project.org/')
+            'http://www.zentra-project.org/',
+            \Toolbox::formatOutputWebLink('www.zentra-project.org/')
         );
         $this->assertSame(
-            'http://www.glpi-project.org/',
-            \Toolbox::formatOutputWebLink('http://www.glpi-project.org/')
+            'http://www.zentra-project.org/',
+            \Toolbox::formatOutputWebLink('http://www.zentra-project.org/')
         );
         $this->assertSame(
-            'https://www.glpi-project.org/',
-            \Toolbox::formatOutputWebLink('https://www.glpi-project.org/')
+            'https://www.zentra-project.org/',
+            \Toolbox::formatOutputWebLink('https://www.zentra-project.org/')
         );
     }
 
@@ -265,7 +265,7 @@ class ToolboxTest extends DbTestCase
                 '{ bad content',
                 false,
             ], [
-                file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
+                file_get_contents(ZENTRA_ROOT . '/vendor/zentra-project/inventory_format/examples/computer_1.json'),
                 true,
             ],
         ];
@@ -348,11 +348,11 @@ class ToolboxTest extends DbTestCase
     public static function padProvider()
     {
         return [
-            ['GLPI', 10, " ", STR_PAD_RIGHT, 'GLPI      '],
+            ['ZENTRA', 10, " ", STR_PAD_RIGHT, 'ZENTRA      '],
             ['éè', 10, " ", STR_PAD_RIGHT, 'éè        '],
-            ['GLPI', 10, " ", STR_PAD_LEFT, '      GLPI'],
+            ['ZENTRA', 10, " ", STR_PAD_LEFT, '      ZENTRA'],
             ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
-            ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
+            ['ZENTRA', 10, " ", STR_PAD_BOTH, '   ZENTRA   '],
             ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
             ['123', 10, " ", STR_PAD_BOTH, '   123    '],
         ];
@@ -370,7 +370,7 @@ class ToolboxTest extends DbTestCase
     public static function strlenProvider()
     {
         return [
-            ['GLPI', 4],
+            ['ZENTRA', 4],
             ['Où ça ?', 7],
         ];
     }
@@ -405,9 +405,9 @@ class ToolboxTest extends DbTestCase
     public static function lowercaseProvider()
     {
         return [
-            ['GLPI', 'glpi'],
+            ['ZENTRA', 'zentra'],
             ['ÉÈ', 'éè'],
-            ['glpi', 'glpi'],
+            ['zentra', 'zentra'],
         ];
     }
 
@@ -420,9 +420,9 @@ class ToolboxTest extends DbTestCase
     public static function uppercaseProvider()
     {
         return [
-            ['glpi', 'GLPI'],
+            ['zentra', 'ZENTRA'],
             ['éè', 'ÉÈ'],
-            ['GlPI', 'GLPI'],
+            ['zentra', 'ZENTRA'],
         ];
     }
 
@@ -451,7 +451,7 @@ class ToolboxTest extends DbTestCase
     public function testSaveAndDeletePicture()
     {
         // Save an image twice
-        $test_file = GLPI_VAR_DIR . '/test.png';
+        $test_file = ZENTRA_VAR_DIR . '/test.png';
         copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $first_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $first_pict); // generated random name inside subdir
@@ -477,7 +477,7 @@ class ToolboxTest extends DbTestCase
 
     public static function getPictureUrlProvider()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         return [
             [
@@ -486,11 +486,11 @@ class ToolboxTest extends DbTestCase
             ],
             [
                 'path' => 'image.jpg',
-                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures%2Fimage.jpg',
+                'url'  => $CFG_ZENTRA['root_doc'] . '/front/document.send.php?file=_pictures%2Fimage.jpg',
             ],
             [
                 'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
-                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures%2Fxss%27+onclick%3D%22alert%28%27PWNED%27%29%22.jpg',
+                'url'  => $CFG_ZENTRA['root_doc'] . '/front/document.send.php?file=_pictures%2Fxss%27+onclick%3D%22alert%28%27PWNED%27%29%22.jpg',
             ],
         ];
     }
@@ -595,14 +595,14 @@ class ToolboxTest extends DbTestCase
 
         return [
             [
-                'url_base'     => 'http://glpi.domain.org',
+                'url_base'     => 'http://zentra.domain.org',
                 'item'         => $item,
                 'expected_url' => $img_url,
             ],
             [
-                'url_base'     => 'http://www.domain.org/glpi/v9.4/',
+                'url_base'     => 'http://www.domain.org/zentra/v9.4/',
                 'item'         => $item,
-                'expected_url' => '/glpi/v9.4/' . $img_url,
+                'expected_url' => '/zentra/v9.4/' . $img_url,
             ],
         ];
     }
@@ -613,7 +613,7 @@ class ToolboxTest extends DbTestCase
     #[DataProvider('convertTagToImageBaseUrlProvider')]
     public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $img_tag = uniqid('', true);
 
@@ -632,7 +632,7 @@ class ToolboxTest extends DbTestCase
         $expected_result = '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
 
         // Get result
-        $CFG_GLPI['url_base'] = $url_base;
+        $CFG_ZENTRA['url_base'] = $url_base;
         $result = \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]]);
 
         // Validate result
@@ -1067,37 +1067,37 @@ HTML;
             ['ftp://localhost', false], // Only http and https protocol are supported
             ['https://localhost', true],
             ['https;//localhost', false],
-            ['https://glpi-project.org', true],
+            ['https://zentra-project.org', true],
             [' http://my.host.com', false],
             ['http://my.host.com', true],
             ['http://my.host.com/', true],
-            ['http://my.host.com/glpi/', true],
+            ['http://my.host.com/zentra/', true],
             ['http://my.host.com /', false],
             ['http://localhost:8080', true],
             ['http://localhost:8080/', true],
-            ['http://my.host.com:8080/glpi/', true],
+            ['http://my.host.com:8080/zentra/', true],
             ['http://my.host.com:8080 /', false],
             ['http://my.host.com: 8080/', false],
             ['http://my.host.com :8080/', false],
-            ['http://helpdesk.global.glpi-project.org', true],
-            ['http://dev.helpdesk.global.glpi-project.org', true],
+            ['http://helpdesk.global.zentra-project.org', true],
+            ['http://dev.helpdesk.global.zentra-project.org', true],
             ['http://127.0.0.1', true],
-            ['http://127.0.0.1/glpi', true],
+            ['http://127.0.0.1/zentra', true],
             ['http://127.0.0.1:8080', true],
             ['http://127.0.0.1:8080/', true],
             ['http://127.0.0.1 :8080/', false],
             ['http://127.0.0.1 :8080 /', false],
             ['http://::1', false], // IPv6 addresses must be in square brackets
             ['http://[::1]', true],
-            ['http://[::1]/glpi', true],
+            ['http://[::1]/zentra', true],
             ['http://[::1]:8080/', true],
             ['http://[::1]:8080/', true],
             ['HTTPS://[::1]:8080/', true],
             ['www.my.host.com', false],
             ['127.0.0.1', false],
             ['[::1]', false],
-            ['http://my.host.com/subdir/glpi/', true],
-            ['http://my.host.com/~subdir/glpi/', true],
+            ['http://my.host.com/subdir/zentra/', true],
+            ['http://my.host.com/~subdir/zentra/', true],
             ['https://localhost<', false],
             ['https://localhost"', false],
             ['https://localhost\'', false],
@@ -1149,7 +1149,7 @@ HTML;
     {
         // Test planned deprecation in current version
         $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-        \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+        \Toolbox::deprecated('Calling this function is deprecated', true, ZENTRA_VERSION);
         \error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
@@ -1200,7 +1200,7 @@ HTML;
 
         // Create a document to emulate a document upload
         $filename = 'foo.png';
-        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', ZENTRA_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
             'filename' => 'foo.png',
@@ -1862,7 +1862,7 @@ HTML;
             'http://www.whitelisteddomain.tld.google.com',
         ];
 
-        foreach (['', '/glpi', '/path/to/glpi'] as $root_doc) {
+        foreach (['', '/zentra', '/path/to/zentra'] as $root_doc) {
             foreach (['helpdesk', 'central'] as $interface) {
                 foreach ($open_redirect_payloads as $where) {
                     yield [
@@ -1877,7 +1877,7 @@ HTML;
                 yield [
                     'root_doc'  => $root_doc,
                     'interface' => $interface,
-                    'where'     => 'http://notglpi/',
+                    'where'     => 'http://notzentra/',
                     'result'    => null,
                 ];
                 yield [
@@ -1909,13 +1909,13 @@ HTML;
                 yield [
                     'root_doc'  => $root_doc,
                     'interface' => $interface,
-                    'where'     => '/../outside-glpi',
+                    'where'     => '/../outside-zentra',
                     'result'    => null,
                 ];
                 yield [
                     'root_doc'  => $root_doc,
                     'interface' => $interface,
-                    'where'     => $root_doc . '/front/../outside-glpi',
+                    'where'     => $root_doc . '/front/../outside-zentra',
                     'result'    => null,
                 ];
                 yield [
@@ -1953,10 +1953,10 @@ HTML;
     #[DataProvider('redirectProvider')]
     public function testComputeRedirect(string $root_doc, string $interface, string $where, ?string $result): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $CFG_GLPI['root_doc'] = $root_doc;
-        $_SESSION['glpiactiveprofile']['interface'] = $interface;
+        $CFG_ZENTRA['root_doc'] = $root_doc;
+        $_SESSION['zentraactiveprofile']['interface'] = $interface;
 
         $instance = new \Toolbox();
 
@@ -1982,17 +1982,17 @@ HTML;
     {
         // Arrange
         assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
-        $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
+        $messageWithPath = 'Error somewhere in the path ' . ZENTRA_ROOT . ' triggered';
 
         // Act
         \Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath);
 
         // Assert
-        $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));
+        $this->assertStringNotContainsString(\ZENTRA_ROOT, file_get_contents($this->getCustomLogFilePath()));
     }
 
     private function getCustomLogFilePath(): string
     {
-        return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
+        return ZENTRA_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
     }
 }

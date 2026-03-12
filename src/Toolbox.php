@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,24 +33,24 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Api\Deprecated\DeprecatedInterface;
-use Glpi\Console\Application;
-use Glpi\DBAL\QueryParam;
-use Glpi\Error\ErrorUtils;
-use Glpi\Event;
-use Glpi\Exception\Database\StatementException;
-use Glpi\Exception\EmptyCurlContentException;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Helpdesk\DefaultDataManager;
-use Glpi\Mail\Protocol\ProtocolInterface;
-use Glpi\Message\MessageType;
-use Glpi\OAuth\Server;
-use Glpi\Plugin\Hooks;
-use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Rules\RulesManager;
-use Glpi\Toolbox\URL;
-use Glpi\Toolbox\VersionParser;
+use Zentra\Api\Deprecated\DeprecatedInterface;
+use Zentra\Console\Application;
+use Zentra\DBAL\QueryParam;
+use Zentra\Error\ErrorUtils;
+use Zentra\Event;
+use Zentra\Exception\Database\StatementException;
+use Zentra\Exception\EmptyCurlContentException;
+use Zentra\Exception\Http\AccessDeniedHttpException;
+use Zentra\Exception\Http\NotFoundHttpException;
+use Zentra\Helpdesk\DefaultDataManager;
+use Zentra\Mail\Protocol\ProtocolInterface;
+use Zentra\Message\MessageType;
+use Zentra\OAuth\Server;
+use Zentra\Plugin\Hooks;
+use Zentra\Progress\AbstractProgressIndicator;
+use Zentra\Rules\RulesManager;
+use Zentra\Toolbox\URL;
+use Zentra\Toolbox\VersionParser;
 use GuzzleHttp\Client;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;
@@ -382,7 +382,7 @@ class Toolbox
         } catch (Throwable $e) {
             //something went wrong
             // make sure logging does not cause fatal
-            // and error still logged (without glpi root path removed)
+            // and error still logged (without zentra root path removed)
             error_log($e);
         }
     }
@@ -426,8 +426,8 @@ class Toolbox
             foreach ($traces as $trace) {
                 $script = ($trace["file"] ?? "") . ":"
                         . ($trace["line"] ?? "");
-                if (str_starts_with($script, GLPI_ROOT)) {
-                    $script = substr($script, strlen(GLPI_ROOT) + 1);
+                if (str_starts_with($script, ZENTRA_ROOT)) {
+                    $script = substr($script, strlen(ZENTRA_ROOT) + 1);
                 }
                 if (strlen($script) > 50) {
                     $script = "..." . substr($script, -47);
@@ -469,7 +469,7 @@ class Toolbox
             $version !== null
             && version_compare(
                 VersionParser::getNormalizedVersion($version, false),
-                VersionParser::getNormalizedVersion(GLPI_VERSION, false),
+                VersionParser::getNormalizedVersion(ZENTRA_VERSION, false),
                 '>'
             )
         ) {
@@ -477,7 +477,7 @@ class Toolbox
         }
         if (
             $strict === true
-            || GLPI_STRICT_ENV === true
+            || ZENTRA_STRICT_ENV === true
         ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
@@ -486,7 +486,7 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string    $name   name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string    $name   name of the log file, relative to ZENTRA_LOG_DIR, without '.log' extension
      * @param string    $text   text to log
      * @param bool      $force  force log in file not seeing use_log_in_files config
      * @param bool      $output whether to output the message
@@ -495,7 +495,7 @@ class Toolbox
      **/
     public static function logInFile($name, $text, $force = false, bool $output = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         $text = self::cleanPaths($text);
 
         $user = '';
@@ -503,11 +503,11 @@ class Toolbox
 
         $ok = true;
         if (
-            (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])
+            (isset($CFG_ZENTRA["use_log_in_files"]) && $CFG_ZENTRA["use_log_in_files"])
             || $force
         ) {
             try {
-                error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
+                error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, ZENTRA_LOG_DIR . "/" . $name . ".log");
             } catch (ErrorfuncException $e) {
                 $ok = false;
             }
@@ -522,8 +522,8 @@ class Toolbox
         if ($application instanceof Application) {
             $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
         } elseif (
-            isset($_SESSION['glpi_use_mode'])
-            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+            isset($_SESSION['zentra_use_mode'])
+            && ($_SESSION['zentra_use_mode'] == Session::DEBUG_MODE)
             && isCommandLine()
             && !defined('TU_USER')
         ) {
@@ -536,7 +536,7 @@ class Toolbox
 
 
     /**
-     * Switch error mode for GLPI
+     * Switch error mode for ZENTRA
      *
      * @param Session::*_MODE|null $mode
      * @param bool|null $removed_param No longer used (Used to be $debug_sql)
@@ -547,13 +547,13 @@ class Toolbox
      **/
     public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($mode)) {
-            $_SESSION['glpi_use_mode'] = $mode;
+            $_SESSION['zentra_use_mode'] = $mode;
         }
         if (isset($log_in_files)) {
-            $CFG_GLPI['use_log_in_files'] = $log_in_files;
+            $CFG_ZENTRA['use_log_in_files'] = $log_in_files;
         }
     }
 
@@ -575,7 +575,7 @@ class Toolbox
         bool $expires_headers = false
     ): Response {
         // Test securite : document in DOC_DIR
-        $tmpfile = str_replace(GLPI_DOC_DIR, "", $path);
+        $tmpfile = str_replace(ZENTRA_DOC_DIR, "", $path);
 
         if (str_contains($tmpfile, "../") || str_contains($tmpfile, "..\\")) {
             Event::log(
@@ -583,7 +583,7 @@ class Toolbox
                 "sendFile",
                 1,
                 "security",
-                $_SESSION["glpiname"] . " try to get a non standard file."
+                $_SESSION["zentraname"] . " try to get a non standard file."
             );
 
             throw new AccessDeniedHttpException();
@@ -606,7 +606,7 @@ class Toolbox
             && strtolower($mime) !== 'image/svg+xml'
         ) {
             // images files can be inlined
-            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+            // except for svg (vector of attack, see https://github.com/zentra-project/zentra/issues/3873)
             $can_be_inlined = true;
         } elseif (strtolower($mime) === 'application/pdf') {
             // PDF files can be inlined
@@ -819,15 +819,15 @@ class Toolbox
 
 
     /**
-     * Check is current memory_limit is enough for GLPI
+     * Check is current memory_limit is enough for ZENTRA
      *
      * @since 0.83
      *
      * @return int
      *   0 if PHP not compiled with memory_limit support,
      *   1 no memory limit (memory_limit = -1),
-     *   2 insufficient memory for GLPI,
-     *   3 enough memory for GLPI
+     *   2 insufficient memory for ZENTRA,
+     *   3 enough memory for ZENTRA
      **/
     public static function checkMemoryLimit()
     {
@@ -1052,15 +1052,15 @@ class Toolbox
      **/
     public static function checkNewVersionAvailable()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         //parse GitHub releases (get last version number)
         $error = "";
         $eopts = [];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+        if (in_array(ZENTRANetwork::class, $CFG_ZENTRA['proxy_exclusions'])) {
             $eopts['proxy_excluded'] = true;
         }
-        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error, 0, $eopts);
+        $json_gh_releases = self::getURLContent("https://api.github.com/repos/zentra-project/zentra/releases", $error, 0, $eopts);
         if (empty($json_gh_releases)) {
             return $error;
         }
@@ -1078,7 +1078,7 @@ class Toolbox
         if (strlen(trim($latest_version)) == 0) {
             return $error;
         } else {
-            $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+            $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', ZENTRA_VERSION);
             if (version_compare($currentVersion, $latest_version, '<')) {
                 Config::setConfigurationValues('core', ['found_new_version' => $latest_version]);
                 return sprintf(__('A new version is available: %s.'), $latest_version);
@@ -1116,7 +1116,7 @@ class Toolbox
         $rand = random_int(0, mt_getrandmax());
 
         // Check directory creation which can be denied by SElinux
-        $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
+        $sdir = sprintf("%s/test_zentra_%08x", $dir, $rand);
 
         try {
             mkdir($sdir);
@@ -1131,7 +1131,7 @@ class Toolbox
         }
 
         // Check file creation
-        $path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
+        $path = sprintf("%s/test_zentra_%08x.txt", $dir, $rand);
         $fp   = fopen($path, 'w');
 
         if (empty($fp)) {
@@ -1160,17 +1160,17 @@ class Toolbox
      */
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
             $dir .= "/plugins/" . strtolower($plug['plugin']);
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             $item = strtolower($itemtype);
-            if (str_starts_with($itemtype, NS_GLPI)) {
-                $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+            if (str_starts_with($itemtype, NS_ZENTRA)) {
+                $item = str_replace('\\', '/', substr($item, \strlen(NS_ZENTRA)));
             }
         }
 
@@ -1188,9 +1188,9 @@ class Toolbox
      */
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $dir = ($full ? $CFG_ZENTRA['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
             $dir .= "/plugins/" . strtolower($plug['plugin']);
@@ -1203,8 +1203,8 @@ class Toolbox
                 $itemtype = ConsumableItem::class;
             }
             $item = strtolower($itemtype);
-            if (str_starts_with($itemtype, NS_GLPI)) {
-                $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+            if (str_starts_with($itemtype, NS_ZENTRA)) {
+                $item = str_replace('\\', '/', substr($item, \strlen(NS_ZENTRA)));
             }
         }
 
@@ -1222,11 +1222,11 @@ class Toolbox
      */
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $filename = "/ajax/common.tabs.php";
 
-        return ($full ? $CFG_GLPI['root_doc'] : '') . $filename;
+        return ($full ? $CFG_ZENTRA['root_doc'] : '') . $filename;
     }
 
 
@@ -1300,7 +1300,7 @@ class Toolbox
      *
      * @return bool
      */
-    public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
+    public static function isUrlSafe(string $url, array $allowlist = ZENTRA_SERVERSIDE_URL_ALLOWLIST): bool
     {
         foreach ($allowlist as $allow_regex) {
             try {
@@ -1344,18 +1344,18 @@ class Toolbox
      */
     public static function getGuzzleClient(array $extra_options = []): Client
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $options = $extra_options + ['connect_timeout' => 5];
-        // add proxy string if configured in glpi - and not excluded
-        if (!empty($CFG_GLPI["proxy_name"]) && ($extra_options['proxy_excluded'] ?? false) === false) {
+        // add proxy string if configured in zentra - and not excluded
+        if (!empty($CFG_ZENTRA["proxy_name"]) && ($extra_options['proxy_excluded'] ?? false) === false) {
             $proxy_creds = "";
-            if (!empty($CFG_GLPI["proxy_user"])) {
-                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
-                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
+            if (!empty($CFG_ZENTRA["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_ZENTRA["proxy_user"]);
+                $proxy_pass = rawurlencode((new ZENTRAKey())->decrypt($CFG_ZENTRA["proxy_passwd"]));
                 $proxy_creds = $proxy_user . ":" . $proxy_pass . "@";
             }
-            $proxy_string = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
+            $proxy_string = "http://{$proxy_creds}" . $CFG_ZENTRA['proxy_name'] . ":" . $CFG_ZENTRA['proxy_port'];
             $options['proxy'] = $proxy_string;
         }
         return new Client($options);
@@ -1381,7 +1381,7 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ) {
-        global $CFG_GLPI, $PHPLOGGER;
+        global $CFG_ZENTRA, $PHPLOGGER;
 
         try {
             return self::doCallCurl($url, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
@@ -1389,7 +1389,7 @@ class Toolbox
             $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
 
             $curl_error = $e->getMessage();
-            if (empty($CFG_GLPI["proxy_name"]) || ($eopts['proxy_excluded'] ?? false)) {
+            if (empty($CFG_ZENTRA["proxy_name"]) || ($eopts['proxy_excluded'] ?? false)) {
                 $msgerr = sprintf(
                     __('Connection failed. If you use a proxy, please configure it. (%s)'),
                     $curl_error
@@ -1432,11 +1432,11 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ): string {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
             $msgerr = sprintf(
-                __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
+                __('URL "%s" is not considered safe and cannot be fetched from ZENTRA server.'),
                 $url
             );
             trigger_error(sprintf('Unsafe URL "%s" fetching has been blocked.', $url), E_USER_NOTICE);
@@ -1464,7 +1464,7 @@ class Toolbox
         }
         $opts = [
             CURLOPT_URL             => $url,
-            CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
+            CURLOPT_USERAGENT       => "ZENTRA/" . trim($CFG_ZENTRA["version"]),
             CURLOPT_RETURNTRANSFER  => 1,
             CURLOPT_CONNECTTIMEOUT  => 5,
         ] + $eopts;
@@ -1473,17 +1473,17 @@ class Toolbox
             $opts[CURLOPT_FOLLOWLOCATION] = false;
         }
 
-        if (!empty($CFG_GLPI["proxy_name"]) && !$proxy_excluded) {
+        if (!empty($CFG_ZENTRA["proxy_name"]) && !$proxy_excluded) {
             // Connection using proxy
             $opts += [
-                CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
-                CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
+                CURLOPT_PROXY           => $CFG_ZENTRA['proxy_name'],
+                CURLOPT_PROXYPORT       => $CFG_ZENTRA['proxy_port'],
                 CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
             ];
 
-            if (!empty($CFG_GLPI["proxy_user"])) {
-                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
-                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
+            if (!empty($CFG_ZENTRA["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_ZENTRA["proxy_user"]);
+                $proxy_pass = rawurlencode((new ZENTRAKey())->decrypt($CFG_ZENTRA["proxy_passwd"]));
                 $opts += [
                     CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
                     CURLOPT_PROXYUSERPWD => $proxy_user . ":" . $proxy_pass,
@@ -1574,7 +1574,7 @@ class Toolbox
      **/
     public static function manageRedirect($where)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (empty($where) || !Session::getCurrentInterface()) {
             return;
@@ -1588,9 +1588,9 @@ class Toolbox
         if ($redirect === null) {
             Session::addMessageAfterRedirect(__s('Redirection failed'));
             if (Session::getCurrentInterface() === "helpdesk") {
-                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/Helpdesk");
             } else {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/front/central.php");
             }
         } else {
             Html::redirect($redirect);
@@ -1605,13 +1605,13 @@ class Toolbox
      */
     public static function computeRedirect(string $where): ?string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         try {
             $parsed_url = parse_url($where);
-            // Target URL contains a hostname, validates that it matches the base GLPI URL
+            // Target URL contains a hostname, validates that it matches the base ZENTRA URL
             if (array_key_exists('host', $parsed_url)) {
-                if (!str_starts_with($where, $CFG_GLPI['url_base'] . '/')) {
+                if (!str_starts_with($where, $CFG_ZENTRA['url_base'] . '/')) {
                     return null;
                 } else {
                     return $where;
@@ -1620,7 +1620,7 @@ class Toolbox
 
             // Target URL is a relative path
             if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
-                return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
+                return URL::isZENTRARelativeUrl($where) ? $CFG_ZENTRA["root_doc"] . $where : null;
             }
         } catch (UrlException $e) {
             //empty catch
@@ -1675,7 +1675,7 @@ class Toolbox
                         return null;
 
                     case "preference":
-                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+                        return $CFG_ZENTRA["root_doc"] . "/front/preference.php?$forcetab";
 
                     case "reservation":
                         return Reservation::getFormURLWithID((int) $data[1]) . "&$forcetab";
@@ -1686,7 +1686,7 @@ class Toolbox
             case "central":
                 switch (strtolower($data[0])) {
                     case "preference":
-                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+                        return $CFG_ZENTRA["root_doc"] . "/front/preference.php?$forcetab";
 
                         // Use for compatibility with old name
                     case "tracking":
@@ -1987,7 +1987,7 @@ class Toolbox
     /**
      * Returns protocol instance for given mail server type.
      *
-     * Class should implements Glpi\Mail\Protocol\ProtocolInterface
+     * Class should implements Zentra\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
      * @param string    $protocol_type
@@ -2167,7 +2167,7 @@ class Toolbox
 
 
     /**
-     * Create the GLPI default schema
+     * Create the ZENTRA default schema
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
@@ -2186,12 +2186,12 @@ class Toolbox
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
             if (!class_exists('DB', false)) {
-                include(GLPI_CONFIG_DIR . "/config_db.php");
+                include(ZENTRA_CONFIG_DIR . "/config_db.php");
             }
             $database = new DB();
         }
 
-        $structure_queries = $database->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
+        $structure_queries = $database->getQueriesFromFile(sprintf('%s/install/mysql/zentra-empty.sql', ZENTRA_ROOT));
 
         //dataset
         Session::loadLanguage($lang, false); // Load default language locales to translate empty data
@@ -2210,7 +2210,7 @@ class Toolbox
         $default_lang_weight = 1;
         $cron_config_weight = 1;
         $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
-        if (GLPI_SYSTEM_CRON) {
+        if (ZENTRA_SYSTEM_CRON) {
             $number_of_steps += $cron_config_weight;
         }
 
@@ -2226,9 +2226,9 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
         foreach ($tables as $table => $data) {
-            // Enable NO_AUTO_VALUE_ON_ZERO for glpi_entities insertion (needed for id=0 root entity)
+            // Enable NO_AUTO_VALUE_ON_ZERO for zentra_entities insertion (needed for id=0 root entity)
             $original_sql_mode = null;
-            if ($table === 'glpi_entities') {
+            if ($table === 'zentra_entities') {
                 /** @var mysqli_result $request */
                 $request = $database->doQuery(
                     sprintf('SELECT @@sql_mode as %s', $database->quoteName('sql_mode'))
@@ -2266,7 +2266,7 @@ class Toolbox
                     $progress_indicator?->advance();
                 }
             } finally {
-                // Restore original SQL mode after glpi_entities insertion
+                // Restore original SQL mode after zentra_entities insertion
                 if ($original_sql_mode !== null) {
                     $database->doQuery(
                         sprintf('SET SESSION sql_mode = %s', $database->quote($original_sql_mode))
@@ -2296,12 +2296,12 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
         $configs = [
             'language'  => $lang,
-            'version'   => GLPI_VERSION,
-            'dbversion' => GLPI_SCHEMA_VERSION,
+            'version'   => ZENTRA_VERSION,
+            'dbversion' => ZENTRA_SCHEMA_VERSION,
         ];
         foreach ($configs as $name => $value) {
             $database->updateOrInsert(
-                'glpi_configs',
+                'zentra_configs',
                 [
                     'value' => $value,
                 ],
@@ -2313,10 +2313,10 @@ class Toolbox
         }
         $progress_indicator?->advance($default_lang_weight);
 
-        if (GLPI_SYSTEM_CRON) {
+        if (ZENTRA_SYSTEM_CRON) {
             // Downstream packages may provide a good system cron
             $database->update(
-                'glpi_crontasks',
+                'zentra_crontasks',
                 [
                     'mode'   => 2,
                 ],
@@ -2346,7 +2346,7 @@ class Toolbox
      *
      * @return bool
      **/
-    public static function writeConfig($name, $content, string $config_dir = GLPI_CONFIG_DIR)
+    public static function writeConfig($name, $content, string $config_dir = ZENTRA_CONFIG_DIR)
     {
 
         $name = $config_dir . '/' . $name;
@@ -2482,7 +2482,7 @@ class Toolbox
         }
 
         if ($string == '') {
-            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
+            //prevent empty slugs; see https://github.com/zentra-project/zentra/issues/2946
             //harcoded prefix string because html @id must begin with a letter
             $string = 'nok_' . Toolbox::getRandomString(10);
         } elseif (ctype_digit(substr($string, 0, 1))) {
@@ -2538,14 +2538,14 @@ class Toolbox
      * @since 9.2
      *
      * @param string $content_text   text content of input
-     * @param CommonDBTM $item       Glpi item where to convert image tag to image document
+     * @param CommonDBTM $item       Zentra item where to convert image tag to image document
      * @param array $doc_data        list of filenames and tags
      *
      * @return string                the $content_text param after parsing
      **/
     public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $document = new Document();
         $matches  = [];
@@ -2555,7 +2555,7 @@ class Toolbox
         }
 
         if (count($doc_data)) {
-            $base_path = $CFG_GLPI['root_doc'];
+            $base_path = $CFG_ZENTRA['root_doc'];
 
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {
@@ -2608,7 +2608,7 @@ class Toolbox
 
                             // retrieve dimensions
                             if ($width == null || $height == null) {
-                                $path = GLPI_DOC_DIR . "/" . $image['filepath'];
+                                $path = ZENTRA_DOC_DIR . "/" . $image['filepath'];
                                 $img_infos  = getimagesize($path);
                                 $width = $img_infos[0];
                                 $height = $img_infos[1];
@@ -2698,7 +2698,7 @@ class Toolbox
     }
 
     /**
-     * Decode JSON in GLPI.
+     * Decode JSON in ZENTRA.
      *
      * @param string $encoded Encoded JSON
      * @param bool $assoc  assoc parameter of json_encode native function
@@ -2849,7 +2849,7 @@ class Toolbox
     public static function getDateFormat($type)
     {
         $formats = self::getDateFormats($type);
-        $format = $formats[$_SESSION["glpidate_format"] ?? 0];
+        $format = $formats[$_SESSION["zentradate_format"] ?? 0];
         return $format;
     }
 
@@ -2961,7 +2961,7 @@ class Toolbox
      * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
      * @param bool     $keep_src     Whether to keep the source file or not
      *
-     * @return bool|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
+     * @return bool|string      Destination filepath, relative to ZENTRA_PICTURE_DIR, or false on failure
      *
      * @since 9.5.0
      */
@@ -2980,15 +2980,15 @@ class Toolbox
         do {
             // Iterate on possible suffix while dest exists.
             // This case will almost never exists as dest is based on an unique id.
-            $dest = GLPI_PICTURE_DIR
+            $dest = ZENTRA_PICTURE_DIR
             . '/' . $subdirectory
             . '/' . $filename . ($i > 0 ? '_' . $i : '') . '.' . $ext;
             $i++;
         } while (file_exists($dest));
 
-        if (!is_dir(GLPI_PICTURE_DIR . '/' . $subdirectory)) {
+        if (!is_dir(ZENTRA_PICTURE_DIR . '/' . $subdirectory)) {
             try {
-                mkdir(GLPI_PICTURE_DIR . '/' . $subdirectory);
+                mkdir(ZENTRA_PICTURE_DIR . '/' . $subdirectory);
             } catch (FilesystemException $e) {
                 return false;
             }
@@ -3008,7 +3008,7 @@ class Toolbox
             }
         }
 
-        return substr($dest, strlen(GLPI_PICTURE_DIR . '/')); // Return dest relative to GLPI_PICTURE_DIR
+        return substr($dest, strlen(ZENTRA_PICTURE_DIR . '/')); // Return dest relative to ZENTRA_PICTURE_DIR
     }
 
 
@@ -3024,14 +3024,14 @@ class Toolbox
     public static function deletePicture($path)
     {
 
-        $fullpath = GLPI_PICTURE_DIR . '/' . $path;
+        $fullpath = ZENTRA_PICTURE_DIR . '/' . $path;
 
         if (!file_exists($fullpath)) {
             return false;
         }
 
         $fullpath = realpath($fullpath);
-        if (!str_starts_with($fullpath, realpath(GLPI_PICTURE_DIR))) {
+        if (!str_starts_with($fullpath, realpath(ZENTRA_PICTURE_DIR))) {
             // Prevent deletion of a file outside pictures directory
             return false;
         }
@@ -3057,13 +3057,13 @@ class Toolbox
      */
     public static function getPictureUrl($path, $full = true)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (empty($path)) {
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=' . urlencode('_pictures/' . $path);
+        return ($full ? $CFG_ZENTRA["root_doc"] : "") . '/front/document.send.php?file=' . urlencode('_pictures/' . $path);
     }
 
     /**
@@ -3269,8 +3269,8 @@ class Toolbox
         $deprecated = DeprecatedInterface::class;
 
         // Insert namespace if missing
-        if (!str_contains($class, "Glpi\Api\Deprecated")) {
-            $class = "Glpi\Api\Deprecated\\$class";
+        if (!str_contains($class, "Zentra\Api\Deprecated")) {
+            $class = "Zentra\Api\Deprecated\\$class";
         }
 
         return class_exists($class) && is_a($class, $deprecated, true);
@@ -3376,10 +3376,10 @@ class Toolbox
      */
     public static function cleanTarget(string $target): string
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
-        if (file_exists(GLPI_ROOT . $file)) {
+        $file = preg_replace('/^' . preg_quote($CFG_ZENTRA['root_doc'], '/') . '/', '', $target);
+        if (file_exists(ZENTRA_ROOT . $file)) {
             return $target;
         }
 

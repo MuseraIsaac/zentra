@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ class DeviceSoundCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicesoundcardmodels',
+            'table'              => 'zentra_devicesoundcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -152,7 +152,7 @@ class DeviceSoundCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => 'glpi_devicesoundcards',
+            'table'              => 'zentra_devicesoundcards',
             'field'              => 'designation',
             'name'               => static::getTypeName(1),
             'forcegroupby'       => true,
@@ -160,7 +160,7 @@ class DeviceSoundCard extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicesoundcards',
+                    'table'              => 'zentra_items_devicesoundcards',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -168,7 +168,7 @@ class DeviceSoundCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1338',
-            'table'              => 'glpi_items_devicesoundcards',
+            'table'              => 'zentra_items_devicesoundcards',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -180,7 +180,7 @@ class DeviceSoundCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1339',
-            'table'              => 'glpi_items_devicesoundcards',
+            'table'              => 'zentra_items_devicesoundcards',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\AssetImage;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
 
 //!  ConsumableItem Class
 /**
@@ -132,10 +132,10 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
     public function post_getEmpty()
     {
-        if (isset($_SESSION['glpiactive_entity'])) {
+        if (isset($_SESSION['zentraactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
                 "consumables_alert_repeat",
-                $_SESSION['glpiactive_entity'],
+                $_SESSION['zentraactive_entity'],
                 "default_consumables_alarm_threshold",
                 10
             );
@@ -189,7 +189,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_consumableitemtypes',
+            'table'              => 'zentra_consumableitemtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -197,7 +197,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -218,7 +218,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_consumables',
+            'table'              => 'zentra_consumables',
             'field'              => 'date_out',
             'name'               => __('Number of used consumables'),
             'datatype'           => 'number',
@@ -236,7 +236,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => 'glpi_consumables',
+            'table'              => 'zentra_consumables',
             'field'              => 'date_out',
             'name'               => __('Number of new consumables'),
             'datatype'           => 'number',
@@ -256,7 +256,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -266,14 +266,14 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -306,7 +306,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -338,45 +338,45 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function cronConsumable(?CronTask $task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $cron_status = 1;
 
-        if ($CFG_GLPI["use_notifications"]) {
+        if ($CFG_ZENTRA["use_notifications"]) {
             $alert   = new Alert();
 
             foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
                 $alerts_result = $DB->request(
                     [
                         'SELECT'    => [
-                            'glpi_consumableitems.id AS consID',
-                            'glpi_consumableitems.entities_id AS entity',
-                            'glpi_consumableitems.ref AS ref',
-                            'glpi_consumableitems.name AS name',
-                            'glpi_consumableitems.alarm_threshold AS threshold',
-                            'glpi_alerts.id AS alertID',
-                            'glpi_alerts.date',
+                            'zentra_consumableitems.id AS consID',
+                            'zentra_consumableitems.entities_id AS entity',
+                            'zentra_consumableitems.ref AS ref',
+                            'zentra_consumableitems.name AS name',
+                            'zentra_consumableitems.alarm_threshold AS threshold',
+                            'zentra_alerts.id AS alertID',
+                            'zentra_alerts.date',
                         ],
                         'FROM'      => self::getTable(),
                         'LEFT JOIN' => [
-                            'glpi_alerts' => [
+                            'zentra_alerts' => [
                                 'FKEY' => [
-                                    'glpi_alerts'         => 'items_id',
-                                    'glpi_consumableitems' => 'id',
+                                    'zentra_alerts'         => 'items_id',
+                                    'zentra_consumableitems' => 'id',
                                     [
-                                        'AND' => ['glpi_alerts.itemtype' => 'ConsumableItem'],
+                                        'AND' => ['zentra_alerts.itemtype' => 'ConsumableItem'],
                                     ],
                                 ],
                             ],
                         ],
                         'WHERE'     => [
-                            'glpi_consumableitems.is_deleted'      => 0,
-                            'glpi_consumableitems.alarm_threshold' => ['>=', 0],
-                            'glpi_consumableitems.entities_id'     => $entity,
+                            'zentra_consumableitems.is_deleted'      => 0,
+                            'zentra_consumableitems.alarm_threshold' => ['>=', 0],
+                            'zentra_consumableitems.entities_id'     => $entity,
                             'OR'                                  => [
-                                ['glpi_alerts.date' => null],
+                                ['zentra_alerts.date' => null],
                                 [
-                                    'glpi_alerts.date' => ['<',
+                                    'zentra_alerts.date' => ['<',
                                         QueryFunction::dateSub(
                                             date: QueryFunction::now(),
                                             interval: $repeat,
@@ -424,14 +424,14 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                     if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
                         if ($task) {
                             $task->log(
-                                Dropdown::getDropdownName("glpi_entities", $entity)
+                                Dropdown::getDropdownName("zentra_entities", $entity)
                                 . " : "
                                 . implode("\n", $messages)
                             );
                             $task->addVolume(1);
                         } else {
                             Session::addMessageAfterRedirect(
-                                htmlescape(Dropdown::getDropdownName("glpi_entities", $entity))
+                                htmlescape(Dropdown::getDropdownName("zentra_entities", $entity))
                                 . " : "
                                 . implode('<br>', array_map('htmlescape', $messages))
                             );
@@ -449,7 +449,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                             unset($alert->fields['id']);
                         }
                     } else {
-                        $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+                        $entityname = Dropdown::getDropdownName('zentra_entities', $entity);
                         //TRANS: %s is entity name
                         $msg = sprintf(__('%s: send consumable alert failed'), $entityname);
                         if ($task) {

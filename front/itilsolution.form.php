@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Zentra\Event;
+use Zentra\Exception\Http\NotFoundHttpException;
 
 global $DB;
 
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
     }
 
     if ($solution->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             $redirect = $track->getLinkURL();
         }
         $handled = true;
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["zentraname"])
     );
 }
 
@@ -96,7 +96,7 @@ if ($handled) {
             'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([
-            'FROM' => 'glpi_knowbaseitems_items',
+            'FROM' => 'zentra_knowbaseitems_items',
             'WHERE' => $params,
         ]);
         if ($existing->numrows() == 0) {

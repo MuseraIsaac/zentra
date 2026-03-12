@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Features\Clonable;
 
 class Appliance_Item extends CommonDBRelation
 {
@@ -63,7 +63,7 @@ class Appliance_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!Appliance::canView() || !$item instanceof CommonDBTM) {
             return '';
@@ -71,14 +71,14 @@ class Appliance_Item extends CommonDBRelation
 
         $nb = 0;
         if ($item->getType() == Appliance::class) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 if (!$item->isNewItem()) {
                     $nb = self::countForMainItem($item);
                 }
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
         } elseif (in_array($item->getType(), Appliance::getTypes(true))) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['zentrashow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
             return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -87,7 +87,7 @@ class Appliance_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -162,7 +162,7 @@ class Appliance_Item extends CommonDBRelation
                     'itemtypes'       => Appliance::getTypes(true),
                     'entity_restrict' => ($appliance->fields['is_recursive']
                                       ? getSonsOf(
-                                          'glpi_entities',
+                                          'zentra_entities',
                                           $appliance->fields['entities_id']
                                       )
                                        : $appliance->fields['entities_id']),
@@ -212,7 +212,7 @@ class Appliance_Item extends CommonDBRelation
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
@@ -305,7 +305,7 @@ class Appliance_Item extends CommonDBRelation
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
@@ -395,7 +395,7 @@ class Appliance_Item extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
         $specificities['itemtypes'] = Appliance::getTypes();

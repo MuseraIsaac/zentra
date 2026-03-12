@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use AuthLDAP;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\RuleBuilder;
-use GLPIKey;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\RuleBuilder;
+use ZENTRAKey;
 use Group;
 use Group_User;
 use LDAP\Connection;
@@ -373,7 +373,7 @@ class AuthLdapTest extends DbTestCase
         $this->addLdapServers();
 
         $this->assertTrue(AuthLDAP::useAuthLdap());
-        $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
+        $DB->update('zentra_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
         $this->assertFalse(AuthLDAP::useAuthLdap());
     }
 
@@ -383,7 +383,7 @@ class AuthLdapTest extends DbTestCase
         $this->addLdapServers();
 
         $this->assertSame(3, (int) AuthLDAP::getNumberOfServers());
-        $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
+        $DB->update('zentra_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
         $this->assertSame(0, (int) AuthLDAP::getNumberOfServers());
     }
 
@@ -661,7 +661,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue($ldap->getFromDB($id));
 
         //Expected value to be encrypted using current  key
-        $this->assertSame($password, (new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']));
+        $this->assertSame($password, (new ZENTRAKey())->decrypt($ldap->fields['rootdn_passwd']));
 
         $password = 'tot\'o';
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
@@ -669,7 +669,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue($ldap->getFromDB($id));
 
         //Expected value to be encrypted using current key
-        $this->assertSame($password, (new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']));
+        $this->assertSame($password, (new ZENTRAKey())->decrypt($ldap->fields['rootdn_passwd']));
 
         $input['_blank_passwd'] = 1;
         $result   = $ldap->prepareInputForUpdate($input);
@@ -895,7 +895,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertEquals(true, $user->fields['is_active']);
         $this->assertSame($ldap->getID(), $user->fields['auths_id']);
         $this->assertSame(\Auth::LDAP, $user->fields['authtype']);
-        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
 
         $this->assertGreaterThan(0, (int) $user->fields['usertitles_id']);
         $this->assertGreaterThan(0, (int) $user->fields['usercategories_id']);
@@ -915,20 +915,20 @@ class AuthLdapTest extends DbTestCase
         $this->checkLdapConnection($connection);
 
         // Invalid group
-        $cn = AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=zentra,dc=org');
         $this->assertFalse($cn);
 
         // Valid group with no special chars
-        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
-        $this->assertSame('glpi2-group1', $cn);
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=zentra2-group1,ou=groups,ou=usa,ou=ldap2,dc=zentra,dc=org');
+        $this->assertSame('zentra2-group1', $cn);
 
         // OU with special `#` char protected by a `\`
-        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org');
-        $this->assertSame('glpi2-group2', $cn);
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=zentra2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=zentra,dc=org');
+        $this->assertSame('zentra2-group2', $cn);
 
         // OU with special `#` char escaped to `\23`
-        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org');
-        $this->assertSame('glpi2-group2', $cn);
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=zentra2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=zentra,dc=org');
+        $this->assertSame('zentra2-group2', $cn);
     }
 
     /**
@@ -943,7 +943,7 @@ class AuthLdapTest extends DbTestCase
 
         $user = AuthLDAP::getUserByDn(
             $ldap->connect(),
-            'uid=walid,ou=people,ou=france,ou=europe,ou=ldap1, dc=glpi,dc=org',
+            'uid=walid,ou=people,ou=france,ou=europe,ou=ldap1, dc=zentra,dc=org',
             []
         );
 
@@ -957,27 +957,27 @@ class AuthLdapTest extends DbTestCase
     public static function ldapGroupUserProvider(): iterable
     {
         yield [
-            'group_dn'            => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+            'group_dn'            => 'cn=zentra2-group1,ou=groups,ou=usa,ou=ldap2,dc=zentra,dc=org',
             'user_uid'            => 'remi',
-            'expected_group_dn'   => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
-            'expected_group_name' => 'glpi2-group1',
+            'expected_group_dn'   => 'cn=zentra2-group1,ou=groups,ou=usa,ou=ldap2,dc=zentra,dc=org',
+            'expected_group_name' => 'zentra2-group1',
         ];
 
         // OU with special `#` char protected by a `\`
         yield [
-            'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org',
+            'group_dn'            => 'cn=zentra2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=zentra,dc=org',
             'user_uid'            => 'specialchar1',
             // openladap replaces `\#` by `\23` (23 is the ascii code for #)
-            'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
-            'expected_group_name' => 'glpi2-group2',
+            'expected_group_dn'   => 'cn=zentra2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=zentra,dc=org',
+            'expected_group_name' => 'zentra2-group2',
         ];
 
         // OU with special `#` char escaped to `\23`
         yield [
-            'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
+            'group_dn'            => 'cn=zentra2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=zentra,dc=org',
             'user_uid'            => 'specialchar2',
-            'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
-            'expected_group_name' => 'glpi2-group2',
+            'expected_group_dn'   => 'cn=zentra2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=zentra,dc=org',
+            'expected_group_name' => 'zentra2-group2',
         ];
     }
 
@@ -1124,13 +1124,13 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue($user->getFromDB($import['id']));
         $this->assertSame('ecuador0', $user->fields['name']);
         $this->assertSame('034596780', $user->fields['phone']);
-        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
 
         // update the user in ldap (change phone number)
         $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['telephoneNumber' => '+33101010101']
             )
         );
@@ -1141,7 +1141,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['telephoneNumber' => '034596780']
             )
         );
@@ -1154,7 +1154,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertSame('ecuador0', $user->fields['name']);
         $this->assertSame('+33101010101', $user->fields['phone']);
-        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
 
         // update sync field of user
         $this->assertTrue(
@@ -1170,7 +1170,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_mod_add(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['employeeNumber' => '42']
             )
         );
@@ -1188,7 +1188,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 'uid=testecuador',
                 '',
                 true
@@ -1201,7 +1201,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
-                'uid=testecuador,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=testecuador,ou=people,ou=R&D,dc=zentra,dc=org',
                 'uid=ecuador0',
                 '',
                 true
@@ -1211,7 +1211,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_mod_del(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['employeeNumber' => 42]
             )
         );
@@ -1229,7 +1229,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_mod_add(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['employeeNumber' => '42']
             )
         );
@@ -1246,7 +1246,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_mod_replace(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['employeeNumber' => '43']
             )
         );
@@ -1277,14 +1277,14 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_mod_del(
                 $ldap->connect(),
-                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=ecuador0,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['employeeNumber' => 43]
             )
         );
 
         global $DB;
         $DB->update(
-            'glpi_authldaps',
+            'zentra_authldaps',
             ['sync_field' => null],
             ['id' => $ldap->getID()]
         );
@@ -1304,7 +1304,7 @@ class AuthLdapTest extends DbTestCase
         $user = new \User();
         $user->getFromDBbyName('brazil6');
         $this->assertSame('brazil6', $user->fields['name']);
-        $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
         $this->assertFalse($auth->user_present);
         $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
@@ -1337,7 +1337,7 @@ class AuthLdapTest extends DbTestCase
         $user = new \User();
         $this->assertTrue($user->getFromDB($import['id']));
         $this->assertSame('brazil7', $user->fields['name']);
-        $this->assertSame('uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=brazil7,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
 
         $auth = $this->realLogin('brazil7', 'password', false, true);
 
@@ -1349,7 +1349,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
-                'uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=brazil7,ou=people,ou=R&D,dc=zentra,dc=org',
                 'uid=brazil7test',
                 '',
                 true
@@ -1363,7 +1363,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
-                'uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=brazil7test,ou=people,ou=R&D,dc=zentra,dc=org',
                 'uid=brazil7',
                 '',
                 true
@@ -1372,14 +1372,14 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertSame('brazil7test', $user->fields['name']);
-        $this->assertSame('uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=brazil7test,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
 
         $this->assertTrue($auth->user_present);
         $this->checkLdapConnection($auth->ldap_connection);
 
         //ensure duplicated DN on different authldaps_id does not prevent login
         $this->assertTrue(
-            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org'])
+            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&D,dc=zentra,dc=org'])
         );
 
         $dup = $user->fields;
@@ -1398,11 +1398,11 @@ class AuthLdapTest extends DbTestCase
         $auth = $this->realLogin('brazil6', 'password', false);
         $this->assertSame($aid, $auth->user->fields['auths_id']);
         $this->assertSame('brazil6', $auth->user->fields['name']);
-        $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org', $auth->user->fields['user_dn']);
+        $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=zentra,dc=org', $auth->user->fields['user_dn']);
 
         global $DB;
         $DB->update(
-            'glpi_authldaps',
+            'zentra_authldaps',
             ['sync_field' => null],
             ['id' => $ldap->getID()]
         );
@@ -1416,7 +1416,7 @@ class AuthLdapTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testLdapAuthSpecifyAuth()
     {
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+        $_SESSION['zentracronuserrunning'] = "cron_phpunit";
         // Add a local account with same name than a LDAP user ('brazil8')
         $input = [
             'name'         => 'brazil8',
@@ -1447,7 +1447,7 @@ class AuthLdapTest extends DbTestCase
         $auth = new \Auth();
         $this->assertFalse($auth->login('brazil8', 'passwordlocal', false, false, 'ldap-' . $this->ldap->getID()));
 
-        // Then, login with local GLPI DB mode
+        // Then, login with local ZENTRA DB mode
         $auth = new \Auth();
         $this->assertFalse($auth->login('brazil8', 'password', false, false, 'local'));
 
@@ -1578,14 +1578,14 @@ class AuthLdapTest extends DbTestCase
         int $groups_option_value,
         int $authorizations_option_value,
     ): void {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ldap = $this->ldap;
 
         // Set config
-        $CFG_GLPI['user_deleted_ldap_user'] = $user_option_value;
-        $CFG_GLPI['user_deleted_ldap_groups'] = $groups_option_value;
-        $CFG_GLPI['user_deleted_ldap_authorizations'] = $authorizations_option_value;
+        $CFG_ZENTRA['user_deleted_ldap_user'] = $user_option_value;
+        $CFG_ZENTRA['user_deleted_ldap_groups'] = $groups_option_value;
+        $CFG_ZENTRA['user_deleted_ldap_authorizations'] = $authorizations_option_value;
 
         // Unique user for each tests
         $rand = mt_rand();
@@ -1595,7 +1595,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
-                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org",
+                "uid=$uid,ou=people,ou=R&D,dc=zentra,dc=org",
                 [
                     'uid'          => $uid,
                     'sn'           => 'A SN',
@@ -1680,7 +1680,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
-                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org"
+                "uid=$uid,ou=people,ou=R&D,dc=zentra,dc=org"
             )
         );
 
@@ -1757,7 +1757,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
-                'uid=testunreachable,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=testunreachable,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'uid'          => 'testunreachable',
                     'sn'           => 'A SN',
@@ -1803,7 +1803,7 @@ class AuthLdapTest extends DbTestCase
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->assertFalse($synchro);
         $this->hasPhpLogRecordThatContains(
-            "Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
+            "Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=zentra,dc=org`\nerror: Can't contact LDAP server (-1)",
             LogLevel::WARNING
         );
 
@@ -1821,7 +1821,7 @@ class AuthLdapTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testRestoredUser()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ldap = $this->ldap;
 
@@ -1829,7 +1829,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=torestoretest,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'uid'          => 'torestoretest',
                     'sn'           => 'A SN',
@@ -1867,15 +1867,15 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org'
+                'uid=torestoretest,ou=people,ou=R&D,dc=zentra,dc=org'
             )
         );
 
-        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap_user'] ?? AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
+        $user_deleted_ldap_original = $CFG_ZENTRA['user_deleted_ldap_user'] ?? AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
         // put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap_user'] = AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
+        $CFG_ZENTRA['user_deleted_ldap_user'] = AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_deleted_ldap_user'] = $user_deleted_ldap_original;
+        $CFG_ZENTRA['user_deleted_ldap_user'] = $user_deleted_ldap_original;
         $this->assertCount(2, $synchro);
         $this->assertSame(AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
         $this->assertSame($import['id'], $synchro['id']);
@@ -1889,7 +1889,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
-                'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=torestoretest,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'uid'          => 'torestoretest',
                     'sn'           => 'A SN',
@@ -1903,10 +1903,10 @@ class AuthLdapTest extends DbTestCase
             )
         );
 
-        $user_restored_ldap_original = $CFG_GLPI['user_restored_ldap'] ?? 0;
-        $CFG_GLPI['user_restored_ldap'] = 1;
+        $user_restored_ldap_original = $CFG_ZENTRA['user_restored_ldap'] ?? 0;
+        $CFG_ZENTRA['user_restored_ldap'] = 1;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
+        $CFG_ZENTRA['user_restored_ldap'] = $user_restored_ldap_original;
         $this->assertCount(2, $synchro);
         $this->assertSame(AuthLDAP::USER_RESTORED_LDAP, $synchro['action']);
         $this->assertEquals($import['id'], $synchro['id']);
@@ -1932,20 +1932,20 @@ class AuthLdapTest extends DbTestCase
     #[DataProvider('ssoVariablesProvider')]
     public function testOtherAuth($sso_field_id, $sso_field_name)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $config_values = \Config::getConfigurationValues('core', ['ssovariables_id']);
         \Config::setConfigurationValues('core', [
             'ssovariables_id' => $sso_field_id,
         ]);
-        $CFG_GLPI['ssovariables_id'] = $sso_field_id;
+        $CFG_ZENTRA['ssovariables_id'] = $sso_field_id;
         $_SERVER[$sso_field_name] = 'brazil6';
 
-        unset($_SESSION['glpiname']);
+        unset($_SESSION['zentraname']);
 
         $auth = new \Auth();
         $this->assertTrue($auth->login("", ""));
-        $this->assertEquals('brazil6', $_SESSION['glpiname']);
+        $this->assertEquals('brazil6', $_SESSION['zentraname']);
 
         //reset config
         \Config::setConfigurationValues('core', [
@@ -1962,7 +1962,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'ou'          => 'andyetanotheronetogetaveryhugednidentifier',
                     'objectClass'  => [
@@ -1976,7 +1976,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'ou'          => 'andyetanotherlongstring',
                     'objectClass'  => [
@@ -1990,7 +1990,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'ou'          => 'anotherlongstringtocheckforsynchronization',
                     'objectClass'  => [
@@ -2004,7 +2004,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'ou'          => 'averylongstring',
                     'objectClass'  => [
@@ -2019,7 +2019,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'uid'          => 'verylongdn',
                     'sn'           => 'A SN',
@@ -2053,14 +2053,14 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertSame('verylongdn', $user->fields['name']);
         $this->assertSame(
-            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
             $user->fields['user_dn']
         );
 
         $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
                 ['telephoneNumber' => '+33102020202']
             )
         );
@@ -2074,7 +2074,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertSame('verylongdn', $user->fields['name']);
         $this->assertSame('+33102020202', $user->fields['phone']);
         $this->assertSame(
-            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org',
             $user->fields['user_dn']
         );
 
@@ -2082,7 +2082,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
-                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org'
+                'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=zentra,dc=org'
             )
         );
     }
@@ -2097,7 +2097,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
+                'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=zentra,DC=org',
                 [
                     'ou'          => 'Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123',
                     'objectClass'  => [
@@ -2111,7 +2111,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
+                'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=zentra,DC=org',
                 [
                     'ou'          => 'Отдел Тест',
                     'objectClass'  => [
@@ -2126,7 +2126,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $ldap_con,
-                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
+                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=zentra,DC=org',
                 [
                     'uid'          => 'Тестов Тест Тестович',
                     'sn'           => 'A SN',
@@ -2160,14 +2160,14 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertSame('Тестов Тест Тестович', $user->fields['name']);
         $this->assertSame(
-            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org',
+            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=zentra,dc=org',
             $user->fields['user_dn']
         );
 
         $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
-                'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org',
+                'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=zentra,dc=org',
                 ['telephoneNumber' => '+33103030303']
             )
         );
@@ -2181,7 +2181,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertSame('Тестов Тест Тестович', $user->fields['name']);
         $this->assertSame('+33103030303', $user->fields['phone']);
         $this->assertSame(
-            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org',
+            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=zentra,dc=org',
             $user->fields['user_dn']
         );
 
@@ -2189,7 +2189,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
-                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org'
+                'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=zentra,DC=org'
             )
         );
     }
@@ -2230,7 +2230,7 @@ class AuthLdapTest extends DbTestCase
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
         // Static conf
-        $base_dn = "ou=people,ou=R&D,dc=glpi,dc=org";
+        $base_dn = "ou=people,ou=R&D,dc=zentra,dc=org";
         $user_full_dn = "uid=userwithmanager,$base_dn";
         $escaped_manager_dn = ldap_escape($manager_dn, "", LDAP_ESCAPE_DN);
         $manager_full_dn = "cn=$escaped_manager_dn,$base_dn";
@@ -2346,7 +2346,7 @@ class AuthLdapTest extends DbTestCase
         $rule = $this->createRule($rule_builder);
         $rules_id = $rule->getID();
 
-        // login the user to force a real synchronisation and get it's glpi id
+        // login the user to force a real synchronisation and get it's zentra id
         $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
@@ -2441,7 +2441,7 @@ class AuthLdapTest extends DbTestCase
             'value'       => $group_id,
         ])->getID();
 
-        // login the user to force a real synchronisation and get it's glpi id
+        // login the user to force a real synchronisation and get it's zentra id
         $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
@@ -2584,7 +2584,7 @@ class AuthLdapTest extends DbTestCase
         $user = new \User();
         $user->getFromDBbyName('brazil5');
         $this->assertSame('brazil5', $user->fields['name']);
-        $this->assertSame('uid=brazil5,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=brazil5,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
         $this->assertFalse($auth->user_present);
         $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
@@ -2593,7 +2593,7 @@ class AuthLdapTest extends DbTestCase
         $input = $this->ldap->fields;
         unset($input['id']);
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
-        $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
+        $input['basedn'] = 'dc=notzentra'; // use a non-matching base DN to ensure user cannot login on it
         $ldap = new AuthLDAP();
         $this->assertGreaterThan(0, $ldap->add($input));
 
@@ -2607,12 +2607,12 @@ class AuthLdapTest extends DbTestCase
 
         $this->realLogin('brazil5', 'password', false, false);
         $this->hasPhpLogRecordThatContains(
-            "Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
+            "Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=zentra,dc=org`\nerror: Can't contact LDAP server (-1)",
             LogLevel::WARNING
         );
 
         $user->getFromDBbyName('brazil5');
-        // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
+        // Verify trying to log in while LDAP unavailable does not disable user's ZENTRA account
         $this->assertEquals(1, $user->fields['is_active']);
         $this->assertEquals(0, $user->fields['is_deleted_ldap']);
     }
@@ -2627,7 +2627,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_add(
                 $connection,
-                'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org',
+                'uid=logintest,ou=people,ou=R&D,dc=zentra,dc=org',
                 [
                     'uid'          => 'logintest',
                     'sn'           => 'A SN',
@@ -2647,7 +2647,7 @@ class AuthLdapTest extends DbTestCase
         $user = new \User();
         $user->getFromDBbyName('logintest');
         $this->assertSame('logintest', $user->fields['name']);
-        $this->assertSame('uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertSame('uid=logintest,ou=people,ou=R&D,dc=zentra,dc=org', $user->fields['user_dn']);
         $this->assertFalse($auth->user_present);
         $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
@@ -2656,7 +2656,7 @@ class AuthLdapTest extends DbTestCase
         $input = $this->ldap->fields;
         unset($input['id']);
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
-        $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
+        $input['basedn'] = 'dc=notzentra'; // use a non-matching base DN to ensure user cannot login on it
         $ldap = new AuthLDAP();
         $this->assertGreaterThan(0, $ldap->add($input));
 
@@ -2664,7 +2664,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             ldap_delete(
                 $connection,
-                'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org'
+                'uid=logintest,ou=people,ou=R&D,dc=zentra,dc=org'
             )
         );
 
@@ -2672,7 +2672,7 @@ class AuthLdapTest extends DbTestCase
         $auth = new \Auth();
         $this->assertFalse($auth->login('logintest', 'password'));
 
-        // Assert user is marked "deleted" in GLPI database
+        // Assert user is marked "deleted" in ZENTRA database
         $user->getFromDBbyName('logintest');
         $this->assertEquals(1, $user->fields['is_deleted_ldap']);
     }
@@ -2769,12 +2769,12 @@ class AuthLdapTest extends DbTestCase
         yield [
             'host'     => 'openldap',
             'port'     => '3890',
-            'login'    => 'cn=Manager,dc=glpi,dc=org',
+            'login'    => 'cn=Manager,dc=zentra,dc=org',
             'password' => 'wrongpassword',
             'error'    => implode(
                 "\n",
                 [
-                    'Unable to bind to LDAP server `openldap:3890` with RDN `cn=Manager,dc=glpi,dc=org`',
+                    'Unable to bind to LDAP server `openldap:3890` with RDN `cn=Manager,dc=zentra,dc=org`',
                     'error: Invalid credentials (49)',
                 ]
             ),
@@ -2813,7 +2813,7 @@ class AuthLdapTest extends DbTestCase
         AuthLDAP::connectToServer(
             'openldap',
             '3890',
-            'cn=Manager,dc=glpi,dc=org',
+            'cn=Manager,dc=zentra,dc=org',
             'insecure',
             true,
         );
@@ -2868,12 +2868,12 @@ class AuthLdapTest extends DbTestCase
 
         // invalid filter
         yield [
-            'basedn' => 'dc=glpi,dc=org',
+            'basedn' => 'dc=zentra,dc=org',
             'filter' => 'notavalidfilter',
             'error'  => implode(
                 "\n",
                 [
-                    'Unable to get LDAP object having DN `dc=glpi,dc=org` with filter `notavalidfilter`',
+                    'Unable to get LDAP object having DN `dc=zentra,dc=org` with filter `notavalidfilter`',
                     'error: Bad search filter (-7)',
                 ]
             ),
@@ -2930,12 +2930,12 @@ class AuthLdapTest extends DbTestCase
             // invalid filter
             yield [
                 'config_fields' => $config_fields,
-                'basedn'        => 'dc=glpi,dc=org',
+                'basedn'        => 'dc=zentra,dc=org',
                 'filter'        => 'notavalidfilter',
                 'error'         => implode(
                     "\n",
                     [
-                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                        'LDAP search with base DN `dc=zentra,dc=org` and filter `notavalidfilter` failed',
                         'error: Bad search filter (-7)',
                     ]
                 ),
@@ -2948,12 +2948,12 @@ class AuthLdapTest extends DbTestCase
                 'can_support_pagesize' => 1,
                 'pagesize'             => 0,
             ],
-            'basedn'        => 'dc=glpi,dc=org',
+            'basedn'        => 'dc=zentra,dc=org',
             'filter'        => '(objectclass=inetOrgPerson)',
             'error'         => implode(
                 "\n",
                 [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=inetOrgPerson)` failed',
+                    'LDAP search with base DN `dc=zentra,dc=org` and filter `(objectclass=inetOrgPerson)` failed',
                     'error: Bad parameter to an ldap routine (-9)',
                 ]
             ),
@@ -3011,13 +3011,13 @@ class AuthLdapTest extends DbTestCase
         // invalid filter
         yield [
             'options' => [
-                'basedn'    => 'dc=glpi,dc=org',
+                'basedn'    => 'dc=zentra,dc=org',
                 'condition' => 'invalidfilter)',
             ],
             'error'         => implode(
                 "\n",
                 [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(& (uid=johndoe) invalidfilter))` failed',
+                    'LDAP search with base DN `dc=zentra,dc=org` and filter `(& (uid=johndoe) invalidfilter))` failed',
                     'error: Bad search filter (-7)',
                 ]
             ),
@@ -3083,7 +3083,7 @@ class AuthLdapTest extends DbTestCase
                 'error'         => implode(
                     "\n",
                     [
-                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                        'LDAP search with base DN `dc=zentra,dc=org` and filter `notavalidfilter` failed',
                         'error: Bad search filter (-7)',
                     ]
                 ),
@@ -3100,7 +3100,7 @@ class AuthLdapTest extends DbTestCase
             'error'         => implode(
                 "\n",
                 [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=groupOfNames)` failed',
+                    'LDAP search with base DN `dc=zentra,dc=org` and filter `(objectclass=groupOfNames)` failed',
                     'error: Bad parameter to an ldap routine (-9)',
                 ]
             ),
@@ -3138,7 +3138,7 @@ class AuthLdapTest extends DbTestCase
     {
         $ldap = $this->ldap;
 
-        // Create a GLPI-only group (no LDAP mapping)
+        // Create a ZENTRA-only group (no LDAP mapping)
         $group_id = $this->createItem(Group::class, [
             "name" => "Rule Default Group Test",
         ])->getID();

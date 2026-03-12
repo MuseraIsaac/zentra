@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Search\SearchEngine;
-use Glpi\Tests\CommonITILTaskTestCase;
+use Zentra\Search\SearchEngine;
+use Zentra\Tests\CommonITILTaskTestCase;
 use Override;
 use TicketTask;
 
@@ -234,7 +234,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         $iterator = $task::getTaskList('todo', true);
         $this->assertCount(0, $iterator);
 
-        $_SESSION['glpigroups'] = [42, 1337];
+        $_SESSION['zentragroups'] = [42, 1337];
         $iterator = $task::getTaskList('todo', true);
         //no task for those groups
         $this->assertCount(0, $iterator);
@@ -281,9 +281,9 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         );
 
         ob_start();
-        $_SESSION['glpidisplay_count_on_home'] = 2;
+        $_SESSION['zentradisplay_count_on_home'] = 2;
         TicketTask::showCentralList(0, 'todo', false);
-        unset($_SESSION['glpidisplay_count_on_home']);
+        unset($_SESSION['zentradisplay_count_on_home']);
         $output = ob_get_clean();
 
         $this->assertStringContainsString(

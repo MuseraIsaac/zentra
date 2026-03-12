@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ use Change;
 use ChangeTask;
 use CommonITILObject;
 use Config;
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Notification;
@@ -631,7 +631,7 @@ class PendingReasonTest extends DbTestCase
         $current_date = '2025-01-31 12:00:00';
         $date2 = '2025-01-31 13:00:00';
 
-        $_SESSION['glpi_currenttime'] = $current_date;
+        $_SESSION['zentra_currenttime'] = $current_date;
         // Create a set of pending reasons that will be reused in our test cases
         [
             $pending_reason1,
@@ -1051,7 +1051,7 @@ class PendingReasonTest extends DbTestCase
         $date_before_bump = '2025-01-28 12:00:00';
         $date_to_bump = '2025-01-28 11:59:59';
 
-        $_SESSION['glpi_currenttime'] = $current_date;
+        $_SESSION['zentra_currenttime'] = $current_date;
 
         $itilfollowuptemplate = $this->createItem(ITILFollowupTemplate::class, [
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -1275,7 +1275,7 @@ class PendingReasonTest extends DbTestCase
 
     public function testNotificationEvents(): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $notification = new Notification();
         $entities_id = $this->getTestRootEntity(true);
@@ -1390,15 +1390,15 @@ class PendingReasonTest extends DbTestCase
             'status' => CommonITILObject::WAITING,
         ]);
 
-        $CFG_GLPI['use_notifications'] = 1;
-        $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_ZENTRA['use_notifications'] = 1;
+        $CFG_ZENTRA['notifications_mailing'] = 1;
 
         $this->assertTrue(PendingReason_Item::createForItem($ticket, [
             'pendingreasons_id' => $pending_reason->getID(),
             'followup_frequency' => DAY_TIMESTAMP,
             'followups_before_resolution' => 3,
         ]));
-        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $add_template_id]));
+        $this->assertCount(1, getAllDataFromTable('zentra_queuednotifications', ['notificationtemplates_id' => $add_template_id]));
 
         $pri = new PendingReason_Item();
         $this->assertTrue($pri->getFromDBByCrit([
@@ -1412,10 +1412,10 @@ class PendingReasonTest extends DbTestCase
         ]));
 
         \PendingReasonCron::cronPendingreason_autobump_autosolve(new \CronTask());
-        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $autoclose_template_id]));
+        $this->assertCount(1, getAllDataFromTable('zentra_queuednotifications', ['notificationtemplates_id' => $autoclose_template_id]));
 
         PendingReason_Item::deleteForItem($ticket);
-        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $remove_template_id]));
+        $this->assertCount(1, getAllDataFromTable('zentra_queuednotifications', ['notificationtemplates_id' => $remove_template_id]));
     }
 
     public function testPendingReasonsMessages()

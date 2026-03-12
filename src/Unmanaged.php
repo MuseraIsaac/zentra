@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -16,7 +16,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Inventoriable;
+use Zentra\Features\StateInterface;
 
 /**
  * Not managed devices from inventory
@@ -46,7 +46,7 @@ use Glpi\Features\StateInterface;
 class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use Inventoriable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
     use AssignableItem;
 
     // From CommonDBTM
@@ -116,7 +116,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
 
         $tab[] = [
             'id'        => '3',
-            'table'     => 'glpi_locations',
+            'table'     => 'zentra_locations',
             'field'     => 'name',
             'linkfield' => 'locations_id',
             'name'      => Location::getTypeName(1),
@@ -162,7 +162,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
 
         $tab[] = [
             'id'        => '8',
-            'table'     => 'glpi_entities',
+            'table'     => 'zentra_entities',
             'field'     => 'completename',
             'linkfield' => 'entities_id',
             'name'      => Entity::getTypeName(1),
@@ -236,7 +236,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -265,7 +265,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -308,11 +308,11 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         switch ($ma->getAction()) {
             case 'convert':
                 echo __s('Select an itemtype: ') . ' ';
-                Dropdown::showItemType($CFG_GLPI['inventory_types'], [
+                Dropdown::showItemType($CFG_ZENTRA['inventory_types'], [
                     'display_emptychoice' => false,
                 ]);
                 break;
@@ -325,7 +325,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         CommonDBTM $item,
         array $ids
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         switch ($ma->getAction()) {
             case 'convert':
                 $unmanaged = new self();

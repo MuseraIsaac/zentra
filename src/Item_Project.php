@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Item_Project Class
@@ -120,7 +120,7 @@ class Item_Project extends CommonDBRelation
             foreach ($iterator as $data) {
                 $name = $data[$itemtype::getNameField()];
                 if (
-                    $_SESSION["glpiis_ids_visible"]
+                    $_SESSION["zentrais_ids_visible"]
                     || empty($data[$itemtype::getNameField()])
                 ) {
                     $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
@@ -129,7 +129,7 @@ class Item_Project extends CommonDBRelation
                 $namelink = "<a href=\"" . htmlescape($link) . "\">" . htmlescape($name) . "</a>";
 
                 if (!isset($entity_names_cache[$data['entity']])) {
-                    $entity_names_cache[$data['entity']] = Dropdown::getDropdownName("glpi_entities", $data['entity']);
+                    $entity_names_cache[$data['entity']] = Dropdown::getDropdownName("zentra_entities", $data['entity']);
                 }
 
                 $entries[] = [
@@ -195,15 +195,15 @@ class Item_Project extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$withtemplate) {
             $nb = 0;
             switch (true) {
                 case $item instanceof Project:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
                     return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
@@ -212,9 +212,9 @@ class Item_Project extends CommonDBRelation
                     if (
                         Project::canView()
                         && $item instanceof CommonDBTM
-                        && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+                        && in_array($item->getType(), $CFG_ZENTRA["project_asset_types"])
                     ) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             // Direct one
                             $nb = self::countForItem($item);
 
@@ -239,9 +239,9 @@ class Item_Project extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -253,7 +253,7 @@ class Item_Project extends CommonDBRelation
 
         if (
             Project::canView()
-            && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+            && in_array($item->getType(), $CFG_ZENTRA["project_asset_types"])
         ) {
             return self::showForAsset($item);
         }
@@ -281,7 +281,7 @@ class Item_Project extends CommonDBRelation
             }
 
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
-            $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
+            $prioritycolor  = $_SESSION["zentrapriority_" . $project->fields['priority']];
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
             $entries[] = [

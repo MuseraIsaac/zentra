@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\HasSoftwaresCapacity;
-use Glpi\Features\Clonable;
-use Glpi\Tests\DbTestCase;
+use Zentra\Asset\Capacity;
+use Zentra\Asset\Capacity\HasSoftwaresCapacity;
+use Zentra\Features\Clonable;
+use Zentra\Tests\DbTestCase;
 use Item_SoftwareVersion;
 use Toolbox;
 
@@ -45,13 +45,13 @@ class Item_SoftwareVersionTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['software_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
@@ -64,11 +64,11 @@ class Item_SoftwareVersionTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);
 
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_ZENTRA['software_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
@@ -300,39 +300,39 @@ class Item_SoftwareVersionTest extends DbTestCase
             'softwareversions_id' => $ver,
         ];
 
-        // With full rights (glpi user), can() should return true
+        // With full rights (zentra user), can() should return true
         $this->assertTrue($inst->can(-1, CREATE, $input));
 
         // Save current profile rights
-        $original_software = $_SESSION['glpiactiveprofile']['software'] ?? 0;
-        $original_computer = $_SESSION['glpiactiveprofile']['computer'] ?? 0;
+        $original_software = $_SESSION['zentraactiveprofile']['software'] ?? 0;
+        $original_computer = $_SESSION['zentraactiveprofile']['computer'] ?? 0;
 
         // Test case 1: Software UPDATE + Computer READ = should work
-        $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
-        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $_SESSION['zentraactiveprofile']['software'] = READ | UPDATE;
+        $_SESSION['zentraactiveprofile']['computer'] = READ;
         $inst1 = new Item_SoftwareVersion();
         $this->assertTrue($inst1->can(-1, CREATE, $input), 'Software UPDATE + Computer READ should allow creation');
 
         // Test case 2: Computer UPDATE + Software READ = should work
-        $_SESSION['glpiactiveprofile']['software'] = READ;
-        $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
+        $_SESSION['zentraactiveprofile']['software'] = READ;
+        $_SESSION['zentraactiveprofile']['computer'] = READ | UPDATE;
         $inst2 = new Item_SoftwareVersion();
         $this->assertTrue($inst2->can(-1, CREATE, $input), 'Computer UPDATE + Software READ should allow creation');
 
         // Test case 3: Software UPDATE only (no computer rights) = should fail
-        $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
-        $_SESSION['glpiactiveprofile']['computer'] = 0;
+        $_SESSION['zentraactiveprofile']['software'] = READ | UPDATE;
+        $_SESSION['zentraactiveprofile']['computer'] = 0;
         $inst3 = new Item_SoftwareVersion();
         $this->assertFalse($inst3->can(-1, CREATE, $input), 'Software UPDATE without Computer READ should deny creation');
 
         // Test case 4: Computer UPDATE only (no software rights) = should fail
-        $_SESSION['glpiactiveprofile']['software'] = 0;
-        $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
+        $_SESSION['zentraactiveprofile']['software'] = 0;
+        $_SESSION['zentraactiveprofile']['computer'] = READ | UPDATE;
         $inst4 = new Item_SoftwareVersion();
         $this->assertFalse($inst4->can(-1, CREATE, $input), 'Computer UPDATE without Software READ should deny creation');
 
         // Restore original rights
-        $_SESSION['glpiactiveprofile']['software'] = $original_software;
-        $_SESSION['glpiactiveprofile']['computer'] = $original_computer;
+        $_SESSION['zentraactiveprofile']['software'] = $original_software;
+        $_SESSION['zentraactiveprofile']['computer'] = $original_computer;
     }
 }

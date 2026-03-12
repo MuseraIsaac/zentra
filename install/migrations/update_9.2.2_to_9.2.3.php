@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,14 +54,14 @@ function update922to923()
     $migration->setVersion('9.2.3');
 
     //add a column for the model
-    if (!$DB->fieldExists("glpi_devicepcis", "devicenetworkcardmodels_id")) {
+    if (!$DB->fieldExists("zentra_devicepcis", "devicenetworkcardmodels_id")) {
         $migration->addField(
-            "glpi_devicepcis",
+            "zentra_devicepcis",
             "devicenetworkcardmodels_id",
             "int NOT NULL DEFAULT '0'",
             ['after' => 'manufacturers_id']
         );
-        $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
+        $migration->addKey('zentra_devicepcis', 'devicenetworkcardmodels_id');
     }
 
     //fix notificationtemplates_id in translations table
@@ -78,7 +78,7 @@ function update922to923()
             && $template->getFromDBByCrit(['itemtype' => $notif])
         ) {
             $DB->update(
-                "glpi_notificationtemplatetranslations",
+                "zentra_notificationtemplatetranslations",
                 ["notificationtemplates_id" => $template->fields['id']],
                 ["notificationtemplates_id" => $notification->fields['id']]
             );
@@ -86,7 +86,7 @@ function update922to923()
             if (
                 $notif == 'SavedSearch_Alert'
                 && countElementsInTable(
-                    'glpi_notifications_notificationtemplates',
+                    'zentra_notifications_notificationtemplates',
                     [
                         'notifications_id'            =>  $notification->fields['id'],
                         'notificationtemplates_id'    => $template->fields['id'],
@@ -95,7 +95,7 @@ function update922to923()
                 ) == 0
             ) {
                 //Add missing notification template link for saved searches
-                $DB->insert("glpi_notifications_notificationtemplates", [
+                $DB->insert("zentra_notifications_notificationtemplates", [
                     'notifications_id'         => $notification->fields['id'],
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $template->fields['id'],

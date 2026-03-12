@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
+use Zentra\Features\Clonable;
 
 /**
  * ITILCategory class
@@ -159,7 +159,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
@@ -168,7 +168,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -252,7 +252,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '77',
-            'table'              => 'glpi_tickets',
+            'table'              => 'zentra_tickets',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of tickets'),
             'datatype'           => 'count',
@@ -266,7 +266,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '78',
-            'table'              => 'glpi_problems',
+            'table'              => 'zentra_problems',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of problems'),
             'datatype'           => 'count',
@@ -280,7 +280,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '151',
-            'table'              => 'glpi_changes',
+            'table'              => 'zentra_changes',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of changes'),
             'datatype'           => 'count',
@@ -294,7 +294,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_knowbaseitemcategories',
+            'table'              => 'zentra_knowbaseitemcategories',
             'field'              => 'completename',
             'name'               => __('Knowledge base'),
             'datatype'           => 'dropdown',
@@ -418,7 +418,7 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
@@ -432,7 +432,7 @@ class ITILCategory extends CommonTreeDropdown
         return parent::getTabNameForItem($item, $withtemplate);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate) {
             self::showForITILTemplate($item, $withtemplate);
@@ -447,7 +447,7 @@ class ITILCategory extends CommonTreeDropdown
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $itilcategory = new self();
         $ID           = $tt->fields['id'];
@@ -462,7 +462,7 @@ class ITILCategory extends CommonTreeDropdown
         echo "<div class='center'>";
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_itilcategories',
+            'FROM'   => 'zentra_itilcategories',
             'WHERE'  => [
                 'OR' => [
                     'tickettemplates_id_incident' => $ID,
@@ -495,7 +495,7 @@ class ITILCategory extends CommonTreeDropdown
                 echo "<td>" . $itilcategory->getLink(['comments' => true]) . "</td>";
                 if ($data['tickettemplates_id_incident'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                     <img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
                         . "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -503,7 +503,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['tickettemplates_id_demand'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                     <img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
                         . "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -511,7 +511,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['changetemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                     <img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
                         . "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -519,7 +519,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['problemtemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                     <img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
                         . "\" width='14' height='14'>
                      </td>";
                 } else {

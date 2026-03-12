@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Event;
+use Zentra\Event;
 
 Session::checkRight("license", READ);
 if (!isset($_REQUEST["id"])) {
@@ -59,9 +59,9 @@ if (isset($_POST["add"])) {
             4,
             "inventory",
             //TRANS: %s is the user login, %2$s is the license id
-            sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID)
+            sprintf(__('%1$s adds the license %2$s'), $_SESSION["zentraname"], $newID)
         );
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['zentrabackcreated']) {
             Html::redirect($license->getLinkURL());
         }
     }
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
             4,
             "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+            sprintf(__('%s restores an item'), $_SESSION["zentraname"])
         );
     }
     $license->redirectToList();
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login, %2$s is the license id
-        sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"])
+        sprintf(__('%1$s deletes the license %2$s'), $_SESSION["zentraname"], $_POST["id"])
     );
     $license->redirectToList();
 } elseif (isset($_POST["purge"])) {
@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login, %2$s is the license id
-        sprintf(__('%1$s purges the license %2$s'), $_SESSION["glpiname"], $_POST["id"])
+        sprintf(__('%1$s purges the license %2$s'), $_SESSION["zentraname"], $_POST["id"])
     );
     $license->redirectToList();
 } elseif (isset($_POST["update"])) {
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
         4,
         "inventory",
         //TRANS: %s is the user login, %2$s is the license id
-        sprintf(__('%1$s updates the license %2$s'), $_SESSION["glpiname"], $_POST["id"])
+        sprintf(__('%1$s updates the license %2$s'), $_SESSION["zentraname"], $_POST["id"])
     );
     Html::back();
 } else {

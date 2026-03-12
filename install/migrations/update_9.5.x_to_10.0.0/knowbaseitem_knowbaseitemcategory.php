@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 /* Update link KB_item-category from 1-1 to 1-n */
-if (!$DB->tableExists('glpi_knowbaseitems_knowbaseitemcategories')) {
-    $query = "CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
+if (!$DB->tableExists('zentra_knowbaseitems_knowbaseitemcategories')) {
+    $query = "CREATE TABLE `zentra_knowbaseitems_knowbaseitemcategories` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `knowbaseitems_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `knowbaseitemcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -53,20 +53,20 @@ if (!$DB->tableExists('glpi_knowbaseitems_knowbaseitemcategories')) {
     $DB->doQuery($query);
 }
 
-if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {
+if ($DB->fieldExists('zentra_knowbaseitems', 'knowbaseitemcategories_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'knowbaseitemcategories_id'],
-        'FROM'   => 'glpi_knowbaseitems',
+        'FROM'   => 'zentra_knowbaseitems',
         'WHERE'  => ['knowbaseitemcategories_id' => ['>', 0]],
     ]);
     if (count($iterator)) {
         //migrate existing data
         foreach ($iterator as $row) {
-            $DB->insert("glpi_knowbaseitems_knowbaseitemcategories", [
+            $DB->insert("zentra_knowbaseitems_knowbaseitemcategories", [
                 'knowbaseitemcategories_id'   => $row['knowbaseitemcategories_id'],
                 'knowbaseitems_id'            => $row['id'],
             ]);
         }
     }
-    $migration->dropField('glpi_knowbaseitems', 'knowbaseitemcategories_id');
+    $migration->dropField('zentra_knowbaseitems', 'knowbaseitemcategories_id');
 }

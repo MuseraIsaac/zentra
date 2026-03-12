@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@
    }) }}
    {{ fields.htmlField('', call('Telemetry::getViewLink'), __('Telemetry data')) }}
 
-   {{ fields.smallTitle(__('GLPI update')) }}
+   {{ fields.smallTitle(__('ZENTRA update')) }}
    {% set btn_check_updates %}
       <a class="btn btn-secondary" href="?check_version"><i class="ti ti-reload"></i>
          <span>{{ __('Check if a new version is available') }}</span>
@@ -94,7 +94,7 @@
    {{ fields.htmlField(
       '',
       btn_check_updates,
-      "GLPI " ~ constant('GLPI_VERSION') ~ " Copyright (C) 2015-" ~ constant('GLPI_YEAR') ~ " Teclib' and contributors",
+      "ZENTRA " ~ constant('ZENTRA_VERSION') ~ " Copyright (C) 2015-" ~ constant('ZENTRA_YEAR') ~ " Teclib' and contributors",
       {
          full_width: true
       }

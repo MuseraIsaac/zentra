@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Stat\Data\Graph\StatDataSatisfaction;
-use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
-use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
-use Glpi\Stat\Data\Graph\StatDataTicketNumber;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Exception\Http\BadRequestHttpException;
+use Zentra\Stat\Data\Graph\StatDataSatisfaction;
+use Zentra\Stat\Data\Graph\StatDataSatisfactionSurvey;
+use Zentra\Stat\Data\Graph\StatDataTicketAverageTime;
+use Zentra\Stat\Data\Graph\StatDataTicketNumber;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -142,7 +142,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             _n('Category', 'Categories', 1),
-            Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"])
+            Dropdown::getDropdownName("zentra_itilcategories", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -164,7 +164,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             Location::getTypeName(1),
-            Dropdown::getDropdownName('glpi_locations', $_GET['id'])
+            Dropdown::getDropdownName('zentra_locations', $_GET['id'])
         );
         $title   = htmlescape($title);
         break;
@@ -195,7 +195,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             Group::getTypeName(1),
-            Dropdown::getDropdownName("glpi_groups", $_GET["id"])
+            Dropdown::getDropdownName("zentra_groups", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -207,7 +207,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             Group::getTypeName(1),
-            Dropdown::getDropdownName("glpi_groups", $_GET["id"])
+            Dropdown::getDropdownName("zentra_groups", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -233,7 +233,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             _x('person', 'Title'),
-            Dropdown::getDropdownName("glpi_usertitles", $_GET["id"])
+            Dropdown::getDropdownName("zentra_usertitles", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -245,7 +245,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             SolutionType::getTypeName(1),
-            Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"])
+            Dropdown::getDropdownName("zentra_solutiontypes", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -257,7 +257,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             _n('Category', 'Categories', 1),
-            Dropdown::getDropdownName("glpi_usercategories", $_GET["id"])
+            Dropdown::getDropdownName("zentra_usercategories", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;
@@ -269,7 +269,7 @@ switch ($type) {
         $title   = sprintf(
             __('%1$s: %2$s'),
             RequestType::getTypeName(1),
-            Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"])
+            Dropdown::getDropdownName("zentra_requesttypes", $_GET["id"])
         );
         $title   = htmlescape($title);
         break;

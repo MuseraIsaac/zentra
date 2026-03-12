@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QuerySubQuery;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QuerySubQuery;
 
 /**
  * Profile_User Class
@@ -147,7 +147,7 @@ class Profile_User extends CommonDBRelation
         }
 
         $start       = (int) ($_GET["start"] ?? 0);
-        $limit       = $_SESSION["glpilist_limit"];
+        $limit       = $_SESSION["zentralist_limit"];
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");
         $sort_params = [];
@@ -164,7 +164,7 @@ class Profile_User extends CommonDBRelation
                 'id'       => $data['linkid'],
             ];
             $link = $data["completename"];
-            if ($_SESSION["glpiis_ids_visible"]) {
+            if ($_SESSION["zentrais_ids_visible"]) {
                 $link = sprintf(__('%1$s (%2$s)'), $link, $data["entities_id"]);
             }
             if ($canshowentity) {
@@ -227,7 +227,7 @@ class Profile_User extends CommonDBRelation
             'filtered_number' => $total_num,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed'    => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
@@ -266,7 +266,7 @@ class Profile_User extends CommonDBRelation
         $ptable = Profile::getTable();
         $utable = User::getTable();
         $start       = (int) ($_GET["start"] ?? 0);
-        $limit       = $_SESSION["glpilist_limit"];
+        $limit       = $_SESSION["zentralist_limit"];
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");
         $sort_params = [];
@@ -310,7 +310,7 @@ class Profile_User extends CommonDBRelation
 
         $criteria = [
             'SELECT'       => [
-                "glpi_users" => ['id', 'name', 'realname', 'firstname', 'picture'],
+                "zentra_users" => ['id', 'name', 'realname', 'firstname', 'picture'],
                 "$putable.id AS linkid",
                 "$putable.is_recursive",
                 "$putable.is_dynamic",
@@ -421,7 +421,7 @@ TWIG, $avatar_params) . $username;
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
+                'num_displayed'    => min($_SESSION['zentralist_limit'], $nb),
                 'container'        => 'mass' . self::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
@@ -447,7 +447,7 @@ TWIG, $avatar_params) . $username;
         }
 
         $start       = (int) ($_GET["start"] ?? 0);
-        $limit       = $_SESSION["glpilist_limit"];
+        $limit       = $_SESSION["zentralist_limit"];
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");
         $sort_params = [];
@@ -515,7 +515,7 @@ TWIG, $avatar_params) . $username;
             'WHERE'           => [
                 "$putable.profiles_id"  => $ID,
                 "$utable.is_deleted"    => 0,
-            ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['zentraactiveentities'], true),
             'ORDER'         => $sort_params,
             'START'         => $start,
             'LIMIT'         => $limit,
@@ -538,7 +538,7 @@ TWIG, $avatar_params) . $username;
         foreach ($iterator as $data) {
             $used_users[] = $data['id'];
             if (!isset($entity_names[$data['entity']])) {
-                $entity_names[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
+                $entity_names[$data['entity']] = Dropdown::getDropdownName('zentra_entities', $data['entity']);
             }
             $username = formatUserLink(
                 $data["id"],
@@ -615,7 +615,7 @@ TWIG, $avatar_params) . $username;
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
+                'num_displayed'    => min($_SESSION['zentralist_limit'], $nb),
                 'container'        => 'mass' . self::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
@@ -642,14 +642,14 @@ TWIG, $avatar_params) . $username;
                 'is_recursive',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_profiles_users',
+            'FROM'            => 'zentra_profiles_users',
             'WHERE'           => ['users_id' => (int) $user_ID],
         ]);
         $entities = [];
 
         foreach ($iterator as $data) {
             if ($data['is_recursive'] && $is_recursive) {
-                $tab      = getSonsOf('glpi_entities', $data['entities_id']);
+                $tab      = getSonsOf('zentra_entities', $data['entities_id']);
                 $entities = array_merge($tab, $entities);
             } else {
                 $entities[] = $data['entities_id'];
@@ -725,7 +725,7 @@ TWIG, $avatar_params) . $username;
 
             foreach ($iterator as $data) {
                 if ($data['is_recursive'] && $is_recursive) {
-                    $tab      = getSonsOf('glpi_entities', $data['entities_id']);
+                    $tab      = getSonsOf('zentra_entities', $data['entities_id']);
                     $entities = array_merge($tab, $entities);
                 } else {
                     $entities[] = $data['entities_id'];
@@ -763,7 +763,7 @@ TWIG, $avatar_params) . $username;
         $iterator = $DB->request([
             'SELECT'          => 'profiles_id',
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_profiles_users',
+            'FROM'            => 'zentra_profiles_users',
             'WHERE'           => $where,
         ]);
 
@@ -804,7 +804,7 @@ TWIG, $avatar_params) . $username;
                 $child
                 && $data['is_recursive']
             ) {
-                foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
+                foreach (getSonsOf('zentra_entities', $data['entities_id']) as $id) {
                     $entities[$id] = $id;
                 }
             } else {
@@ -830,7 +830,7 @@ TWIG, $avatar_params) . $username;
 
         $iterator = $DB->request([
             'SELECT' => ['entities_id', 'is_recursive'],
-            'FROM'   => 'glpi_profiles_users',
+            'FROM'   => 'zentra_profiles_users',
             'WHERE'  => ['users_id' => (int) $users_id],
         ]);
 
@@ -840,7 +840,7 @@ TWIG, $avatar_params) . $username;
                 $child
                 && $data['is_recursive']
             ) {
-                foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
+                foreach (getSonsOf('zentra_entities', $data['entities_id']) as $id) {
                     $entities[$id] = $id;
                 }
             } else {
@@ -867,7 +867,7 @@ TWIG, $avatar_params) . $username;
             $condition['is_dynamic'] = 1;
         }
 
-        return getAllDataFromTable('glpi_profiles_users', $condition);
+        return getAllDataFromTable('zentra_profiles_users', $condition);
     }
 
 
@@ -944,7 +944,7 @@ TWIG, $avatar_params) . $username;
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_profiles',
+            'table'              => 'zentra_profiles',
             'field'              => 'name',
             'name'               => self::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -953,7 +953,7 @@ TWIG, $avatar_params) . $username;
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'massiveaction'      => false,
@@ -963,7 +963,7 @@ TWIG, $avatar_params) . $username;
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => true,
@@ -993,8 +993,8 @@ TWIG, $avatar_params) . $username;
 
         $name = sprintf(
             __('%1$s, %2$s'),
-            Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),
-            Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id'])
+            Dropdown::getDropdownName('zentra_profiles', $this->fields['profiles_id']),
+            Dropdown::getDropdownName('zentra_entities', $this->fields['entities_id'])
         );
 
         if (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic']) {
@@ -1010,7 +1010,7 @@ TWIG, $avatar_params) . $username;
         return $name;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         global $DB;
 
@@ -1019,7 +1019,7 @@ TWIG, $avatar_params) . $username;
             switch (get_class($item)) {
                 case Entity::class:
                     if (Session::haveRight('user', READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $count = $DB->request([
                                 'COUNT'     => 'cpt',
                                 'FROM'      => $this->getTable(),
@@ -1044,7 +1044,7 @@ TWIG, $avatar_params) . $username;
 
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
+                        if ($_SESSION['zentrashow_count_on_tabs']) {
                             $count = $DB->request([
                                 'COUNT'     => 'cpt',
                                 'FROM'      => self::getTable(),
@@ -1068,7 +1068,7 @@ TWIG, $avatar_params) . $username;
                     break;
 
                 case User::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(_n(
@@ -1082,7 +1082,7 @@ TWIG, $avatar_params) . $username;
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -1131,7 +1131,7 @@ TWIG, $avatar_params) . $username;
             && ($peer_number == 2)
         ) {
             echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), Entity::getTypeName(1), ''));
-            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
+            Entity::dropdown(['entity' => $_SESSION['zentraactiveentities']]);
             echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('Recursive'), ''));
             Html::showCheckbox(['name' => 'is_recursive']);
         }
@@ -1175,11 +1175,11 @@ TWIG, $avatar_params) . $username;
         $params = parent::getListForItemParams($item, $noent);
         $params['SELECT'][] = self::getTable() . '.entities_id';
         $params['SELECT'][] = self::getTable() . '.is_recursive';
-        $params['SELECT'][] = 'glpi_entities.completename AS completename';
-        $params['LEFT JOIN']['glpi_entities'] = [
+        $params['SELECT'][] = 'zentra_entities.completename AS completename';
+        $params['LEFT JOIN']['zentra_entities'] = [
             'FKEY'   => [
                 self::getTable()  => 'entities_id',
-                'glpi_entities'   => 'id',
+                'zentra_entities'   => 'id',
             ],
         ];
         return $params;
@@ -1210,7 +1210,7 @@ TWIG, $avatar_params) . $username;
             'profiles_id' => $this->fields['profiles_id'],
             'users_id' => new QuerySubQuery([
                 'SELECT' => 'id',
-                'FROM'   => 'glpi_users',
+                'FROM'   => 'zentra_users',
                 'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
             ]),
         ]);

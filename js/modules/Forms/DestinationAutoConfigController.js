@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@
 
 /* global tinymce */
 
-export class GlpiFormDestinationAutoConfigController
+export class ZentraFormDestinationAutoConfigController
 {
     constructor() {
         this.#watchForAutoConfigToggle();
     }
 
     #watchForAutoConfigToggle() {
-        const checkboxes = $('[data-glpi-itildestination-toggle-auto-config]');
+        const checkboxes = $('[data-zentra-itildestination-toggle-auto-config]');
 
         $(checkboxes).on('change', (e) => {
             const is_auto_config_enabled = $(e.target).is(":checked");
-            const container = $(e.target).closest('[data-glpi-itildestination-field]');
+            const container = $(e.target).closest('[data-zentra-itildestination-field]');
 
             this.#toggleInputs(container, is_auto_config_enabled);
             this.#toggleRichTextEditors(container, is_auto_config_enabled);
@@ -58,7 +58,7 @@ export class GlpiFormDestinationAutoConfigController
             input = $(input);
 
             // Prevent disabling the checkbox itself
-            const is_excluded = input.data('glpi-itildestination-toggle-do-not-disable') !== undefined;
+            const is_excluded = input.data('zentra-itildestination-toggle-do-not-disable') !== undefined;
             if (is_excluded) {
                 return;
             }

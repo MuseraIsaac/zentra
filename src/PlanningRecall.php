@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
 
 use function Safe\strtotime;
 
@@ -73,15 +73,15 @@ class PlanningRecall extends CommonDBChild
      */
     public static function isAvailable()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Cache in session
-        if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
-            return $_SESSION['glpiplanningreminder_isavailable'];
+        if (isset($_SESSION['zentraplanningreminder_isavailable'])) {
+            return $_SESSION['zentraplanningreminder_isavailable'];
         }
 
-        $_SESSION['glpiplanningreminder_isavailable'] = 0;
-        if ($CFG_GLPI["use_notifications"]) {
+        $_SESSION['zentraplanningreminder_isavailable'] = 0;
+        if ($CFG_ZENTRA["use_notifications"]) {
             $task = new CronTask();
             if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
                 // Only disabled by config
@@ -92,13 +92,13 @@ class PlanningRecall extends CommonDBChild
                             [Planning::READMY, Planning::READGROUP, Planning::READALL]
                         )
                     ) {
-                        $_SESSION['glpiplanningreminder_isavailable'] = 1;
+                        $_SESSION['zentraplanningreminder_isavailable'] = 1;
                     }
                 }
             }
         }
 
-        return $_SESSION['glpiplanningreminder_isavailable'];
+        return $_SESSION['zentraplanningreminder_isavailable'];
     }
 
     /**
@@ -219,12 +219,12 @@ class PlanningRecall extends CommonDBChild
     {
         global $DB;
 
-        if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
-            unset($_SESSION['glpiplanningreminder_isavailable']);
+        if (isset($_SESSION['zentraplanningreminder_isavailable'])) {
+            unset($_SESSION['zentraplanningreminder_isavailable']);
         }
 
         return $DB->update(
-            'glpi_planningrecalls',
+            'zentra_planningrecalls',
             [
                 'when'   => QueryFunction::dateSub(
                     date: new QueryExpression($DB::quoteValue($begin)),
@@ -363,33 +363,33 @@ TWIG, $p);
      */
     public static function cronPlanningRecall($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
 
         $cron_status = 0;
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_planningrecalls.*',
-            'FROM'      => 'glpi_planningrecalls',
+            'SELECT'    => 'zentra_planningrecalls.*',
+            'FROM'      => 'zentra_planningrecalls',
             'LEFT JOIN' => [
-                'glpi_alerts'  => [
+                'zentra_alerts'  => [
                     'ON' => [
-                        'glpi_planningrecalls'  => 'id',
-                        'glpi_alerts'           => 'items_id', [
+                        'zentra_planningrecalls'  => 'id',
+                        'zentra_alerts'           => 'items_id', [
                             'AND' => [
-                                'glpi_alerts.itemtype'  => 'PlanningRecall',
-                                'glpi_alerts.type'      => Alert::ACTION,
+                                'zentra_alerts.itemtype'  => 'PlanningRecall',
+                                'zentra_alerts.type'      => Alert::ACTION,
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE'     => [
-                'NOT'                         => ['glpi_planningrecalls.when' => null],
-                'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
-                'glpi_alerts.date'            => null,
+                'NOT'                         => ['zentra_planningrecalls.when' => null],
+                'zentra_planningrecalls.when'   => ['<', QueryFunction::now()],
+                'zentra_alerts.date'            => null,
             ],
         ]);
 

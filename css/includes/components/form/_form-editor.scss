@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,34 +33,34 @@
 
 @import "form-editor-horizontal-layout";
 
-[data-glpi-form-editor-container]{
+[data-zentra-form-editor-container]{
     &:not(.initialized) {
         pointer-events: none;
     }
 
-    &:not([data-glpi-form-editor-sorting]) {
-        [data-glpi-form-editor-question-drag-merge] {
+    &:not([data-zentra-form-editor-sorting]) {
+        [data-zentra-form-editor-question-drag-merge] {
             position: absolute;
         }
     }
 
     .form-editor-no-merge {
-         [data-glpi-form-editor-question-drag-merge] {
+         [data-zentra-form-editor-question-drag-merge] {
             position: absolute !important;
         }
     }
 
-    &[data-glpi-form-editor-sorting] {
-        [data-glpi-form-editor-section-blocks] > [data-glpi-form-editor-block] {
+    &[data-zentra-form-editor-sorting] {
+        [data-zentra-form-editor-section-blocks] > [data-zentra-form-editor-block] {
             display: flex;
             align-items: stretch;
 
-            [data-glpi-form-editor-question-drag-merge] {
+            [data-zentra-form-editor-question-drag-merge] {
                 position: relative;
                 width: 15%;
             }
 
-            [data-glpi-form-editor-toolbar] {
+            [data-zentra-form-editor-toolbar] {
                 position: absolute;
                 height: 0;
                 width: 0;
@@ -71,7 +71,7 @@
         }
     }
 
-    [data-glpi-conditions-editor-disabled] {
+    [data-zentra-conditions-editor-disabled] {
         pointer-events: none;
         cursor: wait;
     }
@@ -131,7 +131,7 @@
         }
     }
 
-    [data-glpi-tinymce-init-on-demand-render] {
+    [data-zentra-tinymce-init-on-demand-render] {
         margin-left: 5px;
     }
 }
@@ -141,12 +141,12 @@
 }
 
 // Show required mark on mandatory question
-[data-glpi-form-editor-form] {
+[data-zentra-form-editor-form] {
     height: fit-content;
 
-    &[data-glpi-form-editor-active-form] {
+    &[data-zentra-form-editor-active-form] {
         // Show secondary data on active form
-        [data-glpi-form-editor-form-extra-details] {
+        [data-zentra-form-editor-form-extra-details] {
             position: relative;
             opacity: 1;
             visibility: visible;
@@ -154,14 +154,14 @@
         }
     }
 
-    &:not([data-glpi-form-editor-active-form]) {
+    &:not([data-zentra-form-editor-active-form]) {
         // Do not highlight inactive forms
-        [data-glpi-form-editor-active-form-status-indicator] {
+        [data-zentra-form-editor-active-form-status-indicator] {
             display: none;
         }
 
         // Do not show secondary data on inactive form
-        [data-glpi-form-editor-form-extra-details] {
+        [data-zentra-form-editor-form-extra-details] {
             position: absolute;
             height: 0;
             width: 0;
@@ -172,10 +172,10 @@
     }
 }
 
-[data-glpi-form-editor-section] {
-    &[data-glpi-form-editor-active-section] {
+[data-zentra-form-editor-section] {
+    &[data-zentra-form-editor-active-section] {
         // Show secondary data on active form
-        [data-glpi-form-editor-section-extra-details] {
+        [data-zentra-form-editor-section-extra-details] {
             position: relative;
             opacity: 1;
             visibility: visible;
@@ -183,14 +183,14 @@
         }
     }
 
-    &:not([data-glpi-form-editor-active-section]) {
+    &:not([data-zentra-form-editor-active-section]) {
         // Do not highlight inactive forms
-        [data-glpi-form-editor-active-section-status-indicator] {
+        [data-zentra-form-editor-active-section-status-indicator] {
             display: none;
         }
 
         // Do not show secondary data on inactive form
-        [data-glpi-form-editor-section-extra-details] {
+        [data-zentra-form-editor-section-extra-details] {
             position: absolute;
             height: 0;
             width: 0;
@@ -201,10 +201,10 @@
     }
 }
 
-[data-glpi-form-editor-question] {
-    &[data-glpi-form-editor-active-question] {
+[data-zentra-form-editor-question] {
+    &[data-zentra-form-editor-active-question] {
         // Show secondary data on active form
-        [data-glpi-form-editor-question-extra-details] {
+        [data-zentra-form-editor-question-extra-details] {
             position: relative;
             opacity: 1;
             visibility: visible;
@@ -212,14 +212,14 @@
         }
     }
 
-    &:not([data-glpi-form-editor-active-question]) {
+    &:not([data-zentra-form-editor-active-question]) {
         // Do not highlight inactive forms
-        [data-glpi-form-editor-active-question-status-indicator] {
+        [data-zentra-form-editor-active-question-status-indicator] {
             display: none;
         }
 
         // Do not show secondary data on inactive form
-        [data-glpi-form-editor-question-extra-details] {
+        [data-zentra-form-editor-question-extra-details] {
             position: absolute;
             height: 0;
             width: 0;
@@ -236,10 +236,10 @@
     }
 }
 
-[data-glpi-form-editor-comment] {
-    &[data-glpi-form-editor-active-comment] {
+[data-zentra-form-editor-comment] {
+    &[data-zentra-form-editor-active-comment] {
         // Show secondary data on active comments
-        [data-glpi-form-editor-comment-extra-details] {
+        [data-zentra-form-editor-comment-extra-details] {
             position: relative;
             opacity: 1;
             visibility: visible;
@@ -247,14 +247,14 @@
         }
     }
 
-    &:not([data-glpi-form-editor-active-comment]) {
+    &:not([data-zentra-form-editor-active-comment]) {
         // Do not highlight inactive comments
-        [data-glpi-form-editor-active-comment-status-indicator] {
+        [data-zentra-form-editor-active-comment-status-indicator] {
             display: none;
         }
 
         // Do not show secondary data on inactive comments
-        [data-glpi-form-editor-comment-extra-details] {
+        [data-zentra-form-editor-comment-extra-details] {
             position: absolute;
             height: 0;
             width: 0;
@@ -265,34 +265,34 @@
     }
 }
 
-.glpi-form-editor-drag-question-placeholder {
+.zentra-form-editor-drag-question-placeholder {
     border: 2px dashed var(--tblr-primary);
     background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
 }
 
-[data-glpi-form-editor-section-blocks] {
-    .glpi-form-editor-drag-question-placeholder {
+[data-zentra-form-editor-section-blocks] {
+    .zentra-form-editor-drag-question-placeholder {
         margin-bottom: 1rem;
         height: 70px !important;
     }
 }
 
-[data-glpi-form-editor-question-drag-merge] {
-    .glpi-form-editor-drag-question-placeholder {
+[data-zentra-form-editor-question-drag-merge] {
+    .zentra-form-editor-drag-question-placeholder {
         height: 100% !important;
         margin-left: 0.5rem;
     }
 }
 
-.glpi-form-editor-drag-question-option-placeholder {
+.zentra-form-editor-drag-question-option-placeholder {
     border: 2px dashed var(--tblr-primary);
     background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 40px !important;
 }
 
-.glpi-form-editor-drag-section-placeholder {
+.zentra-form-editor-drag-section-placeholder {
     border: 2px dashed var(--tblr-primary);
     background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
@@ -300,24 +300,24 @@
 }
 
 // Hide handle until question is hovered
-.glpi-form-editor-question-handle {
+.zentra-form-editor-question-handle {
     opacity: 0;
 }
 
-[data-glpi-form-editor-question-details],
-[data-glpi-form-editor-comment-details] {
+[data-zentra-form-editor-question-details],
+[data-zentra-form-editor-comment-details] {
     &:hover {
-        .glpi-form-editor-question-handle {
+        .zentra-form-editor-question-handle {
             opacity: 0.7;
         }
     }
 }
 
 // Hide content of collapsed sections
-[data-glpi-form-editor-section].section-collapsed {
-    [data-glpi-form-editor-section-description],
-    [data-glpi-form-editor-section-blocks],
-    [data-glpi-form-editor-section-extra-details] {
+[data-zentra-form-editor-section].section-collapsed {
+    [data-zentra-form-editor-section-description],
+    [data-zentra-form-editor-section-blocks],
+    [data-zentra-form-editor-section-extra-details] {
         display: none;
     }
 
@@ -325,14 +325,14 @@
 }
 
 // Hide question badge in section when section is not collapsed
-[data-glpi-form-editor-section]:not(.section-collapsed) {
-    [data-glpi-form-editor-section-block-badge] {
+[data-zentra-form-editor-section]:not(.section-collapsed) {
+    [data-zentra-form-editor-section-block-badge] {
         display: none;
     }
 }
 
-[data-glpi-form-editor-question] {
-    &[data-glpi-form-editor-active-question] {
+[data-zentra-form-editor-question] {
+    &[data-zentra-form-editor-active-question] {
         .dropdown-border {
             position: relative;
             border: 1px solid var(--tblr-border-color);
@@ -350,14 +350,14 @@
             }
         }
 
-        div:not([data-glpi-form-editor-selectable-question-options])>[data-glpi-form-selectable-question-option]:last-child {
+        div:not([data-zentra-form-editor-selectable-question-options])>[data-zentra-form-selectable-question-option]:last-child {
             margin-bottom: 0 !important;
         }
     }
 
-    &:not([data-glpi-form-editor-active-question]) {
-        [data-glpi-form-editor-selectable-question-options] {
-            [data-glpi-form-selectable-question-option]:last-child {
+    &:not([data-zentra-form-editor-active-question]) {
+        [data-zentra-form-editor-selectable-question-options] {
+            [data-zentra-form-selectable-question-option]:last-child {
                 margin-bottom: 0 !important;
             }
         }
@@ -423,7 +423,7 @@ input.value-selector {
     overflow: auto;
 }
 
-[data-glpi-form-editor-block] {
+[data-zentra-form-editor-block] {
     margin-bottom: 1rem;
 }
 
@@ -521,13 +521,13 @@ input.value-selector {
 // Fix a weird scrolling issue on the form editor where the body scrolls instead of the form editor
 html {
     // Only apply the overflow hidden on the body when active tab contains the form editor
-    &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
+    &:has(.tab-pane.active > [data-zentra-form-editor-container]) {
         overflow: hidden;
     }
 }
 
 
-[data-glpi-form-editor-toolbar].btn-group-vertical {
+[data-zentra-form-editor-toolbar].btn-group-vertical {
     &::before {
         content: "\ea7c";
         font-family: tabler-icons !important;
@@ -538,22 +538,22 @@ html {
     }
 }
 
-[data-glpi-form-editor-visibility-dropdown-container], [data-glpi-form-editor-validation-dropdown-container] {
+[data-zentra-form-editor-visibility-dropdown-container], [data-zentra-form-editor-validation-dropdown-container] {
     padding-right: 0.75rem;
 
-    &:has([data-glpi-editor-visibility-badge="always_visible"].d-flex,
-          [data-glpi-editor-validation-badge="no_validation"].d-flex,
+    &:has([data-zentra-editor-visibility-badge="always_visible"].d-flex,
+          [data-zentra-editor-validation-badge="no_validation"].d-flex,
           button[aria-expanded="true"]) {
         padding-right: 0;
 
-        [data-glpi-editor-visibility-conditions-count-badge],
-        [data-glpi-editor-validation-conditions-count-badge] {
+        [data-zentra-editor-visibility-conditions-count-badge],
+        [data-zentra-editor-validation-conditions-count-badge] {
             display: none !important;
         }
     }
 }
 
-[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration-visible]) {
+[data-zentra-form-editor-active-question]:has([data-zentra-form-editor-advanced-question-configuration-visible]) {
     .input-group > * {
         &:first-child:has(.select2-selection) {
             .select2-selection {
@@ -565,44 +565,44 @@ html {
 }
 
 // Remove margins when form is empty
-[data-glpi-form-editor-form] {
-    &:not(:has([data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container])) {
-        > [data-glpi-form-editor-form-extra-details] {
+[data-zentra-form-editor-form] {
+    &:not(:has([data-zentra-form-editor-block], [data-zentra-form-editor-horizontal-blocks-container])) {
+        > [data-zentra-form-editor-form-extra-details] {
             margin-bottom: 0 !important;
         }
 
-        [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
+        [data-zentra-form-editor-section], [data-zentra-form-editor-section-blocks] {
             margin-top: 0 !important;
         }
     }
 }
 
 // Hide section and toolbar container when section is hidden
-div:has(> [data-glpi-form-editor-section-details].d-none) {
+div:has(> [data-zentra-form-editor-section-details].d-none) {
     display: none !important;
 }
 
 // Hide some actions if the form is readonly
 .form-editor-readonly {
-    [data-glpi-form-editor-state-action] {
+    [data-zentra-form-editor-state-action] {
         display: none;
     }
 
-    input, div.tox-tinymce, span.select2, label.form-check, [data-glpi-form-editor-visibility-dropdown] {
+    input, div.tox-tinymce, span.select2, label.form-check, [data-zentra-form-editor-visibility-dropdown] {
         pointer-events: none;
     }
 }
 
-[data-glpi-form-editor-question-details] {
-    div[data-glpi-tinymce-init-on-demand-render] {
+[data-zentra-form-editor-question-details] {
+    div[data-zentra-tinymce-init-on-demand-render] {
         margin-left: 5px;
         cursor: text;
     }
 
     // Specific style for long text question type
-    &:has(input[value="Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText"]) {
-        [data-glpi-form-editor-question-type-specific] {
-            div[data-glpi-tinymce-init-on-demand-render] {
+    &:has(input[value="Zentra\\\\Form\\\\QuestionType\\\\QuestionTypeLongText"]) {
+        [data-zentra-form-editor-question-type-specific] {
+            div[data-zentra-tinymce-init-on-demand-render] {
                 margin-left: 0;
 
                 // Draw a border around the div to mimic the textarea style
@@ -613,7 +613,7 @@ div:has(> [data-glpi-form-editor-section-details].d-none) {
                 box-shadow: var(--tblr-box-shadow-input) !important;
 
                 // Hide the div when the editor is loading
-                &:has(.glpi-form-editor-loading-overlay) {
+                &:has(.zentra-form-editor-loading-overlay) {
                     display: none !important;
                 }
             }

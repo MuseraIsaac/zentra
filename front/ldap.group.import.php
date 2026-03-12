@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,14 +47,14 @@ AuthLDAP::showGroupImportForm($authldap);
 
 if (
     (isset($_REQUEST['authldaps_id']) && ((int) $_REQUEST['authldaps_id'] > 0))
-    && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
+    && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['zentralist_limit']))
 ) {
     AuthLDAP::showLdapGroups(
         $_REQUEST['start'] ?? 0,
         0,
         $_REQUEST["ldap_group_filter"] ?? '',
         $_REQUEST["ldap_group_filter2"] ?? '',
-        $_SESSION["glpiactive_entity"]
+        $_SESSION["zentraactive_entity"]
     );
 }
 

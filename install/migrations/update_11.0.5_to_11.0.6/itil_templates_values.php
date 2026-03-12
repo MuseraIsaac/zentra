@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,6 @@
 /**
  * @var Migration $migration
  */
-$migration->changeField('glpi_tickettemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
-$migration->changeField('glpi_changetemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
-$migration->changeField('glpi_problemtemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
+$migration->changeField('zentra_tickettemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
+$migration->changeField('zentra_changetemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
+$migration->changeField('zentra_problemtemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);

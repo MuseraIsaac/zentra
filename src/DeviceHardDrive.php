@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
+use Zentra\DBAL\QueryFunction;
 
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
@@ -117,7 +117,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => 'glpi_interfacetypes',
+            'table'              => 'zentra_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
             'datatype'           => 'dropdown',
@@ -125,7 +125,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => 'glpi_deviceharddrivemodels',
+            'table'              => 'zentra_deviceharddrivemodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -133,7 +133,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_deviceharddrivetypes',
+            'table'              => 'zentra_deviceharddrivetypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -224,7 +224,7 @@ class DeviceHardDrive extends CommonDevice
                 if ($this->fields["deviceharddrivetypes_id"]) {
                     $row->addCell(
                         $row->getHeaderByName('deviceharddriver_type'),
-                        htmlescape(Dropdown::getDropdownName("glpi_deviceharddrivetypes", $this->fields["deviceharddrivetypes_id"])),
+                        htmlescape(Dropdown::getDropdownName("zentra_deviceharddrivetypes", $this->fields["deviceharddrivetypes_id"])),
                         $father
                     );
                 }
@@ -254,7 +254,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '114',
-            'table'              => 'glpi_deviceharddrives',
+            'table'              => 'zentra_deviceharddrives',
             'field'              => 'designation',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Name')),
             'forcegroupby'       => true,
@@ -263,7 +263,7 @@ class DeviceHardDrive extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_deviceharddrives',
+                    'table'              => 'zentra_items_deviceharddrives',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -271,7 +271,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '115',
-            'table'              => 'glpi_items_deviceharddrives',
+            'table'              => 'zentra_items_deviceharddrives',
             'field'              => 'capacity',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Capacity by default')),
             'unit'               => 'auto',
@@ -290,7 +290,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '116',
-            'table'              => 'glpi_deviceharddrivetypes',
+            'table'              => 'zentra_deviceharddrivetypes',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
             'massiveaction'      => false,
@@ -310,7 +310,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '1324',
-            'table'              => 'glpi_items_deviceharddrives',
+            'table'              => 'zentra_items_deviceharddrives',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -322,7 +322,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '1325',
-            'table'              => 'glpi_items_deviceharddrives',
+            'table'              => 'zentra_items_deviceharddrives',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

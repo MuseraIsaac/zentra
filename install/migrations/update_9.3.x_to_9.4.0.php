@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,26 +52,26 @@ function update93xto940()
     $migration->setVersion('9.4.0');
 
     /** Add otherserial field on ConsumableItem */
-    if (!$DB->fieldExists('glpi_consumableitems', 'otherserial')) {
-        $migration->addField("glpi_consumableitems", "otherserial", "varchar(255) NULL DEFAULT NULL");
-        $migration->addKey("glpi_consumableitems", 'otherserial');
+    if (!$DB->fieldExists('zentra_consumableitems', 'otherserial')) {
+        $migration->addField("zentra_consumableitems", "otherserial", "varchar(255) NULL DEFAULT NULL");
+        $migration->addKey("zentra_consumableitems", 'otherserial');
     }
     /** /Add otherserial field on ConsumableItem */
 
     /** Add default group for a user */
-    if ($migration->addField('glpi_users', 'groups_id', 'integer')) {
-        $migration->addKey('glpi_users', 'groups_id');
+    if ($migration->addField('zentra_users', 'groups_id', 'integer')) {
+        $migration->addKey('zentra_users', 'groups_id');
     }
     /** /Add default group for a user */
 
-    /** Add requester field on glpi_mailcollectors */
-    $migration->addField("glpi_mailcollectors", "requester_field", "integer", [
+    /** Add requester field on zentra_mailcollectors */
+    $migration->addField("zentra_mailcollectors", "requester_field", "integer", [
         'value' => '0',
     ]);
-    /** /Add requester field on glpi_mailcollectors */
+    /** /Add requester field on zentra_mailcollectors */
 
     /** Increase value length for criteria */
-    $migration->changeField('glpi_rulecriterias', 'pattern', 'pattern', 'text');
+    $migration->changeField('zentra_rulecriterias', 'pattern', 'pattern', 'text');
     /** /Increase value length for criteria */
 
     /** Add business rules on assets */
@@ -124,8 +124,8 @@ function update93xto940()
     ];
     $migration->createRule($rule, $criteria, $action);
 
-    if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
-        $DB->insert("glpi_profilerights", [
+    if (!countElementsInTable('zentra_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
+        $DB->insert("zentra_profilerights", [
             'id'           => null,
             'profiles_id'  => "4",
             'name'         => "rule_asset",
@@ -141,20 +141,20 @@ function update93xto940()
     /** Drop ticket_timeline* parameters */
     $config_to_drop[] = 'ticket_timeline';
     $config_to_drop[] = 'ticket_timeline_keep_replaced_tabs';
-    $migration->dropField('glpi_users', 'ticket_timeline');
-    $migration->dropField('glpi_users', 'ticket_timeline_keep_replaced_tabs');
+    $migration->dropField('zentra_users', 'ticket_timeline');
+    $migration->dropField('zentra_users', 'ticket_timeline_keep_replaced_tabs');
     /** /Drop ticket_timeline* parameters */
 
     /** Replacing changes_projects by itils_projects */
-    if ($DB->tableExists('glpi_changes_projects')) {
-        $migration->renameTable('glpi_changes_projects', 'glpi_itils_projects');
+    if ($DB->tableExists('zentra_changes_projects')) {
+        $migration->renameTable('zentra_changes_projects', 'zentra_itils_projects');
 
-        $migration->dropKey('glpi_itils_projects', 'unicity');
+        $migration->dropKey('zentra_itils_projects', 'unicity');
         // Key have to be dropped now to be able to create a new one having same name
-        $migration->migrationOneTable('glpi_itils_projects');
+        $migration->migrationOneTable('zentra_itils_projects');
 
         $migration->addField(
-            'glpi_itils_projects',
+            'zentra_itils_projects',
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
             [
@@ -164,25 +164,25 @@ function update93xto940()
         );
 
         $migration->changeField(
-            'glpi_itils_projects',
+            'zentra_itils_projects',
             'changes_id',
             'items_id',
             "int NOT NULL DEFAULT '0'"
         );
 
         $migration->addKey(
-            'glpi_itils_projects',
+            'zentra_itils_projects',
             ['itemtype', 'items_id', 'projects_id'],
             'unicity',
             'UNIQUE'
         );
-        $migration->migrationOneTable('glpi_itils_projects');
+        $migration->migrationOneTable('zentra_itils_projects');
     }
     /** /Replacing changes_projects by itils_projects */
 
     /** Rename non fkey field */
     $migration->changeField(
-        'glpi_items_operatingsystems',
+        'zentra_items_operatingsystems',
         'license_id',
         'licenseid',
         "string"
@@ -190,10 +190,10 @@ function update93xto940()
     /** Rename non fkey field */
 
     /** Add watcher visibility to groups */
-    if (!$DB->fieldExists('glpi_groups', 'is_watcher')) {
-        if ($migration->addField('glpi_groups', 'is_watcher', "tinyint NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
-            $migration->addKey('glpi_groups', 'is_watcher');
-            $migration->migrationOneTable('glpi_groups');
+    if (!$DB->fieldExists('zentra_groups', 'is_watcher')) {
+        if ($migration->addField('zentra_groups', 'is_watcher', "tinyint NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
+            $migration->addKey('zentra_groups', 'is_watcher');
+            $migration->migrationOneTable('zentra_groups');
         }
     }
     /** Add watcher visibility to groups */
@@ -205,7 +205,7 @@ function update93xto940()
 
     /** Drop old embed ocs search options */
     $DB->delete(
-        'glpi_displaypreferences',
+        'zentra_displaypreferences',
         [
             'itemtype'  => 'Computer',
             'num'       => [
@@ -236,7 +236,7 @@ function update93xto940()
     ];
     foreach ($so_maping as $old => $new) {
         $DB->update(
-            'glpi_displaypreferences',
+            'zentra_displaypreferences',
             [
                 'num' => $new,
             ],
@@ -249,11 +249,11 @@ function update93xto940()
     /** /Factorize components search options on Computers, Printers and NetworkEquipments */
 
     /** Add followup tables for new ITILFollowup class */
-    if (!$DB->tableExists('glpi_itilfollowups')) {
+    if (!$DB->tableExists('zentra_itilfollowups')) {
         //Migrate ticket followups
-        $migration->renameTable('glpi_ticketfollowups', 'glpi_itilfollowups');
+        $migration->renameTable('zentra_ticketfollowups', 'zentra_itilfollowups');
         $migration->addField(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             'itemtype',
             "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
             [
@@ -263,70 +263,70 @@ function update93xto940()
         );
 
         $migration->changeField(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             'tickets_id',
             'items_id',
             "int NOT NULL DEFAULT '0'"
         );
         $migration->addKey(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             'itemtype'
         );
         $migration->dropKey(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             'tickets_id'
         );
         $migration->addKey(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             'items_id',
             'item_id'
         );
         $migration->addKey(
-            'glpi_itilfollowups',
+            'zentra_itilfollowups',
             ['itemtype','items_id'],
             'item'
         );
     }
 
-    if ($DB->fieldExists('glpi_requesttypes', 'is_ticketfollowup')) {
+    if ($DB->fieldExists('zentra_requesttypes', 'is_ticketfollowup')) {
         $migration->changeField(
-            'glpi_requesttypes',
+            'zentra_requesttypes',
             'is_ticketfollowup',
             'is_itilfollowup',
             'bool',
             ['value' => '1']
         );
         $migration->dropKey(
-            'glpi_requesttypes',
+            'zentra_requesttypes',
             'is_ticketfollowup'
         );
         $migration->addKey(
-            'glpi_requesttypes',
+            'zentra_requesttypes',
             'is_itilfollowup'
         );
     }
 
-    if ($DB->fieldExists('glpi_itilsolutions', 'ticketfollowups_id')) {
+    if ($DB->fieldExists('zentra_itilsolutions', 'ticketfollowups_id')) {
         $migration->changeField(
-            'glpi_itilsolutions',
+            'zentra_itilsolutions',
             'ticketfollowups_id',
             'itilfollowups_id',
             "int DEFAULT NULL"
         );
         $migration->dropKey(
-            'glpi_itilsolutions',
+            'zentra_itilsolutions',
             'ticketfollowups_id'
         );
         $migration->addKey(
-            'glpi_itilsolutions',
+            'zentra_itilsolutions',
             'itilfollowups_id'
         );
     }
 
     /** Add timeline_position to Change and Problem items */
-    $migration->addField("glpi_changetasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
-    $migration->addField("glpi_changevalidations", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
-    $migration->addField("glpi_problemtasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
+    $migration->addField("zentra_changetasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
+    $migration->addField("zentra_changevalidations", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
+    $migration->addField("zentra_problemtasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
 
     /** Give all existing profiles access to personalizations for legacy functionality */
     $migration->addRight('personalization', READ | UPDATE, []);
@@ -337,7 +337,7 @@ function update93xto940()
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
-            $DB->updateOrInsert("glpi_displaypreferences", [
+            $DB->updateOrInsert("zentra_displaypreferences", [
                 'rank'      => $rank++,
             ], [
                 'users_id'  => "0",
@@ -357,15 +357,15 @@ function update93xto940()
         'ttr_slalevels_id' => 'slalevels_id_ttr',
     ];
     foreach ($olas_slas_mapping as $old_fieldname => $new_fieldname) {
-        if ($DB->fieldExists('glpi_tickets', $old_fieldname)) {
-            $migration->changeField('glpi_tickets', $old_fieldname, $new_fieldname, 'integer');
+        if ($DB->fieldExists('zentra_tickets', $old_fieldname)) {
+            $migration->changeField('zentra_tickets', $old_fieldname, $new_fieldname, 'integer');
         }
-        $migration->dropKey('glpi_tickets', $old_fieldname);
-        $migration->addKey('glpi_tickets', $new_fieldname);
+        $migration->dropKey('zentra_tickets', $old_fieldname);
+        $migration->addKey('zentra_tickets', $new_fieldname);
 
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_rulecriterias',
+                'zentra_rulecriterias',
                 [
                     'criteria' => $new_fieldname,
                 ],
@@ -377,7 +377,7 @@ function update93xto940()
 
         $migration->addPostQuery(
             $DB->buildUpdate(
-                'glpi_ruleactions',
+                'zentra_ruleactions',
                 [
                     'field' => $new_fieldname,
                 ],
@@ -389,12 +389,12 @@ function update93xto940()
     }
 
     /** Adding the responsible field */
-    if (!$DB->fieldExists('glpi_users', 'users_id_supervisor')) {
-        if ($migration->addField('glpi_users', 'users_id_supervisor', 'integer')) {
-            $migration->addKey('glpi_users', 'users_id_supervisor');
+    if (!$DB->fieldExists('zentra_users', 'users_id_supervisor')) {
+        if ($migration->addField('zentra_users', 'users_id_supervisor', 'integer')) {
+            $migration->addKey('zentra_users', 'users_id_supervisor');
         }
         $migration->addField(
-            'glpi_authldaps',
+            'zentra_authldaps',
             'responsible_field',
             "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL",
             [
@@ -404,16 +404,16 @@ function update93xto940()
     }
 
     /** Add source item id to ITILFollowups. Used by followups created by merging tickets */
-    if (!$DB->fieldExists('glpi_itilfollowups', 'sourceitems_id')) {
-        if ($migration->addField('glpi_itilfollowups', 'sourceitems_id', "int NOT NULL DEFAULT '0'")) {
-            $migration->addKey('glpi_itilfollowups', 'sourceitems_id');
+    if (!$DB->fieldExists('zentra_itilfollowups', 'sourceitems_id')) {
+        if ($migration->addField('zentra_itilfollowups', 'sourceitems_id', "int NOT NULL DEFAULT '0'")) {
+            $migration->addKey('zentra_itilfollowups', 'sourceitems_id');
         }
     }
 
     /** Add sourceof item id to ITILFollowups. Used to link to tickets created by promotion */
-    if (!$DB->fieldExists('glpi_itilfollowups', 'sourceof_items_id')) {
-        if ($migration->addField('glpi_itilfollowups', 'sourceof_items_id', "int NOT NULL DEFAULT '0'")) {
-            $migration->addKey('glpi_itilfollowups', 'sourceof_items_id');
+    if (!$DB->fieldExists('zentra_itilfollowups', 'sourceof_items_id')) {
+        if ($migration->addField('zentra_itilfollowups', 'sourceof_items_id', "int NOT NULL DEFAULT '0'")) {
+            $migration->addKey('zentra_itilfollowups', 'sourceof_items_id');
         }
     }
 

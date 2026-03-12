@@ -10,7 +10,7 @@
         <is_active>1</is_active>
         <comment></comment>
         <is_recursive>0</is_recursive>
-        <uuid>glpi_rule_right_root</uuid>
+        <uuid>zentra_rule_right_root</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>

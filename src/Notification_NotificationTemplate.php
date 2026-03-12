@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /**
  * Notification_NotificationTemplate Class
@@ -66,14 +66,14 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
 
         if (!$withtemplate && Notification::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case Notification::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ['notifications_id' => $item->getID()]
@@ -81,7 +81,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 case NotificationTemplate::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
                             ['notificationtemplates_id' => $item->getID()]
@@ -94,7 +94,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch (get_class($item)) {
             case Notification::class:
@@ -364,10 +364,10 @@ TWIG, $twig_params);
      */
     public static function registerMode($mode, $label, $from)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         self::getModes();
-        $CFG_GLPI['notifications_modes'][$mode] = [
+        $CFG_ZENTRA['notifications_modes'][$mode] = [
             'label'  => $label,
             'from'   => $from,
         ];
@@ -380,7 +380,7 @@ TWIG, $twig_params);
      **/
     public static function getModes()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $core_modes = [
             self::MODE_MAIL      => [
@@ -401,18 +401,18 @@ TWIG, $twig_params);
          ]*/
         ];
 
-        if (!isset($CFG_GLPI['notifications_modes']) || !is_array($CFG_GLPI['notifications_modes'])) {
-            $CFG_GLPI['notifications_modes'] = $core_modes;
+        if (!isset($CFG_ZENTRA['notifications_modes']) || !is_array($CFG_ZENTRA['notifications_modes'])) {
+            $CFG_ZENTRA['notifications_modes'] = $core_modes;
         } else {
             // check that core modes are part of the config
             foreach ($core_modes as $mode => $conf) {
-                if (!isset($CFG_GLPI['notifications_modes'][$mode])) {
-                    $CFG_GLPI['notifications_modes'][$mode] = $conf;
+                if (!isset($CFG_ZENTRA['notifications_modes'][$mode])) {
+                    $CFG_ZENTRA['notifications_modes'][$mode] = $conf;
                 }
             }
         }
 
-        return $CFG_GLPI['notifications_modes'];
+        return $CFG_ZENTRA['notifications_modes'];
     }
 
     #[Override]
@@ -542,9 +542,9 @@ TWIG, $twig_params);
      */
     public static function hasActiveMode()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
         foreach (array_keys(self::getModes()) as $mode) {
-            if ($CFG_GLPI['notifications_' . $mode]) {
+            if ($CFG_ZENTRA['notifications_' . $mode]) {
                 return true;
             }
         }

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,14 +37,14 @@ namespace tests\units;
 use CommonITILActor;
 use Contract;
 use Entity;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Controller\ServiceCatalog\IndexController;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Form\Category;
-use Glpi\Form\Form;
-use Glpi\Helpdesk\HelpdeskTranslation;
-use Glpi\Helpdesk\HomePageTabs;
-use Glpi\Tests\DbTestCase;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Controller\ServiceCatalog\IndexController;
+use Zentra\DBAL\QueryExpression;
+use Zentra\Form\Category;
+use Zentra\Form\Form;
+use Zentra\Helpdesk\HelpdeskTranslation;
+use Zentra\Helpdesk\HomePageTabs;
+use Zentra\Tests\DbTestCase;
 use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
@@ -87,53 +87,53 @@ class EntityTest extends DbTestCase
 
         $this->assertSame(
             [0],
-            array_keys(getAncestorsOf('glpi_entities', $ent0->getID()))
+            array_keys(getAncestorsOf('zentra_entities', $ent0->getID()))
         );
         $this->assertSame(
             [0],
-            array_values(getAncestorsOf('glpi_entities', $ent0->getID()))
+            array_values(getAncestorsOf('zentra_entities', $ent0->getID()))
         );
         $this->assertEquals(
             [$ent0->getID(), $ent1->getID(), $ent2->getID(), $ent3->getID()],
-            array_keys(getSonsOf('glpi_entities', $ent0->getID()))
+            array_keys(getSonsOf('zentra_entities', $ent0->getID()))
         );
         $this->assertSame(
             [$ent0->getID(), $ent1->getID(), $ent2->getID(), $ent3->getID()],
-            array_values(getSonsOf('glpi_entities', $ent0->getID()))
+            array_values(getSonsOf('zentra_entities', $ent0->getID()))
         );
 
         $this->assertEquals(
             [0, $ent0->getID()],
-            array_keys(getAncestorsOf('glpi_entities', $ent1->getID()))
+            array_keys(getAncestorsOf('zentra_entities', $ent1->getID()))
         );
         $this->assertEquals(
             [0, $ent0->getID()],
-            array_values(getAncestorsOf('glpi_entities', $ent1->getID()))
+            array_values(getAncestorsOf('zentra_entities', $ent1->getID()))
         );
         $this->assertEquals(
             [$ent1->getID()],
-            array_keys(getSonsOf('glpi_entities', $ent1->getID()))
+            array_keys(getSonsOf('zentra_entities', $ent1->getID()))
         );
         $this->assertEquals(
             [$ent1->getID()],
-            array_values(getSonsOf('glpi_entities', $ent1->getID()))
+            array_values(getSonsOf('zentra_entities', $ent1->getID()))
         );
 
         $this->assertEquals(
             [0, $ent0->getID()],
-            array_keys(getAncestorsOf('glpi_entities', $ent2->getID()))
+            array_keys(getAncestorsOf('zentra_entities', $ent2->getID()))
         );
         $this->assertEquals(
             [0, $ent0->getID()],
-            array_values(getAncestorsOf('glpi_entities', $ent2->getID()))
+            array_values(getAncestorsOf('zentra_entities', $ent2->getID()))
         );
         $this->assertEquals(
             [$ent2->getID()],
-            array_keys(getSonsOf('glpi_entities', $ent2->getID()))
+            array_keys(getSonsOf('zentra_entities', $ent2->getID()))
         );
         $this->assertEquals(
             [$ent2->getID()],
-            array_values(getSonsOf('glpi_entities', $ent2->getID()))
+            array_values(getSonsOf('zentra_entities', $ent2->getID()))
         );
     }
 
@@ -210,15 +210,15 @@ class EntityTest extends DbTestCase
      */
     private function runChangeEntityParent($cache = false, $hit = false)
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         $this->login();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $sckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
-        $sckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
+        $sckey_ent1 = 'sons_cache_zentra_entities_' . $ent1;
+        $sckey_ent2 = 'sons_cache_zentra_entities_' . $ent2;
 
         $entity = new Entity();
         $new_id = (int) $entity->add([
@@ -226,27 +226,27 @@ class EntityTest extends DbTestCase
             'entities_id'  => $ent1,
         ]);
         $this->assertGreaterThan(0, $new_id);
-        $ackey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
+        $ackey_new_id = 'ancestors_cache_zentra_entities_' . $new_id;
 
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ackey_new_id));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $new_id);
+        $ancestors = getAncestorsOf('zentra_entities', $new_id);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ackey_new_id));
         }
 
         $expected = [$ent1 => $ent1, $new_id => $new_id];
 
-        $sons = getSonsOf('glpi_entities', $ent1);
+        $sons = getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($sckey_ent1));
         }
 
         //change parent entity
@@ -259,30 +259,30 @@ class EntityTest extends DbTestCase
 
         $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
         if ($cache === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ackey_new_id));
         }
 
-        $ancestors = getAncestorsOf('glpi_entities', $new_id);
+        $ancestors = getAncestorsOf('zentra_entities', $new_id);
         $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($ackey_new_id));
         }
 
         $expected = [$ent1 => $ent1];
-        $sons = getSonsOf('glpi_entities', $ent1);
+        $sons = getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent1));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($sckey_ent1));
         }
 
         $expected = [$ent2 => $ent2, $new_id => $new_id];
-        $sons = getSonsOf('glpi_entities', $ent2);
+        $sons = getSonsOf('zentra_entities', $ent2);
         $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent2));
+            $this->assertSame($expected, $ZENTRA_CACHE->get($sckey_ent2));
         }
 
         //clean new entity
@@ -298,18 +298,18 @@ class EntityTest extends DbTestCase
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
         $expected = [0 => 0, $ent0 => $ent0];
-        $ancestors = getAncestorsOf('glpi_entities', $ent1);
+        $ancestors = getAncestorsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $ancestors);
 
-        $ancestors = getAncestorsOf('glpi_entities', $ent2);
+        $ancestors = getAncestorsOf('zentra_entities', $ent2);
         $this->assertSame($expected, $ancestors);
 
         $expected = [$ent1 => $ent1];
-        $sons = getSonsOf('glpi_entities', $ent1);
+        $sons = getSonsOf('zentra_entities', $ent1);
         $this->assertSame($expected, $sons);
 
         $expected = [$ent2 => $ent2];
-        $sons = getSonsOf('glpi_entities', $ent2);
+        $sons = getSonsOf('zentra_entities', $ent2);
         $this->assertSame($expected, $sons);
     }
 
@@ -318,7 +318,7 @@ class EntityTest extends DbTestCase
         global $DB;
         //ensure db cache are unset
         $DB->update(
-            'glpi_entities',
+            'zentra_entities',
             [
                 'ancestors_cache' => null,
                 'sons_cache'      => null,
@@ -394,7 +394,7 @@ class EntityTest extends DbTestCase
      */
     private function checkEntitiesTree(array $entities, bool $cache): void
     {
-        global $GLPI_CACHE;
+        global $ZENTRA_CACHE;
 
         foreach ($entities as $key => $entity) {
             $expected_sons_ids = \array_map(
@@ -412,14 +412,14 @@ class EntityTest extends DbTestCase
             );
             $expected_ancestors = \array_combine($expected_ancestors_ids, $expected_ancestors_ids);
 
-            $this->assertSame($expected_ancestors, getAncestorsOf('glpi_entities', $entity->getID()));
+            $this->assertSame($expected_ancestors, getAncestorsOf('zentra_entities', $entity->getID()));
             if ($cache === true) {
-                $this->assertSame($expected_ancestors, $GLPI_CACHE->get('ancestors_cache_glpi_entities_' . $entity->getID()));
+                $this->assertSame($expected_ancestors, $ZENTRA_CACHE->get('ancestors_cache_zentra_entities_' . $entity->getID()));
             }
 
-            $this->assertSame($expected_sons, getSonsOf('glpi_entities', $entity->getID()));
+            $this->assertSame($expected_sons, getSonsOf('zentra_entities', $entity->getID()));
             if ($cache === true) {
-                $this->assertSame($expected_sons, $GLPI_CACHE->get('sons_cache_glpi_entities_' . $entity->getID()));
+                $this->assertSame($expected_sons, $ZENTRA_CACHE->get('sons_cache_zentra_entities_' . $entity->getID()));
             }
         }
     }
@@ -943,7 +943,7 @@ class EntityTest extends DbTestCase
         $user = getItemByTypeName('User', 'test_anon_user');
 
         if ($user_nick == "" && $user->fields['nickname'] == null) {
-            // Special case, glpi wont update null to "" so we need to set
+            // Special case, zentra wont update null to "" so we need to set
             // another value first
             $update = $user->update([
                 'id'       => $user->getID(),
@@ -965,7 +965,7 @@ class EntityTest extends DbTestCase
         // Build test ticket
         $this->login('tech', 'tech');
 
-        //force set entity because $_SESSION['glpiactive_entity'] contains 0 without
+        //force set entity because $_SESSION['zentraactive_entity'] contains 0 without
         //and break test from NotificationTargetCommonITILObject::getDataForObject()
         //and fails to recover the configuration of the anonymization
         $this->setEntity($entity->getID(), true);
@@ -1038,8 +1038,8 @@ class EntityTest extends DbTestCase
         $this->assertGreaterThan(0, $solutions_id);
 
         // Save and replace session data
-        $old_interface = $_SESSION['glpiactiveprofile']['interface'];
-        $_SESSION['glpiactiveprofile']['interface'] = $interface;
+        $old_interface = $_SESSION['zentraactiveprofile']['interface'];
+        $_SESSION['zentraactiveprofile']['interface'] = $interface;
 
         // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
@@ -1081,7 +1081,7 @@ class EntityTest extends DbTestCase
         $notification = new NotificationTargetTicket();
         $notif_data = $notification->getDataForObject($ticket, [
             'additionnaloption' => [
-                'usertype' => NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::ZENTRA_USER,
                 // Workaround to "simulate" different notification target and test
                 // this part more easily
                 'is_self_service' => $interface == 'helpdesk',
@@ -1129,7 +1129,7 @@ class EntityTest extends DbTestCase
         }
 
         // Reset session
-        $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
+        $_SESSION['zentraactiveprofile']['interface'] = $old_interface;
     }
 
     public function testDefaultContractConfig()
@@ -1465,7 +1465,7 @@ class EntityTest extends DbTestCase
         $fn_get_current_entities = static function () use ($DB) {
             return iterator_to_array($DB->request([
                 'SELECT' => ['id', 'name', 'entities_id'],
-                'FROM' => 'glpi_entities',
+                'FROM' => 'zentra_entities',
             ]));
         };
 

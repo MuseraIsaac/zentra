@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\TreeBrowseInterface;
-use Glpi\Search\DefaultSearchRequestInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Features\AssetImage;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
+use Zentra\Features\TreeBrowse;
+use Zentra\Features\TreeBrowseInterface;
+use Zentra\Search\DefaultSearchRequestInterface;
 
 /** Software Class
  **/
@@ -98,7 +98,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return 'inventory';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (
             !$withtemplate
@@ -111,7 +111,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof self) {
             $item->showMergeCandidates();
@@ -201,7 +201,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $valid = 1;
             if (
                 countElementsInTable(
-                    'glpi_softwarelicenses',
+                    'zentra_softwarelicenses',
                     ['softwares_id' => $ID,
                         'NOT' => ['is_valid' => 1],
                     ]
@@ -229,13 +229,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
     public function getEmpty()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!$this->getEmptyAssignableItem()) {
             return false;
         }
 
-        $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+        $this->fields["is_helpdesk_visible"] = $CFG_ZENTRA["default_software_helpdesk_visible"];
         return true;
     }
 
@@ -245,7 +245,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (
             $isadmin
-            && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
+            && (countElementsInTable("zentra_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
             = "<i class='ti ti-calculator'></i>"
@@ -254,7 +254,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         if (
             Session::haveRightsOr("rule_dictionnary_software", [CREATE, UPDATE])
-            && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
+            && (countElementsInTable("zentra_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
             = "<i class='ti ti-arrow-back-up'></i>"
@@ -377,7 +377,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $tab[] = [
             'id'                 => '62',
-            'table'              => 'glpi_softwarecategories',
+            'table'              => 'zentra_softwarecategories',
             'field'              => 'completename',
             'name'               => _n('Category', 'Categories', 1),
             'datatype'           => 'dropdown',
@@ -403,7 +403,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => __('Publisher'),
             'datatype'           => 'dropdown',
@@ -428,7 +428,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -453,7 +453,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -462,13 +462,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $tab[] = [
             'id'                 => '71',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
@@ -547,7 +547,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             'joinparams'         => [
                 'jointype'   => 'child',
                 'beforejoin' => [
-                    'table'      => 'glpi_softwareversions',
+                    'table'      => 'zentra_softwareversions',
                     'joinparams' => ['jointype' => 'child'],
                 ],
                 'condition'  => [
@@ -604,7 +604,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_softwareversions',
+                    'table'              => 'zentra_softwareversions',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -634,7 +634,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             'forcegroupby'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_softwareversions',
+                    'table'              => 'zentra_softwareversions',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -658,11 +658,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Make a select box
         $where = getEntitiesRestrictCriteria(
-            'glpi_softwares',
+            'zentra_softwares',
             'entities_id',
             $entity_restrict,
             true
@@ -677,7 +677,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         Ajax::updateItemOnSelectEvent(
             "dropdown_softwares_id$rand",
             "show_" . $myname . $rand,
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownInstallVersion.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownInstallVersion.php",
             $paramsselsoft
         );
 
@@ -696,28 +696,28 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $iterator = $DB->request([
             'SELECT'          => [
-                'glpi_softwares.id',
-                'glpi_softwares.name',
+                'zentra_softwares.id',
+                'zentra_softwares.name',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_softwares',
+            'FROM'            => 'zentra_softwares',
             'INNER JOIN'      => [
-                'glpi_softwarelicenses' => [
+                'zentra_softwarelicenses' => [
                     'ON' => [
-                        'glpi_softwarelicenses' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
+                        'zentra_softwarelicenses' => 'softwares_id',
+                        'zentra_softwares'        => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_softwares.is_deleted'    => 0,
-                'glpi_softwares.is_template'  => 0,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $entity_restrict, true),
-            'ORDERBY'         => 'glpi_softwares.name',
+                'zentra_softwares.is_deleted'    => 0,
+                'zentra_softwares.is_template'  => 0,
+            ] + getEntitiesRestrictCriteria('zentra_softwarelicenses', 'entities_id', $entity_restrict, true),
+            'ORDERBY'         => 'zentra_softwares.name',
         ]);
 
         $values = [];
@@ -735,7 +735,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         Ajax::updateItemOnSelectEvent(
             "dropdown_softwares_id$rand",
             "show_" . $myname . $rand,
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownSoftwareLicense.php",
+            $CFG_ZENTRA["root_doc"] . "/ajax/dropdownSoftwareLicense.php",
             $paramsselsoft
         );
 
@@ -764,7 +764,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $input["name"]                = $name;
         $input["manufacturers_id"]    = $manufacturer_id;
@@ -772,7 +772,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $input["is_recursive"]        = ($is_recursive ? 1 : 0);
         // No comment
         if (is_null($is_helpdesk_visible)) {
-            $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+            $input["is_helpdesk_visible"] = $CFG_ZENTRA["default_software_helpdesk_visible"];
         } else {
             $input["is_helpdesk_visible"] = $is_helpdesk_visible;
         }
@@ -817,7 +817,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     ) {
         global $DB;
 
-        // Look for the software by his name in GLPI for a specific entity
+        // Look for the software by his name in ZENTRA for a specific entity
         $manufacturer_id = 0;
         if ($manufacturer !== '') {
             $manufacturer_id = Dropdown::import('Manufacturer', ['name' => $manufacturer]);
@@ -825,15 +825,15 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_softwares.id',
-                'glpi_softwares.is_deleted',
+                'zentra_softwares.id',
+                'zentra_softwares.is_deleted',
             ],
-            'FROM'   => 'glpi_softwares',
+            'FROM'   => 'zentra_softwares',
             'WHERE'  => [
                 'name'               => $name,
                 'manufacturers_id'   => $manufacturer_id,
                 'is_template'        => 0,
-            ] + getEntitiesRestrictCriteria('glpi_softwares', 'entities_id', $entity, true),
+            ] + getEntitiesRestrictCriteria('zentra_softwares', 'entities_id', $entity, true),
         ]);
 
         if (count($iterator)) {
@@ -863,7 +863,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     /**
-     * Put software in trashbin because it's been removed by GLPI software dictionary
+     * Put software in trashbin because it's been removed by ZENTRA software dictionary
      *
      * @param int    $ID      the ID of the software to put in trashbin
      * @param string $comment the comment to add to the already existing software's comment (default '')
@@ -872,18 +872,18 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public function putInTrash($ID, $comment = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->getFromDB($ID);
         $input["id"]         = $ID;
         $input["is_deleted"] = 1;
 
-        // change category of the software on deletion (if defined in glpi_configs)
+        // change category of the software on deletion (if defined in zentra_configs)
         if (
-            isset($CFG_GLPI["softwarecategories_id_ondelete"])
-            && ($CFG_GLPI["softwarecategories_id_ondelete"] != 0)
+            isset($CFG_ZENTRA["softwarecategories_id_ondelete"])
+            && ($CFG_ZENTRA["softwarecategories_id_ondelete"] != 0)
         ) {
-            $input["softwarecategories_id"] = $CFG_GLPI["softwarecategories_id_ondelete"];
+            $input["softwarecategories_id"] = $CFG_ZENTRA["softwarecategories_id_ondelete"];
         }
 
         // Add dictionary comment to the current comment
@@ -932,28 +932,28 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_softwares.id',
-                'glpi_softwares.name',
-                'glpi_entities.completename AS entity',
+                'zentra_softwares.id',
+                'zentra_softwares.name',
+                'zentra_entities.completename AS entity',
             ],
-            'FROM'      => 'glpi_softwares',
+            'FROM'      => 'zentra_softwares',
             'LEFT JOIN' => [
-                'glpi_entities'   => [
+                'zentra_entities'   => [
                     'ON' => [
-                        'glpi_softwares'  => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_softwares'  => 'entities_id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
             ],
             'WHERE'     => [
-                'glpi_softwares.id'           => ['!=', $ID],
-                'glpi_softwares.name'         => $this->fields['name'],
-                'glpi_softwares.is_deleted'   => 0,
-                'glpi_softwares.is_template'  => 0,
+                'zentra_softwares.id'           => ['!=', $ID],
+                'zentra_softwares.name'         => $this->fields['name'],
+                'zentra_softwares.is_deleted'   => 0,
+                'zentra_softwares.is_template'  => 0,
             ] + getEntitiesRestrictCriteria(
-                'glpi_softwares',
+                'zentra_softwares',
                 'entities_id',
-                getSonsOf("glpi_entities", $this->fields["entities_id"]),
+                getSonsOf("zentra_entities", $this->fields["entities_id"]),
                 false
             ),
             'ORDERBY'   => 'entity',
@@ -1017,7 +1017,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $item = array_keys($item);
 
         // Search for software version
-        $req = $DB->request(['FROM' => "glpi_softwareversions", 'WHERE' => ["softwares_id" => $item]]);
+        $req = $DB->request(['FROM' => "zentra_softwareversions", 'WHERE' => ["softwares_id" => $item]]);
         $i   = 0;
 
         if ($nb = $req->numrows()) {
@@ -1026,7 +1026,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
                 foreach (
                     $DB->request([
-                        'FROM' => "glpi_softwareversions",
+                        'FROM' => "zentra_softwareversions",
                         'WHERE' => [
                             "softwares_id" => $ID,
                             "name"         => $from["name"],
@@ -1035,7 +1035,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 ) {
                     // Update version ID on License
                     $DB->update(
-                        'glpi_softwarelicenses',
+                        'zentra_softwarelicenses',
                         [
                             'softwareversions_id_buy' => $dest['id'],
                         ],
@@ -1045,7 +1045,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     );
 
                     $DB->update(
-                        'glpi_softwarelicenses',
+                        'zentra_softwarelicenses',
                         [
                             'softwareversions_id_use' => $dest['id'],
                         ],
@@ -1056,7 +1056,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
                     // Move installation to existing version in destination software
                     $found = $DB->update(
-                        'glpi_items_softwareversions',
+                        'zentra_items_softwareversions',
                         [
                             'softwareversions_id' => $dest['id'],
                         ],
@@ -1069,7 +1069,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 if ($found) {
                     // Installation has be moved, delete the source version
                     $result = $DB->delete(
-                        'glpi_softwareversions',
+                        'zentra_softwareversions',
                         [
                             'id'  => $from['id'],
                         ]
@@ -1077,7 +1077,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 } else {
                     // Move version to destination software
                     $result = $DB->update(
-                        'glpi_softwareversions',
+                        'zentra_softwareversions',
                         [
                             'softwares_id' => $ID,
                             'entities_id'  => $this->getField('entities_id'),
@@ -1096,7 +1096,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         // Move software license
         $result = $DB->update(
-            'glpi_softwarelicenses',
+            'zentra_softwarelicenses',
             [
                 'softwares_id' => $ID,
             ],

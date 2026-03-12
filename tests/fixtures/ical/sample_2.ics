@@ -1,9 +1,9 @@
 BEGIN:VCALENDAR
-PRODID:-//glpi-project.org/NONSGML GLPI Test suite//EN
+PRODID:-//zentra-project.org/NONSGML ZENTRA Test suite//EN
 VERSION:2.0
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:test@glpi-project.org
+X-WR-CALNAME:test@zentra-project.org
 X-WR-TIMEZONE:Europe/Paris
 BEGIN:VTIMEZONE
 TZID:Europe/Paris

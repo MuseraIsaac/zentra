@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiFormEditorConvertedExtractedDefaultValue
+export class ZentraFormEditorConvertedExtractedDefaultValue
 {
     /**
      * Enum for data types
@@ -77,4 +77,4 @@ export class GlpiFormEditorConvertedExtractedDefaultValue
     }
 }
 
-export const DATATYPE = GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE;
+export const DATATYPE = ZentraFormEditorConvertedExtractedDefaultValue.DATATYPE;

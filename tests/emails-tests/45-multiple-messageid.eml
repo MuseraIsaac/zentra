@@ -1,12 +1,12 @@
 Content-Type: multipart/mixed;
 	boundary="------------------------6c0999136ea956fa"
-From: <tech@glpi-project.org>
+From: <tech@zentra-project.org>
 Date: Fri, 11 Jul 2025 12:16:45 +0000
-To: <unittests@glpi-project.org>
+To: <unittests@zentra-project.org>
 CC:
-MessageId: <UNIQUEUUID@tech@glpi-project.org>
+MessageId: <UNIQUEUUID@tech@zentra-project.org>
 Subject: Message with multiple message IDs
-Return-Path: tech@glpi-project.org
+Return-Path: tech@zentra-project.org
 Message-ID: <UNIQUEID@AS1PR01MB9084.eurprd01.prod.exchangelabs.com>
 MIME-Version: 1.0
 

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ if (isset($_POST["rubdoc"])) {
     if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
         $iterator = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_documents',
+            'FROM'   => 'zentra_documents',
             'WHERE'  => [
                 'id'                    => $_POST['used'],
                 'documentcategories_id' => (int) $_POST['rubdoc'],
@@ -67,7 +67,7 @@ if (isset($_POST["rubdoc"])) {
     }
 
     if (!isset($_POST['entity']) || $_POST['entity'] === '') {
-        $_POST['entity'] = $_SESSION['glpiactive_entity'];
+        $_POST['entity'] = $_SESSION['zentraactive_entity'];
     }
 
     Dropdown::show(
@@ -78,7 +78,7 @@ if (isset($_POST["rubdoc"])) {
             'width'     => '50%',
             'entity'    => intval($_POST['entity']),
             'rand'      => intval($_POST['rand']),
-            'condition' => ['glpi_documents.documentcategories_id' => (int) $_POST["rubdoc"]],
+            'condition' => ['zentra_documents.documentcategories_id' => (int) $_POST["rubdoc"]],
             'value'     => (int) ($_POST['value'] ?? -1),
         ]
     );

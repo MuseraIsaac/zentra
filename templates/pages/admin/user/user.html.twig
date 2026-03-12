@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -39,11 +39,11 @@
     rand: rand_field
 } %}
 
-{% set internal_auth = item.fields['authtype'] == constant('Auth::DB_GLPI') %}
+{% set internal_auth = item.fields['authtype'] == constant('Auth::DB_ZENTRA') %}
 {% set external_auth = not item.isNewItem() and not internal_auth %}
 {# Simple form used when creating users from a ticket #}
 {% set simple_form = params.simplified_form|default(false) %}
-{% set is_my_form = item.getID() == session('glpiID') %}
+{% set is_my_form = item.getID() == session('zentraID') %}
 {# Preference form = My Settings page #}
 {% set is_preference_form = is_preference_form|default(false) %}
 {% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
@@ -51,9 +51,9 @@
 
 <div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="_zentra_csrf_token" value="{{ csrf_token() }}" />
 
-        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
+        {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
 
         <div class="card-body d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
@@ -185,9 +185,9 @@
                                 {{ fields.smallTitle(_n('Authorization', 'Authorizations', 1)) }}
                                 {{ fields.dropdownYesNo('_is_recursive', 0, __('Recursive')) }}
                                 {{ fields.dropdownField('Profile', '_profiles_id', call('Profile::getDefault'), 'Profile'|itemtype_name(1)) }}
-                                {{ fields.dropdownField('Entity', '_entities_id', params.entities_id|default(session('glpiactive_entity')), 'Entity'|itemtype_name(1), {
+                                {{ fields.dropdownField('Entity', '_entities_id', params.entities_id|default(session('zentraactive_entity')), 'Entity'|itemtype_name(1), {
                                     display_emptychoice: false,
-                                    entity: session('glpiactiveentities')
+                                    entity: session('zentraactiveentities')
                                 }) }}
                             {% else %}
                                 {% if higher_rights or is_my_form %}
@@ -220,8 +220,8 @@
                                         }
                                     ) }}
                                     {{ fields.dropdownField('User', 'users_id_supervisor', item.fields['users_id_supervisor'], __('Supervisor'), {
-                                        entity: session('glpiactive_entity'),
-                                        entity_sons: session('glpiactive_entity_recursive'),
+                                        entity: session('zentraactive_entity'),
+                                        entity_sons: session('zentraactive_entity_recursive'),
                                         used: [item.getID()],
                                         right: 'all'
                                     }) }}
@@ -244,7 +244,7 @@
                                     {{ fields.dropdownArrayField('use_mode', item.fields['use_mode'], {
                                         (constant('Session::NORMAL_MODE')): __('Normal'),
                                         (constant('Session::DEBUG_MODE')): __('Debug'),
-                                    }, __('Use GLPI in mode')) }}
+                                    }, __('Use ZENTRA in mode')) }}
                                 {% endif %}
                             {% endif %}
 
@@ -328,7 +328,7 @@
             {% if no_form_buttons is not defined or no_form_buttons == false %}
                 {{ include('components/form/buttons.html.twig') }}
             {% else %}
-                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+                {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             {% endif %}
             {% if params['formfooter'] ?? true %}
                 <div class="card-footer mx-n2 mb-n2">
@@ -336,7 +336,7 @@
                 </div>
             {% endif %}
         {% else %}
-            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+            {{ call_plugin_hook(constant('Zentra\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                 <button class="btn btn-primary me-2" type="submit" name="update" value="1">
                     <i class="ti ti-device-floppy"></i>

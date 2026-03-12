@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\Clonable;
-use Glpi\Features\StateInterface;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryExpression;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\Clonable;
+use Zentra\Features\StateInterface;
 
 use function Safe\strtotime;
 
@@ -48,7 +48,7 @@ class Contract extends CommonDBTM implements StateInterface
 {
     /** @use Clonable<static> */
     use Clonable;
-    use Glpi\Features\State;
+    use Zentra\Features\State;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -89,10 +89,10 @@ class Contract extends CommonDBTM implements StateInterface
 
     public function post_getEmpty()
     {
-        if (isset($_SESSION['glpiactive_entity'])) {
+        if (isset($_SESSION['zentraactive_entity'])) {
             $this->fields["alert"] = Entity::getUsedConfig(
                 "use_contracts_alert",
-                $_SESSION['glpiactive_entity'],
+                $_SESSION['zentraactive_entity'],
                 "default_contract_alert",
                 0
             );
@@ -187,7 +187,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $joinparams = [
             'beforejoin' => [
-                'table'      => 'glpi_contracts_items',
+                'table'      => 'zentra_contracts_items',
                 'joinparams' => [
                     'jointype' => 'itemtype_item',
                 ],
@@ -197,7 +197,7 @@ class Contract extends CommonDBTM implements StateInterface
         $joinparamscost = [
             'jointype'   => 'child',
             'beforejoin' => [
-                'table'      => 'glpi_contracts',
+                'table'      => 'zentra_contracts',
                 'joinparams' => $joinparams,
             ],
         ];
@@ -209,7 +209,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '139',
-            'table'              => 'glpi_contracts_items',
+            'table'              => 'zentra_contracts_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of contracts'),
             'forcegroupby'       => true,
@@ -223,7 +223,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '29',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'name',
             'name'               => __('Name'),
             'forcegroupby'       => true,
@@ -234,7 +234,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '30',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'num',
             'name'               => __('Number'),
             'forcegroupby'       => true,
@@ -245,14 +245,14 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '129',
-            'table'              => 'glpi_contracttypes',
+            'table'              => 'zentra_contracttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contracts',
+                    'table'              => 'zentra_contracts',
                     'joinparams'         => $joinparams,
                 ],
             ],
@@ -260,7 +260,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '130',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'duration',
             'name'               => __('Duration'),
             'datatype'           => 'number',
@@ -273,7 +273,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'periodicity',
             //TRANS: %1$s is Contract, %2$s is field name
             'name'               => __('Periodicity'),
@@ -292,7 +292,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '132',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'begin_date',
             'name'               => __('Start date'),
             'forcegroupby'       => true,
@@ -304,7 +304,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '133',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'accounting_number',
             'name'               => __('Account number'),
             'forcegroupby'       => true,
@@ -315,7 +315,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '134',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'end_date',
             'name'               => __('End date'),
             'forcegroupby'       => true,
@@ -333,7 +333,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '135',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'notice',
             'name'               => __('Notice'),
             'datatype'           => 'number',
@@ -346,7 +346,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '136',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'totalcost',
             'name'               => _n('Cost', 'Costs', 1),
             'forcegroupby'       => true,
@@ -362,7 +362,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '137',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'billing',
             'name'               => __('Invoice period'),
             'forcegroupby'       => true,
@@ -380,7 +380,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '138',
-            'table'              => 'glpi_contracts',
+            'table'              => 'zentra_contracts',
             'field'              => 'renewal',
             'name'               => __('Renewal'),
             'forcegroupby'       => true,
@@ -391,14 +391,14 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '139',
-            'table'              => 'glpi_locations',
+            'table'              => 'zentra_locations',
             'field'              => 'completename',
             'name'               => Location::getTypeName(1),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contracts',
+                    'table'              => 'zentra_contracts',
                     'joinparams'         => $joinparams,
                 ],
             ],
@@ -517,7 +517,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_contracttypes',
+            'table'              => 'zentra_contracttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -677,7 +677,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -703,7 +703,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '72',
-            'table'              => 'glpi_contracts_items',
+            'table'              => 'zentra_contracts_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of items'),
             'forcegroupby'       => true,
@@ -717,7 +717,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '29',
-            'table'              => 'glpi_suppliers',
+            'table'              => 'zentra_suppliers',
             'field'              => 'name',
             'name'               => _n(
                 'Associated supplier',
@@ -729,7 +729,7 @@ class Contract extends CommonDBTM implements StateInterface
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contracts_suppliers',
+                    'table'              => 'zentra_contracts_suppliers',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -760,7 +760,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'totalcost',
             'name'               => __('Total cost'),
             'datatype'           => 'decimal',
@@ -778,7 +778,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '41',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'cost',
             'name'               => _n('Cost', 'Costs', Session::getPluralNumber()),
             'datatype'           => 'decimal',
@@ -791,7 +791,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '42',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'begin_date',
             'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Begin date')),
             'datatype'           => 'date',
@@ -804,7 +804,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '43',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'end_date',
             'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('End date')),
             'datatype'           => 'date',
@@ -817,7 +817,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '44',
-            'table'              => 'glpi_contractcosts',
+            'table'              => 'zentra_contractcosts',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), __('Name')),
             'forcegroupby'       => true,
@@ -830,7 +830,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $tab[] = [
             'id'                 => '45',
-            'table'              => 'glpi_budgets',
+            'table'              => 'zentra_budgets',
             'field'              => 'name',
             'name'               => sprintf(__('%1$s - %2$s'), _n('Cost', 'Costs', 1), Budget::getTypeName(1)),
             'datatype'           => 'dropdown',
@@ -838,7 +838,7 @@ class Contract extends CommonDBTM implements StateInterface
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_contractcosts',
+                    'table'              => 'zentra_contractcosts',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -859,7 +859,7 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public static function showCentral(bool $display = true)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (!self::canView()) {
             return;
@@ -953,7 +953,7 @@ class Contract extends CommonDBTM implements StateInterface
 
         $twig_params = [
             'title'     => [
-                'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?reset=reset",
+                'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?reset=reset",
                 'text'   =>  self::getTypeName(1),
                 'icon'   => self::getIcon(),
             ],
@@ -981,7 +981,7 @@ class Contract extends CommonDBTM implements StateInterface
         ];
 
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expired in the last 30 days'),
             'count'  => $contract0,
         ];
@@ -991,7 +991,7 @@ class Contract extends CommonDBTM implements StateInterface
         $options['criteria'][1]['searchtype'] = 'lessthan';
         $options['criteria'][1]['value']      = '7DAY';
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
             'count'  => $contract7,
         ];
@@ -1001,7 +1001,7 @@ class Contract extends CommonDBTM implements StateInterface
         $options['criteria'][1]['searchtype'] = 'lessthan';
         $options['criteria'][1]['value']      = '1MONTH';
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 30 days'),
             'count'  => $contract30,
         ];
@@ -1013,7 +1013,7 @@ class Contract extends CommonDBTM implements StateInterface
         $options['criteria'][1]['searchtype'] = 'lessthan';
         $options['criteria'][1]['value'] = '7DAY';
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 7 days'),
             'count'  => $contractpre7,
         ];
@@ -1021,7 +1021,7 @@ class Contract extends CommonDBTM implements StateInterface
         $options['criteria'][0]['value'] = '6DAY';
         $options['criteria'][1]['value'] = '1MONTH';
         $twig_params['items'][] = [
-            'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
+            'link'   => $CFG_ZENTRA["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 30 days'),
             'count'  => $contractpre30,
         ];
@@ -1044,13 +1044,13 @@ class Contract extends CommonDBTM implements StateInterface
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'       => 'glpi_suppliers.id',
-            'FROM'         => 'glpi_suppliers',
+            'SELECT'       => 'zentra_suppliers.id',
+            'FROM'         => 'zentra_suppliers',
             'INNER JOIN'   => [
-                'glpi_contracts_suppliers' => [
+                'zentra_contracts_suppliers' => [
                     'ON' => [
-                        'glpi_contracts_suppliers' => 'suppliers_id',
-                        'glpi_suppliers'           => 'id',
+                        'zentra_contracts_suppliers' => 'suppliers_id',
+                        'zentra_suppliers'           => 'id',
                     ],
                 ],
             ],
@@ -1058,7 +1058,7 @@ class Contract extends CommonDBTM implements StateInterface
         ]);
         $out    = "";
         foreach ($iterator as $data) {
-            $out .= htmlescape(Dropdown::getDropdownName("glpi_suppliers", $data['id'])) . "<br>";
+            $out .= htmlescape(Dropdown::getDropdownName("zentra_suppliers", $data['id'])) . "<br>";
         }
         return $out;
     }
@@ -1083,9 +1083,9 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public static function cronContract(?CronTask $task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        if (!$CFG_GLPI["use_notifications"]) {
+        if (!$CFG_ZENTRA["use_notifications"]) {
             return 0;
         }
 
@@ -1099,8 +1099,8 @@ class Contract extends CommonDBTM implements StateInterface
         $contract_messages = [];
 
         $end_date = QueryFunction::dateAdd(
-            date: 'glpi_contracts.begin_date',
-            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+            date: 'zentra_contracts.begin_date',
+            interval: new QueryExpression($DB::quoteName('zentra_contracts.duration')),
             interval_unit: 'MONTH'
         );
 
@@ -1110,8 +1110,8 @@ class Contract extends CommonDBTM implements StateInterface
         );
 
         $notice_date = QueryFunction::dateAdd(
-            date: 'glpi_contracts.begin_date',
-            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration') . ' - ' . $DB::quoteName('glpi_contracts.notice')),
+            date: 'zentra_contracts.begin_date',
+            interval: new QueryExpression($DB::quoteName('zentra_contracts.duration') . ' - ' . $DB::quoteName('zentra_contracts.notice')),
             interval_unit: 'MONTH'
         );
 
@@ -1125,18 +1125,18 @@ class Contract extends CommonDBTM implements StateInterface
 
             $query_notice = [
                 'SELECT'    => [
-                    'glpi_contracts.*',
+                    'zentra_contracts.*',
                 ],
                 'FROM'      => self::getTable(),
                 'LEFT JOIN' => [
-                    'glpi_alerts' => [
+                    'zentra_alerts' => [
                         'FKEY' => [
-                            'glpi_alerts'    => 'items_id',
-                            'glpi_contracts' => 'id',
+                            'zentra_alerts'    => 'items_id',
+                            'zentra_contracts' => 'id',
                             [
                                 'AND' => [
-                                    'glpi_alerts.itemtype' => 'Contract',
-                                    'glpi_alerts.type'     => Alert::NOTICE,
+                                    'zentra_alerts.itemtype' => 'Contract',
+                                    'zentra_alerts.type'     => Alert::NOTICE,
                                 ],
                             ],
                         ],
@@ -1145,17 +1145,17 @@ class Contract extends CommonDBTM implements StateInterface
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::NOTICE => ['>', 0],
+                            DBmysql::quoteName('zentra_contracts.alert') . ' & ' . 2 ** Alert::NOTICE => ['>', 0],
                         ],
                     ],
-                    'glpi_alerts.date'           => null,
-                    'glpi_contracts.is_deleted'  => 0,
+                    'zentra_alerts.date'           => null,
+                    'zentra_contracts.is_deleted'  => 0,
                     [
-                        'NOT' => ['glpi_contracts.begin_date' => null],
+                        'NOT' => ['zentra_contracts.begin_date' => null],
                     ],
-                    'glpi_contracts.duration'    => ['!=', 0],
-                    'glpi_contracts.notice'      => ['!=', 0],
-                    'glpi_contracts.entities_id' => $entity,
+                    'zentra_contracts.duration'    => ['!=', 0],
+                    'zentra_contracts.notice'      => ['!=', 0],
+                    'zentra_contracts.entities_id' => $entity,
                     new QueryExpression("$end_date_diff_now > 0"),
                     new QueryExpression("$end_date_diff_notice <= $before"),
                 ],
@@ -1163,18 +1163,18 @@ class Contract extends CommonDBTM implements StateInterface
 
             $query_end = [
                 'SELECT'    => [
-                    'glpi_contracts.*',
+                    'zentra_contracts.*',
                 ],
                 'FROM'      => self::getTable(),
                 'LEFT JOIN' => [
-                    'glpi_alerts' => [
+                    'zentra_alerts' => [
                         'FKEY' => [
-                            'glpi_alerts'    => 'items_id',
-                            'glpi_contracts' => 'id',
+                            'zentra_alerts'    => 'items_id',
+                            'zentra_contracts' => 'id',
                             [
                                 'AND' => [
-                                    'glpi_alerts.itemtype' => 'Contract',
-                                    'glpi_alerts.type'     => Alert::END,
+                                    'zentra_alerts.itemtype' => 'Contract',
+                                    'zentra_alerts.type'     => Alert::END,
                                 ],
                             ],
                         ],
@@ -1183,16 +1183,16 @@ class Contract extends CommonDBTM implements StateInterface
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::END => ['>', 0],
+                            DBmysql::quoteName('zentra_contracts.alert') . ' & ' . 2 ** Alert::END => ['>', 0],
                         ],
                     ],
-                    'glpi_alerts.date'           => null,
-                    'glpi_contracts.is_deleted'  => 0,
+                    'zentra_alerts.date'           => null,
+                    'zentra_contracts.is_deleted'  => 0,
                     [
-                        'NOT' => ['glpi_contracts.begin_date' => null],
+                        'NOT' => ['zentra_contracts.begin_date' => null],
                     ],
-                    'glpi_contracts.duration'    => ['!=', 0],
-                    'glpi_contracts.entities_id' => $entity,
+                    'zentra_contracts.duration'    => ['!=', 0],
+                    'zentra_contracts.entities_id' => $entity,
                     new QueryExpression("$end_date_diff_now <= $before"),
                 ],
             ];
@@ -1235,7 +1235,7 @@ class Contract extends CommonDBTM implements StateInterface
 
             // Get contrats with periodicity alerts
             $valPow = 2 ** Alert::PERIODICITY;
-            $query_periodicity = ['FROM' => 'glpi_contracts',
+            $query_periodicity = ['FROM' => 'zentra_contracts',
                 'WHERE' => ['alert' => ['&', $valPow],
                     'entities_id' => $entity,
                     'is_deleted' => 0,
@@ -1334,7 +1334,7 @@ class Contract extends CommonDBTM implements StateInterface
                     ) {
                         $messages    = $contract_messages[$event][$entity];
                         $cron_status = 1;
-                        $entityname  = Dropdown::getDropdownName("glpi_entities", $entity);
+                        $entityname  = Dropdown::getDropdownName("zentra_entities", $entity);
                         if ($task) {
                             $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, implode("\n", $messages)));
                             $task->addVolume(1);
@@ -1358,7 +1358,7 @@ class Contract extends CommonDBTM implements StateInterface
                             unset($alert->fields['id']);
                         }
                     } else {
-                        $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+                        $entityname = Dropdown::getDropdownName('zentra_entities', $entity);
                         //TRANS: %1$s is entity name, %2$s is the message
                         $msg = sprintf(__('%1$s: %2$s'), $entityname, __('send contract alert failed'));
                         if ($task) {
@@ -1431,40 +1431,40 @@ class Contract extends CommonDBTM implements StateInterface
             if (is_array($p['entity'])) {
                 trigger_error('entity_sons options is not available with array of entity', E_USER_WARNING);
             } else {
-                $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
+                $p['entity'] = getSonsOf('zentra_entities', $p['entity']);
             }
         }
 
         $WHERE = [];
         if ($p['entity'] >= 0) {
-            $WHERE += getEntitiesRestrictCriteria('glpi_contracts', 'entities_id', $p['entity'], true);
+            $WHERE += getEntitiesRestrictCriteria('zentra_contracts', 'entities_id', $p['entity'], true);
         }
         if (count($p['used'])) {
-            $WHERE['NOT'] = ['glpi_contracts.id' => $p['used']];
+            $WHERE['NOT'] = ['zentra_contracts.id' => $p['used']];
         }
         if (!$p['expired']) {
             $WHERE[] = self::getNotExpiredCriteria();
         }
 
         $iterator = $DB->request([
-            'SELECT'    => 'glpi_contracts.*',
-            'FROM'      => 'glpi_contracts',
+            'SELECT'    => 'zentra_contracts.*',
+            'FROM'      => 'zentra_contracts',
             'LEFT JOIN' => [
-                'glpi_entities'   => [
+                'zentra_entities'   => [
                     'ON' => [
-                        'glpi_contracts'  => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'zentra_contracts'  => 'entities_id',
+                        'zentra_entities'   => 'id',
                     ],
                 ],
             ],
             'WHERE'     => array_merge([
-                'glpi_contracts.is_deleted'   => 0,
-                'glpi_contracts.is_template'  => 0,
+                'zentra_contracts.is_deleted'   => 0,
+                'zentra_contracts.is_template'  => 0,
             ], $WHERE),
             'ORDERBY'   => [
-                'glpi_entities.completename',
-                'glpi_contracts.name ASC',
-                'glpi_contracts.begin_date DESC',
+                'zentra_entities.completename',
+                'zentra_contracts.name ASC',
+                'zentra_contracts.begin_date DESC',
             ],
         ]);
 
@@ -1480,18 +1480,18 @@ class Contract extends CommonDBTM implements StateInterface
                 $p['nochecklimit']
                 || ($data["max_links_allowed"] == 0)
                 || ($data["max_links_allowed"] > countElementsInTable(
-                    'glpi_contracts_items',
+                    'zentra_contracts_items',
                     ['contracts_id' => $data['id']]
                 ))
             ) {
                 if ($data["entities_id"] != $prev) {
-                    $group = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                    $group = Dropdown::getDropdownName("zentra_entities", $data["entities_id"]);
                     $prev = $data["entities_id"];
                 }
 
                 $name = $data["name"];
                 if (
-                    $_SESSION["glpiis_ids_visible"]
+                    $_SESSION["zentrais_ids_visible"]
                     || empty($data["name"])
                 ) {
                     $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
@@ -1631,9 +1631,9 @@ class Contract extends CommonDBTM implements StateInterface
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
-        if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
+        if (in_array($itemtype, $CFG_ZENTRA["contract_types"], true)) {
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
                 $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
@@ -1659,12 +1659,12 @@ class Contract extends CommonDBTM implements StateInterface
         global $DB;
         return [
             'OR' => [
-                'glpi_contracts.renewal' => 1,
+                'zentra_contracts.renewal' => 1,
                 new QueryExpression(
                     QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_contracts.begin_date',
-                            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+                            date: 'zentra_contracts.begin_date',
+                            interval: new QueryExpression($DB::quoteName('zentra_contracts.duration')),
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curDate()

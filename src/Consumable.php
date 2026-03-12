@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Event;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QuerySubQuery;
+use Zentra\Event;
+use Zentra\Features\Clonable;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -214,7 +214,7 @@ class Consumable extends CommonDBChild
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $input = $ma->getInput();
         switch ($ma->getAction()) {
@@ -231,14 +231,14 @@ class Consumable extends CommonDBChild
                     break;
                 }
                 $entity_restrict = $consumable_item->isRecursive()
-                    ? getSonsOf('glpi_entities', $consumable_item->getEntityID())
+                    ? getSonsOf('zentra_entities', $consumable_item->getEntityID())
                     : $consumable_item->getEntityID();
 
                 Dropdown::showSelectItemFromItemtypes([
                     'itemtype_name'   => 'give_itemtype',
                     'items_id_name'   => 'give_items_id',
                     'entity_restrict' => $entity_restrict,
-                    'itemtypes'       => $CFG_GLPI["consumables_types"],
+                    'itemtypes'       => $CFG_ZENTRA["consumables_types"],
                 ]);
                 echo "<br><br>" . Html::submit(
                     _x('button', 'Give'),
@@ -296,7 +296,7 @@ class Consumable extends CommonDBChild
                         5,
                         "inventory",
                         //TRANS: %s is the user login
-                        sprintf(__('%s gives a consumable'), $_SESSION["glpiname"])
+                        sprintf(__('%s gives a consumable'), $_SESSION["zentraname"])
                     );
                 } else {
                     $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
@@ -319,7 +319,7 @@ class Consumable extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => ['consumableitems_id' => $tID],
         ])->current();
         return (int) $result['cpt'];
@@ -338,7 +338,7 @@ class Consumable extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'consumableitems_id' => $tID,
                 'NOT'                => ['date_out' => null],
@@ -360,7 +360,7 @@ class Consumable extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'consumableitems_id' => $tID,
                 'date_out'           => null,
@@ -469,7 +469,7 @@ class Consumable extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'id'        => $cID,
                 'date_out'  => null,
@@ -491,7 +491,7 @@ class Consumable extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'id'     => $cID,
                 'NOT'   => ['date_out' => null],
@@ -601,26 +601,26 @@ class Consumable extends CommonDBChild
 
         $query = [
             'SELECT' => [
-                'glpi_consumables.*',
-                'glpi_consumableitems.name AS itemname',
-                'glpi_consumableitems.ref AS ref',
-                'glpi_consumableitems.entities_id AS entities_id',
-                'glpi_consumableitems.is_recursive AS is_recursive',
+                'zentra_consumables.*',
+                'zentra_consumableitems.name AS itemname',
+                'zentra_consumableitems.ref AS ref',
+                'zentra_consumableitems.entities_id AS entities_id',
+                'zentra_consumableitems.is_recursive AS is_recursive',
             ],
             'FROM' => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_consumableitems' => [
+                'zentra_consumableitems' => [
                     'ON' => [
-                        'glpi_consumableitems' => 'id',
-                        'glpi_consumables'     => 'consumableitems_id',
+                        'zentra_consumableitems' => 'id',
+                        'zentra_consumables'     => 'consumableitems_id',
                     ],
                 ],
             ],
             'WHERE'  => [
-                'glpi_consumables.items_id' => $items_id,
-                'glpi_consumables.itemtype' => $itemtype,
-                'NOT' => ['glpi_consumables.date_out' => 'NULL'],
-            ] + getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true),
+                'zentra_consumables.items_id' => $items_id,
+                'zentra_consumables.itemtype' => $itemtype,
+                'NOT' => ['zentra_consumables.date_out' => 'NULL'],
+            ] + getEntitiesRestrictCriteria('zentra_consumableitems', '', '', true),
         ];
 
         $total_number = (int) $DB->request($query + [
@@ -630,7 +630,7 @@ class Consumable extends CommonDBChild
         $filtered_query = $query;
         $filtered_query['WHERE'] += $sql_filters;
         $filtered_data = $DB->request($filtered_query + [
-            'LIMIT' => $_SESSION['glpilist_limit'],
+            'LIMIT' => $_SESSION['zentralist_limit'],
             'START' => $start,
             'ORDER' => "$sort $order",
         ]);
@@ -667,7 +667,7 @@ class Consumable extends CommonDBChild
             'filtered_number' => $filtered_number,
             'showmassiveactions' => true,
             'massiveactionparams' => [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], $filtered_number),
+                'num_displayed'    => min($_SESSION['zentralist_limit'], $filtered_number),
                 'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'delete' => __('Delete permanently'),
@@ -697,13 +697,13 @@ class Consumable extends CommonDBChild
                 'itemtype',
                 'items_id',
             ],
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'NOT'                => ['date_out' => null],
                 'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_consumableitems',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
+                    'FROM'   => 'zentra_consumableitems',
+                    'WHERE'  => getEntitiesRestrictCriteria('zentra_consumableitems'),
                 ]),
             ],
             'GROUP'  => ['itemtype', 'items_id', 'consumableitems_id'],
@@ -719,13 +719,13 @@ class Consumable extends CommonDBChild
                 'COUNT'  => '* AS count',
                 'consumableitems_id',
             ],
-            'FROM'   => 'glpi_consumables',
+            'FROM'   => 'zentra_consumables',
             'WHERE'  => [
                 'date_out'           => null,
                 'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
-                    'FROM'   => 'glpi_consumableitems',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
+                    'FROM'   => 'zentra_consumableitems',
+                    'WHERE'  => getEntitiesRestrictCriteria('zentra_consumableitems'),
                 ]),
             ],
             'GROUP'  => ['consumableitems_id'],
@@ -737,8 +737,8 @@ class Consumable extends CommonDBChild
         }
 
         $iterator = $DB->request([
-            'FROM'   => 'glpi_consumableitems',
-            'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
+            'FROM'   => 'zentra_consumableitems',
+            'WHERE'  => getEntitiesRestrictCriteria('zentra_consumableitems'),
         ]);
         $columns = [
             'give_to' => __('Give to'),
@@ -816,18 +816,18 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
             switch ($item::class) {
                 case ConsumableItem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb =  self::countForConsumableItem($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 case User::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($_SESSION['zentrashow_count_on_tabs']) {
                         $nb = self::countForUser($item);
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -843,7 +843,7 @@ class Consumable extends CommonDBChild
      **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
-        return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
+        return countElementsInTable(['zentra_consumables'], ['zentra_consumables.consumableitems_id' => $item->getField('id')]);
     }
 
     /**
@@ -853,14 +853,14 @@ class Consumable extends CommonDBChild
      **/
     public static function countForUser(User $item)
     {
-        return countElementsInTable(['glpi_consumables'], [
-            'glpi_consumables.itemtype' => 'User',
-            'glpi_consumables.items_id' => $item->getField('id'),
-            'NOT' => ['glpi_consumables.date_out' => 'NULL'],
+        return countElementsInTable(['zentra_consumables'], [
+            'zentra_consumables.itemtype' => 'User',
+            'zentra_consumables.items_id' => $item->getField('id'),
+            'NOT' => ['zentra_consumables.date_out' => 'NULL'],
         ]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
             case ConsumableItem::class:
@@ -888,11 +888,11 @@ class Consumable extends CommonDBChild
         $sql_filters = [];
 
         $like_filters = [
-            'id'        => 'glpi_consumables.id',
-            'itemname'  => 'glpi_consumableitems.name',
-            'ref'       => 'glpi_consumableitems.ref',
-            'date_in'   => 'glpi_consumables.date_in',
-            'date_out'  => 'glpi_consumables.date_out',
+            'id'        => 'zentra_consumables.id',
+            'itemname'  => 'zentra_consumableitems.name',
+            'ref'       => 'zentra_consumableitems.ref',
+            'date_in'   => 'zentra_consumables.date_in',
+            'date_out'  => 'zentra_consumables.date_out',
         ];
         foreach ($like_filters as $filter_key => $filter_field) {
             if (($filters[$filter_key] ?? "") !== '') {

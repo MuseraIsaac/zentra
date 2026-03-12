@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Zentra\Tools\Command;
 
-use Glpi\Console\AbstractCommand;
+use Zentra\Console\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,14 +51,14 @@ final class CreateDevLdapCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ldap = new AuthLDAP();
         $id = $ldap->add([
             'name'          => 'openldap',
             'host'          => 'openldap',
-            'basedn'        => 'dc=glpi,dc=org',
-            'rootdn'        => 'cn=admin,dc=glpi,dc=org',
+            'basedn'        => 'dc=zentra,dc=org',
+            'rootdn'        => 'cn=admin,dc=zentra,dc=org',
             'port'          => '389',
             'condition'     => '(objectClass=inetOrgPerson)',
             'login_field'   => 'uid',
@@ -73,7 +73,7 @@ final class CreateDevLdapCommand extends AbstractCommand
             $output->writeln("<error>Failed to create AuthLDAP</error>");
         }
 
-        $link = $CFG_GLPI['url_base'] . $ldap->getLinkURL();
+        $link = $CFG_ZENTRA['url_base'] . $ldap->getLinkURL();
         $output->writeLn("<info>$link</info>");
         return Command::SUCCESS;
     }

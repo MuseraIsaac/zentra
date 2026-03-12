@@ -1,9 +1,9 @@
 {#
  # ---------------------------------------------------------------------
  #
- # GLPI - Gestionnaire Libre de Parc Informatique
+ # ZENTRA - Gestionnaire Libre de Parc Informatique
  #
- # http://glpi-project.org
+ # http://zentra-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  #
  # LICENSE
  #
- # This file is part of GLPI.
+ # This file is part of ZENTRA.
  #
  # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
    {% set msg = __('The "%s" extension is installed')|format(opcache_ext) %}
    {% set short_msg = __('%s extension is installed')|format(opcache_ext) %}
 {% else %}
-   {% set msg = __('Installing and enabling the "%s" extension may improve GLPI performance')|format(opcache_ext) %}
+   {% set msg = __('Installing and enabling the "%s" extension may improve ZENTRA performance')|format(opcache_ext) %}
    {% set short_msg = __('%s extension is not present')|format(opcache_ext) %}
 {% endif %}
 <table class="table table-borderless table-sm">
@@ -109,12 +109,12 @@
                {{ _self.warning_icon_msg(__('%1$s restart rate is too high')|format(opcache_ext)) }}
             {% endif %}
          </tr>
-         {% if opcache_enabled and session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+         {% if opcache_enabled and session('zentra_use_mode') == constant('Session::DEBUG_MODE') %}
             <tr>
                <td></td>
                <td>
                   <form method="post" action="{{ path('/front/config.form.php') }}">
-                     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                     {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                      {{ inputs.submit('reset_opcache', __('Reset'), 1) }}
                   </form>
                </td>
@@ -145,12 +145,12 @@
          <td></td>
          {{ _self.success_icon_msg(msg) }}
       </tr>
-      {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+      {% if session('zentra_use_mode') == constant('Session::DEBUG_MODE') %}
          <tr>
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                  {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                   {{ inputs.submit('reset_core_cache', __('Reset'), 1) }}
                </form>
             </td>
@@ -170,12 +170,12 @@
          <td></td>
          {{ _self.success_icon_msg(msg) }}
       </tr>
-      {% if session('glpi_use_mode') == constant('Session::DEBUG_MODE') %}
+      {% if session('zentra_use_mode') == constant('Session::DEBUG_MODE') %}
          <tr>
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+                  {{ inputs.hidden('_zentra_csrf_token', csrf_token()) }}
                   {{ inputs.submit('reset_translation_cache', __('Reset'), 1) }}
                </form>
             </td>

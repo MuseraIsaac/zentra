@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 /// ProjectCost class
 /// since version 0.85
@@ -81,20 +81,20 @@ class ProjectCost extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         // can exist for template
         if (($item::class === Project::class) && Project::canView()) {
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);
+            if ($_SESSION['zentrashow_count_on_tabs']) {
+                $nb = countElementsInTable('zentra_projectcosts', ['projects_id' => $item->getID()]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Project) {
             return self::showForProject($item, $withtemplate);
@@ -164,7 +164,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_budgets',
+            'table'              => 'zentra_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -172,7 +172,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -291,7 +291,7 @@ class ProjectCost extends CommonDBChild
      **/
     public static function showForProject(Project $project, $withtemplate = 0): bool
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $ID = $project->getID();
 
@@ -324,7 +324,7 @@ class ProjectCost extends CommonDBChild
             ];
             Ajax::updateItemJsCode(
                 "viewcost" . $ID . "_$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                $CFG_ZENTRA["root_doc"] . "/ajax/viewsubitem.php",
                 $params
             );
             echo "};";
@@ -386,7 +386,7 @@ class ProjectCost extends CommonDBChild
                     $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";
                     $js .= Ajax::updateItemJsCode(
                         toupdate: "viewcost" . $ID . "_$rand",
-                        url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                        url: $CFG_ZENTRA["root_doc"] . "/ajax/viewsubitem.php",
                         parameters: [
                             'type'        => self::class,
                             'parenttype'  => Project::class,
@@ -403,7 +403,7 @@ class ProjectCost extends CommonDBChild
                 echo "</td>";
                 echo "<td>" . htmlescape(Html::convDate($data['begin_date'])) . "</td>";
                 echo "<td>" . htmlescape(Html::convDate($data['end_date'])) . "</td>";
-                echo "<td>" . htmlescape(Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName('zentra_budgets', $data['budgets_id'])) . "</td>";
                 echo "<td class='numeric'>" . htmlescape(Html::formatNumber($data['cost'])) . "</td>";
                 $total += (float) $data['cost'];
                 echo "</tr>";

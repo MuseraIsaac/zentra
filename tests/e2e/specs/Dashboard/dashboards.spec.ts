@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '../../fixtures/glpi_fixture';
-import { GlpiPage } from '../../pages/GlpiPage';
+import { test, expect } from '../../fixtures/zentra_fixture';
+import { ZentraPage } from '../../pages/ZentraPage';
 import { Profiles } from '../../utils/Profiles';
 
 const dashboards: Array<[string, string, number]> = [
@@ -48,8 +48,8 @@ for (const [name, url, number] of dashboards) {
         await page.goto(url);
 
         // Charts should all be visible and have the correct heigh
-        const glpi_page = new GlpiPage(page);
-        const widgets = glpi_page.dashboards_widgets;
+        const zentra_page = new ZentraPage(page);
+        const widgets = zentra_page.dashboards_widgets;
         await expect(widgets).toHaveCount(number, {
             // Dashboards can be long to fully load
             timeout: 20000,

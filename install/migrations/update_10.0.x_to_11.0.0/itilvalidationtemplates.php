@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Add ITILValidationTemplates table
-if (!$DB->tableExists('glpi_itilvalidationtemplates')) {
-    $query = "CREATE TABLE `glpi_itilvalidationtemplates` (
+if (!$DB->tableExists('zentra_itilvalidationtemplates')) {
+    $query = "CREATE TABLE `zentra_itilvalidationtemplates` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -62,8 +62,8 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates')) {
 }
 
 // Add ITILValidationTemplatesTargets table
-if (!$DB->tableExists('glpi_itilvalidationtemplates_targets')) {
-    $query = "CREATE TABLE `glpi_itilvalidationtemplates_targets` (
+if (!$DB->tableExists('zentra_itilvalidationtemplates_targets')) {
+    $query = "CREATE TABLE `zentra_itilvalidationtemplates_targets` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itilvalidationtemplates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `itemtype` varchar(100) DEFAULT NULL,
@@ -77,16 +77,16 @@ if (!$DB->tableExists('glpi_itilvalidationtemplates_targets')) {
     $DB->doQuery($query);
 }
 
-$table = 'glpi_changevalidations';
-// Add new 'itilvalidationtemplates_id' field on 'glpi_changevalidations' table
+$table = 'zentra_changevalidations';
+// Add new 'itilvalidationtemplates_id' field on 'zentra_changevalidations' table
 $fkey_to_add = 'itilvalidationtemplates_id';
 if (!$DB->fieldExists($table, $fkey_to_add, false)) {
     $migration->addField($table, $fkey_to_add, 'fkey', ['after' => 'users_id_validate']);
     $migration->addKey($table, $fkey_to_add);
 }
 
-$table = 'glpi_ticketvalidations';
-// Add new 'itilvalidationtemplates_id' field on 'glpi_ticketvalidations' table
+$table = 'zentra_ticketvalidations';
+// Add new 'itilvalidationtemplates_id' field on 'zentra_ticketvalidations' table
 $fkey_to_add = 'itilvalidationtemplates_id';
 if (!$DB->fieldExists($table, $fkey_to_add, false)) {
     $migration->addField($table, $fkey_to_add, 'fkey', ['after' => 'users_id_validate']);

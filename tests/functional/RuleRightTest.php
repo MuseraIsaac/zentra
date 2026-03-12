@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
-use Glpi\Tests\RuleBuilder;
+use Zentra\Tests\DbTestCase;
+use Zentra\Tests\RuleBuilder;
 
 /* Test for inc/RuleRight.class.php */
 
@@ -60,7 +60,7 @@ class RuleRightTest extends DbTestCase
         $this->assertSame(
             1,
             countElementsInTable(
-                'glpi_rules',
+                'zentra_rules',
                 [
                     'name'      => 'Root',
                     'is_active' => 1,
@@ -79,14 +79,14 @@ class RuleRightTest extends DbTestCase
         $rule_builder->setEntity(0)
             ->setIsRecursive(1)
             ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
-            ->addCriteria('MAIL_EMAIL', \Rule::PATTERN_IS, TU_USER . '@glpi.com')
+            ->addCriteria('MAIL_EMAIL', \Rule::PATTERN_IS, TU_USER . '@zentra.com')
             ->addAction('assign', 'profiles_id', 5) // 'normal' profile
             ->addAction('assign', 'entities_id', $test_root_entity);
         $rule = $this->createRule($rule_builder);
         $rules_id = $rule->getID();
         $rules = new \RuleRight();
 
-        // login the user to force a real synchronisation and get it's glpi id
+        // login the user to force a real synchronisation and get it's zentra id
         $this->realLogin(TU_USER, TU_PASS, false);
         $users_id = \User::getIdByName(TU_USER);
         $this->assertGreaterThan(0, $users_id);
@@ -220,7 +220,7 @@ class RuleRightTest extends DbTestCase
         $this->createRule($rule_builder);
 
         $this->realLogin(TU_USER, TU_PASS, true, false);
-        $events = getAllDataFromTable('glpi_events', [
+        $events = getAllDataFromTable('zentra_events', [
             'service' => 'login',
             'type' => 'system',
             'items_id' => 0,

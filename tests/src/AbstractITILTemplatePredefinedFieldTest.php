@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use ITILTemplatePredefinedField;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -92,7 +92,7 @@ abstract class AbstractITILTemplatePredefinedFieldTest extends DbTestCase
         $input[$tpl_class::getForeignKeyField()] = $tpl->getID();
 
         // Act: login and prepare input
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
         $result = $this->getConcreteClass()->prepareInputForAdd($input);
 
         // Assert: check validity and error message

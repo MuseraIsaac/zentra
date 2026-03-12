@@ -58,8 +58,8 @@ Received: from SI2PR01MB4622.apcprd01.prod.exchangelabs.com
  ([fe80::30b4:8ac9:f11a:533]) by SI2PR01MB4622.apcprd01.prod.exchangelabs.com
  ([fe80::30b4:8ac9:f11a:533%5]) with mapi id 15.20.8069.027; Wed, 23 Oct 2024
  07:00:37 +0000
-From: <normal@glpi-project.org>
-To: GLPI debug <unittests@glpi-project.org>
+From: <normal@zentra-project.org>
+To: ZENTRA debug <unittests@zentra-project.org>
 Subject:
  43 - Korean encoding issue
 Thread-Topic:

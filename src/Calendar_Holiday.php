@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Zentra\Application\View\TemplateRenderer;
 
 class Calendar_Holiday extends CommonDBRelation
 {
@@ -79,23 +79,23 @@ class Calendar_Holiday extends CommonDBRelation
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_calendars_holidays.id AS linkid',
-                'glpi_holidays.*',
+                'zentra_calendars_holidays.id AS linkid',
+                'zentra_holidays.*',
             ],
             'DISTINCT'        => true,
-            'FROM'            => 'glpi_calendars_holidays',
+            'FROM'            => 'zentra_calendars_holidays',
             'LEFT JOIN'       => [
-                'glpi_holidays'   => [
+                'zentra_holidays'   => [
                     'ON' => [
-                        'glpi_calendars_holidays'  => 'holidays_id',
-                        'glpi_holidays'            => 'id',
+                        'zentra_calendars_holidays'  => 'holidays_id',
+                        'zentra_holidays'            => 'id',
                     ],
                 ],
             ],
             'WHERE'           => [
-                'glpi_calendars_holidays.calendars_id' => $ID,
+                'zentra_calendars_holidays.calendars_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_holidays.name',
+            'ORDERBY'         => 'zentra_holidays.name',
         ]);
 
         $holidays = [];
@@ -150,18 +150,18 @@ class Calendar_Holiday extends CommonDBRelation
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => min($_SESSION['zentralist_limit'], count($entries)),
                 'container'     => 'mass' . self::class . $rand,
             ],
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
             if ($item instanceof Calendar) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
+                if ($_SESSION['zentrashow_count_on_tabs']) {
                     $nb = countElementsInTable(self::getTable(), ['calendars_id' => $item->getID()]);
                 }
                 return self::createTabEntry(
@@ -174,7 +174,7 @@ class Calendar_Holiday extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Calendar) {
             self::showForCalendar($item);
@@ -216,10 +216,10 @@ class Calendar_Holiday extends CommonDBRelation
      */
     public function getHolidaysForCalendar(int $calendars_id): array
     {
-        global $DB, $GLPI_CACHE;
+        global $DB, $ZENTRA_CACHE;
 
         $cache_key = $this->getCalendarHolidaysCacheKey($calendars_id);
-        if (($holidays = $GLPI_CACHE->get($cache_key)) === null) {
+        if (($holidays = $ZENTRA_CACHE->get($cache_key)) === null) {
             $table = self::getTable();
             $holidays_iterator = $DB->request(
                 [
@@ -239,7 +239,7 @@ class Calendar_Holiday extends CommonDBRelation
                 ]
             );
             $holidays = iterator_to_array($holidays_iterator);
-            $GLPI_CACHE->set($cache_key, $holidays);
+            $ZENTRA_CACHE->set($cache_key, $holidays);
         }
 
         return $holidays;
@@ -295,7 +295,7 @@ class Calendar_Holiday extends CommonDBRelation
      */
     private function invalidateCalendarCache(int $calendars_id): bool
     {
-        global $GLPI_CACHE;
-        return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
+        global $ZENTRA_CACHE;
+        return $ZENTRA_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
     }
 }

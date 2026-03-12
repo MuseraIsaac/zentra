@@ -1,5 +1,5 @@
-From: Normal User <normal@glpi-project.org>
-To: GLPI debug <unittests@glpi-project.org>
+From: Normal User <normal@zentra-project.org>
+To: ZENTRA debug <unittests@zentra-project.org>
 Subject: Test Email from Outlook
 Thread-Topic: Test Email from Outlook
 Thread-Index: AdZW2I0jVbjPDha9QGyhAGwBB3ep4A==
@@ -20,7 +20,7 @@ Content-Type: text/plain; charset="us-ascii"
 
 With only text in the body, the email will not be imported and the following error will appear when forcing the retrieval by clicking the 'Get email tickets now' button on the receiver.
 
-'Uncaught Exception UnexpectedValueException: is not known in /var/www/glpi/inc/mailcollector.class.php at line 2002'
+'Uncaught Exception UnexpectedValueException: is not known in /var/www/zentra/inc/mailcollector.class.php at line 2002'
 
 --_000_DM6PR05MB5865518283B3393AA31FAEDFBC650DM6PR05MB5865namp_
 Content-Type: text/html; charset="us-ascii"
@@ -77,7 +77,7 @@ div.WordSection1
 <div class="WordSection1">
 <p class="MsoNormal">With only text in the body, the email will not be imported and the following error will appear when forcing the retrieval by clicking the &#8216;Get email tickets now&#8217; button on the receiver.<o:p></o:p></p>
 <p class="MsoNormal"><o:p>&nbsp;</o:p></p>
-<p class="MsoNormal"><span style="font-size:10.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#24292E;background:white">'Uncaught Exception UnexpectedValueException: is not known in /var/www/glpi/inc/mailcollector.class.php at line 2002'</span><o:p></o:p></p>
+<p class="MsoNormal"><span style="font-size:10.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#24292E;background:white">'Uncaught Exception UnexpectedValueException: is not known in /var/www/zentra/inc/mailcollector.class.php at line 2002'</span><o:p></o:p></p>
 </div>
 </body>
 </html>

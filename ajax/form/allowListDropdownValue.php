@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@
 
 include(__DIR__ . '../../getAbstractRightDropdownValue.php');
 
-use Glpi\Form\AccessControl\ControlType\AllowListDropdown;
-use Glpi\Form\Form;
+use Zentra\Form\AccessControl\ControlType\AllowListDropdown;
+use Zentra\Form\Form;
 
 // This dropdown is used to configure form's access controls.
 // It should only be visible to users with the right to view form's access controls.

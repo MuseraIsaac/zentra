@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
     border-left-width: 0;
     border-radius: unset;
     position: fixed;
-    top: var(--glpi-contextbar-height);
+    top: var(--zentra-contextbar-height);
     bottom: 0;
     left: $sidebar-width;
     z-index: $zindex-fixed;
@@ -49,7 +49,7 @@
         top: 0;
         left: 0;
         border-left-width: 1px;
-        height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
+        height: calc(100vh - var(--zentra-contextbar-height) - var(--zentra-content-margin));
         min-width: 320px;
 
         .pin-saved-searches-panel {
@@ -101,10 +101,10 @@
 
 body.navbar-collapsed {
     .saved-searches-panel {
-        height: calc(100vh - var(--glpi-topbar-height));
+        height: calc(100vh - var(--zentra-topbar-height));
 
         &:not(.pinned) {
-            top: var(--glpi-contextbar-height);
+            top: var(--zentra-contextbar-height);
             left: 70px;
         }
     }
@@ -112,17 +112,17 @@ body.navbar-collapsed {
 
 body.horizontal-layout {
     .saved-searches-panel {
-        top: var(--glpi-topbar-height);
+        top: var(--zentra-topbar-height);
         left: 0;
 
         &.pinned {
             top: 0;
-            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
+            height: calc(100vh - var(--zentra-topbar-height) - var(--zentra-contextbar-height) - var(--zentra-content-margin));
         }
     }
 
     .secondary-bar {
-        top: var(--glpi-topbar-height);
+        top: var(--zentra-topbar-height);
         z-index: 1010;
 
         @include media-breakpoint-down(md) {

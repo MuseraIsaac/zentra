@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Error\ErrorHandler;
-use Glpi\Event;
-use Glpi\Plugin\Hooks;
-use Glpi\Security\TOTPManager;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Error\ErrorHandler;
+use Zentra\Event;
+use Zentra\Plugin\Hooks;
+use Zentra\Security\TOTPManager;
 use Safe\Exceptions\LdapException;
 
 use function Safe\ini_get;
@@ -52,7 +52,7 @@ use function Safe\session_name;
 /**
  *  Identification class used to login
  */
-class Auth extends CommonGLPI
+class Auth extends CommonZENTRA
 {
     /** @var array Array of errors */
     private $errors = [];
@@ -100,7 +100,7 @@ class Auth extends CommonGLPI
     /** @var bool Store user LDAP dn */
     public $user_dn = false;
 
-    public const DB_GLPI  = 1;
+    public const DB_ZENTRA  = 1;
     public const MAIL     = 2;
     public const LDAP     = 3;
     public const EXTERNAL = 4;
@@ -183,7 +183,7 @@ class Auth extends CommonGLPI
      * Check user existence in DB
      *
      * @global DBmysql $DB
-     * @param  array   $options conditions : array('name'=>'glpi')
+     * @param  array   $options conditions : array('name'=>'zentra')
      *                                    or array('email' => 'test at test.com')
      *
      * @return int {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
@@ -193,12 +193,12 @@ class Auth extends CommonGLPI
         global $DB;
 
         $result = $DB->request([
-            'FROM' => 'glpi_users',
+            'FROM' => 'zentra_users',
             'LEFT JOIN' => [
-                'glpi_useremails' => [
+                'zentra_useremails' => [
                     'FKEY' => [
-                        'glpi_users'      => 'id',
-                        'glpi_useremails' => 'users_id',
+                        'zentra_users'      => 'id',
+                        'zentra_useremails' => 'users_id',
                     ],
                 ],
             ],
@@ -345,7 +345,7 @@ class Auth extends CommonGLPI
                     if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $info)) {
                         return $info;
                     }
-                    $this->addToError(__('User not authorized to connect in GLPI'));
+                    $this->addToError(__('User not authorized to connect in ZENTRA'));
                     // Use is present by has no right to connect because of a plugin
                     return false;
                 } catch (LdapException $e) {
@@ -421,7 +421,7 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Find a user in the GLPI DB
+     * Find a user in the ZENTRA DB
      *
      * try to connect to DB
      * update the instance variable user with the user who has the name $name
@@ -433,14 +433,14 @@ class Auth extends CommonGLPI
      * @param string $name     User Login
      * @param string $password User Password
      *
-     * @return bool user in GLPI DB with the right password
+     * @return bool user in ZENTRA DB with the right password
      */
     public function connection_db($name, $password)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
-        $pass_expiration_delay = (int) $CFG_GLPI['password_expiration_delay'];
-        $lock_delay            = (int) $CFG_GLPI['password_expiration_lock_delay'];
+        $pass_expiration_delay = (int) $CFG_ZENTRA['password_expiration_delay'];
+        $lock_delay            = (int) $CFG_ZENTRA['password_expiration_lock_delay'];
 
         // SQL query
         $result = $DB->request(
@@ -464,7 +464,7 @@ class Auth extends CommonGLPI
                 'FROM'   => User::getTable(),
                 'WHERE'  =>  [
                     'name'     => $name,
-                    'authtype' => self::DB_GLPI,
+                    'authtype' => self::DB_ZENTRA,
                     'auths_id' => 0,
                 ],
             ]
@@ -479,7 +479,7 @@ class Auth extends CommonGLPI
                 // Disable account if password expired
                 if (
                     -1 !== $pass_expiration_delay && -1 !== $lock_delay
-                    && $row['lock_date'] < $_SESSION['glpi_currenttime']
+                    && $row['lock_date'] < $_SESSION['zentra_currenttime']
                 ) {
                     $user = new User();
                     $user->update(
@@ -491,7 +491,7 @@ class Auth extends CommonGLPI
                 }
                 if (
                     -1 !== $pass_expiration_delay
-                    && $row['password_expiration_date'] < $_SESSION['glpi_currenttime']
+                    && $row['password_expiration_date'] < $_SESSION['zentra_currenttime']
                 ) {
                     $this->password_expired = true;
                 }
@@ -507,7 +507,7 @@ class Auth extends CommonGLPI
                 $this->user->getFromDBByCrit(['id' => $row['id']]);
                 $this->extauth                  = 0;
                 $this->user_present             = true;
-                $this->user->fields["authtype"] = self::DB_GLPI;
+                $this->user->fields["authtype"] = self::DB_ZENTRA;
                 $this->user->fields["password"] = $password;
 
                 // apply rule rights on local user
@@ -518,7 +518,7 @@ class Auth extends CommonGLPI
                     $groups_id,
                     $this->user->fields,
                     [
-                        'type'  => Auth::DB_GLPI,
+                        'type'  => Auth::DB_ZENTRA,
                         'login' => $this->user->fields['name'],
                         'email' => UserEmail::getDefaultForUser($row['id']),
                     ]
@@ -543,17 +543,17 @@ class Auth extends CommonGLPI
      */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         switch ($authtype) {
             case self::CAS:
-                $url_base = parse_url($CFG_GLPI["url_base"]);
+                $url_base = parse_url($CFG_ZENTRA["url_base"]);
                 $service_base_url = $url_base["scheme"] . "://" . $url_base["host"] . (isset($url_base["port"]) ? ":" . $url_base["port"] : "");
                 phpCAS::client(
-                    constant($CFG_GLPI["cas_version"]),
-                    $CFG_GLPI["cas_host"],
-                    (int) $CFG_GLPI["cas_port"],
-                    $CFG_GLPI["cas_uri"],
+                    constant($CFG_ZENTRA["cas_version"]),
+                    $CFG_ZENTRA["cas_host"],
+                    (int) $CFG_ZENTRA["cas_port"],
+                    $CFG_ZENTRA["cas_uri"],
                     $service_base_url,
                     false
                 );
@@ -574,8 +574,8 @@ class Auth extends CommonGLPI
 
             case self::EXTERNAL:
                 $ssovariable = Dropdown::getDropdownName(
-                    'glpi_ssovariables',
-                    $CFG_GLPI["ssovariables_id"]
+                    'zentra_ssovariables',
+                    $CFG_ZENTRA["ssovariables_id"]
                 );
                 $login_string = '';
                 // MoYo : checking REQUEST create a security hole for me !
@@ -588,7 +588,7 @@ class Auth extends CommonGLPI
                 if ($pos !== false) {
                     $login = substr($login_string, $pos + 1);
                 }
-                if ($CFG_GLPI['existing_auth_server_field_clean_domain']) {
+                if ($CFG_ZENTRA['existing_auth_server_field_clean_domain']) {
                     $pos = strpos($login, "@");
                     if ($pos !== false) {
                         $login = substr($login, 0, $pos);
@@ -602,7 +602,7 @@ class Auth extends CommonGLPI
                         return false;
                     }
 
-                    $_SESSION['glpi_remote_user'] = $login_string; // store raw remote user
+                    $_SESSION['zentra_remote_user'] = $login_string; // store raw remote user
 
                     return true;
                 }
@@ -619,30 +619,30 @@ class Auth extends CommonGLPI
                     $sslattributes[$key] = $val;
                 }
                 if (
-                    isset($sslattributes[$CFG_GLPI["x509_email_field"]])
-                    && NotificationMailing::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
-                    && self::isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])
+                    isset($sslattributes[$CFG_ZENTRA["x509_email_field"]])
+                    && NotificationMailing::isUserAddressValid($sslattributes[$CFG_ZENTRA["x509_email_field"]])
+                    && self::isValidLogin($sslattributes[$CFG_ZENTRA["x509_email_field"]])
                 ) {
                     $restrict = false;
-                    $CFG_GLPI["x509_ou_restrict"] = trim($CFG_GLPI["x509_ou_restrict"]);
-                    if (!empty($CFG_GLPI["x509_ou_restrict"])) {
-                        $split = explode('$', $CFG_GLPI["x509_ou_restrict"]);
+                    $CFG_ZENTRA["x509_ou_restrict"] = trim($CFG_ZENTRA["x509_ou_restrict"]);
+                    if (!empty($CFG_ZENTRA["x509_ou_restrict"])) {
+                        $split = explode('$', $CFG_ZENTRA["x509_ou_restrict"]);
 
                         if (!in_array($sslattributes['OU'], $split, true)) {
                             $restrict = true;
                         }
                     }
-                    $CFG_GLPI["x509_o_restrict"] = trim($CFG_GLPI["x509_o_restrict"]);
-                    if (!empty($CFG_GLPI["x509_o_restrict"])) {
-                        $split = explode('$', $CFG_GLPI["x509_o_restrict"]);
+                    $CFG_ZENTRA["x509_o_restrict"] = trim($CFG_ZENTRA["x509_o_restrict"]);
+                    if (!empty($CFG_ZENTRA["x509_o_restrict"])) {
+                        $split = explode('$', $CFG_ZENTRA["x509_o_restrict"]);
 
                         if (!in_array($sslattributes['O'], $split, true)) {
                             $restrict = true;
                         }
                     }
-                    $CFG_GLPI["x509_cn_restrict"] = trim($CFG_GLPI["x509_cn_restrict"]);
-                    if (!empty($CFG_GLPI["x509_cn_restrict"])) {
-                        $split = explode('$', $CFG_GLPI["x509_cn_restrict"]);
+                    $CFG_ZENTRA["x509_cn_restrict"] = trim($CFG_ZENTRA["x509_cn_restrict"]);
+                    if (!empty($CFG_ZENTRA["x509_cn_restrict"])) {
+                        $split = explode('$', $CFG_ZENTRA["x509_cn_restrict"]);
 
                         if (!in_array($sslattributes['CN'], $split, true)) {
                             $restrict = true;
@@ -650,7 +650,7 @@ class Auth extends CommonGLPI
                     }
 
                     if (!$restrict) {
-                        $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
+                        $this->user->fields['name'] = $sslattributes[$CFG_ZENTRA["x509_email_field"]];
 
                         // Can do other things if need : only add it here
                         $this->user->fields['email'] = $this->user->fields['name'];
@@ -660,7 +660,7 @@ class Auth extends CommonGLPI
                 break;
 
             case self::API:
-                if ($CFG_GLPI['enable_api_login_external_token']) {
+                if ($CFG_ZENTRA['enable_api_login_external_token']) {
                     $user = new User();
                     if ($user->getFromDBbyToken($_REQUEST['user_token'], 'api_token')) {
                         $this->user->fields['name'] = $user->fields['name'];
@@ -673,7 +673,7 @@ class Auth extends CommonGLPI
             case self::COOKIE:
                 $cookie_name   = session_name() . '_rememberme';
 
-                if ($CFG_GLPI["login_remember_time"]) {
+                if ($CFG_ZENTRA["login_remember_time"]) {
                     $data = null;
                     if (array_key_exists($cookie_name, $_COOKIE)) {
                         $data = json_decode($_COOKIE[$cookie_name], true);
@@ -751,8 +751,8 @@ class Auth extends CommonGLPI
 
         //Return all the authentication methods in an array
         $this->authtypes = [
-            'ldap' => getAllDataFromTable('glpi_authldaps'),
-            'mail' => getAllDataFromTable('glpi_authmails'),
+            'ldap' => getAllDataFromTable('zentra_authldaps'),
+            'mail' => getAllDataFromTable('zentra_authmails'),
         ];
     }
 
@@ -773,7 +773,7 @@ class Auth extends CommonGLPI
     /**
      * Checks if a user can log in with the given username, password, and auth type without actually logging them in.
      *
-     * This process will create the user in GLPI if they are provided by an external source, and runs the LDAP deleted user workflow if needed.
+     * This process will create the user in ZENTRA if they are provided by an external source, and runs the LDAP deleted user workflow if needed.
      * This method modifies the Auth object's properties.
      * More information about the login validation can be retreived from those properties.
      * If testing more than one set of credentials, it is best to use a new Auth object for each set of credentials.
@@ -799,8 +799,8 @@ class Auth extends CommonGLPI
         // manage the $login_auth (force the auth source of the user account)
         $this->user->fields["auths_id"] = 0;
         if ($login_auth === 'local') {
-            $this->auth_type = self::DB_GLPI;
-            $this->user->fields["authtype"] = self::DB_GLPI;
+            $this->auth_type = self::DB_ZENTRA;
+            $this->user->fields["authtype"] = self::DB_ZENTRA;
         } elseif (preg_match('/^(?<type>ldap|mail|external)-(?<id>\d+)$/', $login_auth, $auth_matches)) {
             $this->user->fields["auths_id"] = (int) $auth_matches['id'];
             if ($auth_matches['type'] === 'ldap') {
@@ -846,7 +846,7 @@ class Auth extends CommonGLPI
                             $ldapservers[] = $authldap->fields;
                         }
                     } else { // User has never been authenticated: try all active ldap server to find the right one
-                        foreach (getAllDataFromTable('glpi_authldaps', ['is_active' => 1]) as $ldap_config) {
+                        foreach (getAllDataFromTable('zentra_authldaps', ['is_active' => 1]) as $ldap_config) {
                             $ldapservers[] = $ldap_config;
                         }
                     }
@@ -856,7 +856,7 @@ class Auth extends CommonGLPI
                             $ldap_method["host"],
                             $ldap_method["port"],
                             $ldap_method["rootdn"],
-                            (new GLPIKey())->decrypt($ldap_method["rootdn_passwd"]),
+                            (new ZENTRAKey())->decrypt($ldap_method["rootdn_passwd"]),
                             $ldap_method["use_tls"],
                             $ldap_method["deref_option"],
                             $ldap_method["tls_certfile"],
@@ -921,7 +921,7 @@ class Auth extends CommonGLPI
                                 count($ldapservers)
                             ));
                         } elseif (!$user_dn && $this->user_present) {
-                            //If user is set as present in GLPI but no LDAP DN found : it means that the user
+                            //If user is set as present in ZENTRA but no LDAP DN found : it means that the user
                             //is not present in an ldap directory anymore
                             $user_deleted_ldap = true;
                             $this->addToError(_n(
@@ -951,7 +951,7 @@ class Auth extends CommonGLPI
                 // Try connect local user if not yet authenticated
                 if (
                     empty($login_auth)
-                    || $this->user->fields["authtype"] === static::DB_GLPI
+                    || $this->user->fields["authtype"] === static::DB_ZENTRA
                 ) {
                     $this->auth_succeded = $this->connection_db(
                         $login_name,
@@ -1033,7 +1033,7 @@ class Auth extends CommonGLPI
      */
     public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         if (($_SESSION['mfa_success'] ?? false) || ($_SESSION['mfa_exploit_grace_period'] ?? false)) {
             // Post MFA validation
@@ -1047,7 +1047,7 @@ class Auth extends CommonGLPI
             unset($_SESSION['mfa_pre_auth'], $_SESSION['mfa_success'], $_SESSION['mfa_exploit_grace_period']);
         } elseif ($this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
             if (isset($this->user->fields['_deny_login'])) {
-                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->addToError(__('User not authorized to connect in ZENTRA'));
                 $this->auth_succeded = false;
                 $this->denied_by_rule = true;
             }
@@ -1064,7 +1064,7 @@ class Auth extends CommonGLPI
 
             if ($DB->isSlave()) {
                 if (!$this->user_present) { // Can't add in slave mode
-                    $this->addToError(__('User not authorized to connect in GLPI'));
+                    $this->addToError(__('User not authorized to connect in ZENTRA'));
                     $this->auth_succeded = false;
                 }
             } else {
@@ -1078,7 +1078,7 @@ class Auth extends CommonGLPI
                     unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
 
                     $this->user->update($input);
-                } elseif ($CFG_GLPI["is_users_auto_add"]) {
+                } elseif ($CFG_ZENTRA["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
                     $this->user->fields = [];
@@ -1088,7 +1088,7 @@ class Auth extends CommonGLPI
                     $this->user->add($input);
                 } else {
                     // Auto add not enable so auth failed
-                    $this->addToError(__('User not authorized to connect in GLPI'));
+                    $this->addToError(__('User not authorized to connect in ZENTRA'));
                     $this->auth_succeded = false;
                 }
             }
@@ -1114,12 +1114,12 @@ class Auth extends CommonGLPI
 
                 if ($this->user_present && $totp->is2FAEnabled($this->user->fields['id'])) {
                     $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
-                    Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
+                    Html::redirect($CFG_ZENTRA["root_doc"] . '/MFA/Prompt');
                 }
 
                 if ($totp->get2FAEnforcement($this->user->fields['id']) !== TOTPManager::ENFORCEMENT_OPTIONAL) {
                     $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
-                    Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Setup');
+                    Html::redirect($CFG_ZENTRA["root_doc"] . '/MFA/Setup');
                 }
             }
         }
@@ -1160,7 +1160,7 @@ class Auth extends CommonGLPI
             $_SESSION["noAUTO"] = 1;
         }
 
-        if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
+        if ($this->auth_succeded && $CFG_ZENTRA['login_remember_time'] > 0 && $remember_me) {
             $token = $this->user->getAuthToken('cookie_token', true);
 
             if ($token) {
@@ -1212,12 +1212,12 @@ class Auth extends CommonGLPI
         }
 
         $methods = [
-            self::DB_GLPI  => __('Authentication on GLPI database'),
+            self::DB_ZENTRA  => __('Authentication on ZENTRA database'),
             self::EXTERNAL => __('External authentications'),
         ];
 
         $result = $DB->request([
-            'FROM'   => 'glpi_authldaps',
+            'FROM'   => 'zentra_authldaps',
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'is_active' => 1,
@@ -1229,7 +1229,7 @@ class Auth extends CommonGLPI
         }
 
         $result = $DB->request([
-            'FROM'   => 'glpi_authmails',
+            'FROM'   => 'zentra_authmails',
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'is_active' => 1,
@@ -1267,7 +1267,7 @@ class Auth extends CommonGLPI
             self::CAS => __('CAS'),
             self::X509 => __('x509 certificate authentication'),
             self::EXTERNAL => __('Other'),
-            self::DB_GLPI => __('GLPI internal database'),
+            self::DB_ZENTRA => __('ZENTRA internal database'),
             self::API => __('API'),
             default => '',
         };
@@ -1422,7 +1422,7 @@ class Auth extends CommonGLPI
      */
     public static function useAuthExt()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         // Get all the ldap directories
         if (AuthLDAP::useAuthLdap()) {
@@ -1433,17 +1433,17 @@ class Auth extends CommonGLPI
             return true;
         }
 
-        if (!empty($CFG_GLPI["x509_email_field"])) {
+        if (!empty($CFG_ZENTRA["x509_email_field"])) {
             return true;
         }
 
         // Existing auth method
-        if (!empty($CFG_GLPI["ssovariables_id"])) {
+        if (!empty($CFG_ZENTRA["ssovariables_id"])) {
             return true;
         }
 
         // Using CAS server
-        if (!empty($CFG_GLPI["cas_host"])) {
+        if (!empty($CFG_ZENTRA["cas_host"])) {
             return true;
         }
 
@@ -1478,7 +1478,7 @@ class Auth extends CommonGLPI
      */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
             return false;
@@ -1489,12 +1489,12 @@ class Auth extends CommonGLPI
         }
         // Using x509 server
         if (
-            !empty($CFG_GLPI["x509_email_field"])
+            !empty($CFG_ZENTRA["x509_email_field"])
             && isset($_SERVER['SSL_CLIENT_S_DN'])
-            && str_contains($_SERVER['SSL_CLIENT_S_DN'], $CFG_GLPI["x509_email_field"])
+            && str_contains($_SERVER['SSL_CLIENT_S_DN'], $CFG_ZENTRA["x509_email_field"])
         ) {
             if ($redirect) {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/front/login.php" . $redir_string);
             } else {
                 return self::X509;
             }
@@ -1502,13 +1502,13 @@ class Auth extends CommonGLPI
         // Existing auth method
         //Look for the field in $_SERVER AND $_REQUEST
         // MoYo : checking REQUEST create a security hole for me !
-        $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
+        $ssovariable = Dropdown::getDropdownName('zentra_ssovariables', $CFG_ZENTRA["ssovariables_id"]);
         if (
-            $CFG_GLPI["ssovariables_id"]
+            $CFG_ZENTRA["ssovariables_id"]
             && !empty($_SERVER[$ssovariable])
         ) {
             if ($redirect) {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/front/login.php" . $redir_string);
             } else {
                 return self::EXTERNAL;
             }
@@ -1520,18 +1520,18 @@ class Auth extends CommonGLPI
         }
 
         // Using CAS server
-        if (!empty($CFG_GLPI["cas_host"])) {
+        if (!empty($CFG_ZENTRA["cas_host"])) {
             if ($redirect) {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/front/login.php" . $redir_string);
             } else {
                 return self::CAS;
             }
         }
 
         $cookie_name = session_name() . '_rememberme';
-        if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
+        if ($CFG_ZENTRA["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
             if ($redirect) {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
+                Html::redirect($CFG_ZENTRA["root_doc"] . "/front/login.php" . $redir_string);
             } else {
                 return self::COOKIE;
             }
@@ -1549,14 +1549,14 @@ class Auth extends CommonGLPI
      */
     public static function redirectIfAuthenticated($redirect = null)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Session::getLoginUserID()) {
             return false;
         }
 
         if (Session::mustChangePassword()) {
-            Html::redirect($CFG_GLPI['root_doc'] . '/front/updatepassword.php');
+            Html::redirect($CFG_ZENTRA['root_doc'] . '/front/updatepassword.php');
         }
 
         if (!$redirect) {
@@ -1575,15 +1575,15 @@ class Auth extends CommonGLPI
 
         // Redirect to Command Central if not post-only
         if (Session::getCurrentInterface() === "helpdesk") {
-            if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-                Html::redirect($CFG_GLPI['root_doc'] . "/ServiceCatalog");
+            if ($_SESSION['zentraactiveprofile']['create_ticket_on_login']) {
+                Html::redirect($CFG_ZENTRA['root_doc'] . "/ServiceCatalog");
             }
-            Html::redirect($CFG_GLPI['root_doc'] . "/Helpdesk");
+            Html::redirect($CFG_ZENTRA['root_doc'] . "/Helpdesk");
         } else {
-            if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
+            if ($_SESSION['zentraactiveprofile']['create_ticket_on_login']) {
                 Html::redirect(Ticket::getFormURL());
             }
-            Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
+            Html::redirect($CFG_ZENTRA['root_doc'] . "/front/central.php");
         }
     }
 
@@ -1618,7 +1618,7 @@ class Auth extends CommonGLPI
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonZENTRA $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -1632,7 +1632,7 @@ class Auth extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonZENTRA $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === User::class) {
             self::showSynchronizationForm($item);
@@ -1647,13 +1647,13 @@ class Auth extends CommonGLPI
      */
     public static function showOtherAuthList()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         if (!Config::canUpdate()) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/setup/authentication/other_ext_setup.html.twig', [
-            'config' => $CFG_GLPI,
+            'config' => $CFG_ZENTRA,
         ]);
     }
 
@@ -1668,13 +1668,13 @@ class Auth extends CommonGLPI
 
         $elements = [
             '_default'  => 'local',
-            'local'     => __("GLPI internal database"),
+            'local'     => __("ZENTRA internal database"),
         ];
 
         // Get LDAP
         if (Toolbox::canUseLdap()) {
             $iterator = $DB->request([
-                'FROM'   => 'glpi_authldaps',
+                'FROM'   => 'zentra_authldaps',
                 'WHERE'  => [
                     'is_active' => 1,
                 ],
@@ -1690,7 +1690,7 @@ class Auth extends CommonGLPI
 
         // GET Mail servers
         $iterator = $DB->request([
-            'FROM'   => 'glpi_authmails',
+            'FROM'   => 'zentra_authmails',
             'WHERE'  => [
                 'is_active' => 1,
             ],
@@ -1753,10 +1753,10 @@ class Auth extends CommonGLPI
      */
     public static function setRememberMeCookie(string $cookie_value): void
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $cookie_name     = session_name() . '_rememberme';
-        $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
+        $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_ZENTRA['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);

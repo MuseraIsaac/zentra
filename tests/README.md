@@ -1,13 +1,13 @@
-## GLPI test suite
+## ZENTRA test suite
 
-To run the GLPI test suite you need
+To run the ZENTRA test suite you need
 
 * [phpunit](https://phpunit.de)
 
 Installing dependencies
 -----------------------
 
-Run the following command in the top of GLPI tree:
+Run the following command in the top of ZENTRA tree:
 
 ```bash
 $ php bin/console dependencies install
@@ -20,7 +20,7 @@ Use the **database:install** CLI command to create a new database,
 only used for the test suite, using the `--env=testing` option:
 
 ```bash
-$ bin/console database:install --env=testing --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console database:install --env=testing --db-name=zentratests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
@@ -59,7 +59,7 @@ $ ./vendor/bin/phpunit tests/functional/Html.php
 $ ./vendor/bin/phpunit tests/functional/Html.php --filter testConvDateTime
 ```
 
-If you want to run the API tests suite, you need to run a development instance on testing environment (ie. an Apache virtual host with the `SetEnv GLPI_ENVIRONMENT_TYPE "testing"` directive):
+If you want to run the API tests suite, you need to run a development instance on testing environment (ie. an Apache virtual host with the `SetEnv ZENTRA_ENVIRONMENT_TYPE "testing"` directive):
 
 On first run, additional data are loaded into the test database. On following run, this step is skipped. Note that if the test dataset version changes; you'll have to reset your database using the **CliInstall** script again.
 

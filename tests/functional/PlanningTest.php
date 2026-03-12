@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use Zentra\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PlanningTest extends DbTestCase
@@ -82,7 +82,7 @@ class PlanningTest extends DbTestCase
 
         $this->login();
 
-        $session_backup = $_SESSION['glpi_plannings'];
+        $session_backup = $_SESSION['zentra_plannings'];
 
         \Planning::initSessionForCurrentUser();
 
@@ -123,20 +123,20 @@ class PlanningTest extends DbTestCase
         ];
 
         // Add calendars
-        $_SESSION['glpi_plannings']['plannings'] = [
+        $_SESSION['zentra_plannings']['plannings'] = [
             'external_1' => [
                 'color'   => '#ff0000',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 1',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
+                'url'     => 'file://' . realpath(ZENTRA_ROOT . '/tests/fixtures/ical/sample_1.ics'),
             ],
             'external_2' => [
                 'color'   => '#a500b3',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 2',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
+                'url'     => 'file://' . realpath(ZENTRA_ROOT . '/tests/fixtures/ical/sample_2.ics'),
             ],
         ];
 
@@ -156,7 +156,7 @@ class PlanningTest extends DbTestCase
             ]
         );
         // Fetch events only for a given calendar
-        $_SESSION['glpi_plannings']['plannings']['external_1']['display'] = false;
+        $_SESSION['zentra_plannings']['plannings']['external_1']['display'] = false;
         $cal2_events = \Planning::constructEventsArray(
             [
                 'start' => '2019-11-01 00:00:00',
@@ -164,7 +164,7 @@ class PlanningTest extends DbTestCase
             ]
         );
 
-        $_SESSION['glpi_plannings'] = $session_backup;
+        $_SESSION['zentra_plannings'] = $session_backup;
 
         foreach ($expected_events_keys as $list_var => $events_keys) {
             $events_list = $$list_var;
@@ -233,7 +233,7 @@ class PlanningTest extends DbTestCase
             'name' => 'Test ticket',
             'content' => 'Test ticket',
             'entities_id' => $this->getTestRootEntity(true),
-            '_users_id_assign' => $_SESSION['glpiID'],
+            '_users_id_assign' => $_SESSION['zentraID'],
         ]);
         $task = $this->createItem('TicketTask', [
             'tickets_id' => $ticket->getID(),
@@ -258,8 +258,8 @@ class PlanningTest extends DbTestCase
         ]);
 
         // General update test
-        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = READ;
-        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] &= ~\Ticket::OWN;
+        $_SESSION['zentraactiveprofile'][\TicketTask::$rightname] = READ;
+        $_SESSION['zentraactiveprofile'][\Ticket::$rightname] &= ~\Ticket::OWN;
         $this->assertFalse(\Planning::updateEventTimes([
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
@@ -268,7 +268,7 @@ class PlanningTest extends DbTestCase
         ]));
 
         // Allowed test
-        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = ALLSTANDARDRIGHT | \CommonITILTask::UPDATEALL;
+        $_SESSION['zentraactiveprofile'][\TicketTask::$rightname] = ALLSTANDARDRIGHT | \CommonITILTask::UPDATEALL;
         $this->assertTrue(\Planning::updateEventTimes([
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
@@ -364,10 +364,10 @@ class PlanningTest extends DbTestCase
             ],
         ];
 
-        // test with the user glpi who is not assigned to any task
+        // test with the user zentra who is not assigned to any task
         yield [
             'params' => [
-                'user'        => 'glpi',
+                'user'        => 'zentra',
                 'begin'       => '2025-05-13 02:00:00',
                 'end'         => '2025-05-13 03:00:00',
                 'except_task' => false,
@@ -377,10 +377,10 @@ class PlanningTest extends DbTestCase
             ],
         ];
 
-        // test with the user glpi who is assigned to a task in the same period as $task
+        // test with the user zentra who is assigned to a task in the same period as $task
         yield [
             'params' => [
-                'user'        => 'glpi',
+                'user'        => 'zentra',
                 'begin'       => $begin_task,
                 'end'         => $end_task,
                 'except_task' => false,
@@ -420,7 +420,7 @@ class PlanningTest extends DbTestCase
     #[DataProvider('checkAlreadyPlannedProvider')]
     public function testCheckAlreadyPlanned(array $params, array $expected)
     {
-        $this->login('glpi', 'glpi');
+        $this->login('zentra', 'zentra');
 
         $tech_id    = getItemByTypeName('User', 'tech', true);
         $normal_id  = getItemByTypeName('User', 'normal', true);

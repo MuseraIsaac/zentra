@@ -30,7 +30,7 @@
                     "id": 135,
                     "uuid": "3add4044-ece8-4087-9220-30a0abe63e94",
                     "name": "My question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeNumber",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeNumber",
                     "is_mandatory": false,
                     "vertical_rank": 0,
                     "horizontal_rank": null,
@@ -47,7 +47,7 @@
                     "id": 136,
                     "uuid": "fbef23f8-2824-42e3-b243-d1c178c80370",
                     "name": "Another question",
-                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "type": "Zentra\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 1,
                     "horizontal_rank": null,
@@ -63,7 +63,7 @@
             ],
             "policies": [
                 {
-                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "strategy": "Zentra\\Form\\AccessControl\\ControlType\\AllowList",
                     "config": {
                         "user_ids": [
                             "all"
@@ -77,7 +77,7 @@
             "destinations": [
                 {
                     "id": 20,
-                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "itemtype": "Zentra\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
                     "creation_strategy": "",

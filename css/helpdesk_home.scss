@@ -1,9 +1,9 @@
 /*!
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ header {
     line-height: 26px;
 
     &::placeholder {
-        color: var(--glpi-mainmenu-bg);
+        color: var(--zentra-mainmenu-bg);
     }
 }
 
@@ -109,7 +109,7 @@ header {
 }
 
 .search-banner {
-    background-color: var(--glpi-helpdesk-header);
+    background-color: var(--zentra-helpdesk-header);
     position: relative;
 
     .search-banner-content {
@@ -202,13 +202,13 @@ header {
 }
 
 .tiles-banner {
-    background: var(--glpi-helpdesk-tiles-section-bg);
+    background: var(--zentra-helpdesk-tiles-section-bg);
     padding-top:70px;
     padding-bottom:70px;
 }
 
 .tickets-banner {
-    background: var(--glpi-helpdesk-tabs-section-bg);
+    background: var(--zentra-helpdesk-tabs-section-bg);
     padding-top:70px;
     padding-bottom:70px;
     flex-grow: 1;
@@ -261,7 +261,7 @@ header {
 }
 
 .search-result-container {
-    background-color: var(--glpi-tabs-bg);
+    background-color: var(--zentra-tabs-bg);
 }
 
 .dashboard {

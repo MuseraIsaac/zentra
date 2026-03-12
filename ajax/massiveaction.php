@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
  * @since 0.84
  */
 
-global $CFG_GLPI;
+global $CFG_ZENTRA;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -45,7 +45,7 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'initial');
 } catch (Throwable $e) {
-    echo "<div class='center'><img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/warning.png' alt='"
+    echo "<div class='center'><img src='" . htmlescape($CFG_ZENTRA["root_doc"]) . "/pics/warning.png' alt='"
                               . __s('Warning') . "'><br><br>";
     echo "<span class='b'>" . htmlescape($e->getMessage()) . "</span><br>";
     echo "</div>";
@@ -81,7 +81,7 @@ if (count($actions)) {
     Ajax::updateItemOnSelectEvent(
         "dropdown_massiveaction$rand",
         "show_massiveaction$rand",
-        $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveAction.php",
+        $CFG_ZENTRA["root_doc"] . "/ajax/dropdownMassiveAction.php",
         $params
     );
 

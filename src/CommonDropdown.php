@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Dropdown\DropdownDefinition;
-use Glpi\Features\AssetImage;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\Dropdown\DropdownDefinition;
+use Zentra\Features\AssetImage;
 
 use function Safe\preg_grep;
 
@@ -249,7 +249,7 @@ abstract class CommonDropdown extends CommonDBTM
         if (isset($input['locations_id']) && !isset($input['_is_update'])) {
             $iterator = $DB->request([
                 'SELECT' => ['entities_id'],
-                'FROM'   => 'glpi_locations',
+                'FROM'   => 'zentra_locations',
                 'WHERE'  => [
                     'id' => $input['locations_id'],
                 ],
@@ -453,7 +453,7 @@ abstract class CommonDropdown extends CommonDBTM
         if ($this->isEntityAssign()) {
             $tab[] = [
                 'id'             => '80',
-                'table'          => 'glpi_entities',
+                'table'          => 'zentra_entities',
                 'field'          => 'completename',
                 'name'           => Entity::getTypeName(1),
                 'massiveaction'  => false,
@@ -555,7 +555,7 @@ abstract class CommonDropdown extends CommonDBTM
                         && in_array('mainitemtype', $field)
                         && in_array('mainitems_id', $field)
                     ) {
-                        // glpi_ipaddresses relationship that does not respect naming conventions
+                        // zentra_ipaddresses relationship that does not respect naming conventions
                         $itemtype_field = 'mainitemtype';
                         $items_id_field = 'mainitems_id';
                     } else {
@@ -800,12 +800,12 @@ abstract class CommonDropdown extends CommonDBTM
         }
         /*
         switch ($this->getTable()) {
-          case "glpi_computermodels" :
-          case "glpi_monitormodels" :
-          case "glpi_printermodels" :
-          case "glpi_peripheralmodels" :
-          case "glpi_phonemodels" :
-          case "glpi_networkequipmentmodels" :
+          case "zentra_computermodels" :
+          case "zentra_monitormodels" :
+          case "zentra_printermodels" :
+          case "zentra_peripheralmodels" :
+          case "zentra_phonemodels" :
+          case "zentra_networkequipmentmodels" :
              $ruleinput["manufacturer"] = $external_params["manufacturer"];
              break;
         }*/
@@ -840,7 +840,7 @@ abstract class CommonDropdown extends CommonDBTM
         if (
             $isadmin
             &&  $this->maybeRecursive()
-            && (count($_SESSION['glpiactiveentities']) > 1)
+            && (count($_SESSION['zentraactiveentities']) > 1)
             && !in_array('merge', $forbidden_actions)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
@@ -854,7 +854,7 @@ abstract class CommonDropdown extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'merge':
-                echo "&nbsp;" . htmlescape($_SESSION['glpiactive_entity_shortname']);
+                echo "&nbsp;" . htmlescape($_SESSION['zentraactive_entity_shortname']);
                 echo "<br><br>" . Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
                 return true;
         }
@@ -873,7 +873,7 @@ abstract class CommonDropdown extends CommonDBTM
                 $fk = $item->getForeignKeyField();
                 foreach ($ids as $key) {
                     if ($item->can($key, UPDATE)) {
-                        if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($item->getEntityID() == $_SESSION['zentraactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,
                                     'is_recursive' => 1,
@@ -893,7 +893,7 @@ abstract class CommonDropdown extends CommonDBTM
                                 unset($input2['id']);
                             }
                             // Change entity
-                            $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                            $input2['entities_id']  = $_SESSION['zentraactive_entity'];
                             $input2['is_recursive'] = 1;
                             // Import new
                             if ($newid = $item->import($input2)) {
@@ -932,7 +932,7 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public function getLinks($withname = false)
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $ret = '';
 
@@ -979,7 +979,7 @@ abstract class CommonDropdown extends CommonDBTM
                         var getKnowbaseItemAnswer$rand = function() {
                             var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
                             $('#faqadd_block_content$rand').load(
-                                '" . jsescape($CFG_GLPI['root_doc']) . "/ajax/getKnowbaseItemAnswer.php',
+                                '" . jsescape($CFG_ZENTRA['root_doc']) . "/ajax/getKnowbaseItemAnswer.php',
                                 {
                                     'knowbaseitems_id': knowbaseitems_id
                                 }

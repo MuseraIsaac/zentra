@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@
  * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
-if (!$DB->fieldExists('glpi_states', 'is_visible_unmanaged')) {
-    $migration->addField('glpi_states', 'is_visible_unmanaged', 'bool', [
+if (!$DB->fieldExists('zentra_states', 'is_visible_unmanaged')) {
+    $migration->addField('zentra_states', 'is_visible_unmanaged', 'bool', [
         'value' => 1,
         'after' => 'is_visible_cable',
     ]);
 }
-$migration->addKey('glpi_states', 'is_visible_unmanaged');
+$migration->addKey('zentra_states', 'is_visible_unmanaged');

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_tickets_contracts')) {
-    $query = "CREATE TABLE `glpi_tickets_contracts` (
+if (!$DB->tableExists('zentra_tickets_contracts')) {
+    $query = "CREATE TABLE `zentra_tickets_contracts` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -52,9 +52,9 @@ if (!$DB->tableExists('glpi_tickets_contracts')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
+if (!$DB->fieldExists("zentra_entities", "contracts_id_default")) {
     $migration->addField(
-        "glpi_entities",
+        "zentra_entities",
         "contracts_id_default",
         "int {$default_key_sign} NOT NULL DEFAULT 0",
         [
@@ -65,5 +65,5 @@ if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
         ]
     );
 
-    $migration->addKey("glpi_entities", "contracts_id_default");
+    $migration->addKey("zentra_entities", "contracts_id_default");
 }

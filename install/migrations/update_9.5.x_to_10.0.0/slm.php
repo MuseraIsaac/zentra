@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
+use Zentra\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
@@ -40,16 +40,16 @@ use Glpi\DBAL\QueryExpression;
  */
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-// `glpi_slas.calendars_id` will not exist if GLPI has been initialized on a 9.1.x version.
-// Indeed, field was not present in `glpi-empty.sql` file, but was present in 0.90.x->9.1.0 migration.
-// It has been added in `glpi-empty.sql` file on GLPI 9.2.0 (see commit ebd8c6f097fd0461e4f9840221224cbb5e89a7a1).
-if (!$DB->fieldExists('glpi_slas', 'calendars_id')) {
-    $migration->addField('glpi_slas', 'calendars_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
-    $migration->addKey('glpi_slas', 'calendars_id');
+// `zentra_slas.calendars_id` will not exist if ZENTRA has been initialized on a 9.1.x version.
+// Indeed, field was not present in `zentra-empty.sql` file, but was present in 0.90.x->9.1.0 migration.
+// It has been added in `zentra-empty.sql` file on ZENTRA 9.2.0 (see commit ebd8c6f097fd0461e4f9840221224cbb5e89a7a1).
+if (!$DB->fieldExists('zentra_slas', 'calendars_id')) {
+    $migration->addField('zentra_slas', 'calendars_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
+    $migration->addKey('zentra_slas', 'calendars_id');
 }
 
 // Replace usage of negative values in `calendars_id` fields
-foreach (['glpi_slms', 'glpi_olas', 'glpi_slas'] as $table) {
+foreach (['zentra_slms', 'zentra_olas', 'zentra_slas'] as $table) {
     if (!$DB->fieldExists($table, 'use_ticket_calendar')) {
         $migration->addField($table, 'use_ticket_calendar', 'bool');
         $migration->addPostQuery(
@@ -68,23 +68,23 @@ foreach (['glpi_slms', 'glpi_olas', 'glpi_slas'] as $table) {
 }
 
 // Copy calendar settings from SLM to children
-foreach (['glpi_olas', 'glpi_slas'] as $table) {
+foreach (['zentra_olas', 'zentra_slas'] as $table) {
     $migration->addPostQuery(
         $DB->buildUpdate(
             $table,
             [
-                $table . '.use_ticket_calendar' => new QueryExpression($DB->quoteName('glpi_slms.use_ticket_calendar')),
-                $table . '.calendars_id'        => new QueryExpression($DB->quoteName('glpi_slms.calendars_id')),
+                $table . '.use_ticket_calendar' => new QueryExpression($DB->quoteName('zentra_slms.use_ticket_calendar')),
+                $table . '.calendars_id'        => new QueryExpression($DB->quoteName('zentra_slms.calendars_id')),
             ],
             [
                 new QueryExpression('true'),
             ],
             [
                 'INNER JOIN' => [
-                    'glpi_slms' => [
+                    'zentra_slms' => [
                         'FKEY' => [
                             $table      => 'slms_id',
-                            'glpi_slms' => 'id',
+                            'zentra_slms' => 'id',
                         ],
                     ],
                 ],

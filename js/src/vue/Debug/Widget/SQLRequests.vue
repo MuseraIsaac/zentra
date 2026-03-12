@@ -128,7 +128,7 @@
         const post_newline_keywords = ['UNION'];
         query = query.replace(/\n/g, ' ');
 
-        return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
+        return Promise.resolve(window.ZENTRA.Monaco.colorizeText(query, 'sql')).then((html) => {
             // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
             const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${CSS.escape(keyword)})`).join(',');
             const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${CSS.escape(keyword)})`).join(',');

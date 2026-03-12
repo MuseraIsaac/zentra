@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  */
 
 import { randomUUID } from 'crypto';
-import { expect, test } from '../../fixtures/glpi_fixture';
+import { expect, test } from '../../fixtures/zentra_fixture';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { HelpdeskHomeConfigTag } from '../../pages/HelpdeskConfigTab';
@@ -178,16 +178,16 @@ for (const context of itemtypes_with_helpdesk_tab) {
             await expect(tab.getNewTileButton()).toBeVisible();
         });
 
-        test('Can add a "Glpi page" tile', async ({ page }) => {
+        test('Can add a "Zentra page" tile', async ({ page }) => {
             const tab = new HelpdeskHomeConfigTag(page);
             await tab.goto(context.itemtype, id);
             await tab.getNewTileButton().click();
 
             // Set fields
-            await tab.doSetActiveTileType("GLPI page");
+            await tab.doSetActiveTileType("ZENTRA page");
             await tab.doEditActiveTileTitle("My title");
             await tab.doEditActiveTileDescription("My description");
-            await tab.doSetActiveGlpiPageTileTarget("Service catalog");
+            await tab.doSetActiveZentraPageTileTarget("Service catalog");
             await tab.doAddTile();
 
             // Validate that the new tile is visible

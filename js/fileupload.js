@@ -1,9 +1,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -13,7 +13,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
     $.ajax(
         {
             type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
+            url: `${CFG_ZENTRA.root_doc}/ajax/getFileTag.php`,
             data: {data: files_data},
             dataType: 'JSON',
             success: function(tags) {
@@ -159,7 +159,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
 
         // Trigger an event to notify that an image has been removed
-        $(document).trigger('glpi_fileupload_remove', {
+        $(document).trigger('zentra_fileupload_remove', {
             elementsIdToRemove: elementsIdToRemove,
             tagToRemove: tag.tag,
             editor: editor
@@ -214,7 +214,7 @@ const setRichTextEditorContent = function(editor_id, content) {
  * @param  {[Object]} editor TinyMCE editor
  */
 if (typeof tinyMCE != 'undefined') {
-    tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
+    tinyMCE.PluginManager.add('zentra_upload_doc', (editor) => {
         let last_paste_content = null;
         const rtf_img_types = {
             'pngblip': 'image/png',

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
-use Glpi\Features\Clonable;
+use Zentra\Application\View\TemplateRenderer;
+use Zentra\DBAL\QueryFunction;
+use Zentra\Features\AssetImage;
+use Zentra\Features\AssignableItem;
+use Zentra\Features\AssignableItemInterface;
+use Zentra\Features\Clonable;
 
 /**
  * CartridgeItem Class
@@ -131,10 +131,10 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
     public function post_getEmpty()
     {
-        if (isset($_SESSION['glpiactive_entity'])) {
+        if (isset($_SESSION['zentraactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
                 "cartridges_alert_repeat",
-                $_SESSION['glpiactive_entity'],
+                $_SESSION['zentraactive_entity'],
                 "default_cartridges_alarm_threshold",
                 10
             );
@@ -174,7 +174,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_cartridges',
+            'FROM'   => 'zentra_cartridges',
             'WHERE'  => ['cartridgeitems_id' => $id],
         ])->current();
         return $result['cpt'];
@@ -200,7 +200,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
                 'cartridgeitems_id' => $cartridgeitems_id,
                 'printermodels_id'  => $printermodels_id,
             ];
-            $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
+            $result = $DB->insert('zentra_cartridgeitems_printermodels', $params);
 
             if ($result && ($DB->affectedRows() > 0)) {
                 return true;
@@ -232,7 +232,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_cartridgeitemtypes',
+            'table'              => 'zentra_cartridgeitemtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown',
@@ -240,7 +240,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => 'glpi_manufacturers',
+            'table'              => 'zentra_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -260,7 +260,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => 'glpi_cartridges',
+            'table'              => 'zentra_cartridges',
             'field'              => 'id',
             'name'               => __('Number of used cartridges'),
             'datatype'           => 'count',
@@ -277,7 +277,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => 'glpi_cartridges',
+            'table'              => 'zentra_cartridges',
             'field'              => 'id',
             'name'               => __('Number of worn cartridges'),
             'datatype'           => 'count',
@@ -292,7 +292,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => 'glpi_cartridges',
+            'table'              => 'zentra_cartridges',
             'field'              => 'id',
             'name'               => __('Number of new cartridges'),
             'datatype'           => 'count',
@@ -311,7 +311,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '24',
-            'table'              => 'glpi_users',
+            'table'              => 'zentra_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
@@ -321,14 +321,14 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '49',
-            'table'              => 'glpi_groups',
+            'table'              => 'zentra_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_groups_items',
+                    'table'              => 'zentra_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                         'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
@@ -361,7 +361,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '80',
-            'table'              => 'glpi_entities',
+            'table'              => 'zentra_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
@@ -370,7 +370,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
         $tab[] = [
             'id'                 => '40',
-            'table'              => 'glpi_printermodels',
+            'table'              => 'zentra_printermodels',
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'name'               => _n('Printer model', 'Printer models', Session::getPluralNumber()),
@@ -378,7 +378,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_cartridgeitems_printermodels',
+                    'table'              => 'zentra_cartridgeitems_printermodels',
                     'joinparams'         => [
                         'jointype'           => 'child',
                     ],
@@ -411,44 +411,44 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      */
     public static function cronCartridge($task = null)
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_ZENTRA, $DB;
 
         $cron_status = 1;
-        if ($CFG_GLPI["use_notifications"]) {
+        if ($CFG_ZENTRA["use_notifications"]) {
             $alert   = new Alert();
 
             foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
                 $result = $DB->request(
                     [
                         'SELECT'    => [
-                            'glpi_cartridgeitems.id AS cartID',
-                            'glpi_cartridgeitems.entities_id AS entity',
-                            'glpi_cartridgeitems.ref AS ref',
-                            'glpi_cartridgeitems.name AS name',
-                            'glpi_cartridgeitems.alarm_threshold AS threshold',
-                            'glpi_alerts.id AS alertID',
-                            'glpi_alerts.date',
+                            'zentra_cartridgeitems.id AS cartID',
+                            'zentra_cartridgeitems.entities_id AS entity',
+                            'zentra_cartridgeitems.ref AS ref',
+                            'zentra_cartridgeitems.name AS name',
+                            'zentra_cartridgeitems.alarm_threshold AS threshold',
+                            'zentra_alerts.id AS alertID',
+                            'zentra_alerts.date',
                         ],
                         'FROM'      => self::getTable(),
                         'LEFT JOIN' => [
-                            'glpi_alerts' => [
+                            'zentra_alerts' => [
                                 'FKEY' => [
-                                    'glpi_alerts'         => 'items_id',
-                                    'glpi_cartridgeitems' => 'id',
+                                    'zentra_alerts'         => 'items_id',
+                                    'zentra_cartridgeitems' => 'id',
                                     [
-                                        'AND' => ['glpi_alerts.itemtype' => 'CartridgeItem'],
+                                        'AND' => ['zentra_alerts.itemtype' => 'CartridgeItem'],
                                     ],
                                 ],
                             ],
                         ],
                         'WHERE'     => [
-                            'glpi_cartridgeitems.is_deleted'      => 0,
-                            'glpi_cartridgeitems.alarm_threshold' => ['>=', 0],
-                            'glpi_cartridgeitems.entities_id'     => $entity,
+                            'zentra_cartridgeitems.is_deleted'      => 0,
+                            'zentra_cartridgeitems.alarm_threshold' => ['>=', 0],
+                            'zentra_cartridgeitems.entities_id'     => $entity,
                             'OR'                                  => [
-                                ['glpi_alerts.date' => null],
+                                ['zentra_alerts.date' => null],
                                 [
-                                    'glpi_alerts.date' => ['<',
+                                    'zentra_alerts.date' => ['<',
                                         QueryFunction::dateSub(
                                             date: QueryFunction::now(),
                                             interval: $repeat,
@@ -489,7 +489,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
                         'items'       => $items,
                     ];
 
-                    $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
+                    $entityname = Dropdown::getDropdownName("zentra_entities", $entity);
                     if (NotificationEvent::raiseEvent('alert', new CartridgeItem(), $options)) {
                         if ($task) {
                             $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, implode("\n", $messages)));
@@ -544,41 +544,41 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         $iterator = $DB->request([
             'SELECT'       => [
                 'COUNT'  => '* AS cpt',
-                'glpi_locations.completename AS location',
-                'glpi_cartridgeitems.ref AS ref',
-                'glpi_cartridgeitems.name AS name',
-                'glpi_cartridgeitems.id AS tID',
+                'zentra_locations.completename AS location',
+                'zentra_cartridgeitems.ref AS ref',
+                'zentra_cartridgeitems.name AS name',
+                'zentra_cartridgeitems.id AS tID',
             ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
-                'glpi_cartridgeitems_printermodels' => [
+                'zentra_cartridgeitems_printermodels' => [
                     'ON' => [
-                        'glpi_cartridgeitems_printermodels' => 'cartridgeitems_id',
-                        'glpi_cartridgeitems'               => 'id',
+                        'zentra_cartridgeitems_printermodels' => 'cartridgeitems_id',
+                        'zentra_cartridgeitems'               => 'id',
                     ],
                 ],
-                'glpi_cartridges'                   => [
+                'zentra_cartridges'                   => [
                     'ON' => [
-                        'glpi_cartridgeitems'   => 'id',
-                        'glpi_cartridges'       => 'cartridgeitems_id', [
+                        'zentra_cartridgeitems'   => 'id',
+                        'zentra_cartridges'       => 'cartridgeitems_id', [
                             'AND' => [
-                                'glpi_cartridges.date_use' => null,
+                                'zentra_cartridges.date_use' => null,
                             ],
                         ],
                     ],
                 ],
             ],
             'LEFT JOIN'    => [
-                'glpi_locations'                    => [
+                'zentra_locations'                    => [
                     'ON' => [
-                        'glpi_cartridgeitems'   => 'locations_id',
-                        'glpi_locations'        => 'id',
+                        'zentra_cartridgeitems'   => 'locations_id',
+                        'zentra_locations'        => 'id',
                     ],
                 ],
             ],
             'WHERE'        => [
-                'glpi_cartridgeitems_printermodels.printermodels_id'  => $printer->fields['printermodels_id'],
-            ] + getEntitiesRestrictCriteria('glpi_cartridgeitems', '', $printer->fields['entities_id'], true),
+                'zentra_cartridgeitems_printermodels.printermodels_id'  => $printer->fields['printermodels_id'],
+            ] + getEntitiesRestrictCriteria('zentra_cartridgeitems', '', $printer->fields['entities_id'], true),
             'GROUPBY'      => 'tID',
             'ORDERBY'      => ['name', 'ref'],
         ]);

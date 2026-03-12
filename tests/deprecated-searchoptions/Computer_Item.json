@@ -4,7 +4,7 @@
     },
     "2": {
         "name": "ID",
-        "table": "glpi_computers_items",
+        "table": "zentra_computers_items",
         "field": "id",
         "datatype": "number",
         "nosearch": false,

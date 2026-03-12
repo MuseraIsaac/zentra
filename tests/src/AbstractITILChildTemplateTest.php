@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Zentra\Tests;
 
 use AbstractITILChildTemplate;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,7 +43,7 @@ abstract class AbstractITILChildTemplateTest extends DbTestCase
 
     public function testGetRenderedContent()
     {
-        global $CFG_GLPI;
+        global $CFG_ZENTRA;
 
         $this->login();
 
@@ -63,7 +63,7 @@ TPL;
         $this->assertEquals(
             <<<HTML
 Itemtype: Change
-<a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id&#61;{$change->fields['id']}" title="test change">test change</a>
+<a href="{$CFG_ZENTRA['root_doc']}/front/change.form.php?id&#61;{$change->fields['id']}" title="test change">test change</a>
 HTML,
             $template->getRenderedContent($change)
         );
@@ -76,7 +76,7 @@ HTML,
         $this->assertEquals(
             <<<HTML
 Itemtype: Problem
-<a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id&#61;{$problem->fields['id']}" title="test problem">test problem</a>
+<a href="{$CFG_ZENTRA['root_doc']}/front/problem.form.php?id&#61;{$problem->fields['id']}" title="test problem">test problem</a>
 HTML,
             $template->getRenderedContent($problem)
         );
@@ -89,7 +89,7 @@ HTML,
         $this->assertEquals(
             <<<HTML
 Itemtype: Ticket
-<a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id&#61;{$ticket->fields['id']}" title="test ticket">test ticket</a>
+<a href="{$CFG_ZENTRA['root_doc']}/front/ticket.form.php?id&#61;{$ticket->fields['id']}" title="test ticket">test ticket</a>
 HTML,
             $template->getRenderedContent($ticket)
         );

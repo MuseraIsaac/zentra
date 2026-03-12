@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
@@ -15,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ class DeviceNetworkCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => 'glpi_devicenetworkcardmodels',
+            'table'              => 'zentra_devicenetworkcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
             'datatype'           => 'dropdown',
@@ -224,7 +224,7 @@ class DeviceNetworkCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '112',
-            'table'              => 'glpi_devicenetworkcards',
+            'table'              => 'zentra_devicenetworkcards',
             'field'              => 'designation',
             'name'               => NetworkInterface::getTypeName(1),
             'forcegroupby'       => true,
@@ -232,7 +232,7 @@ class DeviceNetworkCard extends CommonDevice
             'datatype'           => 'string',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_devicenetworkcards',
+                    'table'              => 'zentra_items_devicenetworkcards',
                     'joinparams'         => $main_joinparams,
                 ],
             ],
@@ -240,7 +240,7 @@ class DeviceNetworkCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '113',
-            'table'              => 'glpi_items_devicenetworkcards',
+            'table'              => 'zentra_items_devicenetworkcards',
             'field'              => 'mac',
             'name'               => __('MAC address'),
             'forcegroupby'       => true,
@@ -251,7 +251,7 @@ class DeviceNetworkCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1330',
-            'table'              => 'glpi_items_devicenetworkcards',
+            'table'              => 'zentra_items_devicenetworkcards',
             'field'              => 'serial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
             'forcegroupby'       => true,
@@ -263,7 +263,7 @@ class DeviceNetworkCard extends CommonDevice
 
         $tab[] = [
             'id'                 => '1331',
-            'table'              => 'glpi_items_devicemotherboards',
+            'table'              => 'zentra_items_devicemotherboards',
             'field'              => 'otherserial',
             'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
             'forcegroupby'       => true,

@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,14 +37,14 @@
  * @var Migration $migration
  */
 
-if ($DB->tableExists('glpi_computers_items')) {
-    $migration->renameTable('glpi_computers_items', 'glpi_assets_assets_peripheralassets');
+if ($DB->tableExists('zentra_computers_items')) {
+    $migration->renameTable('zentra_computers_items', 'zentra_assets_assets_peripheralassets');
 }
 
 // Main item polymorphic foreign key
-$migration->dropKey('glpi_assets_assets_peripheralassets', 'computers_id');
+$migration->dropKey('zentra_assets_assets_peripheralassets', 'computers_id');
 $migration->addField(
-    'glpi_assets_assets_peripheralassets',
+    'zentra_assets_assets_peripheralassets',
     'itemtype_asset',
     'varchar(255) NOT NULL',
     [
@@ -52,34 +52,34 @@ $migration->addField(
         'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
     ]
 );
-if ($DB->fieldExists('glpi_assets_assets_peripheralassets', 'computers_id')) {
+if ($DB->fieldExists('zentra_assets_assets_peripheralassets', 'computers_id')) {
     $migration->changeField(
-        'glpi_assets_assets_peripheralassets',
+        'zentra_assets_assets_peripheralassets',
         'computers_id',
         'items_id_asset',
         'fkey'
     );
 }
-$migration->migrationOneTable('glpi_assets_assets_peripheralassets');
-$migration->addKey('glpi_assets_assets_peripheralassets', ['itemtype_asset', 'items_id_asset'], 'item_asset');
+$migration->migrationOneTable('zentra_assets_assets_peripheralassets');
+$migration->addKey('zentra_assets_assets_peripheralassets', ['itemtype_asset', 'items_id_asset'], 'item_asset');
 
 // Peripheral polymorphic foreign key
-$migration->dropKey('glpi_assets_assets_peripheralassets', 'item');
-if ($DB->fieldExists('glpi_assets_assets_peripheralassets', 'itemtype')) {
+$migration->dropKey('zentra_assets_assets_peripheralassets', 'item');
+if ($DB->fieldExists('zentra_assets_assets_peripheralassets', 'itemtype')) {
     $migration->changeField(
-        'glpi_assets_assets_peripheralassets',
+        'zentra_assets_assets_peripheralassets',
         'itemtype',
         'itemtype_peripheral',
         'varchar(255) NOT NULL'
     );
 }
-if ($DB->fieldExists('glpi_assets_assets_peripheralassets', 'items_id')) {
+if ($DB->fieldExists('zentra_assets_assets_peripheralassets', 'items_id')) {
     $migration->changeField(
-        'glpi_assets_assets_peripheralassets',
+        'zentra_assets_assets_peripheralassets',
         'items_id',
         'items_id_peripheral',
         'fkey'
     );
 }
-$migration->migrationOneTable('glpi_assets_assets_peripheralassets');
-$migration->addKey('glpi_assets_assets_peripheralassets', ['itemtype_peripheral', 'items_id_peripheral'], 'item_peripheral');
+$migration->migrationOneTable('zentra_assets_assets_peripheralassets');
+$migration->addKey('zentra_assets_assets_peripheralassets', ['itemtype_peripheral', 'items_id_peripheral'], 'item_peripheral');

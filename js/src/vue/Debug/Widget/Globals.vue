@@ -32,7 +32,7 @@
         editor_element.setAttribute('id', editor_element_id);
         editor_element.classList.add('monaco-editor-container');
         container.append(editor_element);
-        window.GLPI.Monaco.createEditor(editor_element_id, 'javascript', data_string, [], {
+        window.ZENTRA.Monaco.createEditor(editor_element_id, 'javascript', data_string, [], {
             readOnly: true,
         }).then((editor) => {
             // Fold everything recursively by default except the first level

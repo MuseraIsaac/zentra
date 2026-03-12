@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Add ITILReminder table
-if (!$DB->tableExists('glpi_itilreminders')) {
-    $query = "CREATE TABLE `glpi_itilreminders` (
+if (!$DB->tableExists('zentra_itilreminders')) {
+    $query = "CREATE TABLE `zentra_itilreminders` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `itemtype` varchar(100) NOT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -60,7 +60,7 @@ if (!$DB->tableExists('glpi_itilreminders')) {
     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
     $DB->doQuery($query);
 } else {
-    $migration->addField('glpi_itilreminders', 'name', 'varchar(255) DEFAULT NULL');
-    $migration->addField('glpi_itilreminders', 'content', 'text');
-    $migration->addKey('glpi_itilreminders', 'name', 'name');
+    $migration->addField('zentra_itilreminders', 'name', 'varchar(255) DEFAULT NULL');
+    $migration->addField('zentra_itilreminders', 'content', 'text');
+    $migration->addKey('zentra_itilreminders', 'name', 'name');
 }

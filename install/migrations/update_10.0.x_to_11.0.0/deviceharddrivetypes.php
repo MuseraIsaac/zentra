@@ -3,9 +3,9 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI - Gestionnaire Libre de Parc Informatique
+ * ZENTRA - Gestionnaire Libre de Parc Informatique
  *
- * http://glpi-project.org
+ * http://zentra-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI.
+ * This file is part of ZENTRA.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,11 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$migration->addField('glpi_deviceharddrives', 'deviceharddrivetypes_id', 'fkey');
-$migration->addKey('glpi_deviceharddrives', 'deviceharddrivetypes_id', "deviceharddrivetypes_id");
+$migration->addField('zentra_deviceharddrives', 'deviceharddrivetypes_id', 'fkey');
+$migration->addKey('zentra_deviceharddrives', 'deviceharddrivetypes_id', "deviceharddrivetypes_id");
 
-if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
-    $query = "CREATE TABLE `glpi_deviceharddrivetypes` (
+if (!$DB->tableExists('zentra_deviceharddrivetypes')) {
+    $query = "CREATE TABLE `zentra_deviceharddrivetypes` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `name` varchar(255) DEFAULT NULL,
         `comment` text,
