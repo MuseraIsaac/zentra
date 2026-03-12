@@ -96,7 +96,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
     'lang'  => $_SESSION['glpilanguage'],
-    'title' => __('GLPI setup'),
+    'title' => __('Zentra setup'),
     'css_files' => [
         ['path' => 'lib/tabler.css'],
         ['path' => 'lib/base.css'],
@@ -116,7 +116,7 @@ echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div id='logo_bloc'></div>";
-echo "<h2>" . __s('GLPI setup') . "</h2>";
+echo "<h2>" . __s('Zentra setup') . "</h2>";
 echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
 if (($_SESSION['can_process_update'] ?? false) === false) {
@@ -125,13 +125,13 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
     echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span></h3>";
     echo "<p>";
     echo "<a class='btn btn-primary' href='../index.php'>
-        " . __s('Go back to GLPI') . "
+        " . __s('Go back to Zentra') . "
      </a></p>";
     echo "</div>";
 } elseif (empty($_POST["continue"]) && empty($_POST["post_update_step"])) {
     // Step 1: Confirmation screen (needed for install wizard flow)
     echo "<div class='center'>";
-    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
+    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the Zentra database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
 
     echo "<form action='update.php' method='post'>";
     if (!VersionParser::isStableRelease(GLPI_VERSION)) {
