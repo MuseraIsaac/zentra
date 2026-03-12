@@ -5951,17 +5951,20 @@ JS);
      * @param bool $withVersion include ZENTRA version ?
      * @return string HTML copyright
      */
-    public static function getCopyrightMessage($withVersion = true)
+   public static function getCopyrightMessage($withVersion = true)
     {
-        #$message = "<a href=\"https://zentra-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
-        $message .= "ZENTRA ";
-        // if required, add ZENTRA version (eg not for login page)
-        if ($withVersion) {
-            $message .= htmlescape(ZENTRA_VERSION) . " ";
-        }
-        $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR);  
-         // "</a>";
-        return $message;
+    // $message = "<a href=\"https://zentra-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+    $message = "ZENTRA ";
+
+    // if required, add ZENTRA version (eg not for login page)
+    if ($withVersion) {
+        $message .= htmlescape(ZENTRA_VERSION) . " ";
+    }
+
+    $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR);
+    // $message .= "</a>";
+
+    return $message;
     }
 
     /**
