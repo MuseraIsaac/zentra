@@ -5959,8 +5959,8 @@ JS);
         if ($withVersion) {
             $message .= htmlescape(ZENTRA_VERSION) . " ";
         }
-        $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR) . 
-         . "</a>";
+        $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR)  
+          "</a>";
         return $message;
     }
 
