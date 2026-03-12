@@ -5960,7 +5960,7 @@ JS);
             $message .= htmlescape(ZENTRA_VERSION) . " ";
         }
         $message .= "Copyright (C) " . htmlescape(ZENTRA_YEAR)  
-          "</a>";
+         // "</a>";
         return $message;
     }
 
