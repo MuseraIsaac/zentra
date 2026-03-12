@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da8b9e8503eb25c218b5158dd4786be0",
+    "content-hash": "b0fe8a0928e89c4b967deeae2cb3e97c",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -956,79 +956,6 @@
                 }
             ],
             "time": "2026-02-23T14:05:50+00:00"
-        },
-        {
-            "name": "zentra-project/inventory_format",
-            "version": "1.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zentra-project/inventory_format.git",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zentra-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-libxml": "*",
-                "ext-simplexml": "*",
-                "php": ">=7.4",
-                "seld/jsonlint": "^1.11",
-                "swaggest/json-schema": "^0.12.43",
-                "symfony/polyfill-php81": "^1.33"
-            },
-            "require-dev": {
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^1.12",
-                "phpstan/phpstan-deprecation-rules": "^1.2",
-                "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^4.0"
-            },
-            "bin": [
-                "bin/convert",
-                "bin/build_hw_jsons",
-                "bin/refresh_hw_sources",
-                "bin/validate"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "lib/php/Schema.php",
-                    "lib/php/Converter.php",
-                    "lib/php/FilesToJSON.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Teclib'",
-                    "email": "zentra@teclib.com",
-                    "homepage": "https://teclib.com"
-                }
-            ],
-            "description": "ZENTRA Inventory format lib",
-            "keywords": [
-                "automatic inventory",
-                "zentra"
-            ],
-            "support": {
-                "issues": "https://github.com/zentra-project/inventory_format/issues",
-                "source": "https://github.com/zentra-project/inventory_format"
-            },
-            "time": "2026-01-22T08:46:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2743,20 +2670,20 @@
         },
         {
             "name": "league/uri",
-            "version": "7.7.0",
+            "version": "7.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri.git",
-                "reference": "8d587cddee53490f9b82bf203d3a9aa7ea4f9807"
+                "reference": "4436c6ec8d458e4244448b069cc572d088230b76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri/zipball/8d587cddee53490f9b82bf203d3a9aa7ea4f9807",
-                "reference": "8d587cddee53490f9b82bf203d3a9aa7ea4f9807",
+                "url": "https://api.github.com/repos/thephpleague/uri/zipball/4436c6ec8d458e4244448b069cc572d088230b76",
+                "reference": "4436c6ec8d458e4244448b069cc572d088230b76",
                 "shasum": ""
             },
             "require": {
-                "league/uri-interfaces": "^7.7",
+                "league/uri-interfaces": "^7.8",
                 "php": "^8.1",
                 "psr/http-factory": "^1"
             },
@@ -2770,11 +2697,11 @@
                 "ext-gmp": "to improve IPV4 host parsing",
                 "ext-intl": "to handle IDN host with the best performance",
                 "ext-uri": "to use the PHP native URI class",
-                "jeremykendall/php-domain-parser": "to resolve Public Suffix and Top Level Domain",
-                "league/uri-components": "Needed to easily manipulate URI objects components",
-                "league/uri-polyfill": "Needed to backport the PHP URI extension for older versions of PHP",
+                "jeremykendall/php-domain-parser": "to further parse the URI host and resolve its Public Suffix and Top Level Domain",
+                "league/uri-components": "to provide additional tools to manipulate URI objects components",
+                "league/uri-polyfill": "to backport the PHP URI extension for older versions of PHP",
                 "php-64bit": "to improve IPV4 host parsing",
-                "rowbot/url": "to handle WHATWG URL",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
                 "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
             },
             "type": "library",
@@ -2829,7 +2756,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri/tree/7.7.0"
+                "source": "https://github.com/thephpleague/uri/tree/7.8.0"
             },
             "funding": [
                 {
@@ -2837,20 +2764,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-07T16:02:06+00:00"
+            "time": "2026-01-14T17:24:56+00:00"
         },
         {
             "name": "league/uri-interfaces",
-            "version": "7.7.0",
+            "version": "7.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri-interfaces.git",
-                "reference": "62ccc1a0435e1c54e10ee6022df28d6c04c2946c"
+                "reference": "c5c5cd056110fc8afaba29fa6b72a43ced42acd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/62ccc1a0435e1c54e10ee6022df28d6c04c2946c",
-                "reference": "62ccc1a0435e1c54e10ee6022df28d6c04c2946c",
+                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/c5c5cd056110fc8afaba29fa6b72a43ced42acd4",
+                "reference": "c5c5cd056110fc8afaba29fa6b72a43ced42acd4",
                 "shasum": ""
             },
             "require": {
@@ -2863,7 +2790,7 @@
                 "ext-gmp": "to improve IPV4 host parsing",
                 "ext-intl": "to handle IDN host with the best performance",
                 "php-64bit": "to improve IPV4 host parsing",
-                "rowbot/url": "to handle WHATWG URL",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
                 "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
             },
             "type": "library",
@@ -2913,7 +2840,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.7.0"
+                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.8.0"
             },
             "funding": [
                 {
@@ -2921,7 +2848,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-07T16:03:21+00:00"
+            "time": "2026-01-15T06:54:53+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -5748,16 +5675,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "a0a1690543329685c044362c873b78c6de9d4faa"
+                "reference": "77f5eca135d1b5471de4301b99496649e4f62878"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/a0a1690543329685c044362c873b78c6de9d4faa",
-                "reference": "a0a1690543329685c044362c873b78c6de9d4faa",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/77f5eca135d1b5471de4301b99496649e4f62878",
+                "reference": "77f5eca135d1b5471de4301b99496649e4f62878",
                 "shasum": ""
             },
             "require": {
@@ -5824,7 +5751,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v6.4.34"
+                "source": "https://github.com/symfony/cache/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -5844,7 +5771,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-20T15:06:30+00:00"
+            "time": "2026-03-05T20:47:12+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -6003,16 +5930,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "7b1f1c37eff5910ddda2831345467e593a5120ad"
+                "reference": "49257c96304c508223815ee965c251e7c79e614e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/7b1f1c37eff5910ddda2831345467e593a5120ad",
-                "reference": "7b1f1c37eff5910ddda2831345467e593a5120ad",
+                "url": "https://api.github.com/repos/symfony/console/zipball/49257c96304c508223815ee965c251e7c79e614e",
+                "reference": "49257c96304c508223815ee965c251e7c79e614e",
                 "shasum": ""
             },
             "require": {
@@ -6077,7 +6004,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.4.34"
+                "source": "https://github.com/symfony/console/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -6097,7 +6024,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-23T15:42:15+00:00"
+            "time": "2026-03-06T13:31:08+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -6170,16 +6097,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "91e49958b8a6092e48e4711894a1aeb1b151c62a"
+                "reference": "d95712d0e9446b9f244b64811ffb6af7b7434213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/91e49958b8a6092e48e4711894a1aeb1b151c62a",
-                "reference": "91e49958b8a6092e48e4711894a1aeb1b151c62a",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/d95712d0e9446b9f244b64811ffb6af7b7434213",
+                "reference": "d95712d0e9446b9f244b64811ffb6af7b7434213",
                 "shasum": ""
             },
             "require": {
@@ -6231,7 +6158,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.34"
+                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -6251,7 +6178,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-24T15:33:38+00:00"
+            "time": "2026-02-26T12:16:01+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -6770,16 +6697,16 @@
         },
         {
             "name": "symfony/framework-bundle",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/framework-bundle.git",
-                "reference": "5b5d19473f22d699811a41b01cef2462bc42b238"
+                "reference": "2e065db347ef1c2d1d4b916c860f9782c9060221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/5b5d19473f22d699811a41b01cef2462bc42b238",
-                "reference": "5b5d19473f22d699811a41b01cef2462bc42b238",
+                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/2e065db347ef1c2d1d4b916c860f9782c9060221",
+                "reference": "2e065db347ef1c2d1d4b916c860f9782c9060221",
                 "shasum": ""
             },
             "require": {
@@ -6899,7 +6826,7 @@
             "description": "Provides a tight integration between Symfony components and the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/framework-bundle/tree/v6.4.34"
+                "source": "https://github.com/symfony/framework-bundle/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -6919,7 +6846,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-24T16:00:52+00:00"
+            "time": "2026-03-06T11:15:58+00:00"
         },
         {
             "name": "symfony/html-sanitizer",
@@ -6996,16 +6923,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "5bb346d1b4b2a616e5c3d99b3ee4d5810735c535"
+                "reference": "cffffd0a2c037117b742b4f8b379a22a2a33f6d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/5bb346d1b4b2a616e5c3d99b3ee4d5810735c535",
-                "reference": "5bb346d1b4b2a616e5c3d99b3ee4d5810735c535",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/cffffd0a2c037117b742b4f8b379a22a2a33f6d2",
+                "reference": "cffffd0a2c037117b742b4f8b379a22a2a33f6d2",
                 "shasum": ""
             },
             "require": {
@@ -7053,7 +6980,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v6.4.34"
+                "source": "https://github.com/symfony/http-foundation/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -7073,20 +7000,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-21T15:48:41+00:00"
+            "time": "2026-03-06T11:15:58+00:00"
         },
         {
             "name": "symfony/http-kernel",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "006a49fc4f41ee21a6ca61e69caed1c30b29f07c"
+                "reference": "ece1a0da7745a5243683f178155c0412c92691eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/006a49fc4f41ee21a6ca61e69caed1c30b29f07c",
-                "reference": "006a49fc4f41ee21a6ca61e69caed1c30b29f07c",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/ece1a0da7745a5243683f178155c0412c92691eb",
+                "reference": "ece1a0da7745a5243683f178155c0412c92691eb",
                 "shasum": ""
             },
             "require": {
@@ -7171,7 +7098,7 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-kernel/tree/v6.4.34"
+                "source": "https://github.com/symfony/http-kernel/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -7191,7 +7118,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-26T08:27:11+00:00"
+            "time": "2026-03-06T16:28:07+00:00"
         },
         {
             "name": "symfony/mailer",
@@ -9458,6 +9385,79 @@
                 }
             ],
             "time": "2025-08-20T10:09:37+00:00"
+        },
+        {
+            "name": "zentra-project/inventory_format",
+            "version": "1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zentra-project/inventory_format.git",
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zentra-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.4",
+                "seld/jsonlint": "^1.11",
+                "swaggest/json-schema": "^0.12.43",
+                "symfony/polyfill-php81": "^1.33"
+            },
+            "require-dev": {
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^1.12",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^4.0"
+            },
+            "bin": [
+                "bin/convert",
+                "bin/build_hw_jsons",
+                "bin/refresh_hw_sources",
+                "bin/validate"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/php/Schema.php",
+                    "lib/php/Converter.php",
+                    "lib/php/FilesToJSON.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Teclib'",
+                    "email": "zentra@teclib.com",
+                    "homepage": "https://teclib.com"
+                }
+            ],
+            "description": "ZENTRA Inventory format lib",
+            "keywords": [
+                "automatic inventory",
+                "zentra"
+            ],
+            "support": {
+                "issues": "https://github.com/zentra-project/inventory_format/issues",
+                "source": "https://github.com/zentra-project/inventory_format"
+            },
+            "time": "2026-01-22T08:46:40+00:00"
         }
     ],
     "packages-dev": [
@@ -10571,22 +10571,22 @@
         },
         {
             "name": "danog/advanced-json-rpc",
-            "version": "v3.2.2",
+            "version": "v3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danog/php-advanced-json-rpc.git",
-                "reference": "aadb1c4068a88c3d0530cfe324b067920661efcb"
+                "reference": "ae703ea7b4811797a10590b6078de05b3b33dd91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danog/php-advanced-json-rpc/zipball/aadb1c4068a88c3d0530cfe324b067920661efcb",
-                "reference": "aadb1c4068a88c3d0530cfe324b067920661efcb",
+                "url": "https://api.github.com/repos/danog/php-advanced-json-rpc/zipball/ae703ea7b4811797a10590b6078de05b3b33dd91",
+                "reference": "ae703ea7b4811797a10590b6078de05b3b33dd91",
                 "shasum": ""
             },
             "require": {
                 "netresearch/jsonmapper": "^5",
                 "php": ">=8.1",
-                "phpdocumentor/reflection-docblock": "^4.3.4 || ^5.0.0"
+                "phpdocumentor/reflection-docblock": "^4.3.4 || ^5.0.0 || ^6"
             },
             "replace": {
                 "felixfbecker/php-advanced-json-rpc": "^3"
@@ -10617,9 +10617,9 @@
             "description": "A more advanced JSONRPC implementation",
             "support": {
                 "issues": "https://github.com/danog/php-advanced-json-rpc/issues",
-                "source": "https://github.com/danog/php-advanced-json-rpc/tree/v3.2.2"
+                "source": "https://github.com/danog/php-advanced-json-rpc/tree/v3.2.3"
             },
-            "time": "2025-02-14T10:55:15+00:00"
+            "time": "2026-01-12T21:07:10+00:00"
         },
         {
             "name": "daverandom/libdns",
@@ -10972,16 +10972,16 @@
         },
         {
             "name": "friendsoftwig/twigcs",
-            "version": "6.5.0",
+            "version": "v6.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/friendsoftwig/twigcs.git",
-                "reference": "aaa3ba112bf4fcee7b51a00d9b45b13bc2cc23bc"
+                "reference": "cebf24a0c5826ad2f6b1a56a89ea4c9648f795da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/aaa3ba112bf4fcee7b51a00d9b45b13bc2cc23bc",
-                "reference": "aaa3ba112bf4fcee7b51a00d9b45b13bc2cc23bc",
+                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/cebf24a0c5826ad2f6b1a56a89ea4c9648f795da",
+                "reference": "cebf24a0c5826ad2f6b1a56a89ea4c9648f795da",
                 "shasum": ""
             },
             "require": {
@@ -10990,14 +10990,14 @@
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "ext-simplexml": "*",
-                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-                "symfony/console": "^4.4 || ^5.3 || ^6.0 || ^7.0",
-                "symfony/filesystem": "^4.4 || ^5.3 || ^6.0 || ^7.0",
-                "symfony/finder": "^4.4 || ^5.3 || ^6.0 || ^7.0"
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "symfony/console": "^4.4 || ^5.3 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/filesystem": "^4.4 || ^5.3 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/finder": "^4.4 || ^5.3 || ^6.0 || ^7.0 || ^8.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.6.19",
-                "symfony/phpunit-bridge": "^7.1.4"
+                "symfony/phpunit-bridge": "^7.2.0 || ^8.0"
             },
             "bin": [
                 "bin/twigcs"
@@ -11021,58 +11021,9 @@
             "description": "Checkstyle automation for Twig",
             "support": {
                 "issues": "https://github.com/friendsoftwig/twigcs/issues",
-                "source": "https://github.com/friendsoftwig/twigcs/tree/6.5.0"
+                "source": "https://github.com/friendsoftwig/twigcs/tree/v6.6.1"
             },
-            "time": "2024-11-27T21:59:24+00:00"
-        },
-        {
-            "name": "zentra-project/phpstan-zentra",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zentra-project/phpstan-zentra.git",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zentra-project/phpstan-zentra/zipball/e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.4",
-                "phpstan/phpstan": "^2.1",
-                "symfony/polyfill-php80": "^1.32"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.85",
-                "php-parallel-lint/php-parallel-lint": "^1.4",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.6"
-            },
-            "type": "phpstan-extension",
-            "extra": {
-                "phpstan": {
-                    "includes": [
-                        "extension.neon"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PHPStanZentra\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHPStan rules for ZENTRA.",
-            "support": {
-                "issues": "https://github.com/zentra-project/phpstan-zentra/issues",
-                "source": "https://github.com/zentra-project/phpstan-zentra/tree/1.1.1"
-            },
-            "time": "2025-08-11T13:48:13+00:00"
+            "time": "2026-01-23T11:42:09+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -11306,16 +11257,16 @@
         },
         {
             "name": "netresearch/jsonmapper",
-            "version": "v5.0.0",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cweiske/jsonmapper.git",
-                "reference": "8c64d8d444a5d764c641ebe97e0e3bc72b25bf6c"
+                "reference": "980674efdda65913492d29a8fd51c82270dd37bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cweiske/jsonmapper/zipball/8c64d8d444a5d764c641ebe97e0e3bc72b25bf6c",
-                "reference": "8c64d8d444a5d764c641ebe97e0e3bc72b25bf6c",
+                "url": "https://api.github.com/repos/cweiske/jsonmapper/zipball/980674efdda65913492d29a8fd51c82270dd37bb",
+                "reference": "980674efdda65913492d29a8fd51c82270dd37bb",
                 "shasum": ""
             },
             "require": {
@@ -11351,9 +11302,9 @@
             "support": {
                 "email": "cweiske@cweiske.de",
                 "issues": "https://github.com/cweiske/jsonmapper/issues",
-                "source": "https://github.com/cweiske/jsonmapper/tree/v5.0.0"
+                "source": "https://github.com/cweiske/jsonmapper/tree/v5.0.1"
             },
-            "time": "2024-09-08T10:20:00+00:00"
+            "time": "2026-02-22T16:28:03+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -13989,16 +13940,16 @@
         },
         {
             "name": "symfony/debug-bundle",
-            "version": "v6.4.27",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug-bundle.git",
-                "reference": "21a61c55192d558a6b81cdb12e8c010fc9474fe0"
+                "reference": "eb79084c2c9778559b21f61cb1507cbd580cc6e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug-bundle/zipball/21a61c55192d558a6b81cdb12e8c010fc9474fe0",
-                "reference": "21a61c55192d558a6b81cdb12e8c010fc9474fe0",
+                "url": "https://api.github.com/repos/symfony/debug-bundle/zipball/eb79084c2c9778559b21f61cb1507cbd580cc6e1",
+                "reference": "eb79084c2c9778559b21f61cb1507cbd580cc6e1",
                 "shasum": ""
             },
             "require": {
@@ -14043,7 +13994,7 @@
             "description": "Provides a tight integration of the Symfony VarDumper component and the ServerLogCommand from MonologBridge into the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/debug-bundle/tree/v6.4.27"
+                "source": "https://github.com/symfony/debug-bundle/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -14063,7 +14014,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-11T17:35:31+00:00"
+            "time": "2026-03-02T09:25:10+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -14441,16 +14392,16 @@
         },
         {
             "name": "symfony/twig-bridge",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bridge.git",
-                "reference": "5169074f4a88dfb02eeccddaba78edfdf212a9b2"
+                "reference": "352acf608d1c9c00692fc3bba9f445176c14ce0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/5169074f4a88dfb02eeccddaba78edfdf212a9b2",
-                "reference": "5169074f4a88dfb02eeccddaba78edfdf212a9b2",
+                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/352acf608d1c9c00692fc3bba9f445176c14ce0f",
+                "reference": "352acf608d1c9c00692fc3bba9f445176c14ce0f",
                 "shasum": ""
             },
             "require": {
@@ -14530,7 +14481,7 @@
             "description": "Provides integration for Twig with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/twig-bridge/tree/v6.4.34"
+                "source": "https://github.com/symfony/twig-bridge/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -14550,7 +14501,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-23T18:17:33+00:00"
+            "time": "2026-03-04T15:30:31+00:00"
         },
         {
             "name": "symfony/twig-bundle",
@@ -14642,16 +14593,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v6.4.34",
+            "version": "v6.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "848bc5d5745500f855bb201d57ae066fd7e67448"
+                "reference": "ae7fc9802c6eef1fa5078efad3c72db836ffcb9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/848bc5d5745500f855bb201d57ae066fd7e67448",
-                "reference": "848bc5d5745500f855bb201d57ae066fd7e67448",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/ae7fc9802c6eef1fa5078efad3c72db836ffcb9d",
+                "reference": "ae7fc9802c6eef1fa5078efad3c72db836ffcb9d",
                 "shasum": ""
             },
             "require": {
@@ -14704,7 +14655,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.34"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.35"
             },
             "funding": [
                 {
@@ -14724,7 +14675,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-05T15:19:06+00:00"
+            "time": "2026-03-03T10:22:09+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",
@@ -14836,16 +14787,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.14.3",
+            "version": "6.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "d0b040a91f280f071c1abcb1b77ce3822058725a"
+                "reference": "28dc127af1b5aecd52314f6f645bafc10d0e11f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/d0b040a91f280f071c1abcb1b77ce3822058725a",
-                "reference": "d0b040a91f280f071c1abcb1b77ce3822058725a",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/28dc127af1b5aecd52314f6f645bafc10d0e11f9",
+                "reference": "28dc127af1b5aecd52314f6f645bafc10d0e11f9",
                 "shasum": ""
             },
             "require": {
@@ -14869,7 +14820,7 @@
                 "netresearch/jsonmapper": "^5.0",
                 "nikic/php-parser": "^5.0.0",
                 "php": "~8.1.31 || ~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0",
-                "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0",
+                "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "spatie/array-to-xml": "^2.17.0 || ^3.0",
                 "symfony/console": "^6.0 || ^7.0 || ^8.0",
                 "symfony/filesystem": "~6.3.12 || ~6.4.3 || ^7.0.3 || ^8.0",
@@ -14950,7 +14901,56 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2025-12-23T15:36:48+00:00"
+            "time": "2026-02-07T19:27:16+00:00"
+        },
+        {
+            "name": "zentra-project/phpstan-zentra",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zentra-project/phpstan-zentra.git",
+                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zentra-project/phpstan-zentra/zipball/e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
+                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4",
+                "phpstan/phpstan": "^2.1",
+                "symfony/polyfill-php80": "^1.32"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.85",
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStanZentra\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan rules for ZENTRA.",
+            "support": {
+                "issues": "https://github.com/zentra-project/phpstan-zentra/issues",
+                "source": "https://github.com/zentra-project/phpstan-zentra/tree/1.1.1"
+            },
+            "time": "2025-08-11T13:48:13+00:00"
         }
     ],
     "aliases": [],
