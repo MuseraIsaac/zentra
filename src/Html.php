@@ -5953,13 +5953,13 @@ JS);
      */
     public static function getCopyrightMessage($withVersion = true)
     {
-        $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+        #$message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
         $message .= "GLPI ";
         // if required, add GLPI version (eg not for login page)
         if ($withVersion) {
             $message .= htmlescape(GLPI_VERSION) . " ";
         }
-        $message .= "Copyright (C) 2015-" . htmlescape(GLPI_YEAR) . " Teclib' and contributors"
+        $message .= "Copyright (C) " . htmlescape(GLPI_YEAR) . 
          . "</a>";
         return $message;
     }
