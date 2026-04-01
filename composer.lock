@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da8b9e8503eb25c218b5158dd4786be0",
+    "content-hash": "52b6d1fa644522c86814f24802f7e232",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -956,79 +956,6 @@
                 }
             ],
             "time": "2026-02-23T14:05:50+00:00"
-        },
-        {
-            "name": "zentra-project/inventory_format",
-            "version": "1.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zentra-project/inventory_format.git",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zentra-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-libxml": "*",
-                "ext-simplexml": "*",
-                "php": ">=7.4",
-                "seld/jsonlint": "^1.11",
-                "swaggest/json-schema": "^0.12.43",
-                "symfony/polyfill-php81": "^1.33"
-            },
-            "require-dev": {
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^1.12",
-                "phpstan/phpstan-deprecation-rules": "^1.2",
-                "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^4.0"
-            },
-            "bin": [
-                "bin/convert",
-                "bin/build_hw_jsons",
-                "bin/refresh_hw_sources",
-                "bin/validate"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "lib/php/Schema.php",
-                    "lib/php/Converter.php",
-                    "lib/php/FilesToJSON.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Teclib'",
-                    "email": "zentra@teclib.com",
-                    "homepage": "https://teclib.com"
-                }
-            ],
-            "description": "ZENTRA Inventory format lib",
-            "keywords": [
-                "automatic inventory",
-                "zentra"
-            ],
-            "support": {
-                "issues": "https://github.com/zentra-project/inventory_format/issues",
-                "source": "https://github.com/zentra-project/inventory_format"
-            },
-            "time": "2026-01-22T08:46:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8569,16 +8496,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.27",
+            "version": "2.4.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "8d754e2cb6001114ff7669982739245078346d8f"
+                "reference": "be76f91968bfab74949a3f937f78f02455597c85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/8d754e2cb6001114ff7669982739245078346d8f",
-                "reference": "8d754e2cb6001114ff7669982739245078346d8f",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/be76f91968bfab74949a3f937f78f02455597c85",
+                "reference": "be76f91968bfab74949a3f937f78f02455597c85",
                 "shasum": ""
             },
             "require": {
@@ -8658,7 +8585,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.27"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.29"
             },
             "funding": [
                 {
@@ -8666,20 +8593,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-02-28T10:33:16+00:00"
+            "time": "2026-03-30T17:05:24+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.3.9",
+            "version": "2.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "7eed5344ed57a3d55b56bebbd1329bd0e8fe597a"
+                "reference": "cf018a88218262a64784032ecce14bfec480d3dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/7eed5344ed57a3d55b56bebbd1329bd0e8fe597a",
-                "reference": "7eed5344ed57a3d55b56bebbd1329bd0e8fe597a",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/cf018a88218262a64784032ecce14bfec480d3dd",
+                "reference": "cf018a88218262a64784032ecce14bfec480d3dd",
                 "shasum": ""
             },
             "require": {
@@ -8728,7 +8655,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.3.9"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.3.10"
             },
             "funding": [
                 {
@@ -8736,7 +8663,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-02-23T20:00:30+00:00"
+            "time": "2026-03-30T17:00:47+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -9458,6 +9385,79 @@
                 }
             ],
             "time": "2025-08-20T10:09:37+00:00"
+        },
+        {
+            "name": "zentra-project/inventory_format",
+            "version": "1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zentra-project/inventory_format.git",
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zentra-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.4",
+                "seld/jsonlint": "^1.11",
+                "swaggest/json-schema": "^0.12.43",
+                "symfony/polyfill-php81": "^1.33"
+            },
+            "require-dev": {
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^1.12",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^4.0"
+            },
+            "bin": [
+                "bin/convert",
+                "bin/build_hw_jsons",
+                "bin/refresh_hw_sources",
+                "bin/validate"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/php/Schema.php",
+                    "lib/php/Converter.php",
+                    "lib/php/FilesToJSON.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Teclib'",
+                    "email": "zentra@teclib.com",
+                    "homepage": "https://teclib.com"
+                }
+            ],
+            "description": "ZENTRA Inventory format lib",
+            "keywords": [
+                "automatic inventory",
+                "zentra"
+            ],
+            "support": {
+                "issues": "https://github.com/zentra-project/inventory_format/issues",
+                "source": "https://github.com/zentra-project/inventory_format"
+            },
+            "time": "2026-01-22T08:46:40+00:00"
         }
     ],
     "packages-dev": [
@@ -11024,55 +11024,6 @@
                 "source": "https://github.com/friendsoftwig/twigcs/tree/6.5.0"
             },
             "time": "2024-11-27T21:59:24+00:00"
-        },
-        {
-            "name": "zentra-project/phpstan-zentra",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zentra-project/phpstan-zentra.git",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zentra-project/phpstan-zentra/zipball/e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.4",
-                "phpstan/phpstan": "^2.1",
-                "symfony/polyfill-php80": "^1.32"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.85",
-                "php-parallel-lint/php-parallel-lint": "^1.4",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.6"
-            },
-            "type": "phpstan-extension",
-            "extra": {
-                "phpstan": {
-                    "includes": [
-                        "extension.neon"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PHPStanZentra\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHPStan rules for ZENTRA.",
-            "support": {
-                "issues": "https://github.com/zentra-project/phpstan-zentra/issues",
-                "source": "https://github.com/zentra-project/phpstan-zentra/tree/1.1.1"
-            },
-            "time": "2025-08-11T13:48:13+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -14951,6 +14902,55 @@
                 "source": "https://github.com/vimeo/psalm"
             },
             "time": "2025-12-23T15:36:48+00:00"
+        },
+        {
+            "name": "zentra-project/phpstan-zentra",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zentra-project/phpstan-zentra.git",
+                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zentra-project/phpstan-zentra/zipball/e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
+                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4",
+                "phpstan/phpstan": "^2.1",
+                "symfony/polyfill-php80": "^1.32"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.85",
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStanZentra\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan rules for ZENTRA.",
+            "support": {
+                "issues": "https://github.com/zentra-project/phpstan-zentra/issues",
+                "source": "https://github.com/zentra-project/phpstan-zentra/tree/1.1.1"
+            },
+            "time": "2025-08-11T13:48:13+00:00"
         }
     ],
     "aliases": [],
