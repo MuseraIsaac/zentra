@@ -1278,7 +1278,7 @@ TWIG,
 
         $menu += [
             'helpdesk' => [
-                'title' => __('Assistance'),
+                'title' => __('Helpdesk'),
                 'types' => [
                     Ticket::class, ServiceCatalog::class, Problem::class, Change::class,
                     Planning::class, Stat::class, TicketRecurrent::class, RecurrentChange::class,
