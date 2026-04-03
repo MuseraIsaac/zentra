@@ -127,17 +127,17 @@
                <div class="modal-body">
                   {% if not call('\\Zentra\\Toolbox\\VersionParser::isStableRelease', [constant('ZENTRA_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
-                        <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
+                        <strong></strong>
                       </div>
                   {% endif %}
-                  <p><a href="http://zentra-project.org/" title="Powered by Teclib and contributors" class="copyright">
-                     ZENTRA {{ constant('ZENTRA_VERSION') }}
-                     Copyright (C) 2015-{{ constant('ZENTRA_YEAR') }} Teclib' and contributors
+                  <p><a href="" title="" class="copyright">
+                     ZENTRA 
+                     Copyright (C) 2015-{{ constant('ZENTRA_YEAR') }} 
                   </a></p>
                   {% if found_new_version is not null %}
                      <p>
-                        <a href="http://www.zentra-project.org" target="_blank"
-                           title="{{ __('You will find it on the ZENTRA-PROJECT.org site.') }}">
+                        <a href="http://www.zentra-project.com" target="_blank"
+                           title="{{ __('You will find it on the ZENTRA-PROJECT.com.') }}">
                            {{ __('A new version is available: %s.')|format(found_new_version) }}
                            <span class="badge bg-info text-dark">
                               1
