@@ -292,7 +292,7 @@ class Telemetry extends CommonZENTRA
     {
         switch ($name) {
             case 'telemetry':
-                return ['description' => __('Send telemetry information')];
+                return ['description' => __('')];
         }
         return [];
     }
@@ -385,7 +385,7 @@ class Telemetry extends CommonZENTRA
         global $CFG_ZENTRA;
 
         $out = "<a id='view_telemetry' href='" . htmlescape($CFG_ZENTRA['root_doc']) . "/ajax/telemetry.php' class='btn btn-sm btn-info'>
-         " . __s('See what would be sent...') . "
+         " . __s('') . "
       </a>";
         $out .= Html::scriptBlock("
          $('#view_telemetry').on('click', function(e) {
@@ -461,13 +461,13 @@ class Telemetry extends CommonZENTRA
         $out = "<div class='form-check'>
          <input type='checkbox' class='form-check-input' checked='checked' value='1' name='send_stats' id='send_stats'/>
          <label for='send_stats' class='form-check-label'>
-            " . __s('Send "usage statistics"') . "
+            " . __s('') . "
          </label>
       </div>";
-        $out .= "<strong>" . __s("We need your help to improve ZENTRA and the plugins ecosystem!") . "</strong><br><br>";
-        $out .= __s("Since ZENTRA 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . "<br>";
-        $out .= __s("Once sent, usage statistics are aggregated and made available to a broad range of ZENTRA developers.") . "<br><br>";
-        $out .= __s("Let us know your usage to improve future versions of ZENTRA and its plugins!") . "<br>";
+        $out .= "<strong>" . __s("") . "</strong><br><br>";
+        $out .= __s("") . "<br>";
+        $out .= __s("") . "<br><br>";
+        $out .= __s("") . "<br>";
 
         $out .= '<span class="mt-2">' . self::getViewLink() . '</span>';
         return $out;
@@ -480,9 +480,9 @@ class Telemetry extends CommonZENTRA
      */
     public static function showReference()
     {
-        $out = "<h3>" . __s('Reference your ZENTRA') . "</h3>";
+        $out = "<h3>" . __s('') . "</h3>";
         $out .= sprintf(
-            __s("Besides, if you appreciate ZENTRA and its community, please take a minute to reference your organization by filling %1\$s"),
+            __s(""),
             sprintf(
                 "
                     <a href='" . htmlescape(ZENTRA_TELEMETRY_URI . "/reference?showmodal&uuid=" . self::getRegistrationUuid()) . "'
@@ -491,7 +491,7 @@ class Telemetry extends CommonZENTRA
                         %s
                     </a>
                 ",
-                __s('the registration form')
+                __s('')
             )
         );
         return $out;
