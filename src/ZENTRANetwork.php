@@ -258,10 +258,7 @@ class ZENTRANetwork extends CommonZENTRA
         return nl2br(
             sprintf(
                 __s(
-                    "You need help to integrate ZENTRA in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n\n"
-                    . "We provide the %s space for you.\n"
-                    . "ZENTRA-Network is a commercial service that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n"
-                    . "In this same space, you will be able to contact an official partner to help you with your ZENTRA integration."
+                    ""
                 ),
                 "<a href='" . $url . "' target='_blank'>" . $url . "</a>"
             )
@@ -273,8 +270,8 @@ class ZENTRANetwork extends CommonZENTRA
         $url = htmlescape(ZENTRA_NETWORK_SERVICES);
 
         return nl2br(sprintf(
-            __s("Having troubles setting up an advanced ZENTRA module?\n"
-            . "We can help you solve them. Sign up for support on %s."),
+            __s(""
+            . ""),
             "<a href='" . $url . "' target='_blank'>" . $url . "</a>"
         ));
     }
