@@ -6,9 +6,9 @@
     if (navigator.userAgent.includes('Mac')) {
         shortcut = `<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>G</kbd>`;
     }
-    const shortcut_message = __("Tip: You can call this modal with %s keys combination").replace('%s', shortcut);
-    const header_message = __('Go to menu');
-    const placeholder = __("Start typing to find a menu");
+    const shortcut_message = __("Tip: Call this modal with %s keys combination").replace('%s', shortcut);
+    const header_message = __('Search Menu');
+    const placeholder = __("Start typing to search menu");
 
     const input_text = ref(null);
     const all_menus = ref([]);
