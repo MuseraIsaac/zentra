@@ -7,7 +7,7 @@
 
 ## About ZENTRA
 
-ZENTRA stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
+ZENTRA is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
 
 Major ZENTRA Features:
 
@@ -41,15 +41,10 @@ Major ZENTRA Features:
 
 * **Intervention Planning**: Offers intervention planning capabilities for scheduling and managing on-site interventions.
 
-Moreover, supports many [plugins](http://plugins.zentra-project.org) that provide additional features.
+
 
 ## Demonstration
 
-Check ZENTRA features by asking for a free personal demonstration on **[zentra-network.cloud](https://www.zentra-network.cloud)**
-
-## License
-
-![license](https://img.shields.io/github/license/zentra-project/zentra.svg)
 
 It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consult the file called [LICENSE](https://raw.githubusercontent.com/zentra-project/zentra/main/LICENSE) for more details.
 
@@ -99,22 +94,18 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 Please, consider using browsers on editor's supported version
 
 
-## Download
 
-See :
-* [releases](https://github.com/zentra-project/zentra/releases) for tarball packages.
 
 
 ## Documentation
-
-* [ZENTRA Administrator](https://zentra-install.readthedocs.io)
+*
     * Install & Update
     * Command line tools
     * Timezones
     * Advanced configuration
-    * [Contribute to this documentation!](https://github.com/zentra-project/doc-install)
+    * [Contribute to this documentation!]()
 
-* [ZENTRA User](https://zentra-user-documentation.readthedocs.io)
+* [ZENTRA User])
     * First Steps with ZENTRA
     * Overview of all modules
     * Configuration & Administration
@@ -142,20 +133,7 @@ See :
     * Usage and features for some ZENTRA plugins
     * [Contribute to this documentation!](https://github.com/pluginszentra/doc)
 
-## Additional resources
-
-* [Official website](http://zentra-project.org)
-* [Demo](https://www.zentra-network.cloud)
-* [Translations on transifex service](https://app.transifex.com/zentra/ZENTRA/dashboard/)
-* [Issues](https://github.com/zentra-project/zentra/issues)
-* [Suggestions](http://suggest.zentra-project.org)
-* [Forum](http://forum.zentra-project.org)
-* [Development documentation](http://zentra-developer-documentation.readthedocs.io/en/master/)
-* [Plugin directory](http://plugins.zentra-project.org)
-* [Plugin development documentation](http://zentra-developer-documentation.readthedocs.io/en/master/plugins/index.html)
 
 
-## Support
-ZENTRA is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
 
-To ease support and development, we need your help when encountering issues.
+
